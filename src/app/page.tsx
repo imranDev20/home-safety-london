@@ -1,9 +1,16 @@
-import Button from "@mui/joy/Button";
+"use client";
+import Header from "@/components/header/header";
+import Hero from "@/components/home/hero";
+import LondonMap from "@/components/home/london-map";
+import Services from "@/components/home/services";
 
 export default function Home() {
   return (
     <main>
-      <Button variant="solid">Actual website</Button>
+      <Header />
+      <Hero />
+      <Services />
+      <LondonMap />
     </main>
   );
 }
