@@ -10,7 +10,7 @@ import electric from "../../../public/electric.jpg";
 export default function Faq() {
   const [index, setIndex] = React.useState<number | null>(0);
   return (
-    <Box>
+    <Box sx={{ paddingY: "30px" }}>
       <Typography
         sx={{
           textAlign: "center",
@@ -22,13 +22,12 @@ export default function Faq() {
         Answers to Frequently Asked Questions (FAQs)
       </Typography>
       <Container>
-        <Grid container spacing={3}>
-          <Grid xs={6}>
-            <Box sx={{}}>
-              <Image width={550} src={electric} alt="faq-image" />
-            </Box>
-          </Grid>
-          <Grid xs={6}>
+        <Grid
+          container
+          spacing={3}
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
+          <Grid xs={10}>
             <AccordionGroup>
               <Accordion
                 expanded={index === 0}
