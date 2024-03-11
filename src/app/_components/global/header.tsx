@@ -217,7 +217,14 @@ export default function Header() {
   const theme = useTheme();
 
   return (
-    <Box component="header">
+    <Box
+      component="header"
+      sx={{
+        zIndex: 10000,
+        position: "relative",
+        backgroundColor: "white",
+      }}
+    >
       <Box
         sx={{
           py: 1.5,
@@ -382,7 +389,6 @@ export default function Header() {
           </List>
         </Box>
       </Container>
-      <Divider />
     </Box>
   );
 }
