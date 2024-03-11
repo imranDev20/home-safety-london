@@ -37,96 +37,63 @@ export default function ServicePrice() {
   return (
     <Container>
       <Grid container spacing={4} sx={{ px: 8 }}>
-        <Grid xs={6}>
-          <Box>
-            <Card variant="outlined">
-              <Typography level="h2">Residential EICR Cost</Typography>
-              <Typography level="body-xs">
-                Price based on the number of bedrooms in a property
-              </Typography>
-              <Divider inset="none" />
-              <Typography>Below prices are all tax inclusive</Typography>
-              <List
-                size="sm"
-                sx={{ mx: "calc(-1 * var(--ListItem-paddingX))" }}
+        {[0, 1].map((item) => (
+          <Grid xs={6} key={item}>
+            <Box>
+              <Card
+                variant="outlined"
+                sx={{
+                  textAlign: "center",
+                }}
               >
-                <ListItem>
-                  <ListItemDecorator>
-                    <CheckCircleOutlineIcon />
-                  </ListItemDecorator>
-                  Studio Flat £79
-                </ListItem>
-                <ListItem>
-                  <ListItemDecorator>
-                    <CheckCircleOutlineIcon />
-                  </ListItemDecorator>
-                  Studio Flat £79
-                </ListItem>
-                <ListItem>
-                  <ListItemDecorator>
-                    <CheckCircleOutlineIcon />
-                  </ListItemDecorator>
-                  Studio Flat £79
-                </ListItem>
-                <ListItem>
-                  <ListItemDecorator>
-                    <CheckCircleOutlineIcon />
-                  </ListItemDecorator>
-                  Studio Flat £79
-                </ListItem>
-              </List>
+                <Typography component="h3" level="h2">
+                  Residential EICR Cost
+                </Typography>
+                <Typography level="body-xs">
+                  Price based on the number of bedrooms in a property
+                </Typography>
+                <Divider inset="none" />
+                <Typography>Below prices are all tax inclusive</Typography>
+                <List
+                  size="md"
+                  sx={{
+                    mx: "calc(-1 * var(--ListItem-paddingX))",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <ListItem>
+                    <ListItemDecorator>
+                      <CheckCircleOutlineIcon />
+                    </ListItemDecorator>
+                    Studio Flat £79
+                  </ListItem>
+                  <ListItem>
+                    <ListItemDecorator>
+                      <CheckCircleOutlineIcon />
+                    </ListItemDecorator>
+                    Studio Flat £79
+                  </ListItem>
+                  <ListItem>
+                    <ListItemDecorator>
+                      <CheckCircleOutlineIcon />
+                    </ListItemDecorator>
+                    Studio Flat £79
+                  </ListItem>
+                  <ListItem>
+                    <ListItemDecorator>
+                      <CheckCircleOutlineIcon />
+                    </ListItemDecorator>
+                    Studio Flat £79
+                  </ListItem>
+                </List>
 
-              <Button variant="soft" color="neutral">
-                Book now
-              </Button>
-            </Card>
-          </Box>
-        </Grid>
-        <Grid xs={6}>
-          <Box>
-            <Card variant="outlined">
-              <Typography level="h2">Residential EICR Cost</Typography>
-              <Typography level="body-xs">
-                Price based on the number of bedrooms in a property
-              </Typography>
-              <Divider inset="none" />
-              <Typography>Below prices are all tax inclusive</Typography>
-              <List
-                size="sm"
-                sx={{ mx: "calc(-1 * var(--ListItem-paddingX))" }}
-              >
-                <ListItem>
-                  <ListItemDecorator>
-                    <CheckCircleOutlineIcon />
-                  </ListItemDecorator>
-                  Studio Flat £79
-                </ListItem>
-                <ListItem>
-                  <ListItemDecorator>
-                    <CheckCircleOutlineIcon />
-                  </ListItemDecorator>
-                  Studio Flat £79
-                </ListItem>
-                <ListItem>
-                  <ListItemDecorator>
-                    <CheckCircleOutlineIcon />
-                  </ListItemDecorator>
-                  Studio Flat £79
-                </ListItem>
-                <ListItem>
-                  <ListItemDecorator>
-                    <CheckCircleOutlineIcon />
-                  </ListItemDecorator>
-                  Studio Flat £79
-                </ListItem>
-              </List>
-
-              <Button variant="soft" color="neutral">
-                Book now
-              </Button>
-            </Card>
-          </Box>
-        </Grid>
+                <Button variant="soft">Book now</Button>
+              </Card>
+            </Box>
+          </Grid>
+        ))}
       </Grid>
     </Container>
   );
