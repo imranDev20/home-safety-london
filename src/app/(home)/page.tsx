@@ -11,7 +11,6 @@ import Testimonial from "@/app/(home)/_components/testimonial";
 export default function Home() {
   return (
     <main>
-      <Header />
       <Hero />
       <Services />
       <LondonMap />
