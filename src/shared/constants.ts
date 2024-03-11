@@ -9,6 +9,8 @@ import {
   Support,
 } from "@mui/icons-material";
 
+import { EicrIcon,EpcIcon,FireIcon,FireRiskIcon,GasSafteyIcon,PatIcon } from "@/app/_components/common/icons";
+
 export const ADMIN_OPTIONS = [
   {
     route: "/admin",
@@ -77,20 +79,20 @@ export const CATEGORIES = [
 // Website
 
 export const SERVICES = [
-  { id: 1, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
-  { id: 2, serviceName: "Fire", serviceDetail: "Risk Assessment" },
-  { id: 3, serviceName: "Fire", serviceDetail: "Alarm Certificate" },
-  { id: 4, serviceName: "PAT", serviceDetail: "Testing" },
-  { id: 5, serviceName: "GAS", serviceDetail: "Safety Certificate" },
+  { id: 1, serviceName: "EICR", serviceDetail: "Electrical Certificate",Icon:EicrIcon },
+  { id: 2, serviceName: "Fire", serviceDetail: "Risk Assessment",Icon:FireIcon },
+  { id: 3, serviceName: "Fire", serviceDetail: "Alarm Certificate",Icon:FireRiskIcon },
+  { id: 4, serviceName: "PAT", serviceDetail: "Testing",Icon:PatIcon },
+  { id: 5, serviceName: "GAS", serviceDetail: "Safety Certificate",Icon:GasSafteyIcon },
   {
     id: 6,
     serviceName: "EPC",
-    serviceDetail: "Energy Performancer Certificate",
+    serviceDetail: "Energy Performancer Certificate",Icon:EpcIcon
   },
-  { id: 7, serviceName: "Fire", serviceDetail: "Alarm Installation" },
-  { id: 8, serviceName: "Fuse", serviceDetail: "Box Installation" },
-  { id: 9, serviceName: "Boiler", serviceDetail: "Box Installation" },
-  { id: 10, serviceName: "Electrial", serviceDetail: "Repairs" },
-  { id: 11, serviceName: "GAS", serviceDetail: "Repairs" },
-  { id: 12, serviceName: "Plumbing", serviceDetail: "" },
+  { id: 7, serviceName: "Fire", serviceDetail: "Alarm Installation" ,Icon:FireIcon},
+  { id: 8, serviceName: "Fuse", serviceDetail: "Box Installation",Icon:FireRiskIcon },
+  { id: 9, serviceName: "Boiler", serviceDetail: "Box Installation",Icon: EpcIcon},
+  { id: 10, serviceName: "Electrial", serviceDetail: "Repairs",Icon:EicrIcon },
+  { id: 11, serviceName: "GAS", serviceDetail: "Repairs",Icon:GasSafteyIcon },
+  { id: 12, serviceName: "Plumbing", serviceDetail: "",Icon: PatIcon},
 ];
