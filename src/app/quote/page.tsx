@@ -6,7 +6,7 @@ import PageHeader from "../_components/common/page-header";
 import BackgroundImage from "@/images/about-bg.jpeg";
 import Paragraph from "../_components/common/paragraph";
 import RightSidebarStepper from "./_components/right-sidebar-stepper";
-import ServiceDetails from "./_components/service-details";
+// import ServiceDetails from "./_components/service-details";
 import PersonalDetails from "./_components/personal-details";
 import { Order } from "@/types/misc";
 import { useSearchParams } from "next/navigation";
@@ -81,9 +81,9 @@ export default function QuotePage() {
                   p: 3,
                 }}
               >
-                {activeStep === 1 || Number.isNaN(activeStep) ? (
+                {/* {activeStep === 1 || Number.isNaN(activeStep) ? (
                   <ServiceDetails order={order} setOrder={setOrder} />
-                ) : null}
+                ) : null} */}
                 {activeStep === 2 && order.isServiceStepComplete ? (
                   <PersonalDetails order={order} setOrder={setOrder} />
                 ) : null}
