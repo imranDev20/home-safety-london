@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react";
 import { Popper } from "@mui/base/Popper";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
@@ -7,33 +8,17 @@ import ListItem from "@mui/joy/ListItem";
 import ListItemButton from "@mui/joy/ListItemButton";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import {
-  Chip,
   Container,
   Divider,
   Grid,
-  IconButton,
-  ListDivider,
-  ListItemContent,
   ListItemDecorator,
   Typography,
   useTheme,
 } from "@mui/joy";
-import Image from "next/image";
-import logo from "../../../../public/logo.png";
-import PhoneIcon from "@mui/icons-material/Phone";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import MailIcon from "@mui/icons-material/Mail";
-import {
-  Apps,
-  BookmarkAdd,
-  Email,
-  FactCheck,
-  HomeRounded,
-  Person,
-  Phone,
-  WhatsApp,
-} from "@mui/icons-material";
-import { CATEGORIES, SERVICES } from "@/shared/constants";
+
+import { Email, HomeRounded, Phone, WhatsApp } from "@mui/icons-material";
+import { CATEGORIES } from "@/shared/constants";
+import Link from "next/link";
 
 type Options = {
   initialActiveIndex: null | number;
@@ -180,6 +165,8 @@ const ServicesMenu = React.forwardRef(
             sx={(theme) => ({
               ...(open && theme.variants.plainHover.neutral),
             })}
+            component={Link}
+            href="/services"
           >
             Services <KeyboardArrowDown />
           </ListItemButton>
@@ -223,15 +210,6 @@ const ServicesMenu = React.forwardRef(
 
 ServicesMenu.displayName = "ServicesMenu";
 
-type AdmissionsMenuProps = {
-  focusNext: () => void;
-  focusPrevious: () => void;
-  onMouseEnter?: (
-    event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => void;
-  onKeyDown?: (event: React.KeyboardEvent<HTMLAnchorElement>) => void;
-};
-
 export default function Header() {
   const { targets, getTargetProps, setActiveIndex, focusNext, focusPrevious } =
     useRovingIndex();
@@ -239,7 +217,7 @@ export default function Header() {
   const theme = useTheme();
 
   return (
-    <Box>
+    <Box component="header">
       <Box
         sx={{
           py: 1.5,
@@ -354,10 +332,13 @@ export default function Header() {
           >
             <ListItem role="none">
               <ListItemButton
+                component={Link}
                 role="menuitem"
                 {...getTargetProps(0)}
-                component="a"
-                href="#navigation-menu"
+                href="/"
+                sx={{
+                  textDecoration: "none",
+                }}
               >
                 <ListItemDecorator>
                   <HomeRounded />
@@ -370,8 +351,8 @@ export default function Header() {
               <ListItemButton
                 role="menuitem"
                 {...getTargetProps(0)}
-                component="a"
-                href="#navigation-menu"
+                component={Link}
+                href="/about"
               >
                 About
               </ListItemButton>
@@ -392,8 +373,8 @@ export default function Header() {
               <ListItemButton
                 role="menuitem"
                 {...getTargetProps(0)}
-                component="a"
-                href="#navigation-menu"
+                component={Link}
+                href="/contact"
               >
                 Contact
               </ListItemButton>
