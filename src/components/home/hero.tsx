@@ -9,17 +9,21 @@ import icon from "../../../public/icon.png";
 
 const SERVICES = [
   { id: 1, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
-  { id: 2, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
-  { id: 3, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
-  { id: 4, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
-  { id: 5, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
-  { id: 6, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
-  { id: 7, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
-  { id: 8, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
-  { id: 9, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
-  { id: 10, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
-  { id: 11, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
-  { id: 12, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
+  { id: 2, serviceName: "Fire", serviceDetail: "Risk Assessment" },
+  { id: 3, serviceName: "Fire", serviceDetail: "Alarm Certificate" },
+  { id: 4, serviceName: "PAT", serviceDetail: "Testing" },
+  { id: 5, serviceName: "GAS", serviceDetail: "Safety Certificate" },
+  {
+    id: 6,
+    serviceName: "EPC",
+    serviceDetail: "Energy Performancer Certificate",
+  },
+  { id: 7, serviceName: "Fire", serviceDetail: "Alarm Installation" },
+  { id: 8, serviceName: "Fuse", serviceDetail: "Box Installation" },
+  { id: 9, serviceName: "Boiler", serviceDetail: "Box Installation" },
+  { id: 10, serviceName: "Electrial", serviceDetail: "Repairs" },
+  { id: 11, serviceName: "GAS", serviceDetail: "Repairs" },
+  { id: 12, serviceName: "Plumbing", serviceDetail: "" },
 ];
 
 export default function Hero() {
@@ -36,7 +40,9 @@ export default function Hero() {
                     <Typography level="title-md">
                       {items.serviceName}
                     </Typography>
-                    <Typography>{items.serviceDetail}</Typography>
+                    <Typography sx={{ fontSize: "12px" }}>
+                      {items.serviceDetail}
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -44,11 +50,27 @@ export default function Hero() {
           </Grid>
         </Grid>
         <Grid xs={4}>
-          <Card variant="outlined" sx={{ padding: 0 }}>
-            <Typography sx={{ fontSize: "30px", textAlign: "center" }}>
+          <Card
+            variant="outlined"
+            sx={{
+              padding: 0,
+              overflow: "hidden",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: "32px",
+                textAlign: "center",
+                backgroundColor: "#14a51a",
+                paddingY: "15px",
+                fontWeight: 700,
+                color: "#ffffff",
+              }}
+            >
               Book Now
             </Typography>
-            <Divider />
+
             <CardContent sx={{ paddingX: "20px", paddingBottom: "40px" }}>
               <Typography sx={{ textAlign: "center", paddingBottom: "15px" }}>
                 Select Your Property as appropriate and get quote in 30 seconds!
@@ -70,7 +92,18 @@ export default function Hero() {
                   sx={{
                     marginBottom: "15px",
                     paddingX: "40px",
-                    paddingY: "14px",
+                    paddingY: "15px",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    letterSpacing: "2px",
+                    color: "#000000",
+                    borderColor: "#14a51a",
+                    transition: "background-color 0.3s",
+                    "&:hover": {
+                      backgroundColor: "#14a51a",
+                      color: "#fff", // Text color on hover
+                    },
                   }}
                 >
                   Residential Property
@@ -82,7 +115,18 @@ export default function Hero() {
                   sx={{
                     marginBottom: "15px",
                     paddingX: "40px",
-                    paddingY: "14px",
+                    paddingY: "15px",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    letterSpacing: "2px",
+                    color: "#000000",
+                    borderColor: "#14a51a",
+                    transition: "background-color 0.3s",
+                    "&:hover": {
+                      backgroundColor: "#14a51a",
+                      color: "#fff", // Text color on hover
+                    },
                   }}
                 >
                   Commercial Property
@@ -90,10 +134,16 @@ export default function Hero() {
               </Box>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <Button
-                  variant="solid"
-                  color="primary"
                   size="lg"
-                  sx={{ paddingX: "50px", paddingY: "15px" }}
+                  sx={{
+                    paddingX: "50px",
+                    paddingY: "15px",
+                    cursor: "pointer",
+                    backgroundColor: "#14a51a",
+                    "&:hover": {
+                      backgroundColor: "#14a51a",
+                    },
+                  }}
                 >
                   Request a Quote
                 </Button>

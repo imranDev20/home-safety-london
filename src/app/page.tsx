@@ -1,4 +1,5 @@
 "use client";
+import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import Faq from "@/components/home/faq";
 import Hero from "@/components/home/hero";
@@ -17,6 +18,7 @@ export default function Home() {
       <Sponser />
       <Testimonial />
       <Faq />
+      <Footer />
     </main>
   );
 }
