@@ -9,14 +9,14 @@ import Typography from "@mui/joy/Typography";
 import Sheet from "@mui/joy/Sheet";
 import { Container, Grid } from "@mui/joy";
 import Image from "next/image";
-import logo from "../../../public/logo.png";
+import logo from "../../../../public/logo.png";
 import PhoneIcon from "@mui/icons-material/Phone";
 import MailIcon from "@mui/icons-material/Mail";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import XIcon from "@mui/icons-material/X";
-import payment from "../../../public/payment.png";
+import payment from "../../../../public/payment.png";
 
 export default function Footer() {
   const [color, setColor] = React.useState<ColorPaletteProp>("success");

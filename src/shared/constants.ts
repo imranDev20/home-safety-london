@@ -1,3 +1,4 @@
+// Admin Panel
 import {
   Dashboard,
   Diversity2,
@@ -60,18 +61,36 @@ export const ORDER_STATUS = [
 
 export const CATEGORIES = [
   {
-    name: "Electrical Safety",
+    name: "Electrical Services",
   },
   {
-    name: "Gas Safety",
+    name: "Gas Services",
   },
   {
-    name: "Fire Safety",
+    name: "Fire Services",
   },
   {
-    name: "Energy Performance",
+    name: "Health & Safety",
   },
+];
+
+// Website
+
+export const SERVICES = [
+  { id: 1, serviceName: "EICR", serviceDetail: "Electrical Certificate" },
+  { id: 2, serviceName: "Fire", serviceDetail: "Risk Assessment" },
+  { id: 3, serviceName: "Fire", serviceDetail: "Alarm Certificate" },
+  { id: 4, serviceName: "PAT", serviceDetail: "Testing" },
+  { id: 5, serviceName: "GAS", serviceDetail: "Safety Certificate" },
   {
-    name: "Fire Risk Assessment",
+    id: 6,
+    serviceName: "EPC",
+    serviceDetail: "Energy Performancer Certificate",
   },
+  { id: 7, serviceName: "Fire", serviceDetail: "Alarm Installation" },
+  { id: 8, serviceName: "Fuse", serviceDetail: "Box Installation" },
+  { id: 9, serviceName: "Boiler", serviceDetail: "Box Installation" },
+  { id: 10, serviceName: "Electrial", serviceDetail: "Repairs" },
+  { id: 11, serviceName: "GAS", serviceDetail: "Repairs" },
+  { id: 12, serviceName: "Plumbing", serviceDetail: "" },
 ];

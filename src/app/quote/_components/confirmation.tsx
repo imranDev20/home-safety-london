@@ -2,7 +2,7 @@ import { priceInfo } from "@/shared/constants";
 import {
   calculateTotal,
   createQueryString,
-  getServiceItems,
+  // getServiceItems,
 } from "@/shared/functions";
 import { Order } from "@/types/misc";
 import { Box, Button, Typography } from "@mui/joy";

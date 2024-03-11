@@ -4,7 +4,6 @@ import Box from "@mui/joy/Box";
 import { Card, CardContent, Container, Grid } from "@mui/joy";
 import PageHeader from "../_components/common/page-header";
 import BackgroundImage from "@/images/about-bg.jpeg";
-import Heading from "../_components/common/heading";
 import Paragraph from "../_components/common/paragraph";
 import RightSidebarStepper from "./_components/right-sidebar-stepper";
 import ServiceDetails from "./_components/service-details";
@@ -13,6 +12,7 @@ import { Order } from "@/types/misc";
 import { useSearchParams } from "next/navigation";
 import Payments from "./_components/payments";
 import Confirmation from "./_components/confirmation";
+import Heading from "../_components/common/heading";
 
 export default function QuotePage() {
   const searchParams = useSearchParams();
@@ -74,13 +74,8 @@ export default function QuotePage() {
             position: "relative",
           }}
         >
-          <Grid item md={8}>
-            <Card
-              elevation={0}
-              sx={{
-                boxShadow: "0 0 10px 0 rgba(43,52,59,.1)",
-              }}
-            >
+          <Grid md={8}>
+            <Card>
               <CardContent
                 sx={{
                   p: 3,
@@ -107,7 +102,7 @@ export default function QuotePage() {
             </Card>
           </Grid>
 
-          <Grid item md={4}>
+          <Grid md={4}>
             <RightSidebarStepper activeStep={activeStep} />
           </Grid>
         </Grid>

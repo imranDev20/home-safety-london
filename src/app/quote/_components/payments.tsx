@@ -6,8 +6,7 @@ import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
-import { createQueryString, getServiceItems } from "@/shared/functions";
-import dayjs from "dayjs";
+import { createQueryString } from "@/shared/functions";
 
 export default function Payments({
   activeStep,
@@ -66,8 +65,8 @@ export default function Payments({
             price: order.time === "24" ? 100 : order.time === "48" ? 40 : 0,
           },
 
-          items: getServiceItems(order),
-          ...(order.date ? { date: dayjs(order.date).format() } : null),
+          // items: getServiceItems(order),
+          // ...(order.date ? { date: dayjs(order.date).format() } : null),
         };
 
         const response = await axios.post(

@@ -8,14 +8,13 @@ import {
   CircularProgress,
   Divider,
   Grid,
-  TextField,
+  Input,
   Typography,
 } from "@mui/joy";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-number-input/react-hook-form-input";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { isValid } from "postcode";
-import { BsPhone } from "react-icons/bs";
 import PhoneNumberInput from "@/app/_components/common/phone-number-input";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { Order } from "@/types/misc";
@@ -70,7 +69,7 @@ export default function PersonalDetails({
           height: 300,
         }}
       >
-        <CircularProgress size={40} />
+        <CircularProgress size="lg" />
         <Typography
           sx={{
             mt: 3,
@@ -88,7 +87,7 @@ export default function PersonalDetails({
     <>
       <Typography
         component="h2"
-        variant="h5"
+        level="title-md"
         sx={{
           mb: 3,
         }}
@@ -102,7 +101,7 @@ export default function PersonalDetails({
         component="form"
         onSubmit={handleSubmit(onPersonalDetailsSubmit)}
       >
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Controller
             control={control}
             name="name"
@@ -110,10 +109,9 @@ export default function PersonalDetails({
               required: "Name can't be empty",
             }}
             render={({ field }) => (
-              <TextField
+              <Input
                 {...field}
                 fullWidth
-                label="Name"
                 variant="outlined"
                 placeholder="Your name"
               />
@@ -121,7 +119,7 @@ export default function PersonalDetails({
           />
           <HookFormError name="name" errors={errors} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Controller
             control={control}
             name="email"
@@ -133,10 +131,9 @@ export default function PersonalDetails({
               },
             }}
             render={({ field }) => (
-              <TextField
+              <Input
                 {...field}
                 fullWidth
-                label="Email"
                 variant="outlined"
                 placeholder="Your email address"
               />
@@ -145,7 +142,7 @@ export default function PersonalDetails({
           <HookFormError name="email" errors={errors} />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <PhoneInput
             name="phone"
             control={control}
@@ -154,7 +151,6 @@ export default function PersonalDetails({
             placeholder="Your phone number"
             variant="outlined"
             country="GB"
-            label="Your phone number"
             rules={{
               required: "You did not provide a phone number",
               validate: (value: string) => {
@@ -167,19 +163,20 @@ export default function PersonalDetails({
           <HookFormError name="phone" errors={errors} />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Divider>
             <Chip
-              label="Address"
               sx={{
                 fontWeight: 500,
                 fontSize: 16,
               }}
-            />
+            >
+              Address
+            </Chip>
           </Divider>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Controller
             control={control}
             name="house"
@@ -187,10 +184,9 @@ export default function PersonalDetails({
               required: "House & Street can't be empty",
             }}
             render={({ field }) => (
-              <TextField
+              <Input
                 {...field}
                 fullWidth
-                label="House & Street"
                 variant="outlined"
                 placeholder="Your house number and street name"
               />
@@ -199,7 +195,7 @@ export default function PersonalDetails({
           <HookFormError name="house" errors={errors} />
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid xs={6}>
           <Controller
             control={control}
             name="postCode"
@@ -210,11 +206,10 @@ export default function PersonalDetails({
               },
             }}
             render={({ field: { value, onChange } }) => (
-              <TextField
+              <Input
                 value={value}
                 onChange={(e) => onChange(e.target.value.toUpperCase())}
                 fullWidth
-                label="Post Code"
                 variant="outlined"
                 placeholder="Your post code"
               />
@@ -222,16 +217,16 @@ export default function PersonalDetails({
           />
           <HookFormError name="postCode" errors={errors} />
         </Grid>
-        <Grid item xs={6}>
+        <Grid xs={6}>
           <Controller
             control={control}
             name="city"
             render={({ field }) => (
-              <TextField
+              <Input
                 {...field}
                 disabled
                 fullWidth
-                label="City"
+                placeholder="City"
                 variant="outlined"
               />
             )}
@@ -240,7 +235,6 @@ export default function PersonalDetails({
         </Grid>
 
         <Grid
-          item
           xs={12}
           sx={{
             display: "flex",
@@ -249,7 +243,7 @@ export default function PersonalDetails({
         >
           <Button
             type="submit"
-            variant="blue"
+            variant="solid"
             sx={{
               mt: 2,
             }}
