@@ -35,7 +35,7 @@ export default function Faq() {
                   setIndex(expanded ? 0 : null);
                 }}
               >
-                <AccordionSummary>First accordion</AccordionSummary>
+                <AccordionSummary>First accordion show</AccordionSummary>
                 <AccordionDetails>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                   do eiusmod tempor incididunt ut labore et dolore magna aliqua.

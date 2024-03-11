@@ -6,6 +6,7 @@ import CardContent from "@mui/joy/CardContent";
 import Typography from "@mui/joy/Typography";
 import { CorporateFare, Home, Textsms } from "@mui/icons-material";
 import { SERVICES } from "@/shared/constants";
+import { PatIcon } from "@/app/_components/common/icons";
 
 export default function Hero() {
   return (
@@ -20,9 +21,8 @@ export default function Hero() {
                     variant="outlined"
                     sx={{ height: "100%", textAlign: "center" }}
                   >
-                    <Typography level="title-lg">
-                      {service.serviceName}
-                    </Typography>
+                    <service.Icon sx={{ fontSize: 45, mx: "auto" }} />
+                    <Typography level="h3">{service.serviceName}</Typography>
                     <Typography level="body-xs">
                       {service.serviceDetail}
                     </Typography>
