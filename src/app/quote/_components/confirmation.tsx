@@ -2,6 +2,7 @@ import { priceInfo } from "@/shared/constants";
 import {
   calculateTotal,
   createQueryString,
+  getServiceItems,
   // getServiceItems,
 } from "@/shared/functions";
 import { Order } from "@/types/misc";
@@ -25,13 +26,13 @@ export default function Confirmation({ order }: { order: Order }) {
   return (
     <>
       <Typography
-        component="h2"
-        variant="solid"
+        component="h3"
+        level="h4"
         sx={{
           mb: 3,
         }}
       >
-        3. Confirmation
+        Confirm Order
       </Typography>
 
       <Box
