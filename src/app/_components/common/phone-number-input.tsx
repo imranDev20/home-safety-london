@@ -1,9 +1,11 @@
-import { Input, InputProps } from "@mui/joy";
+import { InputProps, Input } from "@mui/joy";
 import { forwardRef } from "react";
 
 const PhoneNumberInput = forwardRef<HTMLInputElement, InputProps>(
   (props, ref) => {
-    return <Input {...props} inputRef={ref} fullWidth name="phone" />;
+    return (
+      <Input {...props} ref={ref} fullWidth variant="outlined" name="phone" />
+    );
   }
 );
 
