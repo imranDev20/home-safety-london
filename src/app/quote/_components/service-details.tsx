@@ -21,9 +21,12 @@ import {
   Grid,
   Radio,
   RadioGroup,
+  Sheet,
   Stack,
   Typography,
+  radioClasses,
 } from "@mui/joy";
+import { CheckCircleRounded } from "@mui/icons-material";
 
 export default function ServiceDetails({
   order,
@@ -161,61 +164,73 @@ export default function ServiceDetails({
                 >
                   How many gas appliances does your property have?
                 </FormLabel>
-                <RadioGroup {...field}>
-                  <Radio
-                    value={1}
-                    disabled={!isGas}
-                    label={
-                      <Typography>
-                        1 Applicance -{" "}
-                        <Typography
-                          component="span"
-                          sx={{
-                            color: "primary.main",
-                            fontWeight: 600,
-                          }}
-                        >
-                          ( £80 )
-                        </Typography>
-                      </Typography>
-                    }
-                  />
-                  <Radio
-                    value={2}
-                    disabled={!isGas}
-                    label={
-                      <Typography>
-                        2 Applicances -{" "}
-                        <Typography
-                          component="span"
-                          sx={{
-                            color: "primary.main",
-                            fontWeight: 600,
-                          }}
-                        >
-                          ( £100 )
-                        </Typography>
-                      </Typography>
-                    }
-                  />
-                  <Radio
-                    value={3}
-                    disabled={!isGas}
-                    label={
-                      <Typography>
-                        3 Applicances -{" "}
-                        <Typography
-                          component="span"
-                          sx={{
-                            color: "primary.main",
-                            fontWeight: 600,
-                          }}
-                        >
-                          ( £120 )
-                        </Typography>
-                      </Typography>
-                    }
-                  />
+
+                <RadioGroup
+                  {...field}
+                  overlay
+                  name="platform"
+                  sx={{
+                    flexDirection: "row",
+                    gap: 2,
+                    opacity: isGas ? 1 : 0.5,
+                    [`& .${radioClasses.checked}`]: {
+                      [`& .${radioClasses.action}`]: {
+                        inset: -1,
+                        border: "3px solid",
+                        borderColor: "primary.500",
+                      },
+                    },
+                    [`& .${radioClasses.radio}`]: {
+                      display: "contents",
+                      "& > svg": {
+                        zIndex: 2,
+                        position: "absolute",
+                        top: "-8px",
+                        right: "-8px",
+                        bgcolor: "background.surface",
+                        borderRadius: "50%",
+                      },
+                    },
+                  }}
+                >
+                  {[
+                    { label: "1 appliance", value: "1", price: 120 },
+                    { label: "2 appliances", value: "2", price: 120 },
+                    { label: "3 appliances", value: "3", price: 120 },
+                  ].map((option) => (
+                    <Sheet
+                      key={option.value}
+                      variant="outlined"
+                      sx={{
+                        borderRadius: "md",
+                        boxShadow: "sm",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: 1.5,
+                        p: 2,
+                        minWidth: 120,
+                      }}
+                    >
+                      <Radio
+                        id={option.value}
+                        disabled={!isGas}
+                        value={option.value}
+                        checkedIcon={<CheckCircleRounded />}
+                      />
+
+                      <FormLabel
+                        htmlFor={option.value}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Typography>{option.label}</Typography>
+                        <Typography>£{option.price}</Typography>
+                      </FormLabel>
+                    </Sheet>
+                  ))}
                 </RadioGroup>
                 <HookFormError name="appliances" errors={errors} />
               </FormControl>
