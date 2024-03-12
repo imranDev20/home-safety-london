@@ -7,6 +7,7 @@ import LondonMap from "@/app/(home)/_components/london-map";
 import Services from "@/app/(home)/_components/services";
 import Sponser from "@/app/(home)/_components/sponser";
 import Testimonial from "@/app/(home)/_components/testimonial";
+import ContactForm from "./_components/contact-form";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
       <Sponser />
       <Testimonial />
       <Faq />
+      <ContactForm />
       <Footer />
     </main>
   );
