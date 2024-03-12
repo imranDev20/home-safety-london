@@ -6,11 +6,13 @@ import Services from "@/app/(home)/_components/services";
 import Sponser from "@/app/(home)/_components/sponser";
 import Testimonial from "@/app/(home)/_components/testimonial";
 import ContactForm from "./_components/contact-form";
+import About from "./_components/about";
 
 export default function Home() {
   return (
     <main>
       <Hero />
+      <About />
       <Services />
       <LondonMap />
       <Sponser />
