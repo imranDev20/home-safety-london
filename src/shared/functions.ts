@@ -4,6 +4,7 @@ export function snakeCaseToNormalText(snakeCaseString: string) {
 
 import { Order } from "@/types/misc";
 import dayjs from "dayjs";
+import { priceInfo } from "./constants";
 
 export function toTitleCase(input: string): string {
   const smallWords = [
@@ -64,4 +65,24 @@ export const getFutureTime = () => {
 
 export function calculateTotal(numbers: number[]): number {
   return numbers.reduce((total, num) => total + num, 0);
+}
+
+export function getServiceItems(order: Order) {
+  return Object.entries(order)
+    .filter(([key, value]) =>
+      priceInfo.map((price) => price.type).includes(key)
+    )
+    .filter(([key, value]) => value !== "")
+    .map(([key, value]) => ({
+      name: priceInfo.find((price) => price.type === key)?.service,
+      label: priceInfo.find((price) => price.type === key)?.label,
+      type: key,
+      quantity: priceInfo
+        .find((price) => price.type === key)
+        ?.price.find((val) => val.quantity === value)?.quantity,
+
+      price: priceInfo
+        .find((price) => price.type === key)
+        ?.price.find((val) => val.quantity === value)?.price,
+    }));
 }

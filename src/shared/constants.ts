@@ -145,3 +145,53 @@ export const SERVICES = [
   { id: 11, serviceName: "GAS", serviceDetail: "Repairs", Icon: GasSafteyIcon },
   { id: 12, serviceName: "Plumbing", serviceDetail: "", Icon: PlumbingIcon },
 ];
+
+export const priceInfo = [
+  {
+    service: "gas",
+    label: "Gas",
+    type: "appliances",
+    price: [
+      {
+        quantity: "1",
+        price: 80,
+      },
+      {
+        quantity: "2",
+        price: 100,
+      },
+      { quantity: "3", price: 120 },
+    ],
+  },
+  {
+    service: "eicr",
+    label: "EICR",
+    type: "fuseBoards",
+    price: [
+      {
+        quantity: "1",
+        price: 150,
+      },
+      {
+        quantity: "2",
+        price: 200,
+      },
+      { quantity: "3", price: "Call for Price" },
+    ],
+  },
+  {
+    service: "epc",
+    label: "EPC",
+    type: "bedRooms",
+    price: [
+      {
+        quantity: "0-3",
+        price: 80,
+      },
+      {
+        quantity: "4-6",
+        price: 100,
+      },
+    ],
+  },
+];

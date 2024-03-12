@@ -24,9 +24,11 @@ import {
   Sheet,
   Stack,
   Typography,
+  checkboxClasses,
   radioClasses,
+  useTheme,
 } from "@mui/joy";
-import { CheckCircleRounded } from "@mui/icons-material";
+import { CheckCircleRounded, CorporateFare, Home } from "@mui/icons-material";
 
 export default function ServiceDetails({
   order,
@@ -37,6 +39,7 @@ export default function ServiceDetails({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const theme = useTheme();
 
   const {
     control,
@@ -87,13 +90,91 @@ export default function ServiceDetails({
     >
       {/* <SnackbarProvider /> */}
       <Typography
-        component="h2"
-        level="h3"
+        component="h3"
+        level="h4"
         sx={{
-          mb: 5,
+          mb: 3,
         }}
       >
-        1. Service Details
+        Select Type
+      </Typography>
+
+      <RadioGroup
+        aria-labelledby="storage-label"
+        defaultValue="512GB"
+        size="lg"
+        sx={{ gap: 1.5, mb: 5 }}
+      >
+        {[
+          {
+            value: "Residential",
+            Icon: Home,
+          },
+          {
+            value: "Commercial",
+            Icon: CorporateFare,
+          },
+        ].map((option) => (
+          <Sheet
+            key={option.value}
+            sx={{
+              p: 2,
+              borderRadius: "md",
+              boxShadow: "sm",
+            }}
+          >
+            <Radio
+              label={
+                <Box
+                  sx={{
+                    display: "flex",
+                  }}
+                >
+                  <option.Icon
+                    sx={{
+                      mr: 1,
+                      color: theme.colorSchemes.light.palette.primary[600],
+                    }}
+                  />
+                  <Typography>{option.value}</Typography>
+                </Box>
+              }
+              overlay
+              disableIcon
+              value={option.value}
+              slotProps={{
+                label: ({ checked }) => ({
+                  sx: {
+                    fontWeight: "lg",
+                    fontSize: "md",
+                    color: checked ? "text.primary" : "text.secondary",
+                  },
+                }),
+                action: ({ checked }) => ({
+                  sx: (theme) => ({
+                    ...(checked && {
+                      "--variant-borderWidth": "2px",
+                      "&&": {
+                        // && to increase the specificity to win the base :hover styles
+                        borderColor: theme.vars.palette.primary[500],
+                      },
+                    }),
+                  }),
+                }),
+              }}
+            />
+          </Sheet>
+        ))}
+      </RadioGroup>
+
+      <Typography
+        component="h3"
+        level="h4"
+        sx={{
+          mb: 3,
+        }}
+      >
+        Select Services
       </Typography>
 
       <Stack spacing={5}>
@@ -109,30 +190,42 @@ export default function ServiceDetails({
             name="isGas"
             render={({ field: { value, onChange } }) => (
               <FormControl error={!!errors.isGas}>
-                <Checkbox
-                  checked={value}
-                  required={!isEicr && !isEpc}
-                  onChange={(e) => {
-                    onChange(e.target.checked);
-
-                    setValue("appliances", "");
-                    setOrder({ ...order, appliances: "" });
-
-                    clearErrors("isEicr");
-                    clearErrors("isEpc");
-                    clearErrors("isGas");
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                    width: 300,
+                    "& > div": { p: 2, borderRadius: "md", display: "flex" },
                   }}
-                  label={
-                    <Typography
-                      sx={{
-                        fontSize: 20,
-                        fontWeight: 500,
+                >
+                  <Sheet variant="outlined">
+                    <Checkbox
+                      checked={value}
+                      required={!isEicr && !isEpc}
+                      onChange={(e) => {
+                        onChange(e.target.checked);
+
+                        setValue("appliances", "");
+                        setOrder({ ...order, appliances: "" });
+
+                        clearErrors("isEicr");
+                        clearErrors("isEpc");
+                        clearErrors("isGas");
                       }}
-                    >
-                      Gas
-                    </Typography>
-                  }
-                />
+                      label={
+                        <Typography
+                          sx={{
+                            fontSize: 20,
+                            fontWeight: 500,
+                          }}
+                        >
+                          Gas
+                        </Typography>
+                      }
+                    />
+                  </Sheet>
+                </Box>
                 <HookFormError name="isGas" errors={errors} />
               </FormControl>
             )}
@@ -223,11 +316,12 @@ export default function ServiceDetails({
                         htmlFor={option.value}
                         sx={{
                           display: "flex",
+                          flexDirection: "column",
                           justifyContent: "center",
                         }}
                       >
                         <Typography>{option.label}</Typography>
-                        <Typography>£{option.price}</Typography>
+                        <Typography level="body-sm">£{option.price}</Typography>
                       </FormLabel>
                     </Sheet>
                   ))}
@@ -471,7 +565,7 @@ export default function ServiceDetails({
           />
         </Box>
 
-        <Box>
+        {/* <Box>
           <Controller
             name="tflZone"
             control={control}
@@ -587,7 +681,7 @@ export default function ServiceDetails({
                   />
                   <Radio value="other" label="Some other time" />
 
-                  {/* {time === "other" && (
+                  {time === "other" && (
                     <Controller
                       name="date"
                       rules={{
@@ -608,7 +702,7 @@ export default function ServiceDetails({
                         />
                       )}
                     />
-                  )} */}
+                  )}
                 </RadioGroup>
 
                 <HookFormError name="date" errors={errors} />
@@ -616,7 +710,7 @@ export default function ServiceDetails({
               </FormControl>
             )}
           />
-        </Box>
+        </Box> */}
       </Stack>
 
       <Box
