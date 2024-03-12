@@ -1,12 +1,11 @@
-import { priceInfo } from "@/shared/constants";
 import {
   calculateTotal,
   createQueryString,
   getServiceItems,
-  // getServiceItems,
 } from "@/shared/functions";
 import { Order } from "@/types/misc";
 import { Box, Button, Typography } from "@mui/joy";
+import { useTheme } from "@mui/joy/styles";
 import dayjs from "dayjs";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -14,6 +13,7 @@ import { useEffect } from "react";
 export default function Confirmation({ order }: { order: Order }) {
   const router = useRouter();
   const pathname = usePathname();
+  const theme = useTheme();
 
   useEffect(() => {
     if (!order.isPersonalStepComplete) {
@@ -38,8 +38,8 @@ export default function Confirmation({ order }: { order: Order }) {
       <Box
         sx={{
           border: "1px solid",
-          borderColor: "rgba(0, 0, 0, 0.12)",
-          borderRadius: 1,
+          borderColor: theme.colorSchemes.light.palette.divider,
+          borderRadius: 5,
         }}
       >
         <Box
@@ -72,9 +72,10 @@ export default function Confirmation({ order }: { order: Order }) {
               <Typography>{item.label}</Typography>
               <Typography
                 sx={{
-                  color: "text.secondary",
                   fontSize: 15,
                 }}
+                level="body-sm"
+                textColor="neutral.500"
               >
                 {item.quantity} x {item.type.toLowerCase()}
               </Typography>
@@ -87,8 +88,8 @@ export default function Confirmation({ order }: { order: Order }) {
       <Box
         sx={{
           border: "1px solid",
-          borderColor: "rgba(0, 0, 0, 0.12)",
-          borderRadius: 1,
+          borderColor: theme.colorSchemes.light.palette.divider,
+          borderRadius: 5,
           mt: 4,
         }}
       >
@@ -120,9 +121,10 @@ export default function Confirmation({ order }: { order: Order }) {
             <Typography>TFL Zone</Typography>
             <Typography
               sx={{
-                color: "text.secondary",
                 fontSize: 15,
               }}
+              level="body-sm"
+              textColor="neutral.500"
             >
               {order.tflZone === "inside_tfl_1"
                 ? "Inside TFL Zone 1"
@@ -154,9 +156,10 @@ export default function Confirmation({ order }: { order: Order }) {
             <Typography>Scheduled Time</Typography>
             <Typography
               sx={{
-                color: "text.secondary",
                 fontSize: 15,
               }}
+              level="body-sm"
+              textColor="neutral.500"
             >
               {order.time === "24"
                 ? "Within 24 Hours"
@@ -172,8 +175,8 @@ export default function Confirmation({ order }: { order: Order }) {
       <Box
         sx={{
           border: "1px solid",
-          borderColor: "rgba(0, 0, 0, 0.12)",
-          borderRadius: 1,
+          borderColor: theme.colorSchemes.light.palette.divider,
+          borderRadius: 5,
           mt: 4,
         }}
       >
@@ -184,17 +187,18 @@ export default function Confirmation({ order }: { order: Order }) {
             alignItems: "center",
             px: 2,
             py: 2,
-            border: "1px solid",
-            borderColor: "rgba(0, 0, 0, 0.12)",
+            borderBottom: "1px solid",
+            borderBottomColor: theme.colorSchemes.light.palette.divider,
           }}
         >
           <Box>
             <Typography>Subtotal</Typography>
             <Typography
               sx={{
-                color: "text.secondary",
                 fontSize: 15,
               }}
+              level="body-sm"
+              textColor="neutral.500"
             >
               Services + Additional
             </Typography>
@@ -226,9 +230,10 @@ export default function Confirmation({ order }: { order: Order }) {
             <Typography>VAT</Typography>
             <Typography
               sx={{
-                color: "text.secondary",
                 fontSize: 15,
               }}
+              level="body-sm"
+              textColor="neutral.500"
             >
               20% of Total
             </Typography>
@@ -251,8 +256,8 @@ export default function Confirmation({ order }: { order: Order }) {
       <Box
         sx={{
           border: "1px solid",
-          borderColor: "rgba(0, 0, 0, 0.12)",
-          borderRadius: 1,
+          borderColor: theme.colorSchemes.light.palette.divider,
+          borderRadius: 5,
           mt: 4,
         }}
       >
@@ -263,17 +268,16 @@ export default function Confirmation({ order }: { order: Order }) {
             alignItems: "center",
             px: 2,
             py: 2,
-            border: "1px solid",
-            borderColor: "rgba(0, 0, 0, 0.12)",
           }}
         >
           <Box>
             <Typography>Total</Typography>
             <Typography
               sx={{
-                color: "text.secondary",
                 fontSize: 15,
               }}
+              level="body-sm"
+              textColor="neutral.500"
             >
               Including VAT
             </Typography>
