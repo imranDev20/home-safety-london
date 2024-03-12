@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
-import { createQueryString } from "@/shared/functions";
+import { createQueryString, getServiceItems } from "@/shared/functions";
+import dayjs from "dayjs";
+import { Box, CircularProgress, Typography } from "@mui/joy";
 
 export default function Payments({
   activeStep,
@@ -65,8 +67,8 @@ export default function Payments({
             price: order.time === "24" ? 100 : order.time === "48" ? 40 : 0,
           },
 
-          // items: getServiceItems(order),
-          // ...(order.date ? { date: dayjs(order.date).format() } : null),
+          items: getServiceItems(order),
+          ...(order.date ? { date: dayjs(order.date).format() } : null),
         };
 
         const response = await axios.post(
@@ -81,6 +83,31 @@ export default function Payments({
 
     fetchClientSecret();
   }, [order]);
+
+  if (!stripePromise || !clientSecret) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          height: 300,
+        }}
+      >
+        <CircularProgress size="lg" thickness={3} />
+        <Typography
+          sx={{
+            mt: 3,
+            fontWeight: 500,
+            fontSize: 20,
+          }}
+        >
+          Loading
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <>

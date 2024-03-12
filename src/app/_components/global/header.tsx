@@ -16,7 +16,14 @@ import {
   useTheme,
 } from "@mui/joy";
 
-import { Email, HomeRounded, Phone, WhatsApp } from "@mui/icons-material";
+import {
+  Email,
+  HomeRounded,
+  Login,
+  Person,
+  Phone,
+  WhatsApp,
+} from "@mui/icons-material";
 import { CATEGORIES } from "@/shared/constants";
 import Link from "next/link";
 

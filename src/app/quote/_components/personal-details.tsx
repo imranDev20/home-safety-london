@@ -7,19 +7,37 @@ import {
   Chip,
   CircularProgress,
   Divider,
+  FormControl,
   Grid,
   Input,
+  InputProps,
   Typography,
 } from "@mui/joy";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import PhoneInput from "react-phone-number-input/react-hook-form-input";
+import PhoneInput from "react-phone-number-input/input";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { isValid } from "postcode";
-import PhoneNumberInput from "@/app/_components/common/phone-number-input";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Order } from "@/types/misc";
 import { usePathname, useRouter } from "next/navigation";
 import { createQueryString } from "@/shared/functions";
+// import PhoneNumberInput from "@/app/_components/common/phone-number-input";
+
+const PhoneInputAdapter = React.forwardRef<InputProps, any>(
+  function PhoneInputAdapter(props, ref) {
+    const { onChange, ...other } = props;
+
+    return (
+      <PhoneInput
+        defaultCountry="GB"
+        international={false}
+        placeholder="Enter phone number"
+        {...other}
+        onChange={(value) => onChange(value)}
+      />
+    );
+  }
+);
 
 export default function PersonalDetails({
   order,
@@ -69,7 +87,7 @@ export default function PersonalDetails({
           height: 300,
         }}
       >
-        <CircularProgress size="lg" />
+        <CircularProgress size="lg" thickness={3} />
         <Typography
           sx={{
             mt: 3,
@@ -86,13 +104,13 @@ export default function PersonalDetails({
   return (
     <>
       <Typography
-        component="h2"
-        level="title-md"
+        component="h3"
+        level="h4"
         sx={{
           mb: 3,
         }}
       >
-        2. Personal Details
+        Personal Details
       </Typography>
 
       <Grid
@@ -109,15 +127,18 @@ export default function PersonalDetails({
               required: "Name can't be empty",
             }}
             render={({ field }) => (
-              <Input
-                {...field}
-                fullWidth
-                variant="outlined"
-                placeholder="Your name"
-              />
+              <FormControl error={!!errors.name}>
+                <Input
+                  {...field}
+                  fullWidth
+                  size="lg"
+                  variant="outlined"
+                  placeholder="Your name"
+                />
+                <HookFormError name="name" errors={errors} />
+              </FormControl>
             )}
           />
-          <HookFormError name="name" errors={errors} />
         </Grid>
         <Grid xs={12}>
           <Controller
@@ -131,26 +152,24 @@ export default function PersonalDetails({
               },
             }}
             render={({ field }) => (
-              <Input
-                {...field}
-                fullWidth
-                variant="outlined"
-                placeholder="Your email address"
-              />
+              <FormControl error={!!errors.email}>
+                <Input
+                  {...field}
+                  fullWidth
+                  size="lg"
+                  variant="outlined"
+                  placeholder="Your email address"
+                />
+                <HookFormError name="email" errors={errors} />
+              </FormControl>
             )}
           />
-          <HookFormError name="email" errors={errors} />
         </Grid>
 
         <Grid xs={12}>
-          <PhoneInput
-            name="phone"
+          <Controller
             control={control}
-            defaultCountry="GB"
-            inputComponent={PhoneNumberInput}
-            placeholder="Your phone number"
-            variant="outlined"
-            country="GB"
+            name="phone"
             rules={{
               required: "You did not provide a phone number",
               validate: (value: string) => {
@@ -159,8 +178,22 @@ export default function PersonalDetails({
                 return valid || `Your provided phone number is not valid`;
               },
             }}
+            render={({ field }) => (
+              <FormControl error={!!errors.phone}>
+                <Input
+                  size="lg"
+                  {...field}
+                  placeholder="Phone number"
+                  slotProps={{
+                    input: {
+                      component: PhoneInputAdapter,
+                    },
+                  }}
+                />
+                <HookFormError name="phone" errors={errors} />
+              </FormControl>
+            )}
           />
-          <HookFormError name="phone" errors={errors} />
         </Grid>
 
         <Grid xs={12}>
@@ -169,6 +202,8 @@ export default function PersonalDetails({
               sx={{
                 fontWeight: 500,
                 fontSize: 16,
+                px: 2,
+                py: 0.5,
               }}
             >
               Address
@@ -184,15 +219,18 @@ export default function PersonalDetails({
               required: "House & Street can't be empty",
             }}
             render={({ field }) => (
-              <Input
-                {...field}
-                fullWidth
-                variant="outlined"
-                placeholder="Your house number and street name"
-              />
+              <FormControl error={!!errors.house}>
+                <Input
+                  size="lg"
+                  {...field}
+                  fullWidth
+                  variant="outlined"
+                  placeholder="Your house number and street name"
+                />
+                <HookFormError name="house" errors={errors} />
+              </FormControl>
             )}
           />
-          <HookFormError name="house" errors={errors} />
         </Grid>
 
         <Grid xs={6}>
@@ -206,13 +244,16 @@ export default function PersonalDetails({
               },
             }}
             render={({ field: { value, onChange } }) => (
-              <Input
-                value={value}
-                onChange={(e) => onChange(e.target.value.toUpperCase())}
-                fullWidth
-                variant="outlined"
-                placeholder="Your post code"
-              />
+              <FormControl error={!!errors.postCode}>
+                <Input
+                  size="lg"
+                  value={value}
+                  onChange={(e) => onChange(e.target.value.toUpperCase())}
+                  fullWidth
+                  variant="outlined"
+                  placeholder="Your post code"
+                />
+              </FormControl>
             )}
           />
           <HookFormError name="postCode" errors={errors} />
@@ -222,16 +263,19 @@ export default function PersonalDetails({
             control={control}
             name="city"
             render={({ field }) => (
-              <Input
-                {...field}
-                disabled
-                fullWidth
-                placeholder="City"
-                variant="outlined"
-              />
+              <FormControl error={!!errors.city}>
+                <Input
+                  {...field}
+                  size="lg"
+                  disabled
+                  fullWidth
+                  placeholder="City"
+                  variant="outlined"
+                />
+                <HookFormError name="city" errors={errors} />
+              </FormControl>
             )}
           />
-          <HookFormError name="city" errors={errors} />
         </Grid>
 
         <Grid
