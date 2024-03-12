@@ -1,7 +1,7 @@
 import Lottie from "lottie-react";
 import successAnimation from "@/assets/success-animation.json";
 import errorAnimation from "@/assets/error-animation-2.json";
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Typography } from "@mui/joy";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { createQueryString } from "@/shared/functions";
@@ -111,9 +111,11 @@ export default function Outcome() {
             <Lottie animationData={successAnimation} loop={false} />
           </Box>
           <Typography
-            component="h2"
+            component="h1"
+            level="h3"
             sx={{
               textAlign: "center",
+              mb: 2,
             }}
           >
             {message.text}
@@ -126,11 +128,11 @@ export default function Outcome() {
             }}
           >
             Thank you for your order. An email containing your receipt has been
-            sent. <br /> Create an account using{" "}
+            sent. Create an account using{" "}
             <Typography
               component="span"
               sx={{
-                fontWeight: 500,
+                fontWeight: 600,
               }}
             >
               {info.email}
@@ -140,9 +142,7 @@ export default function Outcome() {
 
           <Typography
             sx={{
-              color: "text.primary",
-
-              fontSize: 18,
+              fontSize: 16,
               mt: 2,
             }}
           >
@@ -158,8 +158,7 @@ export default function Outcome() {
           </Typography>
           <Typography
             sx={{
-              color: "text.primary",
-              fontSize: 18,
+              fontSize: 16,
             }}
           >
             Order ID:{" "}
@@ -185,7 +184,7 @@ export default function Outcome() {
             height: 300,
           }}
         >
-          <CircularProgress size="lg" />
+          <CircularProgress size="lg" thickness={3} />
           <Typography
             sx={{
               mt: 3,
@@ -215,7 +214,7 @@ export default function Outcome() {
             <Lottie animationData={errorAnimation} loop={false} />
           </Box>
           <Typography
-            component="h2"
+            component="h1"
             sx={{
               textAlign: "center",
             }}
@@ -235,7 +234,6 @@ export default function Outcome() {
           </Typography>
 
           <Button
-            variant="outlined"
             onClick={() => {
               router.push(
                 pathname + "?" + createQueryString("active_step", "4")

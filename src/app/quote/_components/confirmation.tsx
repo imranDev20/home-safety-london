@@ -4,7 +4,7 @@ import {
   getServiceItems,
 } from "@/shared/functions";
 import { Order } from "@/types/misc";
-import { Box, Button, Typography } from "@mui/joy";
+import { Box, Button, CircularProgress, Typography } from "@mui/joy";
 import { useTheme } from "@mui/joy/styles";
 import dayjs from "dayjs";
 import { usePathname, useRouter } from "next/navigation";
@@ -22,6 +22,31 @@ export default function Confirmation({ order }: { order: Order }) {
   }, [order.isPersonalStepComplete, pathname, router]);
 
   const items = getServiceItems(order);
+
+  if (!order.isServiceStepComplete && !order.isPersonalStepComplete) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          height: 300,
+        }}
+      >
+        <CircularProgress size="lg" thickness={3} />
+        <Typography
+          sx={{
+            mt: 3,
+            fontWeight: 500,
+            fontSize: 20,
+          }}
+        >
+          Loading
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <>

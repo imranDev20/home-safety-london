@@ -8,6 +8,7 @@ import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import { createQueryString, getServiceItems } from "@/shared/functions";
 import dayjs from "dayjs";
+import { Box, CircularProgress, Typography } from "@mui/joy";
 
 export default function Payments({
   activeStep,
@@ -82,6 +83,31 @@ export default function Payments({
 
     fetchClientSecret();
   }, [order]);
+
+  if (!stripePromise || !clientSecret) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          height: 300,
+        }}
+      >
+        <CircularProgress size="lg" thickness={3} />
+        <Typography
+          sx={{
+            mt: 3,
+            fontWeight: 500,
+            fontSize: 20,
+          }}
+        >
+          Loading
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <>

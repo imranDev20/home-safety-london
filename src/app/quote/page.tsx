@@ -6,13 +6,14 @@ import PageHeader from "../_components/common/page-header";
 import BackgroundImage from "@/images/about-bg.jpeg";
 import Paragraph from "../_components/common/paragraph";
 import RightSidebarStepper from "./_components/right-sidebar-stepper";
-import ServiceDetails from "./_components/service-details";
+// import ServiceDetails from "./_components/service-details";
 import PersonalDetails from "./_components/personal-details";
 import { Order } from "@/types/misc";
 import { useSearchParams } from "next/navigation";
 import Payments from "./_components/payments";
 import Confirmation from "./_components/confirmation";
 import Heading from "../_components/common/heading";
+import ServiceDetails from "./_components/service-details";
 
 export default function QuotePage() {
   const searchParams = useSearchParams();
@@ -86,9 +87,10 @@ export default function QuotePage() {
 
                 {activeStep === 3 ? <Confirmation order={order} /> : null}
 
-                {activeStep === 4 ? (
-                  <Payments activeStep={activeStep} order={order} />
-                ) : null}
+                {order.isPersonalStepComplete &&
+                  order.isServiceStepComplete && (
+                    <Payments activeStep={activeStep} order={order} />
+                  )}
               </CardContent>
             </Card>
           </Grid>
