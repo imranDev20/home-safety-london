@@ -19,6 +19,7 @@ export default function About() {
       <Grid container spacing={4}>
         <Grid xs={6}>
           <Image
+            style={{ borderRadius: 20, overflow: "hidden" }}
             width={550}
             height={500}
             src={electric}
