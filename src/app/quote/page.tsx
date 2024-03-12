@@ -13,6 +13,7 @@ import { useSearchParams } from "next/navigation";
 import Payments from "./_components/payments";
 import Confirmation from "./_components/confirmation";
 import Heading from "../_components/common/heading";
+import ServiceDetails from "./_components/service-details";
 
 export default function QuotePage() {
   const searchParams = useSearchParams();
@@ -75,15 +76,15 @@ export default function QuotePage() {
           }}
         >
           <Grid md={8}>
-            <Card>
+            <Card variant="plain">
               <CardContent
                 sx={{
                   p: 3,
                 }}
               >
-                {/* {activeStep === 1 || Number.isNaN(activeStep) ? (
+                {activeStep === 1 || Number.isNaN(activeStep) ? (
                   <ServiceDetails order={order} setOrder={setOrder} />
-                ) : null} */}
+                ) : null}
                 {activeStep === 2 && order.isServiceStepComplete ? (
                   <PersonalDetails order={order} setOrder={setOrder} />
                 ) : null}
@@ -103,7 +104,7 @@ export default function QuotePage() {
           </Grid>
 
           <Grid md={4}>
-            <RightSidebarStepper activeStep={activeStep} />
+            <RightSidebarStepper />
           </Grid>
         </Grid>
       </Container>
