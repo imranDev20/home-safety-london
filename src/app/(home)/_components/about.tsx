@@ -5,6 +5,14 @@ import electric from "../../../images/eletric.jpg";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PhoneIcon from "@mui/icons-material/Phone";
 
+const categories = [
+  { text: "Landlords" },
+  { text: "Homeowners" },
+  { text: "Homebuyers" },
+  { text: "Home sellers" },
+  { text: "Estate Agents" },
+];
+
 export default function About() {
   return (
     <Container sx={{ py: 10 }}>
@@ -29,36 +37,15 @@ export default function About() {
             </Typography>
 
             <Box sx={{ py: 2 }}>
-              <Typography
-                sx={{ display: "flex", alignItems: "center", mb: "5px" }}
-              >
-                <CheckCircleIcon sx={{ color: "#0b6bcb", mr: 2 }} />
-                <Typography component="span">Landlords</Typography>
-              </Typography>
-              <Typography
-                sx={{ display: "flex", alignItems: "center", mb: "5px" }}
-              >
-                <CheckCircleIcon sx={{ color: "#0b6bcb", mr: 2 }} />
-                <Typography component="span">Homeowners</Typography>
-              </Typography>
-              <Typography
-                sx={{ display: "flex", alignItems: "center", mb: "5px" }}
-              >
-                <CheckCircleIcon sx={{ color: "#0b6bcb", mr: 2 }} />
-                <Typography component="span"> Homebuyers</Typography>
-              </Typography>
-              <Typography
-                sx={{ display: "flex", alignItems: "center", mb: "5px" }}
-              >
-                <CheckCircleIcon sx={{ color: "#0b6bcb", mr: 2 }} />
-                <Typography component="span">Home sellers</Typography>
-              </Typography>
-              <Typography
-                sx={{ display: "flex", alignItems: "center", mb: "5px" }}
-              >
-                <CheckCircleIcon sx={{ color: "#0b6bcb", mr: 2 }} />
-                <Typography component="span">Estate Agents</Typography>
-              </Typography>
+              {categories.map((category, index) => (
+                <Typography
+                  key={index}
+                  sx={{ display: "flex", alignItems: "center", mb: "5px" }}
+                >
+                  <CheckCircleIcon sx={{ color: "#0b6bcb", mr: 2 }} />
+                  <Typography component="span">{category.text}</Typography>
+                </Typography>
+              ))}
             </Box>
 
             <Typography sx={{ pb: 2 }}>
