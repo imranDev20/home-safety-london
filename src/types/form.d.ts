@@ -1,6 +1,7 @@
 import { Dayjs } from "dayjs";
 
 export type ServiceFormInput = {
+  propertyType: "residential" | "commercial";
   isGas: boolean;
   isEicr: boolean;
   isEpc: boolean;
