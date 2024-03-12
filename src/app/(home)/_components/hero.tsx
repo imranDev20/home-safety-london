@@ -9,6 +9,7 @@ import { SERVICES } from "@/shared/constants";
 import Image from "next/image";
 import BackgroundImage from "@/images/london-view.jpg";
 import { theme } from "@/shared/theme";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -48,7 +49,7 @@ export default function Hero() {
         <Container>
           <Grid container spacing={5}>
             <Grid xs={8}>
-              <Box>
+              <Box sx={{ position: "relative" }}>
                 <Grid container spacing={3}>
                   {SERVICES.map((service) => (
                     <Grid xs={3} key={service.id}>
@@ -113,6 +114,8 @@ export default function Hero() {
                       variant="outlined"
                       color="primary"
                       size="lg"
+                      component={Link}
+                      href="/quote?property_type=residential"
                     >
                       Residential Property
                     </Button>
@@ -121,6 +124,8 @@ export default function Hero() {
                       variant="outlined"
                       color="primary"
                       size="lg"
+                      component={Link}
+                      href="/quote?property_type=commercial"
                     >
                       Commercial Property
                     </Button>

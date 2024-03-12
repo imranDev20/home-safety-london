@@ -1,94 +1,102 @@
-import Box from "@mui/joy/Box";
+import * as React from "react";
 import Stepper from "@mui/joy/Stepper";
-import Step from "@mui/joy/Step";
-import Button from "@mui/joy/Button";
-import Typography from "@mui/joy/Typography";
-import { Card, CardContent, Divider, Grid } from "@mui/joy";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import Step, { stepClasses } from "@mui/joy/Step";
+import StepIndicator, { stepIndicatorClasses } from "@mui/joy/StepIndicator";
+import Typography, { typographyClasses } from "@mui/joy/Typography";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import AppRegistrationRoundedIcon from "@mui/icons-material/AppRegistrationRounded";
+import { Card, CardContent } from "@mui/joy";
 
-const steps = [
-  {
-    label: "Service Details",
-    optional: "Fitst Step",
-  },
-  {
-    label: "Personal Details",
-    optional: "Second Step",
-  },
-  {
-    label: "Confirmation",
-    optional: "Third Step",
-  },
-  {
-    label: "Payment Details",
-    optional: "Last Step",
-  },
-];
-
-export default function RightSidebarStepper({
-  activeStep,
-}: {
-  activeStep: number;
-}) {
-  const handleNext = () => {};
-
-  const handleBack = () => {};
-
-  console.log(activeStep);
-
+export default function CompanyRegistrationStepper() {
   return (
-    <Card>
+    <Card variant="plain" size="lg">
       <CardContent>
-        <Box>
-          <Typography component="h3">Order Completion</Typography>
-          <Divider
-            sx={{
-              mb: 3,
-            }}
-          />
-          <Stepper orientation="vertical">
-            {steps.map((step) => (
-              <Step key={step.label}>
-                <Typography variant="solid">{step.optional}</Typography>
-                <Typography
-                  component="h4"
-                  sx={{
-                    fontSize: 18,
-                    fontWeight: 500,
-                  }}
-                >
-                  {step.label}
-                </Typography>
-              </Step>
-            ))}
-          </Stepper>
+        <Typography
+          level="h4"
+          sx={{
+            mb: 3,
+          }}
+        >
+          Booking Steps
+        </Typography>
 
-          <Grid container spacing={3} mt={3}>
-            <Grid xs={6}>
-              <Button
-                disabled={activeStep === 1}
-                fullWidth
-                startDecorator={<ChevronLeft />}
-                variant="outlined"
-                onClick={handleBack}
-              >
-                Back
-              </Button>
-            </Grid>
-
-            <Grid xs={6}>
-              <Button
-                fullWidth
-                type="submit"
-                variant="outlined"
-                endDecorator={<ChevronRight />}
-                onClick={handleNext}
-              >
-                {activeStep === 3 ? "Send" : "Next"}
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
+        <Stepper
+          orientation="vertical"
+          sx={{
+            "--Stepper-verticalGap": "2.5rem",
+            "--StepIndicator-size": "2.5rem",
+            "--Step-gap": "1rem",
+            "--Step-connectorInset": "0.5rem",
+            "--Step-connectorRadius": "1rem",
+            "--Step-connectorThickness": "4px",
+            "--joy-palette-success-solidBg": "var(--joy-palette-success-400)",
+            [`& .${stepClasses.completed}`]: {
+              "&::after": { bgcolor: "success.solidBg" },
+            },
+            [`& .${stepClasses.active}`]: {
+              [`& .${stepIndicatorClasses.root}`]: {
+                border: "4px solid",
+                borderColor: "#fff",
+                boxShadow: (theme) =>
+                  `0 0 0 1px ${theme.vars.palette.primary[500]}`,
+              },
+            },
+            [`& .${stepClasses.disabled} *`]: {
+              color: "neutral.softDisabledColor",
+            },
+            [`& .${typographyClasses["title-sm"]}`]: {
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+              fontSize: "10px",
+            },
+          }}
+        >
+          <Step
+            completed
+            indicator={
+              <StepIndicator variant="solid" color="success">
+                <CheckRoundedIcon />
+              </StepIndicator>
+            }
+          >
+            <div>
+              <Typography level="title-sm">Step 1</Typography>
+              Basic Details
+            </div>
+          </Step>
+          <Step
+            completed
+            indicator={
+              <StepIndicator variant="solid" color="success">
+                <CheckRoundedIcon />
+              </StepIndicator>
+            }
+          >
+            <div>
+              <Typography level="title-sm">Step 2</Typography>
+              Company Details
+            </div>
+          </Step>
+          <Step
+            active
+            indicator={
+              <StepIndicator variant="solid" color="primary">
+                <AppRegistrationRoundedIcon />
+              </StepIndicator>
+            }
+          >
+            <div>
+              <Typography level="title-sm">Step 3</Typography>
+              Subscription plan
+            </div>
+          </Step>
+          <Step disabled indicator={<StepIndicator>3</StepIndicator>}>
+            <div>
+              <Typography level="title-sm">Step 4</Typography>
+              Payment details
+            </div>
+          </Step>
+        </Stepper>
       </CardContent>
     </Card>
   );

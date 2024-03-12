@@ -1,6 +1,16 @@
 "use client";
 
 import HookFormError from "@/app/_components/common/hook-form-error";
+
+import { Dispatch, SetStateAction } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
+import { createQueryString, isObjectEmpty } from "@/shared/functions";
+import { ServiceFormInput } from "@/types/form";
+import { Order } from "@/types/misc";
+import { usePathname, useRouter } from "next/navigation";
+// import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 import {
   Box,
   Button,
@@ -11,17 +21,12 @@ import {
   Grid,
   Radio,
   RadioGroup,
+  Sheet,
+  Stack,
   Typography,
-} from "@mui/material";
-import { Dispatch, SetStateAction } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-
-import { createQueryString, isObjectEmpty } from "@/shared/functions";
-import { ServiceFormInput } from "@/types/form";
-import { Order } from "@/types/misc";
-import { usePathname, useRouter } from "next/navigation";
-// import { DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
+  radioClasses,
+} from "@mui/joy";
+import { CheckCircleRounded } from "@mui/icons-material";
 
 export default function ServiceDetails({
   order,
@@ -42,6 +47,7 @@ export default function ServiceDetails({
     formState: { errors },
   } = useForm<ServiceFormInput>({
     defaultValues: {
+      propertyType: "residential",
       isGas: order.isGas || false,
       isEicr: order.isEicr || false,
       isEpc: order.isEpc || false,
@@ -58,6 +64,7 @@ export default function ServiceDetails({
   const isEicr = watch("isEicr");
   const isEpc = watch("isEpc");
   const time = watch("time");
+  const propertyType = watch("propertyType");
 
   const handleServiceDetailsSubmit: SubmitHandler<ServiceFormInput> = (
     data
@@ -81,16 +88,16 @@ export default function ServiceDetails({
       {/* <SnackbarProvider /> */}
       <Typography
         component="h2"
-        level="title-lg"
+        level="h3"
         sx={{
-          mb: 3,
+          mb: 5,
         }}
       >
         1. Service Details
       </Typography>
 
-      <Grid container spacing={3}>
-        <Grid xs={12}>
+      <Stack spacing={5}>
+        <Box>
           <Controller
             control={control}
             rules={{
@@ -101,38 +108,35 @@ export default function ServiceDetails({
             }}
             name="isGas"
             render={({ field: { value, onChange } }) => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={value}
-                    required={!isEicr && !isEpc}
-                    onChange={(e) => {
-                      onChange(e.target.checked);
+              <FormControl error={!!errors.isGas}>
+                <Checkbox
+                  checked={value}
+                  required={!isEicr && !isEpc}
+                  onChange={(e) => {
+                    onChange(e.target.checked);
 
-                      setValue("appliances", "");
-                      setOrder({ ...order, appliances: "" });
+                    setValue("appliances", "");
+                    setOrder({ ...order, appliances: "" });
 
-                      clearErrors("isEicr");
-                      clearErrors("isEpc");
-                      clearErrors("isGas");
-                    }}
-                  />
-                }
-                label={
-                  <Typography
-                    sx={{
-                      fontSize: 20,
-                      fontWeight: 500,
-                    }}
-                  >
-                    Gas
-                  </Typography>
-                }
-              />
+                    clearErrors("isEicr");
+                    clearErrors("isEpc");
+                    clearErrors("isGas");
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        fontSize: 20,
+                        fontWeight: 500,
+                      }}
+                    >
+                      Gas
+                    </Typography>
+                  }
+                />
+                <HookFormError name="isGas" errors={errors} />
+              </FormControl>
             )}
           />
-
-          <HookFormError name="isGas" errors={errors} />
 
           <Controller
             control={control}
@@ -146,10 +150,10 @@ export default function ServiceDetails({
             render={({ field }) => (
               <FormControl
                 disabled={!isGas}
-                fullWidth
                 sx={{
                   mt: 1,
                 }}
+                error={!!errors.appliances}
               >
                 <FormLabel
                   sx={{
@@ -160,69 +164,81 @@ export default function ServiceDetails({
                 >
                   How many gas appliances does your property have?
                 </FormLabel>
-                <RadioGroup {...field}>
-                  <FormControlLabel
-                    value={1}
-                    control={<Radio />}
-                    label={
-                      <Typography>
-                        1 Applicance -{" "}
-                        <Typography
-                          component="span"
-                          sx={{
-                            color: "primary.main",
-                            fontWeight: 600,
-                          }}
-                        >
-                          ( £80 )
-                        </Typography>
-                      </Typography>
-                    }
-                  />
-                  <FormControlLabel
-                    value={2}
-                    control={<Radio />}
-                    label={
-                      <Typography>
-                        2 Applicances -{" "}
-                        <Typography
-                          component="span"
-                          sx={{
-                            color: "primary.main",
-                            fontWeight: 600,
-                          }}
-                        >
-                          ( £100 )
-                        </Typography>
-                      </Typography>
-                    }
-                  />
-                  <FormControlLabel
-                    value={3}
-                    control={<Radio />}
-                    label={
-                      <Typography>
-                        3 Applicances -{" "}
-                        <Typography
-                          component="span"
-                          sx={{
-                            color: "primary.main",
-                            fontWeight: 600,
-                          }}
-                        >
-                          ( £120 )
-                        </Typography>
-                      </Typography>
-                    }
-                  />
+
+                <RadioGroup
+                  {...field}
+                  overlay
+                  name="platform"
+                  sx={{
+                    flexDirection: "row",
+                    gap: 2,
+                    opacity: isGas ? 1 : 0.5,
+                    [`& .${radioClasses.checked}`]: {
+                      [`& .${radioClasses.action}`]: {
+                        inset: -1,
+                        border: "3px solid",
+                        borderColor: "primary.500",
+                      },
+                    },
+                    [`& .${radioClasses.radio}`]: {
+                      display: "contents",
+                      "& > svg": {
+                        zIndex: 2,
+                        position: "absolute",
+                        top: "-8px",
+                        right: "-8px",
+                        bgcolor: "background.surface",
+                        borderRadius: "50%",
+                      },
+                    },
+                  }}
+                >
+                  {[
+                    { label: "1 appliance", value: "1", price: 120 },
+                    { label: "2 appliances", value: "2", price: 120 },
+                    { label: "3 appliances", value: "3", price: 120 },
+                  ].map((option) => (
+                    <Sheet
+                      key={option.value}
+                      variant="outlined"
+                      sx={{
+                        borderRadius: "md",
+                        boxShadow: "sm",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: 1.5,
+                        p: 2,
+                        minWidth: 120,
+                      }}
+                    >
+                      <Radio
+                        id={option.value}
+                        disabled={!isGas}
+                        value={option.value}
+                        checkedIcon={<CheckCircleRounded />}
+                      />
+
+                      <FormLabel
+                        htmlFor={option.value}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Typography>{option.label}</Typography>
+                        <Typography>£{option.price}</Typography>
+                      </FormLabel>
+                    </Sheet>
+                  ))}
                 </RadioGroup>
+                <HookFormError name="appliances" errors={errors} />
               </FormControl>
             )}
           />
-          <HookFormError name="appliances" errors={errors} />
-        </Grid>
+        </Box>
 
-        <Grid xs={12}>
+        <Box>
           <Controller
             name="isEicr"
             rules={{
@@ -233,37 +249,35 @@ export default function ServiceDetails({
             }}
             control={control}
             render={({ field: { value, onChange } }) => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={value}
-                    required={!isGas && !isEpc}
-                    onChange={(e) => {
-                      onChange(e.target.checked);
+              <FormControl error={!!errors.isEicr}>
+                <Checkbox
+                  checked={value}
+                  required={!isGas && !isEpc}
+                  onChange={(e) => {
+                    onChange(e.target.checked);
 
-                      setValue("fuseBoards", "");
-                      setOrder({ ...order, fuseBoards: "" });
+                    setValue("fuseBoards", "");
+                    setOrder({ ...order, fuseBoards: "" });
 
-                      clearErrors("isEicr");
-                      clearErrors("isEpc");
-                      clearErrors("isGas");
-                    }}
-                  />
-                }
-                label={
-                  <Typography
-                    sx={{
-                      fontSize: 20,
-                      fontWeight: 500,
-                    }}
-                  >
-                    EICR
-                  </Typography>
-                }
-              />
+                    clearErrors("isEicr");
+                    clearErrors("isEpc");
+                    clearErrors("isGas");
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        fontSize: 20,
+                        fontWeight: 500,
+                      }}
+                    >
+                      EICR
+                    </Typography>
+                  }
+                />
+                <HookFormError name="isEicr" errors={errors} />
+              </FormControl>
             )}
           />
-          <HookFormError name="isEicr" errors={errors} />
 
           <Controller
             name="fuseBoards"
@@ -275,7 +289,7 @@ export default function ServiceDetails({
               },
             }}
             render={({ field }) => (
-              <FormControl fullWidth sx={{ mt: 1 }} disabled={!isEicr}>
+              <FormControl sx={{ mt: 1 }} disabled={!isEicr}>
                 <FormLabel
                   sx={{
                     fontSize: 18,
@@ -286,9 +300,9 @@ export default function ServiceDetails({
                   How many Fuse Boards does your property have?
                 </FormLabel>
                 <RadioGroup {...field}>
-                  <FormControlLabel
+                  <Radio
+                    disabled={!isEicr}
                     value={1}
-                    control={<Radio />}
                     label={
                       <Typography>
                         1 Unit -{" "}
@@ -304,9 +318,10 @@ export default function ServiceDetails({
                       </Typography>
                     }
                   />
-                  <FormControlLabel
+
+                  <Radio
+                    disabled={!isEicr}
                     value={2}
-                    control={<Radio />}
                     label={
                       <Typography>
                         2 Units -{" "}
@@ -322,9 +337,9 @@ export default function ServiceDetails({
                       </Typography>
                     }
                   />
-                  <FormControlLabel
+                  <Radio
+                    disabled={!isEicr}
                     value={3}
-                    control={<Radio />}
                     label={
                       <Typography>
                         3 Units -{" "}
@@ -341,13 +356,13 @@ export default function ServiceDetails({
                     }
                   />
                 </RadioGroup>
+                <HookFormError name="fuseBoards" errors={errors} />
               </FormControl>
             )}
           />
-          <HookFormError name="fuseBoards" errors={errors} />
-        </Grid>
+        </Box>
 
-        <Grid xs={12}>
+        <Box>
           <Controller
             control={control}
             name="isEpc"
@@ -358,37 +373,35 @@ export default function ServiceDetails({
               },
             }}
             render={({ field: { value, onChange } }) => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={value}
-                    required={!isEicr && !isGas}
-                    onChange={(e) => {
-                      onChange(e.target.checked);
+              <FormControl>
+                <Checkbox
+                  checked={value}
+                  required={!isEicr && !isGas}
+                  onChange={(e) => {
+                    onChange(e.target.checked);
 
-                      setValue("bedRooms", "");
-                      setOrder({ ...order, bedRooms: "" });
+                    setValue("bedRooms", "");
+                    setOrder({ ...order, bedRooms: "" });
 
-                      clearErrors("isEicr");
-                      clearErrors("isEpc");
-                      clearErrors("isGas");
-                    }}
-                  />
-                }
-                label={
-                  <Typography
-                    sx={{
-                      fontSize: 20,
-                      fontWeight: 500,
-                    }}
-                  >
-                    EPC
-                  </Typography>
-                }
-              />
+                    clearErrors("isEicr");
+                    clearErrors("isEpc");
+                    clearErrors("isGas");
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        fontSize: 20,
+                        fontWeight: 500,
+                      }}
+                    >
+                      EPC
+                    </Typography>
+                  }
+                />
+                <HookFormError name="isEpc" errors={errors} />
+              </FormControl>
             )}
           />
-          <HookFormError name="isEpc" errors={errors} />
 
           <Controller
             name="bedRooms"
@@ -400,7 +413,11 @@ export default function ServiceDetails({
               },
             }}
             render={({ field }) => (
-              <FormControl fullWidth sx={{ mt: 1 }} disabled={!isEpc}>
+              <FormControl
+                sx={{ mt: 1 }}
+                disabled={!isEpc}
+                error={!!errors.bedRooms}
+              >
                 <FormLabel
                   sx={{
                     fontSize: 18,
@@ -411,9 +428,9 @@ export default function ServiceDetails({
                   How many Bed Rooms does your property has?
                 </FormLabel>
                 <RadioGroup {...field}>
-                  <FormControlLabel
+                  <Radio
+                    disabled={!isEpc}
                     value="0-3"
-                    control={<Radio />}
                     label={
                       <Typography>
                         0-3 Bedrooms -{" "}
@@ -429,9 +446,9 @@ export default function ServiceDetails({
                       </Typography>
                     }
                   />
-                  <FormControlLabel
+                  <Radio
+                    disabled={!isEpc}
                     value="4-6"
-                    control={<Radio />}
                     label={
                       <Typography>
                         4-6 Bedrooms -{" "}
@@ -448,15 +465,13 @@ export default function ServiceDetails({
                     }
                   />
                 </RadioGroup>
+                <HookFormError name="bedRooms" errors={errors} />
               </FormControl>
             )}
           />
-          <HookFormError name="bedRooms" errors={errors} />
-        </Grid>
-      </Grid>
+        </Box>
 
-      <Grid container spacing={3} mt={3}>
-        <Grid xs={12}>
+        <Box>
           <Controller
             name="tflZone"
             control={control}
@@ -464,7 +479,7 @@ export default function ServiceDetails({
               required: "TFL Zone information is required",
             }}
             render={({ field }) => (
-              <FormControl fullWidth>
+              <FormControl error={!!errors.tflZone}>
                 <FormLabel
                   sx={{
                     fontSize: 18,
@@ -475,10 +490,9 @@ export default function ServiceDetails({
                   Is your property inside TFL Zone 1 or outside TFL Zone 5?
                 </FormLabel>
                 <RadioGroup {...field}>
-                  <FormControlLabel value="no" control={<Radio />} label="No" />
-                  <FormControlLabel
+                  <Radio value="no" label="No" />
+                  <Radio
                     value="inside_tfl_1"
-                    control={<Radio />}
                     label={
                       <Typography>
                         Inside TFL Zone 1 -{" "}
@@ -494,9 +508,8 @@ export default function ServiceDetails({
                       </Typography>
                     }
                   />
-                  <FormControlLabel
+                  <Radio
                     value="outside_tfl_5"
-                    control={<Radio />}
                     label={
                       <Typography>
                         Outside TFL Zone 5 -{" "}
@@ -513,13 +526,13 @@ export default function ServiceDetails({
                     }
                   />
                 </RadioGroup>
+                <HookFormError name="tflZone" errors={errors} />
               </FormControl>
             )}
           />
-          <HookFormError name="tflZone" errors={errors} />
-        </Grid>
+        </Box>
 
-        <Grid xs={12}>
+        <Box>
           <Controller
             control={control}
             name="time"
@@ -527,7 +540,7 @@ export default function ServiceDetails({
               required: "Time information is required",
             }}
             render={({ field }) => (
-              <FormControl fullWidth>
+              <FormControl error={!!errors.time}>
                 <FormLabel
                   sx={{
                     fontSize: 18,
@@ -538,9 +551,8 @@ export default function ServiceDetails({
                   When do you want the service?
                 </FormLabel>
                 <RadioGroup {...field}>
-                  <FormControlLabel
+                  <Radio
                     value="24"
-                    control={<Radio />}
                     label={
                       <Typography>
                         Within the next 24 Hour -{" "}
@@ -556,9 +568,8 @@ export default function ServiceDetails({
                       </Typography>
                     }
                   />
-                  <FormControlLabel
+                  <Radio
                     value="48"
-                    control={<Radio />}
                     label={
                       <Typography>
                         Within the next 48 Hours -{" "}
@@ -574,13 +585,9 @@ export default function ServiceDetails({
                       </Typography>
                     }
                   />
-                  <FormControlLabel
-                    value="other"
-                    control={<Radio />}
-                    label="Some other time"
-                  />
+                  <Radio value="other" label="Some other time" />
 
-                  {time === "other" && (
+                  {/* {time === "other" && (
                     <Controller
                       name="date"
                       rules={{
@@ -601,15 +608,16 @@ export default function ServiceDetails({
                         />
                       )}
                     />
-                  )}
+                  )} */}
                 </RadioGroup>
+
+                <HookFormError name="date" errors={errors} />
+                <HookFormError name="time" errors={errors} />
               </FormControl>
             )}
           />
-          <HookFormError name="date" errors={errors} />
-          <HookFormError name="time" errors={errors} />
-        </Grid>
-      </Grid>
+        </Box>
+      </Stack>
 
       <Box
         sx={{
@@ -618,16 +626,19 @@ export default function ServiceDetails({
           alignItems: "center",
         }}
       >
-        <FormHelperText
-          sx={{
-            fontSize: 16,
-          }}
-        >
-          {!isObjectEmpty(errors) && "Please select all the necessary fields"}
-        </FormHelperText>
+        <FormControl error={!isObjectEmpty(errors)}>
+          <FormHelperText
+            sx={{
+              fontSize: 16,
+            }}
+          >
+            {!isObjectEmpty(errors) && "Please select all the necessary fields"}
+          </FormHelperText>
+        </FormControl>
+
         <Button
           type="submit"
-          variant="outlined"
+          variant="solid"
           sx={{
             mt: 5,
           }}

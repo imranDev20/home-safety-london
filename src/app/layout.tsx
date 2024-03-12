@@ -4,6 +4,7 @@ import CssBaseline from "@mui/joy/CssBaseline";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Header from "./_components/global/header";
+import Footer from "./_components/global/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
         <body className={inter.className}>
           <Header />
           {children}
+          <Footer />
         </body>
       </html>
     </CssVarsProvider>
