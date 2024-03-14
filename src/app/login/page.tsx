@@ -34,9 +34,7 @@ export default function Login() {
                 textAlign: "center",
               }}
             >
-              <Typography level="title-md" sx={{ my: "auto" }}>
-                HSL
-              </Typography>
+              <Typography level="title-md">HSL</Typography>
 
               <Typography sx={{ fontSize: 30, fontWeight: 600 }}>
                 Login
