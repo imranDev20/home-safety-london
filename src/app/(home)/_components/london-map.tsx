@@ -1,5 +1,5 @@
 import React from "react";
-import map from "../../../../public/map.png";
+import map from "../../../images/map.png";
 import { Box, Typography } from "@mui/joy";
 import Image from "next/image";
 
