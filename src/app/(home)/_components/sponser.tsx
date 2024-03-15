@@ -1,15 +1,9 @@
 import React from "react";
 import { Box, Card, CardContent, Container, Typography } from "@mui/joy";
-import {
-  CarouselProvider,
-  Slider,
-  Slide,
-  ButtonBack,
-  ButtonNext,
-} from "pure-react-carousel";
+import { CarouselProvider, Slider, Slide } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import Image from "next/image";
-import sponsor from "../../../../public/sponer.png";
+import sponsor from "../../../images/sponer.png";
 
 const SPONSER_PARTNER = [
   {
