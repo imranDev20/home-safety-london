@@ -66,7 +66,7 @@ export default function Services() {
             level="body-lg"
             color="neutral"
             sx={{
-              mb: 5,
+              mb: 7,
             }}
           >
             We provide following services. Our prices are{" "}

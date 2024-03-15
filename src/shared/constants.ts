@@ -143,7 +143,6 @@ export const SERVICES = [
     Icon: EicrIcon,
   },
   { id: 11, serviceName: "GAS", serviceDetail: "Repairs", Icon: GasSafteyIcon },
-  { id: 12, serviceName: "Plumbing", serviceDetail: "", Icon: PlumbingIcon },
 ];
 
 export const priceInfo = [

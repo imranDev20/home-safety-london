@@ -8,10 +8,12 @@ import ListItem from "@mui/joy/ListItem";
 import ListItemButton from "@mui/joy/ListItemButton";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import {
+  Button,
   Container,
   Divider,
   Grid,
   ListItemDecorator,
+  Stack,
   Typography,
   useTheme,
 } from "@mui/joy";
@@ -229,90 +231,90 @@ export default function Header() {
       sx={{
         zIndex: 10,
         position: "relative",
-        backgroundColor: "white",
       }}
     >
       <Box
         sx={{
           py: 1.5,
-          backgroundColor: theme.palette.primary[600],
+          backgroundColor: "rgba(0,137,123,0.2)",
         }}
       >
-        <Container>
-          <Grid container spacing={3}>
-            <Grid xs={4}>
-              <Box
+        <Container
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Stack spacing={5} direction="row">
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <WhatsApp
+                color="secondary"
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
+                  mr: 1,
+                  fontWeight: 30,
+                }}
+              />
+              <Typography
+                level="body-md"
+                sx={{
+                  fontWeight: 600,
                 }}
               >
-                <WhatsApp
-                  fontSize="lg"
-                  sx={{
-                    color: "white",
-                    mr: 1,
-                  }}
-                />
-                <Typography
-                  level="body-md"
-                  sx={{
-                    color: "white",
-                  }}
-                >
-                  07480 062995
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid xs={4}>
-              <Box
+                07480 062995
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Phone
+                color="secondary"
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
+                  mr: 1,
+                  fontWeight: 30,
+                }}
+              />
+              <Typography
+                level="body-md"
+                sx={{
+                  fontWeight: 600,
                 }}
               >
-                <Phone
-                  fontSize="lg"
-                  sx={{
-                    color: "white",
-                    mr: 1,
-                  }}
-                />
-                <Typography
-                  level="body-md"
-                  sx={{
-                    color: "white",
-                  }}
-                >
-                  0191 743 1448
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid xs={4}>
-              <Box
+                0191 743 1448
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Email
+                color="secondary"
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
+                  mr: 1,
+                  fontWeight: 30,
+                }}
+              />
+              <Typography
+                level="body-md"
+                sx={{
+                  fontWeight: 600,
                 }}
               >
-                <Email
-                  fontSize="lg"
-                  sx={{
-                    color: "white",
-                    mr: 1,
-                  }}
-                />
-                <Typography
-                  level="body-md"
-                  sx={{
-                    color: "white",
-                  }}
-                >
-                  info@homesafetylondon.co.uk
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
+                info@homesafetylondon.co.uk
+              </Typography>
+            </Box>
+          </Stack>
         </Container>
       </Box>
 
@@ -342,6 +344,7 @@ export default function Header() {
               "--List-gap": "8px",
               "--ListItem-gap": "0px",
               justifyContent: "flex-end",
+              mr: 4,
             }}
           >
             <ListItem role="none">
@@ -394,6 +397,7 @@ export default function Header() {
               </ListItemButton>
             </ListItem>
           </List>
+          <Button startDecorator={<Login />}>Login</Button>
         </Box>
       </Container>
     </Box>
