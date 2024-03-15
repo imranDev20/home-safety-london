@@ -59,7 +59,7 @@ export default function Hero() {
                     <Typography
                       sx={{
                         fontWeight: 800,
-                        fontSize: 60,
+                        fontSize: 50,
                         color: "white",
                         mb: 3,
                       }}
