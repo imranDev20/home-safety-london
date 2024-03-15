@@ -84,7 +84,7 @@ export default function SingleOrderPage() {
         </Typography>
 
         <Stack spacing={1} direction="row" alignItems="center">
-          <Select
+          {/* <Select
             size="sm"
             defaultValue="pending"
             placeholder="Order status: loading..."
@@ -121,7 +121,7 @@ export default function SingleOrderPage() {
                 {snakeCaseToNormalText(status.value)}
               </Option>
             ))}
-          </Select>
+          </Select> */}
           <Button size="sm" startDecorator={<Download />}>
             Download Invoice
           </Button>

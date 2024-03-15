@@ -11,12 +11,17 @@ interface ServiceProps {
 
 export default function Service({ service }: ServiceProps) {
   return (
-    <Card variant="outlined">
+    <Card variant="plain">
       <Box sx={{ textAlign: "center" }}>
-        <Typography level="h3">{service.ServiceName}</Typography>
         <Typography
-          sx={{ textAlign: "center", paddingY: "15px", fontSize: "16px" }}
+          level="h3"
+          sx={{
+            mb: 2,
+          }}
         >
+          {service.ServiceName}
+        </Typography>
+        <Typography sx={{ textAlign: "center", mb: 3 }} color="neutral">
           {service.serviceDetail}
         </Typography>
         <Box
@@ -25,7 +30,6 @@ export default function Service({ service }: ServiceProps) {
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "flex-end",
-            marginTop: "10px",
           }}
         >
           <Button variant="solid">Find Out More</Button>

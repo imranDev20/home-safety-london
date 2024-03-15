@@ -227,7 +227,7 @@ export default function Header() {
     <Box
       component="header"
       sx={{
-        zIndex: 10000,
+        zIndex: 10,
         position: "relative",
         backgroundColor: "white",
       }}
