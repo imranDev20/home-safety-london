@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import {
+  Alert,
   Box,
   Button,
   Card,
@@ -16,14 +17,30 @@ import { ErrorMessage } from "@hookform/error-message";
 import google from "../../images/google.jpg";
 import Image from "next/image";
 
+import {
+  useSignInWithEmailAndPassword,
+  useSignInWithGoogle,
+} from "react-firebase-hooks/auth";
+import auth from "../../../config/firebase";
+
 export default function Login() {
   const {
     register,
     formState: { errors },
+    reset,
     handleSubmit,
   } = useForm();
 
-  const onSubmit = (data: any) => console.log(data);
+  const [signInWithEmailAndPassword, eUser, eLoading, Eerror] =
+    useSignInWithEmailAndPassword(auth);
+  const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
+
+  const onSubmit = async (data: any) => {
+    await signInWithEmailAndPassword(data.email, data.password);
+    console.log("sign in successfully done!");
+    reset();
+  };
+
   return (
     <Container sx={{ py: 10 }}>
       <Grid container>
@@ -51,7 +68,7 @@ export default function Login() {
                   {...register("email", {
                     required: "Email is Required",
                     pattern: {
-                      value: /^[A-Z0-9+_.-]+@[A-Z0-9.-]+$/,
+                      value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
                       message: "Provide a valid email",
                     },
                   })}
@@ -76,11 +93,12 @@ export default function Login() {
                     pattern: {
                       value:
                         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                      message: "At least one letter",
+                      message:
+                        "At least one letter, one digit & one special charectar",
                     },
                     minLength: {
-                      value: 8,
-                      message: "Minimum length of 8 characters",
+                      value: 6,
+                      message: "Minimum length of 6 characters",
                     },
                   })}
                   placeholder="Password"
@@ -111,30 +129,31 @@ export default function Login() {
                   Login
                 </Button>
                 <Divider sx={{ width: 200, mx: "auto", py: 2 }}>OR</Divider>
-                <Button
-                  type="submit"
-                  variant="solid"
-                  fullWidth
-                  sx={{ py: "10px", fontSize: 18 }}
-                >
-                  <Image
-                    width={25}
-                    height={25}
-                    objectFit="cover"
-                    src={google}
-                    alt="googleLogo"
-                    style={{ marginRight: 5 }}
-                  />
-                  Continue with Google
-                </Button>
-
-                <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-                  <Typography>
-                    Have an account?<Link href="/signup">signup</Link>
-                  </Typography>
-                </Box>
               </Box>
             </form>
+            <Button
+              type="submit"
+              variant="solid"
+              fullWidth
+              sx={{ py: "10px", fontSize: 18 }}
+              onClick={() => signInWithGoogle()}
+            >
+              <Image
+                width={25}
+                height={25}
+                objectFit="cover"
+                src={google}
+                alt="googleLogo"
+                style={{ marginRight: 5 }}
+              />
+              Continue with Google
+            </Button>
+
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+              <Typography>
+                Have an account?<Link href="/signup">signup</Link>
+              </Typography>
+            </Box>
           </Card>
         </Grid>
       </Grid>
