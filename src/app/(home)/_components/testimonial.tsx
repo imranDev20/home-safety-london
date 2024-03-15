@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Card, CardContent, Container, Typography } from "@mui/joy";
+import { Box, Card, CardContent, Container, Sheet, Typography } from "@mui/joy";
 import StarIcon from "@mui/icons-material/Star";
 import { CarouselProvider, Slider, Slide, DotGroup } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
@@ -65,113 +65,143 @@ export default function Testimonial() {
     },
   ];
   return (
-    <Container sx={{ py: 5 }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          py: 2,
-        }}
-      >
-        <Typography sx={{ fontSize: 30, fontWeight: 600 }}>
-          What our customers say about us
-        </Typography>
-        <Typography sx={{}}>
-          {[...Array(5)].map((_, index) => (
-            <StarIcon key={index} sx={{ color: "yellow" }} />
-          ))}
-        </Typography>
-      </Box>
-
-      <CarouselProvider
-        naturalSlideWidth={400}
-        naturalSlideHeight={200}
-        isIntrinsicHeight={true}
-        totalSlides={REVIEW_ITEM.length}
-        visibleSlides={3}
-        infinite
-        isPlaying
-        interval={5000}
-      >
-        <Slider>
-          {REVIEW_ITEM.map((slides, index) => (
-            <Slide index={0} key={index}>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-
-                  mx: 2,
-                }}
-              >
-                <Card variant="soft" sx={{ textAlign: "center", p: 4 }}>
-                  <Box>
-                    <Typography sx={{ fontSize: 20, fontWeight: 600 }}>
-                      {slides.name}
-                    </Typography>
-                    <Typography sx={{ fontSize: 20, fontWeight: 600 }}>
-                      {slides.intro}
-                    </Typography>
-                    <Typography sx={{ my: "3px" }}>
-                      {[...Array(5)].map((_, index) => (
-                        <StarIcon key={index} sx={{ color: "yellow" }} />
-                      ))}
-                    </Typography>
-
-                    <FormatQuoteIcon sx={{ fontSize: 50, color: "#0b6bcb" }} />
-                    <Typography sx={{ textAlign: "center", fontSize: 18 }}>
-                      {slides.review}
-                    </Typography>
-                  </Box>
-                </Card>
-              </Box>
-            </Slide>
-          ))}
-        </Slider>
+    <Sheet
+      variant="soft"
+      sx={{
+        my: 5,
+        py: 10,
+      }}
+    >
+      <Container>
         <Box
           sx={{
             display: "flex",
+            flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            mt: 2,
+            py: 2,
           }}
         >
+          <Typography
+            component="h2"
+            level="h1"
+            sx={{
+              mb: 3,
+            }}
+          >
+            What Our Customers Say About Us
+          </Typography>
+        </Box>
+
+        <CarouselProvider
+          naturalSlideWidth={400}
+          naturalSlideHeight={200}
+          isIntrinsicHeight={true}
+          totalSlides={REVIEW_ITEM.length}
+          visibleSlides={3}
+          infinite
+          isPlaying
+          interval={5000}
+        >
+          <Slider>
+            {REVIEW_ITEM.map((slides, index) => (
+              <Slide index={0} key={index}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    mx: 2,
+                  }}
+                >
+                  <Card variant="plain" sx={{ textAlign: "center", p: 4 }}>
+                    <Box>
+                      <FormatQuoteIcon
+                        color="primary"
+                        sx={{
+                          fontSize: 40,
+                        }}
+                      />
+                      <Typography
+                        level="title-lg"
+                        component="h4"
+                        sx={{
+                          my: 2,
+                        }}
+                      >
+                        {slides.intro}
+                      </Typography>
+                      <Typography
+                        color="neutral"
+                        sx={{
+                          my: 2,
+                        }}
+                      >
+                        {slides.review}
+                      </Typography>
+
+                      <Typography sx={{ my: 1 }}>
+                        {[...Array(5)].map((_, index) => (
+                          <StarIcon key={index} sx={{ color: "#ECBD41" }} />
+                        ))}
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          mt: 1,
+                        }}
+                        level="title-md"
+                      >
+                        {slides.name}
+                      </Typography>
+                    </Box>
+                  </Card>
+                </Box>
+              </Slide>
+            ))}
+          </Slider>
           <Box
             sx={{
               display: "flex",
-              alignItems: "center",
               justifyContent: "center",
-
-              "& .carousel__dot": {
-                backgroundColor: "#c3c4ca",
-                border: "1px",
-                width: "9px",
-                height: "9px",
-                margin: "0px 4px",
-                padding: "0px",
-                borderRadius: "50%",
-              },
-              "& .carousel__dot--selected": {
-                width: "20px",
-                height: "8px",
-                borderRadius: "10px",
-                backgroundColor: "#6267a1",
-              },
+              alignItems: "center",
+              mt: 2,
             }}
           >
-            <DotGroup
-              style={{
+            <Box
+              sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+
+                "& .carousel__dot": {
+                  backgroundColor: "#c3c4ca",
+                  border: "1px",
+                  width: "9px",
+                  height: "9px",
+                  margin: "0px 4px",
+                  padding: "0px",
+                  borderRadius: "50%",
+                },
+                "& .carousel__dot--selected": {
+                  width: "20px",
+                  height: "8px",
+                  borderRadius: "10px",
+                  backgroundColor: "#6267a1",
+                },
               }}
-            />
+            >
+              <DotGroup
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
+            </Box>
           </Box>
-        </Box>
-      </CarouselProvider>
-    </Container>
+        </CarouselProvider>
+      </Container>
+    </Sheet>
   );
 }

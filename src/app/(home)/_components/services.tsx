@@ -37,43 +37,60 @@ const SERVICES_PRICE = [
 
 export default function Services() {
   return (
-    <Container sx={{ paddingY: "20px" }}>
-      <Box
+    <Sheet variant="soft">
+      <Container
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          paddingY: "20px",
+          my: 5,
+          py: 10,
         }}
       >
-        <Typography sx={{ fontSize: "32px", fontWeight: "600" }}>
-          Services & Prices
-        </Typography>
-        <Typography sx={{ fontSize: "20px", paddingY: "5px" }}>
-          We provide following services. Our prices are{" "}
-          <Typography component="span" color="primary" sx={{ fontWeight: 600 }}>
-            all tax inclusive
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            level="h1"
+            component="h2"
+            sx={{
+              mb: 1,
+            }}
+          >
+            Services & Prices
           </Typography>
-          . We do not charge any extra or hidden fee.
-        </Typography>
-      </Box>
-      <Grid
-        container
-        spacing={3}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          paddingX: "30px",
-          paddingY: "10px",
-        }}
-      >
-        {SERVICES_PRICE.map((service) => (
-          <Grid xs={6} key={service.id}>
-            <Service service={service} />
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+          <Typography
+            component="p"
+            level="body-lg"
+            color="neutral"
+            sx={{
+              mb: 7,
+            }}
+          >
+            We provide following services. Our prices are{" "}
+            <Typography component="span" color="primary">
+              all tax inclusive
+            </Typography>
+            . We do not charge any extra or hidden fee.
+          </Typography>
+        </Box>
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          {SERVICES_PRICE.map((service) => (
+            <Grid xs={6} key={service.id}>
+              <Service service={service} />
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </Sheet>
   );
 }

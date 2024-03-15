@@ -4,10 +4,16 @@ import { Box, Button, Container, Divider, Grid, Stack } from "@mui/joy";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import Typography from "@mui/joy/Typography";
-import { CorporateFare, Home, Textsms } from "@mui/icons-material";
+import {
+  ArrowRight,
+  CorporateFare,
+  Home,
+  Phone,
+  Textsms,
+} from "@mui/icons-material";
 import { SERVICES } from "@/shared/constants";
 import Image from "next/image";
-import BackgroundImage from "@/images/london-view.jpg";
+import BackgroundImage from "@/images/hero-image.jpeg";
 import { theme } from "@/shared/theme";
 import Link from "next/link";
 
@@ -21,7 +27,6 @@ export default function Hero() {
       <Image
         src={BackgroundImage}
         alt="Background"
-        sizes="100vw"
         fill
         loading="lazy"
         placeholder="blur"
@@ -32,8 +37,8 @@ export default function Hero() {
         sx={{
           height: "100%",
           position: "relative",
-          pt: 10,
-          pb: 10,
+          pt: 20,
+          pb: 20,
           "&::before": {
             content: '""',
             position: "absolute",
@@ -41,8 +46,7 @@ export default function Hero() {
             height: "100%",
             top: 0,
             left: 0,
-            backgroundColor: "black",
-            opacity: 0.6,
+            backgroundColor: "rgba(17, 38, 49, .9)",
           },
         }}
       >
@@ -51,37 +55,85 @@ export default function Hero() {
             <Grid xs={8}>
               <Box sx={{ position: "relative" }}>
                 <Grid container spacing={3}>
-                  {SERVICES.map((service) => (
-                    <Grid xs={3} key={service.id}>
-                      <Card
-                        variant="outlined"
-                        sx={{ height: "100%", textAlign: "center" }}
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontWeight: 800,
+                        fontSize: 50,
+                        color: "white",
+                        mb: 3,
+                      }}
+                    >
+                      Safeguarding London&apos;s{" "}
+                      <Typography
+                        sx={{
+                          color:
+                            theme.colorSchemes.light.palette.secondary[600],
+                        }}
+                        component="span"
                       >
-                        <service.Icon
-                          sx={{
-                            fontSize: 45,
-                            mx: "auto",
-                            color:
-                              theme.colorSchemes.light.palette.primary[600],
-                          }}
-                        />
-                        <Typography level="h3">
-                          {service.serviceName}
-                        </Typography>
-                        <Typography level="body-xs">
-                          {service.serviceDetail}
-                        </Typography>
-                      </Card>
-                    </Grid>
-                  ))}
+                        Homes
+                      </Typography>{" "}
+                      with Premier{" "}
+                      <Typography
+                        sx={{
+                          color:
+                            theme.colorSchemes.light.palette.secondary[600],
+                        }}
+                        component="span"
+                      >
+                        Safety
+                      </Typography>{" "}
+                      Solutions
+                    </Typography>
+
+                    <Typography
+                      sx={{
+                        color: "#d9d9d9",
+                        fontSize: 20,
+                      }}
+                    >
+                      Welcome to Home Safety London, where we&apos;re dedicated
+                      to securing your peace of mind. From EICRs to fire alarms,
+                      we&apos;re your one-stop solution for safeguarding every
+                      corner of your home.
+                    </Typography>
+
+                    <Stack
+                      spacing={2}
+                      direction="row"
+                      sx={{
+                        mt: 5,
+                      }}
+                    >
+                      <Button
+                        size="lg"
+                        startDecorator={<Phone />}
+                        variant="solid"
+                      >
+                        Services
+                      </Button>
+                      <Button
+                        size="lg"
+                        startDecorator={<Phone />}
+                        variant="plain"
+                        sx={{
+                          mt: 5,
+                        }}
+                      >
+                        075-7916-4993
+                      </Button>
+                    </Stack>
+                  </Box>
                 </Grid>
               </Box>
             </Grid>
             <Grid xs={4}>
-              <Card variant="outlined">
+              <Card variant="plain">
                 <CardContent>
                   <Typography
                     level="h2"
+                    color="primary"
                     sx={{
                       textAlign: "center",
                     }}
@@ -98,6 +150,7 @@ export default function Hero() {
                     sx={{
                       textAlign: "center",
                     }}
+                    color="neutral"
                   >
                     Select Your Property as appropriate and get quote in 30
                     seconds!

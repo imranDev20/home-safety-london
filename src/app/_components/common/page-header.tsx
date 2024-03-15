@@ -1,9 +1,10 @@
 "use client";
-import { Box, Breadcrumbs, Link, Typography } from "@mui/joy";
+import { Box, Breadcrumbs, Link, Typography, useTheme } from "@mui/joy";
 import Image from "next/image";
 import { PageHeaderProps } from "@/types/props";
 
 const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
+  const theme = useTheme();
   return (
     <Box component="section" sx={{ position: "relative" }}>
       <Image
@@ -28,8 +29,8 @@ const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
             height: "100%",
             top: 0,
             left: 0,
-            backgroundColor: "primary.main",
-            opacity: 0.8,
+            backgroundColor: "black",
+            opacity: 0.6,
           },
         }}
       >
@@ -41,6 +42,7 @@ const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
             color: "white",
           }}
           component="h1"
+          level="h1"
         >
           {title}
         </Typography>
@@ -51,11 +53,15 @@ const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
             alignItems: "center",
           }}
         >
-          <Breadcrumbs
-            sx={{ position: "relative", zIndex: 1, color: "white" }}
-            aria-label="breadcrumb"
-          >
-            <Link href="/" component={Link} underline="hover">
+          <Breadcrumbs sx={{ position: "relative", zIndex: 1, color: "white" }}>
+            <Link
+              href="/"
+              component={Link}
+              underline="hover"
+              sx={{
+                color: "white",
+              }}
+            >
               Home
             </Link>
 
