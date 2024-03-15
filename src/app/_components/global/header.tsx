@@ -173,6 +173,7 @@ const ServicesMenu = React.forwardRef(
             }}
             sx={(theme) => ({
               ...(open && theme.variants.plainHover.neutral),
+              fontWeight: 600,
             })}
             component={Link}
             href="/services"
@@ -355,6 +356,7 @@ export default function Header() {
                 href="/"
                 sx={{
                   textDecoration: "none",
+                  fontWeight: 600,
                 }}
               >
                 <ListItemDecorator>
@@ -370,6 +372,9 @@ export default function Header() {
                 {...getTargetProps(0)}
                 component={Link}
                 href="/about"
+                sx={{
+                  fontWeight: 600,
+                }}
               >
                 About
               </ListItemButton>
@@ -392,6 +397,9 @@ export default function Header() {
                 {...getTargetProps(0)}
                 component={Link}
                 href="/contact"
+                sx={{
+                  fontWeight: 600,
+                }}
               >
                 Contact
               </ListItemButton>
