@@ -38,6 +38,7 @@ export default function SignUp() {
     console.log("sing up sucessfully done");
     reset();
   };
+
   return (
     <Container sx={{ py: 10 }}>
       <Grid container>
@@ -116,8 +117,8 @@ export default function SignUp() {
                         "At least one letter, one digit & one special charectar",
                     },
                     minLength: {
-                      value: 6,
-                      message: "Minimum length of 6 characters",
+                      value: 8,
+                      message: "Minimum length of 8 characters",
                     },
                   })}
                   placeholder="Password"
@@ -142,7 +143,7 @@ export default function SignUp() {
                   fullWidth
                   sx={{ py: "10px", fontSize: 18, mt: 3 }}
                 >
-                  Login
+                  Sign Up
                 </Button>
                 <Divider sx={{ width: 200, mx: "auto", py: 2 }}>OR</Divider>
               </Box>

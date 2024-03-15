@@ -18,6 +18,7 @@ import google from "../../images/google.jpg";
 import Image from "next/image";
 
 import {
+  useSendPasswordResetEmail,
   useSignInWithEmailAndPassword,
   useSignInWithGoogle,
 } from "react-firebase-hooks/auth";
@@ -29,16 +30,25 @@ export default function Login() {
     formState: { errors },
     reset,
     handleSubmit,
+    getValues,
   } = useForm();
 
   const [signInWithEmailAndPassword, eUser, eLoading, Eerror] =
     useSignInWithEmailAndPassword(auth);
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
+  const [sendPasswordResetEmail, sending, error] =
+    useSendPasswordResetEmail(auth);
 
   const onSubmit = async (data: any) => {
     await signInWithEmailAndPassword(data.email, data.password);
     console.log("sign in successfully done!");
     reset();
+  };
+
+  const resetPassword = () => {
+    const email = getValues("email");
+    console.log(email);
+    sendPasswordResetEmail(email);
   };
 
   return (
@@ -98,8 +108,8 @@ export default function Login() {
                         "At least one letter, one digit & one special charectar",
                     },
                     minLength: {
-                      value: 6,
-                      message: "Minimum length of 6 characters",
+                      value: 8,
+                      message: "Minimum length of 8 characters",
                     },
                   })}
                   placeholder="Password"
@@ -118,7 +128,9 @@ export default function Login() {
                   )}
                 />
                 <Box sx={{ display: "flex", justifyContent: "end", mb: 3 }}>
-                  <Link href="/login">Forget Password?</Link>
+                  <Link href="/login" onClick={resetPassword}>
+                    Forget Password?
+                  </Link>
                 </Box>
 
                 <Button
