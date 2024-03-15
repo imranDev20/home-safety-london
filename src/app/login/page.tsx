@@ -45,7 +45,12 @@ export default function Login() {
     <Container sx={{ py: 10 }}>
       <Grid container>
         <Grid xs={5} sx={{ mx: "auto" }}>
-          <Card variant="soft">
+          <Card
+            variant="soft"
+            sx={{
+              padding: 5,
+            }}
+          >
             <Box
               sx={{
                 textAlign: "center",
@@ -59,11 +64,7 @@ export default function Login() {
             </Box>
 
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Box
-                sx={{
-                  padding: 3,
-                }}
-              >
+              <Box sx={{ pt: 2 }}>
                 <Input
                   {...register("email", {
                     required: "Email is Required",

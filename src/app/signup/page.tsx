@@ -42,7 +42,12 @@ export default function SignUp() {
     <Container sx={{ py: 10 }}>
       <Grid container>
         <Grid xs={5} sx={{ mx: "auto" }}>
-          <Card variant="soft">
+          <Card
+            variant="soft"
+            sx={{
+              padding: 5,
+            }}
+          >
             <Box
               sx={{
                 textAlign: "center",
@@ -58,11 +63,7 @@ export default function SignUp() {
             </Box>
 
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Box
-                sx={{
-                  padding: 3,
-                }}
-              >
+              <Box sx={{ pt: 2 }}>
                 <Input
                   {...register("name", {
                     required: "Name is Required",
@@ -139,7 +140,7 @@ export default function SignUp() {
                   type="submit"
                   variant="solid"
                   fullWidth
-                  sx={{ py: "10px", fontSize: 18 }}
+                  sx={{ py: "10px", fontSize: 18, mt: 3 }}
                 >
                   Login
                 </Button>
