@@ -94,10 +94,15 @@ export default function About() {
               }}
             >
               <Button variant="solid" size="lg">
-                Our Services
+                More About Us
               </Button>
 
-              <Button startDecorator={<PhoneIcon />} variant="plain" size="lg">
+              <Button
+                startDecorator={<PhoneIcon />}
+                variant="plain"
+                color="secondary"
+                size="lg"
+              >
                 +123-456-7890
               </Button>
             </Stack>

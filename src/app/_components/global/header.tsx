@@ -28,6 +28,7 @@ import {
 } from "@mui/icons-material";
 import { CATEGORIES } from "@/shared/constants";
 import Link from "next/link";
+import { customSlugify } from "@/shared/functions";
 
 type Options = {
   initialActiveIndex: null | number;
@@ -205,7 +206,15 @@ const ServicesMenu = React.forwardRef(
             >
               {CATEGORIES.map((category) => (
                 <ListItem role="none" key={category.name}>
-                  <ListItemButton role="menuitem" {...getTargetProps(0)}>
+                  <ListItemButton
+                    role="menuitem"
+                    {...getTargetProps(0)}
+                    sx={{
+                      fontWeight: 600,
+                    }}
+                    component={Link}
+                    href={`/services/${customSlugify(category.name)}`}
+                  >
                     {category.name}
                   </ListItemButton>
                 </ListItem>

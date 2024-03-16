@@ -1,3 +1,5 @@
+import slugify from "react-slugify";
+
 export function snakeCaseToNormalText(snakeCaseString: string) {
   return snakeCaseString.replace(/_/g, " ").toLowerCase();
 }
@@ -33,6 +35,10 @@ export function toTitleCase(input: string): string {
     }
   });
 }
+
+export const customSlugify = (text: string) => {
+  return slugify(text, { delimiter: "-" });
+};
 
 export function isObjectEmpty<T extends {}>(obj: T): boolean {
   return Object.keys(obj).length === 0;
