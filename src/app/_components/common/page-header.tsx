@@ -29,8 +29,7 @@ const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
             height: "100%",
             top: 0,
             left: 0,
-            backgroundColor: "black",
-            opacity: 0.6,
+            backgroundColor: "rgba(17, 38, 49, .9)",
           },
         }}
       >
@@ -71,7 +70,7 @@ const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
               </Link>
             ) : null}
 
-            <Typography sx={{ color: "secondary.main" }}>{title}</Typography>
+            <Typography color="secondary">{title}</Typography>
           </Breadcrumbs>
         </Box>
       </Box>

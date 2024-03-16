@@ -117,8 +117,13 @@ export default function Hero() {
                         size="lg"
                         startDecorator={<Phone />}
                         variant="plain"
+                        color="secondary"
                         sx={{
                           mt: 5,
+                          ":hover": {
+                            backgroundColor:
+                              theme.colorSchemes.light.palette.secondary[100],
+                          },
                         }}
                       >
                         075-7916-4993
@@ -133,7 +138,7 @@ export default function Hero() {
                 <CardContent>
                   <Typography
                     level="h2"
-                    color="primary"
+                    color="secondary"
                     sx={{
                       textAlign: "center",
                     }}

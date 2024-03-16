@@ -27,6 +27,7 @@
     "react-dom": "^18",
     "react-firebase-hooks": "^5.1.1",
     "react-hook-form": "^7.51.0",
+    "react-slugify": "^3.0.3",
     "stripe": "^14.20.0"
   },
   "resolutions": {

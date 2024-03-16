@@ -42,6 +42,7 @@ export const theme = extendTheme({
           "700": "#a16207",
           "800": "#854d0e",
           "900": "#713f12",
+
           // Adjust the global variant tokens as you'd like.
           // The tokens should be the same for all color schemes.
           solidBg: "var(--joy-palette-secondary-400)",
@@ -52,7 +53,7 @@ export const theme = extendTheme({
           softColor: "var(--joy-palette-secondary-800)",
           softBg: "var(--joy-palette-secondary-200)",
           softActiveBg: "var(--joy-palette-secondary-300)",
-          plainColor: "var(--joy-palette-secondary-700)",
+          plainColor: "var(--joy-palette-secondary-600)",
           plainActiveBg: "var(--joy-palette-secondary-100)",
         },
       },
