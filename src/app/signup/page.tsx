@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import google from "../../images/google.jpg";
 import Image from "next/image";
-import auth from "../../../config/firebase";
+import auth from "../../config/firebase";
 import {
   useCreateUserWithEmailAndPassword,
   useSignInWithGoogle,

@@ -1,37 +1,59 @@
 import React from "react";
 import map from "../../../images/map.png";
-import { Box, Typography } from "@mui/joy";
+import { Box, Container, Grid, Typography } from "@mui/joy";
 import Image from "next/image";
 
 export default function LondonMap() {
   return (
-    <Box
+    <Container
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingY: "20px",
-        marginTop: "20px",
+        my: 15,
       }}
     >
-      <Box sx={{ textAlign: "center" }}>
-        <Typography
-          sx={{ fontSize: "32px", fontWeight: 600, paddingBottom: "10px" }}
-        >
-          Greator London Coverage
-        </Typography>
-        <Typography sx={{ fontSize: "18px" }}>
-          We cover whole London and M25 area.
-        </Typography>
-      </Box>
-      <Box>
-        <Image
-          src={map}
-          alt="map-image"
-          style={{ width: "100%", height: "100%" }}
-        />
-      </Box>
-    </Box>
+      <Grid container spacing={3}>
+        <Grid xs={6}>
+          <Typography
+            component="h2"
+            level="h2"
+            sx={{
+              mb: 2,
+            }}
+          >
+            Greator London Coverage
+          </Typography>
+          <Typography color="neutral">
+            London Property Inspections have 15 years experience in providing
+            the property compliance certificates to:
+          </Typography>
+
+          <Typography color="neutral">
+            We provide services to residential and commercial properties which
+            includes EICR, Fire Safety Certificate, Fire Risk Assessment, PAT
+            Testing, Emergency Lighting Certificate, Gas Safety Certificate, EPC
+            and any kind of plumbing work, gas repairs, electrical repairs from
+            rewiring the buildings to houses in London and M25 area.
+          </Typography>
+        </Grid>
+
+        <Grid xs={6}>
+          <Box
+            sx={{
+              position: "relative",
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            <Image
+              src={map}
+              alt="map-image"
+              fill
+              style={{
+                objectFit: "contain",
+              }}
+            />
+          </Box>
+        </Grid>
+      </Grid>
+    </Container>
   );
 }

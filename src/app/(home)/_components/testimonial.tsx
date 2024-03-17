@@ -1,11 +1,13 @@
 import React from "react";
 import { Box, Card, CardContent, Container, Sheet, Typography } from "@mui/joy";
+import { useTheme } from "@mui/joy/styles";
 import StarIcon from "@mui/icons-material/Star";
 import { CarouselProvider, Slider, Slide, DotGroup } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
 export default function Testimonial() {
+  const theme = useTheme();
   const REVIEW_ITEM = [
     {
       id: 1,
@@ -114,8 +116,14 @@ export default function Testimonial() {
                     mx: 2,
                   }}
                 >
-                  <Card variant="plain" sx={{ textAlign: "center", p: 4 }}>
-                    <Box>
+                  <Card variant="plain">
+                    <CardContent
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
                       <FormatQuoteIcon
                         color="primary"
                         sx={{
@@ -135,26 +143,20 @@ export default function Testimonial() {
                         color="neutral"
                         sx={{
                           my: 2,
+                          textAlign: "center",
                         }}
                       >
                         {slides.review}
                       </Typography>
 
-                      <Typography sx={{ my: 1 }}>
+                      <Typography>
                         {[...Array(5)].map((_, index) => (
                           <StarIcon key={index} sx={{ color: "#ECBD41" }} />
                         ))}
                       </Typography>
 
-                      <Typography
-                        sx={{
-                          mt: 1,
-                        }}
-                        level="title-md"
-                      >
-                        {slides.name}
-                      </Typography>
-                    </Box>
+                      <Typography level="title-md">{slides.name}</Typography>
+                    </CardContent>
                   </Card>
                 </Box>
               </Slide>
@@ -175,23 +177,27 @@ export default function Testimonial() {
                 justifyContent: "center",
 
                 "& .carousel__dot": {
-                  backgroundColor: "#c3c4ca",
+                  backgroundColor: theme.colorSchemes.light.palette.divider,
                   border: "1px",
                   width: "9px",
                   height: "9px",
                   margin: "0px 4px",
                   padding: "0px",
                   borderRadius: "50%",
+                  transition: ".3s all",
                 },
                 "& .carousel__dot--selected": {
                   width: "20px",
                   height: "8px",
                   borderRadius: "10px",
-                  backgroundColor: "#6267a1",
+                  transition: ".3s all",
+                  backgroundColor:
+                    theme.colorSchemes.light.palette.primary[600],
                 },
               }}
             >
               <DotGroup
+                showAsSelectedForCurrentSlideOnly
                 style={{
                   display: "flex",
                   alignItems: "center",

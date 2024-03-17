@@ -15,7 +15,7 @@ const categories = [
 
 export default function About() {
   return (
-    <Container sx={{ py: 10 }}>
+    <Container sx={{ my: 20 }}>
       <Grid container spacing={4}>
         <Grid xs={6}>
           <Box
@@ -70,7 +70,7 @@ export default function About() {
                   key={index}
                   sx={{ display: "flex", alignItems: "center", mb: "5px" }}
                 >
-                  <CheckCircleIcon sx={{ color: "#0b6bcb", mr: 2 }} />
+                  <CheckCircleIcon color="primary" sx={{ mr: 2 }} />
                   <Typography component="span" color="neutral">
                     {" "}
                     {category.text}

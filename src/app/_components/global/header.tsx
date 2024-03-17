@@ -10,8 +10,6 @@ import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import {
   Button,
   Container,
-  Divider,
-  Grid,
   ListItemDecorator,
   Stack,
   Typography,
@@ -414,7 +412,9 @@ export default function Header() {
               </ListItemButton>
             </ListItem>
           </List>
-          <Button startDecorator={<Login />}>Login</Button>
+          <Button startDecorator={<Login />} component={Link} href="/login">
+            Login
+          </Button>
         </Box>
       </Container>
     </Box>
