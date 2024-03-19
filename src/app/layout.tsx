@@ -7,6 +7,7 @@ import Header from "./_components/global/header";
 import Footer from "./_components/global/footer";
 import TopLoader from "./_components/common/top-loader";
 import { Suspense } from "react";
+import dbConnect from "@/app/api/_lib/dbConnect";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,9 +28,7 @@ export default function RootLayout({
         <body className={inter.className}>
           <TopLoader />
           <Header />
-
           <Suspense>{children}</Suspense>
-
           <Footer />
         </body>
       </html>
