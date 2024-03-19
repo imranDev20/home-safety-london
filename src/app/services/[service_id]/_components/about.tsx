@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Button, Container, Grid, Typography } from "@mui/joy";
 import Image from "next/image";
-import engineer from "../../../images/engineer.webp";
+import engineer from "../../../../images/engineer.webp";
 
 export default function ServiceAbout() {
   return (
