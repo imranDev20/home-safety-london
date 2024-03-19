@@ -138,7 +138,6 @@ export default function Hero() {
                 <CardContent>
                   <Typography
                     level="h2"
-                    color="secondary"
                     sx={{
                       textAlign: "center",
                     }}

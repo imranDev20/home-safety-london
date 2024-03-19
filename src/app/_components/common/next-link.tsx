@@ -12,7 +12,7 @@ export default function NextLink({
 } & LinkProps) {
   return (
     <JoyLink {...props} component={Link} href={href}>
-      NextLink
+      {children}
     </JoyLink>
   );
 }
