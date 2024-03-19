@@ -4,7 +4,7 @@ import { CarouselProvider, Slide, Slider } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import { Box, Container, Typography } from "@mui/joy";
 import Image from "next/image";
-import brandIamge from "../../../images/brand-sponser.webp";
+import brandIamge from "../../../../images/brand-sponser.webp";
 
 const SPONSER_PARTNER = [
   {

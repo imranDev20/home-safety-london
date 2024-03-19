@@ -8,27 +8,28 @@ import ListItem from "@mui/joy/ListItem";
 import ListItemButton from "@mui/joy/ListItemButton";
 import Typography from "@mui/joy/Typography";
 import Sheet from "@mui/joy/Sheet";
-import { Container, Grid } from "@mui/joy";
-import Image from "next/image";
-import logo from "../../../images/logo.png";
+import { Container, Divider, Grid } from "@mui/joy";
 import PhoneIcon from "@mui/icons-material/Phone";
 import MailIcon from "@mui/icons-material/Mail";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import XIcon from "@mui/icons-material/X";
-import payment from "../../../images/payment.png";
+import PlaceIcon from "@mui/icons-material/Place";
 
 export default function Footer() {
   const [color, setColor] = React.useState<ColorPaletteProp>("success");
+
+  const today = new Date();
+  const year = today.getFullYear();
+
   return (
     <Box>
       <Sheet
         variant="solid"
-        color={color}
         invertedColors
         sx={{
-          bgcolor: `${color}.600`,
+          bgcolor: "#0d1d2e",
           p: 2,
         }}
       >
@@ -43,98 +44,26 @@ export default function Footer() {
               justifyContent: "space-between",
             }}
           >
-            <Grid xs={5}>
+            <Grid xs={4}>
               <Box>
-                <Box>
-                  <Image src={logo} alt="logo-image" />
-                  <Typography>
-                    London Property Inspections team are certified top quality
-                    engineers ready to provide you with all types of landlord
-                    safety certificates in London and the M25 area for domestic
-                    and commercial purposes.
-                  </Typography>
-                </Box>
-                <Box sx={{ paddingY: "10px" }}>
-                  <Typography
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      fontSize: "18px",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    <PhoneIcon />
-                    <Typography component="span" sx={{ marginLeft: "8px" }}>
-                      0191 743 1448
-                    </Typography>
-                  </Typography>
-                  <Typography sx={{ display: "flex", fontSize: "18px" }}>
-                    <MailIcon />
-                    <Typography component="span" sx={{ marginLeft: "8px" }}>
-                      info@londonpropertyinspections.co.uk
-                    </Typography>
-                  </Typography>
-                </Box>
-                <Box>
-                  <FacebookIcon
-                    sx={{
-                      backgroundColor: "#8cbff5",
-                      padding: "5px",
-                      color: "black",
-                      margin: "5px",
-                      borderRadius: "50%",
-                      fontSize: "32px",
-                    }}
-                  />
-                  <InstagramIcon
-                    sx={{
-                      backgroundColor: "#8cbff5",
-                      padding: "5px",
-                      color: "black",
-                      margin: "5px",
-                      borderRadius: "50%",
-                      fontSize: "32px",
-                    }}
-                  />
-                  <YouTubeIcon
-                    sx={{
-                      backgroundColor: "#8cbff5",
-                      padding: "5px",
-                      color: "black",
-                      margin: "5px",
-                      borderRadius: "50%",
-                      fontSize: "32px",
-                    }}
-                  />
-                  <XIcon
-                    sx={{
-                      backgroundColor: "#8cbff5",
-                      padding: "5px",
-                      color: "black",
-                      margin: "5px",
-                      borderRadius: "50%",
-                      fontSize: "32px",
-                    }}
-                  />
-                </Box>
-                <Box>
-                  <Image
-                    width={350}
-                    height={100}
-                    objectFit="contain"
-                    src={payment}
-                    alt="payment-image"
-                  />
-                </Box>
+                <Typography component="h3" level="h3" sx={{ mb: 2 }}>
+                  Home Safety London
+                </Typography>
+                <Typography color="neutral">
+                  London Property Inspections team are certified top quality
+                  engineers ready to provide you with all types of landlord
+                  safety certificates in London and the M25 area for domestic
+                  and commercial purposes.
+                </Typography>
               </Box>
             </Grid>
-            <Grid xs={3}>
+            <Grid xs={2}>
               <List>
                 <ListItem nested sx={{}}>
                   <ListSubheader
                     sx={{ fontSize: "18px", fontWeight: "xl", color: "white" }}
                   >
-                    Quick Links
+                    Company
                   </ListSubheader>
 
                   <ListItem>
@@ -158,7 +87,7 @@ export default function Footer() {
                 </ListItem>
               </List>
             </Grid>
-            <Grid xs={4}>
+            <Grid xs={2}>
               <List>
                 <ListItem nested sx={{}}>
                   <ListSubheader
@@ -187,10 +116,51 @@ export default function Footer() {
                 </ListItem>
               </List>
             </Grid>
+            <Grid xs={3}>
+              <List>
+                <ListItem nested sx={{}}>
+                  <ListSubheader
+                    sx={{ fontSize: "18px", fontWeight: "xl", color: "white" }}
+                  >
+                    Contact us
+                  </ListSubheader>
+                  <ListItem>
+                    <MailIcon /> info@homesafetylondon.co.uk
+                  </ListItem>
+                  <ListItem>
+                    <PhoneIcon /> +123-456-7890
+                  </ListItem>
+                  <ListItem>
+                    <PlaceIcon />
+                    27 Old Gloucester Street, London WC1N 3AX
+                  </ListItem>
+                  <ListItem>
+                    <FacebookIcon />
+                    <InstagramIcon />
+                    <XIcon />
+                    <YouTubeIcon />
+                  </ListItem>
+                </ListItem>
+              </List>
+            </Grid>
           </Grid>
+          <Divider />
+          <Box sx={{ display: "flex", justifyContent: "space-between", py: 2 }}>
+            <Box>
+              <Typography>
+                ©{year} Home Safety London. All Right Reserved
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex" }}>
+              <Typography>Support</Typography>
+              <Divider orientation="vertical" sx={{ mx: 1 }} />
+              <Typography>Disclaimer</Typography>
+              <Divider orientation="vertical" sx={{ mx: 1 }} />
+              <Typography>Contact us</Typography>
+            </Box>
+          </Box>
         </Container>
       </Sheet>
-      <Box></Box>
     </Box>
   );
 }
