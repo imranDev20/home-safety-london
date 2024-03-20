@@ -51,10 +51,12 @@ const SPONSER_PARTNER = [
 export default function Sponser() {
   return (
     <Container component="section">
-      <Box sx={{ textAlign: "center", paddingY: "20px" }}>
-        <Typography sx={{ fontSize: "32px", fontWeight: 600 }}>
-          Accreditations
-        </Typography>
+      <Box
+        sx={{
+          textAlign: "center",
+        }}
+      >
+        <Typography>Certified and Trusted Professional Engineers</Typography>
       </Box>
       <CarouselProvider
         naturalSlideWidth={50}

@@ -14,9 +14,10 @@ export default function Home() {
       <Hero />
       <About />
       <Services />
+
       <LondonMap />
-      <Sponser />
       <Testimonial />
+      <Sponser />
       <Faq />
       <ContactForm />
     </main>
