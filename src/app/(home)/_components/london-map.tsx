@@ -21,7 +21,12 @@ export default function LondonMap() {
           >
             Greator London Coverage
           </Typography>
-          <Typography color="neutral">
+          <Typography
+            color="neutral"
+            sx={{
+              mb: 3,
+            }}
+          >
             London Property Inspections have 15 years experience in providing
             the property compliance certificates to:
           </Typography>

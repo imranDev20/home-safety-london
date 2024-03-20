@@ -15,10 +15,20 @@ export default function ContactUs() {
   return (
     <Container sx={{ py: 8 }}>
       <Box sx={{ textAlign: "center", py: 3 }}>
-        <Typography sx={{ fontSize: 30, fontWeight: 600 }}>
+        <Typography
+          level="h2"
+          sx={{
+            mb: 2,
+          }}
+        >
           Get In Touch
         </Typography>
-        <Typography sx={{ pt: 2 }}>
+        <Typography
+          color="neutral"
+          sx={{
+            mb: 2,
+          }}
+        >
           Are you stumped by a home wiring project or problem? Fill out the form
           with the <br /> details of your situation and we can come to your aid.
         </Typography>
