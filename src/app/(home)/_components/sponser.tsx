@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Card, CardContent, Container, Typography } from "@mui/joy";
+import { Box, Container, Typography } from "@mui/joy";
 import { CarouselProvider, Slider, Slide } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import Image from "next/image";
