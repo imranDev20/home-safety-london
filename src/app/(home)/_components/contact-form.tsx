@@ -6,23 +6,24 @@ import {
   FormControl,
   Grid,
   Input,
+  Sheet,
   Textarea,
   Typography,
 } from "@mui/joy";
 import { useForm } from "react-hook-form";
-import Image from "next/image";
-import londonView from "../../../images/london-view.jpg";
 
 export default function ContactForm() {
   const { register, handleSubmit } = useForm();
   const onSubmit = (data: any) => console.log(data);
 
   return (
-    <Container>
-      <Box sx={{ backgroundColor: "white" }}>
+    <Container sx={{ py: 10 }}>
+      <Box>
         <Box sx={{ textAlign: "center", py: 3 }}>
-          <Typography>Get In Touch</Typography>
-          <Typography>
+          <Typography component="h3" level="h3" sx={{ pb: 2 }}>
+            Get In Touch
+          </Typography>
+          <Typography color="neutral">
             Our friendly customer service team are ready to help you choose
             <br />
             the best safety certificate for your needs.
@@ -47,6 +48,7 @@ export default function ContactForm() {
                         type="text"
                         placeholder="Your Name"
                         size="lg"
+                        sx={{ bgcolor: "white" }}
                       />
                     </FormControl>
                   </Grid>
@@ -57,6 +59,7 @@ export default function ContactForm() {
                         type="email"
                         placeholder="Your Email Address"
                         size="lg"
+                        sx={{ bgcolor: "white" }}
                       />
                     </FormControl>
                   </Grid>
@@ -67,6 +70,7 @@ export default function ContactForm() {
                         type="number"
                         placeholder="Your Phone Number"
                         size="lg"
+                        sx={{ bgcolor: "white" }}
                       />
                     </FormControl>
                   </Grid>
@@ -78,6 +82,7 @@ export default function ContactForm() {
                         placeholder="Your Message here…"
                         variant="outlined"
                         size="lg"
+                        sx={{ bgcolor: "white" }}
                       />
                     </FormControl>
                   </Grid>

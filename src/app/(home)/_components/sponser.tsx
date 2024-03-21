@@ -50,13 +50,15 @@ const SPONSER_PARTNER = [
 
 export default function Sponser() {
   return (
-    <Container component="section">
+    <Container sx={{ py: 8 }}>
       <Box
         sx={{
           textAlign: "center",
         }}
       >
-        <Typography>Certified and Trusted Professional Engineers</Typography>
+        <Typography component="h2" level="h2" sx={{ mb: 4 }}>
+          Certified and Trusted Professional Engineers
+        </Typography>
       </Box>
       <CarouselProvider
         naturalSlideWidth={50}
@@ -79,8 +81,11 @@ export default function Sponser() {
                 }}
               >
                 <Image
-                  width={120}
-                  height={150}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                  }}
                   src={sponsor}
                   alt="sponser-image"
                 />

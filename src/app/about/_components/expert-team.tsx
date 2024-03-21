@@ -47,7 +47,7 @@ export default function ExpertTeam() {
         {TEAMS.map((team) => (
           <Grid xs={3} key={team.id}>
             <Box sx={{ mb: 3 }}>
-              <Box>
+              <Box sx={{ width: "100%", height: 300 }}>
                 <Image
                   src={team.expertImage}
                   alt="expertImage"
