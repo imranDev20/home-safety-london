@@ -16,6 +16,9 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import XIcon from "@mui/icons-material/X";
 import PlaceIcon from "@mui/icons-material/Place";
+import Link from "next/link";
+import { SITE_OPTIONS } from "@/shared/constants";
+import servicesData from "@/assets/services-data.json";
 
 export default function Footer() {
   const [color, setColor] = React.useState<ColorPaletteProp>("success");
@@ -29,8 +32,8 @@ export default function Footer() {
         variant="solid"
         invertedColors
         sx={{
-          bgcolor: "#0d1d2e",
-          p: 2,
+          bgcolor: "rgba(17, 38, 49, 1)",
+          py: 7,
         }}
       >
         <Container>
@@ -47,9 +50,9 @@ export default function Footer() {
             <Grid xs={4}>
               <Box>
                 <Typography component="h3" level="h3" sx={{ mb: 2 }}>
-                  Home Safety London
+                  London Home Safety
                 </Typography>
-                <Typography color="neutral">
+                <Typography>
                   London Property Inspections team are certified top quality
                   engineers ready to provide you with all types of landlord
                   safety certificates in London and the M25 area for domestic
@@ -59,31 +62,24 @@ export default function Footer() {
             </Grid>
             <Grid xs={2}>
               <List>
-                <ListItem nested sx={{}}>
+                <ListItem nested>
                   <ListSubheader
-                    sx={{ fontSize: "18px", fontWeight: "xl", color: "white" }}
+                    sx={{
+                      fontSize: 18,
+                      fontWeight: "xl",
+                      color: "white",
+                      mb: 1,
+                    }}
                   >
                     Company
                   </ListSubheader>
-
-                  <ListItem>
-                    <ListItemButton>Home</ListItemButton>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemButton>About Us</ListItemButton>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemButton>Services</ListItemButton>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemButton>Contact Us</ListItemButton>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemButton>Privacy & Policy</ListItemButton>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemButton>Terms & Conditions</ListItemButton>
-                  </ListItem>
+                  {SITE_OPTIONS.map((option) => (
+                    <ListItem key={option.route}>
+                      <ListItemButton component={Link} href={option.route}>
+                        {option.label}
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
                 </ListItem>
               </List>
             </Grid>
@@ -91,28 +87,26 @@ export default function Footer() {
               <List>
                 <ListItem nested sx={{}}>
                   <ListSubheader
-                    sx={{ fontSize: "18px", fontWeight: "xl", color: "white" }}
+                    sx={{
+                      fontSize: 18,
+                      fontWeight: "xl",
+                      color: "white",
+                      mb: 1,
+                    }}
                   >
                     Services
                   </ListSubheader>
-                  <ListItem>
-                    <ListItemButton>Electrical Services</ListItemButton>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemButton>Gas Services</ListItemButton>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemButton>Inventory Services</ListItemButton>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemButton>Fire Services</ListItemButton>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemButton>Health & Safety</ListItemButton>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemButton>Emergency Lights</ListItemButton>
-                  </ListItem>
+
+                  {servicesData.map((item) => (
+                    <ListItem key={item.id}>
+                      <ListItemButton
+                        component={Link}
+                        href={`/services/${item.route}`}
+                      >
+                        {item.title}
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
                 </ListItem>
               </List>
             </Grid>
@@ -120,7 +114,12 @@ export default function Footer() {
               <List>
                 <ListItem nested sx={{}}>
                   <ListSubheader
-                    sx={{ fontSize: "18px", fontWeight: "xl", color: "white" }}
+                    sx={{
+                      fontSize: 18,
+                      fontWeight: "xl",
+                      color: "white",
+                      mb: 1,
+                    }}
                   >
                     Contact us
                   </ListSubheader>
@@ -134,7 +133,11 @@ export default function Footer() {
                     <PlaceIcon />
                     27 Old Gloucester Street, London WC1N 3AX
                   </ListItem>
-                  <ListItem>
+                  <ListItem
+                    sx={{
+                      mt: 2,
+                    }}
+                  >
                     <FacebookIcon />
                     <InstagramIcon />
                     <XIcon />
@@ -144,7 +147,11 @@ export default function Footer() {
               </List>
             </Grid>
           </Grid>
-          <Divider />
+          <Divider
+            sx={{
+              my: 5,
+            }}
+          />
           <Box sx={{ display: "flex", justifyContent: "space-between", py: 2 }}>
             <Box>
               <Typography>

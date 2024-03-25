@@ -6,7 +6,7 @@ export function snakeCaseToNormalText(snakeCaseString: string) {
 
 import { Order } from "@/types/misc";
 import dayjs from "dayjs";
-import { priceInfo } from "./constants";
+import { PRICE_INFO } from "./constants";
 
 export function toTitleCase(input: string): string {
   const smallWords = [
@@ -76,19 +76,19 @@ export function calculateTotal(numbers: number[]): number {
 export function getServiceItems(order: Order) {
   return Object.entries(order)
     .filter(([key, value]) =>
-      priceInfo.map((price) => price.type).includes(key)
+      PRICE_INFO.map((price) => price.type).includes(key)
     )
     .filter(([key, value]) => value !== "")
     .map(([key, value]) => ({
-      name: priceInfo.find((price) => price.type === key)?.service,
-      label: priceInfo.find((price) => price.type === key)?.label,
+      name: PRICE_INFO.find((price) => price.type === key)?.service,
+      label: PRICE_INFO.find((price) => price.type === key)?.label,
       type: key,
-      quantity: priceInfo
-        .find((price) => price.type === key)
-        ?.price.find((val) => val.quantity === value)?.quantity,
+      quantity: PRICE_INFO.find((price) => price.type === key)?.price.find(
+        (val) => val.quantity === value
+      )?.quantity,
 
-      price: priceInfo
-        .find((price) => price.type === key)
-        ?.price.find((val) => val.quantity === value)?.price,
+      price: PRICE_INFO.find((price) => price.type === key)?.price.find(
+        (val) => val.quantity === value
+      )?.price,
     }));
 }

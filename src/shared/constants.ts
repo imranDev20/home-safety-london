@@ -57,6 +57,41 @@ export const ADMIN_OPTIONS = [
   },
 ];
 
+export const SITE_OPTIONS = [
+  {
+    route: "/",
+    label: "Hone",
+    Icon: Dashboard,
+  },
+  {
+    route: "/about-us",
+    label: "About us",
+    Icon: Dashboard,
+  },
+  {
+    route: "/services",
+    label: "Services",
+    Icon: Dashboard,
+  },
+  {
+    route: "/contact",
+    label: "Contact",
+    Icon: Dashboard,
+  },
+  {
+    route: "/terms-and-conditions",
+    label: "Terms & Conditions",
+    Icon: Dashboard,
+  },
+  {
+    route: "/privacy-policy",
+    label: "Privacy Policy",
+    Icon: Dashboard,
+  },
+];
+
+export const SOCIALS = [];
+
 export const ORDER_STATUS = [
   "pending",
   "processing",
@@ -145,7 +180,7 @@ export const SERVICES = [
   { id: 11, serviceName: "GAS", serviceDetail: "Repairs", Icon: GasSafteyIcon },
 ];
 
-export const priceInfo = [
+export const PRICE_INFO = [
   {
     service: "gas",
     label: "Gas",
