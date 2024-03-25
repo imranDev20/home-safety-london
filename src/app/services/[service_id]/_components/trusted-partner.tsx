@@ -51,7 +51,7 @@ const SPONSER_PARTNER = [
 
 export default function TrustedPartner() {
   return (
-    <Container component="section" sx={{ py: 3 }}>
+    <Container component="section" sx={{ my: 10 }}>
       <Box sx={{ textAlign: "center", paddingY: "20px" }}>
         <Typography sx={{ fontSize: "32px", fontWeight: 600 }}>
           Certified and Trusted Professional Engineers
