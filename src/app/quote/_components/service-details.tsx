@@ -8,7 +8,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { createQueryString, isObjectEmpty } from "@/shared/functions";
 import { ServiceFormInput } from "@/types/form";
 import { Order } from "@/types/misc";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 // import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import {
@@ -30,6 +30,8 @@ import {
 } from "@mui/joy";
 import { CheckCircleRounded, CorporateFare, Home } from "@mui/icons-material";
 
+type PropertyType = "residential" | "commercial";
+
 export default function ServiceDetails({
   order,
   setOrder,
@@ -38,6 +40,7 @@ export default function ServiceDetails({
   setOrder: Dispatch<SetStateAction<Order>>;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const pathname = usePathname();
   const theme = useTheme();
 
@@ -50,7 +53,8 @@ export default function ServiceDetails({
     formState: { errors },
   } = useForm<ServiceFormInput>({
     defaultValues: {
-      propertyType: "residential",
+      propertyType:
+        (searchParams.get("property_type") as PropertyType) || "residential",
       isGas: order.isGas || false,
       isEicr: order.isEicr || false,
       isEpc: order.isEpc || false,
@@ -99,19 +103,105 @@ export default function ServiceDetails({
         Select Type
       </Typography>
 
+      <Controller
+        control={control}
+        name="propertyType"
+        render={({ field }) => (
+          <RadioGroup
+            {...field}
+            size="lg"
+            sx={{ gap: 1.5, mb: 5, display: "flex", flexDirection: "row" }}
+          >
+            {[
+              {
+                value: "residential",
+                Icon: Home,
+              },
+              {
+                value: "commercial",
+                Icon: CorporateFare,
+              },
+            ].map((option) => (
+              <Sheet
+                key={option.value}
+                sx={{
+                  p: 2,
+                  borderRadius: "md",
+                  boxShadow: "sm",
+                  flex: 1,
+                }}
+              >
+                <Radio
+                  label={
+                    <Box
+                      sx={{
+                        display: "flex",
+                      }}
+                    >
+                      <option.Icon
+                        sx={{
+                          mr: 1,
+                          color: theme.colorSchemes.light.palette.primary[600],
+                        }}
+                      />
+                      <Typography>{option.value}</Typography>
+                    </Box>
+                  }
+                  overlay
+                  disableIcon
+                  value={option.value}
+                  slotProps={{
+                    label: ({ checked }) => ({
+                      sx: {
+                        fontWeight: "lg",
+                        fontSize: "md",
+                        color: checked ? "text.primary" : "text.secondary",
+                      },
+                    }),
+                    action: ({ checked }) => ({
+                      sx: (theme) => ({
+                        ...(checked && {
+                          "--variant-borderWidth": "2px",
+                          "&&": {
+                            // && to increase the specificity to win the base :hover styles
+                            borderColor: theme.vars.palette.primary[500],
+                          },
+                        }),
+                      }),
+                    }),
+                  }}
+                />
+              </Sheet>
+            ))}
+          </RadioGroup>
+        )}
+      />
+
+      <Typography
+        component="h3"
+        level="h4"
+        sx={{
+          mb: 3,
+        }}
+      >
+        Select Property Type
+      </Typography>
+
       <RadioGroup
-        aria-labelledby="storage-label"
-        defaultValue="512GB"
         size="lg"
-        sx={{ gap: 1.5, mb: 5 }}
+        sx={{ gap: 1.5, mb: 5, display: "flex", flexDirection: "row" }}
       >
         {[
           {
-            value: "Residential",
+            value: "Flat",
             Icon: Home,
           },
           {
-            value: "Commercial",
+            value: "House",
+            Icon: CorporateFare,
+          },
+          {
+            value: "HMO",
             Icon: CorporateFare,
           },
         ].map((option) => (
@@ -121,21 +211,12 @@ export default function ServiceDetails({
               p: 2,
               borderRadius: "md",
               boxShadow: "sm",
+              flex: 1,
             }}
           >
             <Radio
               label={
-                <Box
-                  sx={{
-                    display: "flex",
-                  }}
-                >
-                  <option.Icon
-                    sx={{
-                      mr: 1,
-                      color: theme.colorSchemes.light.palette.primary[600],
-                    }}
-                  />
+                <Box>
                   <Typography>{option.value}</Typography>
                 </Box>
               }

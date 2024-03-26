@@ -36,9 +36,12 @@ export default function Advantage() {
         }}
       >
         <Typography
-          component="h4"
-          level="h4"
-          sx={{ color: theme.colorSchemes.light.palette.secondary[500] }}
+          sx={{
+            color: theme.colorSchemes.light.palette.secondary[500],
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: 2,
+          }}
         >
           Our Advantages
         </Typography>

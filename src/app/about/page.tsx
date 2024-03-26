@@ -12,7 +12,7 @@ const About = () => {
     <>
       <PageHeader backgroundImage={backgroundImage} title="About Us" />
       <AboutUs />
-      <ExpertTeam />
+      {/* <ExpertTeam /> */}
       <Advantage />
       <Achivment />
       <TrustedPartner />

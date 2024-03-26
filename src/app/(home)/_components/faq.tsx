@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { Box, Container, Divider, Grid, Sheet, Typography } from "@mui/joy";
+import {
+  Box,
+  Container,
+  Divider,
+  Grid,
+  Sheet,
+  Typography,
+  accordionDetailsClasses,
+  accordionSummaryClasses,
+} from "@mui/joy";
 import AccordionGroup from "@mui/joy/AccordionGroup";
 import Accordion from "@mui/joy/Accordion";
 import AccordionDetails from "@mui/joy/AccordionDetails";
@@ -71,47 +80,46 @@ export default function Faq() {
                 style={{
                   width: "100%",
                   height: "100%",
-                  borderRadius: 15,
+                  borderRadius: 5,
                   overflow: "hidden",
                   objectFit: "cover",
                 }}
               />
             </Grid>
             <Grid xs={6}>
-              <AccordionGroup transition="0.2s">
-                {/* Map over the array to render each Accordion */}
-                {accordionData.map((accordion, id) => (
+              <AccordionGroup
+                variant="outlined"
+                transition="0.2s"
+                size="lg"
+                sx={{
+                  border: "none",
+                  [`& .${accordionSummaryClasses.button}`]: {
+                    bgcolor: "transparent",
+                    py: 1.2,
+                  },
+                  [`& .${accordionSummaryClasses.button}:active`]: {
+                    bgcolor: "transparent!important",
+                  },
+                }}
+              >
+                {accordionData.map((item, index) => (
                   <Accordion
-                    key={id}
-                    expanded={index === id}
-                    onChange={(event, expanded) => {
-                      setIndex(expanded ? id : null);
-                    }}
+                    defaultExpanded={index === 0}
+                    key={item.title}
                     sx={{
-                      border: 1,
-                      borderColor: theme.colorSchemes.light.palette.primary[50],
-                      backgroundColor: "white",
-                      mb: 1.5,
-                      boxShadow:
-                        "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px",
+                      mb: 1,
+                      color: theme.vars.palette.primary,
                     }}
                   >
-                    <AccordionSummary>
-                      <Typography
-                        component="h4"
-                        level="h4"
-                        sx={{
-                          py: 1,
-                        }}
-                      >
-                        {accordion.title}
-                      </Typography>
+                    <AccordionSummary
+                      sx={{
+                        fontWeight: 600,
+                      }}
+                    >
+                      {item.title}
                     </AccordionSummary>
-                    {index === id && <Divider />}
-                    <AccordionDetails>
-                      <Typography sx={{ py: 2 }}>
-                        {accordion.content}
-                      </Typography>
+                    <AccordionDetails color="neutral">
+                      {item.content}
                     </AccordionDetails>
                   </Accordion>
                 ))}

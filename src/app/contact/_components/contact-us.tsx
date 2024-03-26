@@ -16,9 +16,11 @@ export default function ContactUs() {
     <Container sx={{ py: 8 }}>
       <Box sx={{ textAlign: "center", py: 3 }}>
         <Typography
+          component="h2"
           level="h2"
           sx={{
-            mb: 2,
+            textAlign: "center",
+            mb: 5,
           }}
         >
           Get In Touch
