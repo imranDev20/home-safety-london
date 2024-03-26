@@ -63,42 +63,27 @@ export default function QuotePage() {
       </Paragraph>
 
       <Container
-        maxWidth="md"
+        maxWidth="sm"
         sx={{
           pb: 7,
         }}
       >
-        <Grid
-          container
-          spacing={3}
-          sx={{
-            position: "relative",
-          }}
-        >
-          <Grid md={8}>
-            <Card variant="plain" size="lg">
-              <CardContent>
-                {activeStep === 1 || Number.isNaN(activeStep) ? (
-                  <ServiceDetails order={order} setOrder={setOrder} />
-                ) : null}
-                {activeStep === 2 ? (
-                  <PersonalDetails order={order} setOrder={setOrder} />
-                ) : null}
+        <Card variant="plain" size="lg">
+          <CardContent>
+            {activeStep === 1 || Number.isNaN(activeStep) ? (
+              <ServiceDetails order={order} setOrder={setOrder} />
+            ) : null}
+            {activeStep === 2 ? (
+              <PersonalDetails order={order} setOrder={setOrder} />
+            ) : null}
 
-                {activeStep === 3 ? <Confirmation order={order} /> : null}
+            {activeStep === 3 ? <Confirmation order={order} /> : null}
 
-                {order.isPersonalStepComplete &&
-                  order.isServiceStepComplete && (
-                    <Payments activeStep={activeStep} order={order} />
-                  )}
-              </CardContent>
-            </Card>
-          </Grid>
-
-          <Grid md={4}>
-            <RightSidebarStepper />
-          </Grid>
-        </Grid>
+            {order.isPersonalStepComplete && order.isServiceStepComplete && (
+              <Payments activeStep={activeStep} order={order} />
+            )}
+          </CardContent>
+        </Card>
       </Container>
     </Box>
   );

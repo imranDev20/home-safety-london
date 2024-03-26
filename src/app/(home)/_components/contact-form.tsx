@@ -20,7 +20,14 @@ export default function ContactForm() {
     <Container sx={{ py: 10 }}>
       <Box>
         <Box sx={{ textAlign: "center", py: 3 }}>
-          <Typography component="h3" level="h3" sx={{ pb: 2 }}>
+          <Typography
+            component="h2"
+            level="h2"
+            sx={{
+              textAlign: "center",
+              mb: 2,
+            }}
+          >
             Get In Touch
           </Typography>
           <Typography color="neutral">

@@ -3,52 +3,54 @@ import { Box, Container, Typography } from "@mui/joy";
 import { CarouselProvider, Slider, Slide } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import Image from "next/image";
-import sponsor from "../../../images/sponer.png";
+import NapitImage from "../../../images/partner-logos/napit.png";
+import GasSafeRegister from "../../../images/partner-logos/gas-safe-register.svg";
+import Nebosh from "../../../images/partner-logos/nebosh.svg";
 
 const SPONSER_PARTNER = [
   {
     id: 1,
-    image: sponsor,
+    image: NapitImage,
   },
   {
     id: 2,
-    image: sponsor,
+    image: GasSafeRegister,
   },
   {
     id: 3,
-    image: sponsor,
+    image: Nebosh,
   },
   {
     id: 4,
-    image: sponsor,
+    image: NapitImage,
   },
   {
     id: 5,
-    image: sponsor,
+    image: NapitImage,
   },
   {
     id: 6,
-    image: sponsor,
+    image: NapitImage,
   },
   {
     id: 7,
-    image: sponsor,
+    image: NapitImage,
   },
   {
     id: 8,
-    image: sponsor,
+    image: NapitImage,
   },
   {
     id: 9,
-    image: sponsor,
+    image: NapitImage,
   },
   {
     id: 10,
-    image: sponsor,
+    image: NapitImage,
   },
 ];
 
-export default function Sponser() {
+export default function Partners() {
   return (
     <Container sx={{ py: 8 }}>
       <Box
@@ -56,7 +58,7 @@ export default function Sponser() {
           textAlign: "center",
         }}
       >
-        <Typography component="h2" level="h2" sx={{ mb: 4 }}>
+        <Typography component="h2" level="h2" sx={{ mb: 5 }}>
           Certified and Trusted Professional Engineers
         </Typography>
       </Box>
@@ -67,28 +69,33 @@ export default function Sponser() {
         infinite
         isPlaying
         interval={5000}
-        visibleSlides={6}
+        visibleSlides={7}
       >
         <Slider>
           {SPONSER_PARTNER.map((partner, index) => (
-            <Slide index={0} key={index}>
+            <Slide index={partner.id} key={index}>
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   height: "100%",
+                  width: 80,
+                  position: "relative",
                 }}
               >
-                <Image
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                  }}
-                  src={sponsor}
-                  alt="sponser-image"
-                />
+                {partner.image?.src ? (
+                  <Image
+                    fill
+                    style={{
+                      objectFit: "contain",
+                    }}
+                    src={partner.image}
+                    alt="sponser-image"
+                  />
+                ) : (
+                  <partner.image />
+                )}
               </Box>
             </Slide>
           ))}

@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Button, Container, Grid, Stack, Typography } from "@mui/joy";
+import { useTheme } from "@mui/joy/styles";
 import Image from "next/image";
 import electric from "../../../images/home-about-image.jpeg";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -14,6 +15,8 @@ const categories = [
 ];
 
 export default function About() {
+  const theme = useTheme();
+
   return (
     <Container sx={{ my: 20 }}>
       <Grid container spacing={4}>
@@ -42,22 +45,34 @@ export default function About() {
         <Grid xs={6}>
           <Box>
             <Typography
-              level="title-md"
-              color="primary"
               sx={{
+                color: theme.colorSchemes.light.palette.secondary[500],
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: 2,
                 mb: 1,
               }}
             >
-              About Us
+              About us
             </Typography>
             <Typography
-              component="h2"
-              level="h2"
+              component="h1"
+              level="h1"
               sx={{
                 mb: 2,
               }}
             >
-              We Make Places Clean & Bright
+              We Are Commited to <br />
+              <Typography
+                component="span"
+                sx={{
+                  color: theme.colorSchemes.light.palette.secondary[500],
+                  fontWeight: 700,
+                }}
+              >
+                Provide Quality
+              </Typography>{" "}
+              Service
             </Typography>
             <Typography color="neutral">
               London Property Inspections have 15 years experience in providing
@@ -68,7 +83,7 @@ export default function About() {
               {categories.map((category, index) => (
                 <Typography
                   key={index}
-                  sx={{ display: "flex", alignItems: "center", mb: "5px" }}
+                  sx={{ display: "flex", alignItems: "center", mb: 1 }}
                 >
                   <CheckCircleIcon color="primary" sx={{ mr: 2 }} />
                   <Typography component="span" color="neutral">
