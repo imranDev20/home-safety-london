@@ -6,7 +6,7 @@ import {
   Divider,
   Stack,
   Typography,
-} from "@mui/material";
+} from "@mui/joy";
 import Link from "next/link";
 import React from "react";
 

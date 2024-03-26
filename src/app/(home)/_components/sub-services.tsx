@@ -12,14 +12,7 @@ import {
 } from "@/app/_components/common/icons";
 import { useTheme } from "@mui/joy/styles";
 
-import {
-  Box,
-  Card,
-  CardContent,
-  Container,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, Container, Grid, Typography } from "@mui/joy";
 import Link from "next/link";
 
 const FIRST_ROW = [
