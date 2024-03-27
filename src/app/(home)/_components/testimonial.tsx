@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Box, Card, CardContent, Container, Sheet, Typography } from "@mui/joy";
 import { useTheme } from "@mui/joy/styles";
