@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Box,
@@ -6,13 +7,32 @@ import {
   FormControl,
   Grid,
   Input,
+  InputProps,
   Typography,
 } from "@mui/joy";
 import { Controller, useForm } from "react-hook-form";
 import HookFormError from "@/app/_components/common/hook-form-error";
-import PhoneNumberInput from "@/app/_components/common/phone-number-input";
+import PhoneInput from "react-phone-number-input/input";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
-export default function ContactForm() {
+const PhoneInputAdapter = React.forwardRef<InputProps, any>(
+  function PhoneInputAdapter(props, ref) {
+    const { onChange, ...other } = props;
+
+    return (
+      <PhoneInput
+        defaultCountry="GB"
+        international={false}
+        placeholder="Enter phone number"
+        {...other}
+        ref={ref}
+        onChange={(value) => onChange(value)}
+      />
+    );
+  }
+);
+
+export default function ContactUsForm() {
   const {
     register,
     handleSubmit,
@@ -59,7 +79,7 @@ export default function ContactForm() {
                     <Controller
                       name="firstname"
                       rules={{
-                        required: "Name is Required",
+                        required: "please enter your name",
                       }}
                       control={control}
                       render={({ field }) => (
@@ -86,10 +106,10 @@ export default function ContactForm() {
                     <Controller
                       name="email"
                       rules={{
-                        required: "Email is Required",
+                        required: "please enter your email",
                         pattern: {
                           value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
-                          message: "Provide a valid email",
+                          message: "provide a valid email",
                         },
                       }}
                       control={control}
@@ -116,23 +136,30 @@ export default function ContactForm() {
                   <Grid xs={12} sm={12} md={6}>
                     <Controller
                       name="phone"
+                      control={control}
                       rules={{
-                        required: "Phone number Required",
-                        pattern: {
-                          value: /^0([1-6][0-9]{8,10}|7[0-9]{9})$/,
-                          message: "Provide a valid number",
+                        required: "please enter your phone number",
+                        validate: (value: string) => {
+                          const valid = isValidPhoneNumber(value);
+
+                          return (
+                            valid || `Your provided phone number is not valid`
+                          );
                         },
                       }}
-                      control={control}
                       render={({ field }) => (
                         <FormControl error={!!errors.phone} sx={{ mb: 1 }}>
-                          <PhoneNumberInput
+                          <Input
                             {...field}
                             placeholder="Your Phone Number"
                             variant="soft"
-                            type="text"
                             fullWidth
                             size="lg"
+                            slotProps={{
+                              input: {
+                                component: PhoneInputAdapter,
+                              },
+                            }}
                           />
                           <HookFormError name="phone" errors={errors} />
                         </FormControl>
@@ -143,7 +170,7 @@ export default function ContactForm() {
                     <Controller
                       name="message"
                       rules={{
-                        required: "Message is Required",
+                        required: "message is required",
                       }}
                       control={control}
                       render={({ field }) => (
