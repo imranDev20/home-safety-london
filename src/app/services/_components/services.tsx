@@ -2,16 +2,7 @@
 import React from "react";
 import { Box, Container, Grid, Typography } from "@mui/joy";
 import Service from "./service";
-import { SERVICES } from "@/shared/constants";
-
-const MODIFIED_SERVICES = SERVICES.map((service) =>
-  service.sub_services.map((s_service) => ({
-    ...s_service,
-    parentService: service.title,
-  }))
-);
-
-const SUB_SERVICES = MODIFIED_SERVICES.flatMap((service) => service);
+import { SUB_SERVICES } from "@/shared/constants";
 
 export default function ServicesItem() {
   return (
