@@ -3,8 +3,9 @@ import { forwardRef } from "react";
 
 const PhoneNumberInput = forwardRef<HTMLInputElement, InputProps>(
   (props, ref) => {
+    const { variant = "outlined" } = props;
     return (
-      <Input {...props} ref={ref} fullWidth variant="outlined" name="phone" />
+      <Input {...props} ref={ref} fullWidth variant={variant} name="phone" />
     );
   }
 );
