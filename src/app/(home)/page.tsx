@@ -8,6 +8,7 @@ import ContactForm from "./_components/contact-form";
 import About from "./_components/about";
 import SubServices from "./_components/sub-services";
 import Partners from "../_components/common/partners";
+import ContactUsForm from "../_components/common/contact-us-form";
 
 export default function Home() {
   return (
@@ -20,7 +21,7 @@ export default function Home() {
       <Testimonial />
       <Partners />
       <Faq />
-      <ContactForm />
+      <ContactUsForm />
     </main>
   );
 }
