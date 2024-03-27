@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Box from "@mui/joy/Box";
-import { Card, CardContent, Container } from "@mui/joy";
+import { Card, CardContent, Container, Grid, Typography } from "@mui/joy";
 import PageHeader from "../_components/common/page-header";
 import BackgroundImage from "@/images/about-bg.jpeg";
 import Paragraph from "../_components/common/paragraph";
@@ -63,27 +63,66 @@ export default function QuotePage() {
       </Paragraph>
 
       <Container
-        maxWidth="sm"
+        maxWidth="lg"
         sx={{
           pb: 7,
         }}
       >
-        <Card variant="plain" size="lg">
-          <CardContent>
-            {activeStep === 1 || Number.isNaN(activeStep) ? (
-              <ServiceDetails order={order} setOrder={setOrder} />
-            ) : null}
-            {activeStep === 2 ? (
-              <PersonalDetails order={order} setOrder={setOrder} />
-            ) : null}
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            position: "relative",
+          }}
+        >
+          <Grid xs={12} sm={8}>
+            <Card
+              variant="plain"
+              size="lg"
+              sx={{
+                boxShadow: "md",
+              }}
+            >
+              <CardContent>
+                {activeStep === 1 || Number.isNaN(activeStep) ? (
+                  <ServiceDetails order={order} setOrder={setOrder} />
+                ) : null}
+                {activeStep === 2 ? (
+                  <PersonalDetails order={order} setOrder={setOrder} />
+                ) : null}
 
-            {activeStep === 3 ? <Confirmation order={order} /> : null}
+                {activeStep === 3 ? <Confirmation order={order} /> : null}
 
-            {order.isPersonalStepComplete && order.isServiceStepComplete && (
-              <Payments activeStep={activeStep} order={order} />
-            )}
-          </CardContent>
-        </Card>
+                {order.isPersonalStepComplete &&
+                  order.isServiceStepComplete && (
+                    <Payments activeStep={activeStep} order={order} />
+                  )}
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid xs={12} sm={4}>
+            <Card
+              variant="plain"
+              size="lg"
+              sx={{
+                boxShadow: "md",
+                position: "sticky",
+                top: 20,
+              }}
+            >
+              <Typography
+                component="h3"
+                level="h4"
+                sx={{
+                  mb: 3,
+                }}
+              >
+                Cart Summary
+              </Typography>
+            </Card>
+          </Grid>
+        </Grid>
       </Container>
     </Box>
   );

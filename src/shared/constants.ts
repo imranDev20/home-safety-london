@@ -409,3 +409,12 @@ export const FAQS = [
     sub_service: "Fire Alarm Certificate",
   },
 ];
+
+const MODIFIED_SERVICES = SERVICES.map((service) =>
+  service.sub_services.map((s_service) => ({
+    ...s_service,
+    parentService: service.title,
+  }))
+);
+
+export const SUB_SERVICES = MODIFIED_SERVICES.flatMap((service) => service);
