@@ -6,14 +6,21 @@ import {
   FormControl,
   Grid,
   Input,
-  Sheet,
-  Textarea,
   Typography,
 } from "@mui/joy";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import HookFormError from "@/app/_components/common/hook-form-error";
+import PhoneNumberInput from "@/app/_components/common/phone-number-input";
 
 export default function ContactForm() {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    getValues,
+    control,
+  } = useForm();
   const onSubmit = (data: any) => console.log(data);
 
   return (
@@ -36,7 +43,7 @@ export default function ContactForm() {
             the best safety certificate for your needs.
           </Typography>
         </Box>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Grid
             container
             spacing={3}
@@ -49,49 +56,110 @@ export default function ContactForm() {
               <Box>
                 <Grid container spacing={2}>
                   <Grid xs={12}>
-                    <FormControl>
-                      <Input
-                        name="firstname"
-                        type="text"
-                        placeholder="Your Name"
-                        size="lg"
-                        sx={{ bgcolor: "white" }}
-                      />
-                    </FormControl>
+                    <Controller
+                      name="firstname"
+                      rules={{
+                        required: "Name is Required",
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <FormControl
+                          error={!!errors.firstname}
+                          sx={{
+                            mb: 1,
+                          }}
+                        >
+                          <Input
+                            {...field}
+                            placeholder="Your Name"
+                            type="text"
+                            fullWidth
+                            variant="soft"
+                            size="lg"
+                          />
+                          <HookFormError name="firstname" errors={errors} />
+                        </FormControl>
+                      )}
+                    />
                   </Grid>
-                  <Grid xs={6}>
-                    <FormControl>
-                      <Input
-                        name="email"
-                        type="email"
-                        placeholder="Your Email Address"
-                        size="lg"
-                        sx={{ bgcolor: "white" }}
-                      />
-                    </FormControl>
+                  <Grid xs={12} sm={12} md={6}>
+                    <Controller
+                      name="email"
+                      rules={{
+                        required: "Email is Required",
+                        pattern: {
+                          value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
+                          message: "Provide a valid email",
+                        },
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <FormControl
+                          error={!!errors.email}
+                          sx={{
+                            mb: 1,
+                          }}
+                        >
+                          <Input
+                            {...field}
+                            placeholder="Your Email Address"
+                            type="email"
+                            fullWidth
+                            variant="soft"
+                            size="lg"
+                          />
+                          <HookFormError name="email" errors={errors} />
+                        </FormControl>
+                      )}
+                    />
                   </Grid>
-                  <Grid xs={6}>
-                    <FormControl>
-                      <Input
-                        name="phone"
-                        type="number"
-                        placeholder="Your Phone Number"
-                        size="lg"
-                        sx={{ bgcolor: "white" }}
-                      />
-                    </FormControl>
+                  <Grid xs={12} sm={12} md={6}>
+                    <Controller
+                      name="phone"
+                      rules={{
+                        required: "Phone number Required",
+                        pattern: {
+                          value: /^0([1-6][0-9]{8,10}|7[0-9]{9})$/,
+                          message: "Provide a valid number",
+                        },
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <FormControl error={!!errors.phone} sx={{ mb: 1 }}>
+                          <PhoneNumberInput
+                            {...field}
+                            placeholder="Your Phone Number"
+                            variant="soft"
+                            type="text"
+                            fullWidth
+                            size="lg"
+                          />
+                          <HookFormError name="phone" errors={errors} />
+                        </FormControl>
+                      )}
+                    />
                   </Grid>
                   <Grid xs={12}>
-                    <FormControl>
-                      <Textarea
-                        minRows={4}
-                        name="message"
-                        placeholder="Your Message here…"
-                        variant="outlined"
-                        size="lg"
-                        sx={{ bgcolor: "white" }}
-                      />
-                    </FormControl>
+                    <Controller
+                      name="message"
+                      rules={{
+                        required: "Message is Required",
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <FormControl error={!!errors.message} sx={{ mb: 1 }}>
+                          <Input
+                            {...field}
+                            placeholder="Your Message here..."
+                            type="text"
+                            fullWidth
+                            variant="soft"
+                            size="lg"
+                          />
+                          <HookFormError name="message" errors={errors} />
+                        </FormControl>
+                      )}
+                    />
                   </Grid>
                 </Grid>
                 <Box sx={{ pt: 2 }}>

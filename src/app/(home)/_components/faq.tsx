@@ -6,7 +6,6 @@ import {
   Grid,
   Sheet,
   Typography,
-  accordionDetailsClasses,
   accordionSummaryClasses,
 } from "@mui/joy";
 import AccordionGroup from "@mui/joy/AccordionGroup";

@@ -369,13 +369,38 @@ export const SERVICES = [
 export const FAQS = [
   {
     id: 1,
-    ques: "What is the validity of an EICR",
-    ans: "EICR is valid for 3-5 years",
-    service: "Electrical Services",
-    sub_service: "EICR",
+    ques: "Fire risk assessment responsibilities",
+    ans: "Home safety London are responsible for conducting a fire risk assessment in their properties. This assessment ensures the safety of tenants by identifying and addressing potential fire hazards. It is a legal obligation, and landlords must take necessary measures to minimize risks and protect occupants.",
+    
   },
   {
     id: 2,
-    // INSERT FROM REFERENCE WEBSITE
+    ques: "EPC (Energy Performance Certificate) for Home Safety London",
+    ans: "Home Safety London are required to obtain an EPC, which rates the energy efficiency of their property. It provides valuable information to tenants about energy consumption and costs.",
+  },
+  {
+    id: 3,
+    ques: "EICR (Electrical Installation Condition Report)",
+    ans: "Home Safety London must arrange an EICR to assess the electrical safety of their property. This report identifies any potential hazards, ensuring the electrical installations meet safety standards. It is a legal requirement to obtain a valid EICR.",
+  },
+  {
+    id: 4,
+    ques: "Do i need a Gas Safety Certs CP12 & 42 ?",
+    ans: "Home Safety London must prioritize gas safety by conducting annual gas safety checks on their properties. This ensures that gas appliances and installations are in good condition, minimizing the risk of gas leaks. A Gas Safety Certificate is issued upon completion, assuring tenants of a safe living environment. Compliance with gas safety regulations is a legal obligation for Home Safety.",
+  },
+  {
+    id: 5,
+    ques: "What should i do if the record for Gas safety show defects?",
+    ans: "The gas safety check records serve as a crucial indicator of the property's safety against gas leakages. Upon the completion of the annual gas safety check, a safety certificate is issued to assure tenants of the property's safety. The gas safety record is generated at the conclusion of the check, encompassing details of any defects identified within the property.",
+  },
+  {
+    id: 6,
+    ques: "Should i test and inspect all my gas appliances?",
+    ans: "Yes, We would recommend you have all your appliances tested and certified by Landlords Checks. We offer continuous support and advice.",
+  },
+  {
+    id: 7,
+    ques: "What necessary steps should be taken if the defects are found during the annual gas safety check?",
+    ans: "If any fault is found during the inspection, is it the property owners responsibility to source a company to fix the defect. The record made during the check should be provided to the landlord as soon as possible so that they can perform necessary actions. A landlord should ensure that his property is safe and secure for the tenants to live.",
   },
 ];
