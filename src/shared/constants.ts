@@ -1,4 +1,3 @@
-// Admin Panel
 import {
   Dashboard,
   Diversity2,
@@ -16,8 +15,9 @@ import {
   FireRiskIcon,
   GasSafteyIcon,
   PatIcon,
-  PlumbingIcon,
 } from "@/app/_components/common/icons";
+
+import ElectricImage from "@/images/electric.jpg";
 
 export const ADMIN_OPTIONS = [
   {
@@ -60,37 +60,29 @@ export const ADMIN_OPTIONS = [
 export const SITE_OPTIONS = [
   {
     route: "/",
-    label: "Hone",
-    Icon: Dashboard,
+    label: "Home",
   },
   {
     route: "/about-us",
     label: "About us",
-    Icon: Dashboard,
   },
   {
     route: "/services",
     label: "Services",
-    Icon: Dashboard,
   },
   {
     route: "/contact",
     label: "Contact",
-    Icon: Dashboard,
   },
   {
     route: "/terms-and-conditions",
     label: "Terms & Conditions",
-    Icon: Dashboard,
   },
   {
     route: "/privacy-policy",
     label: "Privacy Policy",
-    Icon: Dashboard,
   },
 ];
-
-export const SOCIALS = [];
 
 export const ORDER_STATUS = [
   "pending",
@@ -117,67 +109,6 @@ export const CATEGORIES = [
   {
     name: "Health & Safety",
   },
-];
-
-// Website
-
-export const SERVICES = [
-  {
-    id: 1,
-    serviceName: "EICR",
-    serviceDetail: "Electrical Certificate",
-    Icon: EicrIcon,
-  },
-  {
-    id: 2,
-    serviceName: "Fire",
-    serviceDetail: "Risk Assessment",
-    Icon: FireRiskIcon,
-  },
-  {
-    id: 3,
-    serviceName: "Fire",
-    serviceDetail: "Alarm Certificate",
-    Icon: FireIcon,
-  },
-  { id: 4, serviceName: "PAT", serviceDetail: "Testing", Icon: PatIcon },
-  {
-    id: 5,
-    serviceName: "GAS",
-    serviceDetail: "Safety Certificate",
-    Icon: GasSafteyIcon,
-  },
-  {
-    id: 6,
-    serviceName: "EPC",
-    serviceDetail: "Energy Performancer Certificate",
-    Icon: EpcIcon,
-  },
-  {
-    id: 7,
-    serviceName: "Fire",
-    serviceDetail: "Alarm Installation",
-    Icon: FireIcon,
-  },
-  {
-    id: 8,
-    serviceName: "Fuse",
-    serviceDetail: "Box Installation",
-    Icon: FireRiskIcon,
-  },
-  {
-    id: 9,
-    serviceName: "Boiler",
-    serviceDetail: "Box Installation",
-    Icon: EpcIcon,
-  },
-  {
-    id: 10,
-    serviceName: "Electrial",
-    serviceDetail: "Repairs",
-    Icon: EicrIcon,
-  },
-  { id: 11, serviceName: "GAS", serviceDetail: "Repairs", Icon: GasSafteyIcon },
 ];
 
 export const PRICE_INFO = [
@@ -227,5 +158,224 @@ export const PRICE_INFO = [
         price: 100,
       },
     ],
+  },
+];
+
+// INSERT CORRESPONDING IMAGE AND DATA HERE
+export const SERVICES = [
+  {
+    id: 1,
+    title: "Electrical Services",
+    route: "/electrical-services",
+    description: "Description of Electrical Services goes here...",
+    sub_services: [
+      {
+        id: 1,
+        route: "/eicr",
+        title: "EICR Certificate",
+        Icon: EicrIcon,
+        image: ElectricImage,
+        description: "Description of Electrical Services goes here...",
+        residential: {
+          unit: "bedrooms",
+          pricing: [
+            { units: "Studio Flat", price: 79 },
+            { units: "1-2 bedrooms", price: 99 },
+            { units: "3-4 bedrooms", price: 119 },
+            { units: "5-6 bedrooms", price: 149 },
+          ],
+        },
+        commercial: {
+          unit: "circuits",
+          pricing: [
+            { units: "1-5 circuits", price: 150 },
+            { units: "6-10 circuits", price: 199 },
+            { units: "11-20 circuits", price: 249 },
+          ],
+        },
+      },
+      {
+        id: 2,
+        route: "/pat",
+        title: "Portable Appliance Testing",
+        accronym: "PAT",
+        Icon: PatIcon,
+        image: ElectricImage,
+        description: "Description of Electrical Services goes here...",
+        commercial: [
+          { units: "1-10 items", price: 150 },
+          { units: "6-10 circuits", price: 199 },
+          { units: "11-20 circuits", price: 249 },
+        ],
+        residential: [{ units: "Studio Flat", price: 79 }],
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "Gas Services",
+    route: "/gas-services",
+    description: "Description of Gas Services goes here...",
+    image: "gas.jpg",
+
+    // INSERT CORRESPONDING DATA
+    sub_services: [
+      {
+        id: 1,
+        route: "/eicr",
+        title: "EICR Certificate",
+        Icon: EicrIcon,
+        image: ElectricImage,
+        description: "Description of Electrical Services goes here...",
+        residential: {
+          unit: "bedrooms",
+          pricing: [
+            { units: "Studio Flat", price: 79 },
+            { units: "1-2 bedrooms", price: 99 },
+            { units: "3-4 bedrooms", price: 119 },
+            { units: "5-6 bedrooms", price: 149 },
+          ],
+        },
+        commercial: {
+          unit: "circuits",
+          pricing: [
+            { units: "1-5 circuits", price: 150 },
+            { units: "6-10 circuits", price: 199 },
+            { units: "11-20 circuits", price: 249 },
+          ],
+        },
+      },
+      {
+        id: 2,
+        route: "/pat",
+        title: "Portable Appliance Testing",
+        accronym: "PAT",
+        Icon: PatIcon,
+        image: ElectricImage,
+        description: "Description of Electrical Services goes here...",
+        commercial: [
+          { units: "1-10 items", price: 150 },
+          { units: "6-10 circuits", price: 199 },
+          { units: "11-20 circuits", price: 249 },
+        ],
+        residential: [{ units: "Studio Flat", price: 79 }],
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "Fire Services",
+    route: "/fire-services",
+    description: "Description of Fire Services goes here...",
+    image: "fire.jpg",
+
+    // INSERT CORRESPONDING DATA
+    sub_services: [
+      {
+        id: 1,
+        route: "/eicr",
+        title: "EICR Certificate",
+        Icon: EicrIcon,
+        image: ElectricImage,
+        description: "Description of Electrical Services goes here...",
+        residential: {
+          unit: "bedrooms",
+          pricing: [
+            { units: "Studio Flat", price: 79 },
+            { units: "1-2 bedrooms", price: 99 },
+            { units: "3-4 bedrooms", price: 119 },
+            { units: "5-6 bedrooms", price: 149 },
+          ],
+        },
+        commercial: {
+          unit: "circuits",
+          pricing: [
+            { units: "1-5 circuits", price: 150 },
+            { units: "6-10 circuits", price: 199 },
+            { units: "11-20 circuits", price: 249 },
+          ],
+        },
+      },
+      {
+        id: 2,
+        route: "/pat",
+        title: "Portable Appliance Testing",
+        accronym: "PAT",
+        Icon: PatIcon,
+        image: ElectricImage,
+        description: "Description of Electrical Services goes here...",
+        commercial: [
+          { units: "1-10 items", price: 150 },
+          { units: "6-10 circuits", price: 199 },
+          { units: "11-20 circuits", price: 249 },
+        ],
+        residential: [{ units: "Studio Flat", price: 79 }],
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: "Health & Safety",
+    route: "/health-safety",
+    description: "Description of Health & Safety Services goes here...",
+    image: "health.jpg",
+
+    // INSERT CORRESPONDING DATA
+    sub_services: [
+      {
+        id: 1,
+        route: "/eicr",
+        title: "EICR Certificate",
+        Icon: EicrIcon,
+        image: ElectricImage,
+        description: "Description of Electrical Services goes here...",
+        residential: {
+          unit: "bedrooms",
+          pricing: [
+            { units: "Studio Flat", price: 79 },
+            { units: "1-2 bedrooms", price: 99 },
+            { units: "3-4 bedrooms", price: 119 },
+            { units: "5-6 bedrooms", price: 149 },
+          ],
+        },
+        commercial: {
+          unit: "circuits",
+          pricing: [
+            { units: "1-5 circuits", price: 150 },
+            { units: "6-10 circuits", price: 199 },
+            { units: "11-20 circuits", price: 249 },
+          ],
+        },
+      },
+      {
+        id: 2,
+        route: "/pat",
+        title: "Portable Appliance Testing",
+        accronym: "PAT",
+        Icon: PatIcon,
+        image: ElectricImage,
+        description: "Description of Electrical Services goes here...",
+        commercial: [
+          { units: "1-10 items", price: 150 },
+          { units: "6-10 circuits", price: 199 },
+          { units: "11-20 circuits", price: 249 },
+        ],
+        residential: [{ units: "Studio Flat", price: 79 }],
+      },
+    ],
+  },
+];
+
+export const FAQS = [
+  {
+    id: 1,
+    ques: "What is the validity of an EICR",
+    ans: "EICR is valid for 3-5 years",
+    service: "Electrical Services",
+    sub_service: "EICR",
+  },
+  {
+    id: 2,
+    // INSERT FROM REFERENCE WEBSITE
   },
 ];

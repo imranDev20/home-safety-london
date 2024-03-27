@@ -1,39 +1,42 @@
-import React from "react";
 import Image from "next/image";
 import { Box, Button, Card, Typography } from "@mui/joy";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
-import { GasSafteyIcon } from "@/app/_components/common/icons";
+import Link from "next/link";
+import { customSlugify } from "@/shared/functions";
 
 export default function Service({ service }: any) {
   return (
     <Box sx={{ mb: 2 }}>
       <Image
-        src={service.serviceImage}
+        src={service.image}
         objectFit="cover"
         alt="serviceImage"
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "100%", borderRadius: 5 }}
       />
 
-      <Card variant="soft" sx={{ borderRadius: 0, mt: -10, ml: 5, p: 3 }}>
-        <GasSafteyIcon sx={{ fontSize: 50 }} />
+      <Card variant="outlined" sx={{ mt: -10, ml: 5, p: 3 }}>
+        <service.Icon sx={{ fontSize: 50 }} color="primary" />
         <Box>
           <Typography level="h3" component="h3">
-            {service.ServiceName}
+            {service.title}
           </Typography>
           <Typography color="neutral" sx={{ my: 2 }}>
-            {service.serviceDetail.slice(0, 90)}...
+            {service.description}
           </Typography>
         </Box>
 
         <Button
           variant="outlined"
           color="primary"
+          component={Link}
+          href={`/services/${customSlugify(service.parentService)}${
+            service.route
+          }`}
           endDecorator={<ArrowCircleRightIcon />}
           sx={{
             px: 2,
             display: "flex",
             alignItems: "center",
-            borderRadius: 50,
           }}
         >
           Learn More

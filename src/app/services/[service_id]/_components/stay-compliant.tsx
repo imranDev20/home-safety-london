@@ -37,10 +37,10 @@ export default function StayCompliant() {
           textAlign: "center",
         }}
       >
-        <Typography sx={{ fontSize: 32, fontWeight: 600, marginBottom: 2 }}>
+        <Typography level="h2" sx={{ mb: 2 }}>
           Stay Safe & Compliant
         </Typography>
-        <Typography>
+        <Typography color="neutral">
           Qualified to carry out a vast range of safety checks Our Landlords
           Checks expert engineers are qualified to carry out a range of safety
           checks & issue safety certificates to Landlords Businesses &

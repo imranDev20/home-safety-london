@@ -24,7 +24,7 @@ import {
   Phone,
   WhatsApp,
 } from "@mui/icons-material";
-import { CATEGORIES } from "@/shared/constants";
+import { CATEGORIES, SERVICES } from "@/shared/constants";
 import Link from "next/link";
 import { customSlugify } from "@/shared/functions";
 
@@ -202,8 +202,8 @@ const ServicesMenu = React.forwardRef(
                 "--ListItemDecorator-size": "32px",
               }}
             >
-              {CATEGORIES.map((category) => (
-                <ListItem role="none" key={category.name}>
+              {SERVICES.map((service) => (
+                <ListItem role="none" key={service.title}>
                   <ListItemButton
                     role="menuitem"
                     {...getTargetProps(0)}
@@ -211,9 +211,9 @@ const ServicesMenu = React.forwardRef(
                       fontWeight: 600,
                     }}
                     component={Link}
-                    href={`/services/${customSlugify(category.name)}`}
+                    href={`/services/${customSlugify(service.title)}`}
                   >
-                    {category.name}
+                    {service.title}
                   </ListItemButton>
                 </ListItem>
               ))}
