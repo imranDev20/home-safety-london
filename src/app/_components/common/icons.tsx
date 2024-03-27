@@ -13,6 +13,9 @@ import FuseBoxSvg from "@/images/icons/fuse-box-icon.svg";
 import ElectricalRepairSvg from "@/images/icons/electrical-repair-icon.svg";
 import FireAlarmInstallSvg from "@/images/icons/fire-alarm-install-icon.svg";
 import EngineersSvg from "@/images/icons/engineer.svg";
+import LowPriceSvg from "@/images/icons/low-price.svg";
+import FastResponseSvg from "@/images/icons/fast-response.svg";
+import BookingSvg from "@/images/icons/booking.svg";
 
 export const GasSafteyIcon = createSvgIcon(<GasSafteySvg />, "Gas");
 export const PatIcon = createSvgIcon(<PatSvg />, "Pat");
@@ -38,3 +41,9 @@ export const FireAlarmInstallIcon = createSvgIcon(
 );
 
 export const EngineersIcon = createSvgIcon(<EngineersSvg />, "Engineers");
+export const LowPriceIcon = createSvgIcon(<LowPriceSvg />, "LowPrice");
+export const FastResponseIcon = createSvgIcon(
+  <FastResponseSvg />,
+  "FastResponse"
+);
+export const BookingIcon = createSvgIcon(<BookingSvg />, "Booking");

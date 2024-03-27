@@ -15,7 +15,6 @@ import ServiceDetails from "./_components/service-details";
 
 export default function QuotePage() {
   const searchParams = useSearchParams();
-  const serviceRef = useRef(null);
 
   const [order, setOrder] = useState<Order>({
     isGas: false,
@@ -54,7 +53,10 @@ export default function QuotePage() {
       <Heading sx={{ textAlign: "center", mb: 1, mt: 7 }}>
         3 Simple Steps to Your Quote
       </Heading>
-      <Paragraph sx={{ maxWidth: 700, mx: "auto", textAlign: "center", mb: 5 }}>
+      <Paragraph
+        color="neutral"
+        sx={{ maxWidth: 700, mx: "auto", textAlign: "center", mb: 5 }}
+      >
         Obtaining a quote for our landlord safety certification services is
         quick and easy. Follow our three simple steps to get a quote tailored to
         your needs.

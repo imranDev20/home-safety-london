@@ -1,7 +1,12 @@
 "use client";
 import React from "react";
 import { Box, Card, Container, Grid, Sheet, Typography } from "@mui/joy";
-import { EngineersIcon } from "@/app/_components/common/icons";
+import {
+  BookingIcon,
+  EngineersIcon,
+  FastResponseIcon,
+  LowPriceIcon,
+} from "@/app/_components/common/icons";
 
 const ADVANTAGES = [
   {
@@ -14,19 +19,19 @@ const ADVANTAGES = [
     id: 2,
     advantageName: "Low Price Promise",
     advantageDetail: "We won't be beaten on price.",
-    Icon: EngineersIcon,
+    Icon: LowPriceIcon,
   },
   {
     id: 3,
     advantageName: "Fast Response",
     advantageDetail: "Arrange an appointment, as early as tomorrow",
-    Icon: EngineersIcon,
+    Icon: FastResponseIcon,
   },
   {
     id: 4,
     advantageName: "Book Any Time",
     advantageDetail: "Book at a time that works for you",
-    Icon: EngineersIcon,
+    Icon: BookingIcon,
   },
 ];
 

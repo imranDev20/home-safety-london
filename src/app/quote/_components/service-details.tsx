@@ -1,7 +1,5 @@
 "use client";
-
 import HookFormError from "@/app/_components/common/hook-form-error";
-
 import { Dispatch, SetStateAction } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
@@ -18,19 +16,52 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
-  Grid,
   Radio,
   RadioGroup,
   Sheet,
   Stack,
   Typography,
-  checkboxClasses,
+  sheetClasses,
   radioClasses,
+  formLabelClasses,
   useTheme,
+  styled,
 } from "@mui/joy";
 import { CheckCircleRounded, CorporateFare, Home } from "@mui/icons-material";
 
 type PropertyType = "residential" | "commercial";
+
+const StyledRadioGroup = styled(RadioGroup)(({ theme }) => ({
+  flexDirection: "row",
+  gap: "12px",
+
+  [`& .${sheetClasses.root}`]: {
+    flex: 1,
+  },
+  [`& .${radioClasses.checked}`]: {
+    [`& .${radioClasses.action}`]: {
+      inset: -1,
+      border: "3px solid",
+      borderColor: "primary.500",
+    },
+  },
+  [`& .${formLabelClasses.root}`]: {
+    textAlign: "center",
+    width: "100%",
+  },
+  [`& .${radioClasses.radio}`]: {
+    display: "contents",
+
+    "& > svg": {
+      zIndex: 2,
+      position: "absolute",
+      top: "-8px",
+      right: "-8px",
+      bgcolor: "background.surface",
+      borderRadius: "50%",
+    },
+  },
+}));
 
 export default function ServiceDetails({
   order,
@@ -252,6 +283,7 @@ export default function ServiceDetails({
         component="h3"
         level="h4"
         sx={{
+          mt: 6,
           mb: 3,
         }}
       >
@@ -276,7 +308,7 @@ export default function ServiceDetails({
                     display: "flex",
                     flexDirection: "column",
                     gap: 2,
-                    width: 300,
+
                     "& > div": { p: 2, borderRadius: "md", display: "flex" },
                   }}
                 >
@@ -325,7 +357,7 @@ export default function ServiceDetails({
               <FormControl
                 disabled={!isGas}
                 sx={{
-                  mt: 1,
+                  mt: 3,
                 }}
                 error={!!errors.appliances}
               >
@@ -339,32 +371,12 @@ export default function ServiceDetails({
                   How many gas appliances does your property have?
                 </FormLabel>
 
-                <RadioGroup
+                <StyledRadioGroup
                   {...field}
                   overlay
                   name="platform"
                   sx={{
-                    flexDirection: "row",
-                    gap: 2,
                     opacity: isGas ? 1 : 0.5,
-                    [`& .${radioClasses.checked}`]: {
-                      [`& .${radioClasses.action}`]: {
-                        inset: -1,
-                        border: "3px solid",
-                        borderColor: "primary.500",
-                      },
-                    },
-                    [`& .${radioClasses.radio}`]: {
-                      display: "contents",
-                      "& > svg": {
-                        zIndex: 2,
-                        position: "absolute",
-                        top: "-8px",
-                        right: "-8px",
-                        bgcolor: "background.surface",
-                        borderRadius: "50%",
-                      },
-                    },
                   }}
                 >
                   {[
@@ -402,11 +414,13 @@ export default function ServiceDetails({
                         }}
                       >
                         <Typography>{option.label}</Typography>
-                        <Typography level="body-sm">£{option.price}</Typography>
+                        <Typography level="body-lg" color="primary">
+                          £{option.price}
+                        </Typography>
                       </FormLabel>
                     </Sheet>
                   ))}
-                </RadioGroup>
+                </StyledRadioGroup>
                 <HookFormError name="appliances" errors={errors} />
               </FormControl>
             )}
@@ -425,30 +439,42 @@ export default function ServiceDetails({
             control={control}
             render={({ field: { value, onChange } }) => (
               <FormControl error={!!errors.isEicr}>
-                <Checkbox
-                  checked={value}
-                  required={!isGas && !isEpc}
-                  onChange={(e) => {
-                    onChange(e.target.checked);
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
 
-                    setValue("fuseBoards", "");
-                    setOrder({ ...order, fuseBoards: "" });
-
-                    clearErrors("isEicr");
-                    clearErrors("isEpc");
-                    clearErrors("isGas");
+                    "& > div": { p: 2, borderRadius: "md", display: "flex" },
                   }}
-                  label={
-                    <Typography
-                      sx={{
-                        fontSize: 20,
-                        fontWeight: 500,
+                >
+                  <Sheet variant="outlined">
+                    <Checkbox
+                      checked={value}
+                      required={!isGas && !isEpc}
+                      onChange={(e) => {
+                        onChange(e.target.checked);
+
+                        setValue("fuseBoards", "");
+                        setOrder({ ...order, fuseBoards: "" });
+
+                        clearErrors("isEicr");
+                        clearErrors("isEpc");
+                        clearErrors("isGas");
                       }}
-                    >
-                      EICR
-                    </Typography>
-                  }
-                />
+                      label={
+                        <Typography
+                          sx={{
+                            fontSize: 20,
+                            fontWeight: 500,
+                          }}
+                        >
+                          EICR
+                        </Typography>
+                      }
+                    />
+                  </Sheet>
+                </Box>
                 <HookFormError name="isEicr" errors={errors} />
               </FormControl>
             )}
@@ -474,63 +500,7 @@ export default function ServiceDetails({
                 >
                   How many Fuse Boards does your property have?
                 </FormLabel>
-                <RadioGroup {...field}>
-                  <Radio
-                    disabled={!isEicr}
-                    value={1}
-                    label={
-                      <Typography>
-                        1 Unit -{" "}
-                        <Typography
-                          component="span"
-                          sx={{
-                            color: "primary.main",
-                            fontWeight: 600,
-                          }}
-                        >
-                          ( £150 )
-                        </Typography>
-                      </Typography>
-                    }
-                  />
 
-                  <Radio
-                    disabled={!isEicr}
-                    value={2}
-                    label={
-                      <Typography>
-                        2 Units -{" "}
-                        <Typography
-                          component="span"
-                          sx={{
-                            color: "primary.main",
-                            fontWeight: 600,
-                          }}
-                        >
-                          ( £200 )
-                        </Typography>
-                      </Typography>
-                    }
-                  />
-                  <Radio
-                    disabled={!isEicr}
-                    value={3}
-                    label={
-                      <Typography>
-                        3 Units -{" "}
-                        <Typography
-                          component="span"
-                          sx={{
-                            color: "primary.main",
-                            fontWeight: 600,
-                          }}
-                        >
-                          ( Call for Price )
-                        </Typography>
-                      </Typography>
-                    }
-                  />
-                </RadioGroup>
                 <HookFormError name="fuseBoards" errors={errors} />
               </FormControl>
             )}
