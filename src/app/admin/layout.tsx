@@ -134,7 +134,7 @@ export default function AdminLayout({
             </Box>
 
             <IconButton variant="plain" size="sm">
-              <Logout size="sm" />
+              <Logout />
             </IconButton>
           </Box>
         </Box>

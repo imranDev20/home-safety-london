@@ -1,7 +1,21 @@
 "use client";
 import { Home, KeyboardArrowRight } from "@mui/icons-material";
-import { Breadcrumbs, Link as JoyLink, Typography, useTheme } from "@mui/joy";
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  FormControl,
+  Grid,
+  Input,
+  Link as JoyLink,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/joy";
 import Link from "next/link";
+import SearchIcon from "@mui/icons-material/Search";
+import AddIcon from "@mui/icons-material/Add";
+import Teams from "./_components/teams";
 
 const Team = () => {
   const theme = useTheme();
@@ -41,6 +55,51 @@ const Team = () => {
       <Typography component="h1" level="h2">
         Team
       </Typography>
+
+      <Stack
+        sx={{
+          my: 3,
+        }}
+      >
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Grid xs={5}>
+            <Box>
+              <FormControl size="sm">
+                <Input
+                  fullWidth
+                  placeholder="Search for name or designation"
+                  startDecorator={<SearchIcon />}
+                />
+              </FormControl>
+            </Box>
+          </Grid>
+          <Grid
+            xs={4}
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "end",
+            }}
+          >
+            <Box>
+              <Button variant="solid" startDecorator={<AddIcon />}>
+                Add New Member
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+      </Stack>
+
+      {/* import team page component */}
+      <Teams />
     </>
   );
 };
