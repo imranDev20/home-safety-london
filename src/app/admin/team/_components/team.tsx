@@ -10,20 +10,50 @@ import {
   Box,
   ButtonGroup,
   Divider,
+  Dropdown,
   IconButton,
+  ListItemDecorator,
+  Menu,
+  MenuButton,
+  MenuItem,
   Stack,
   SvgIcon,
   useTheme,
 } from "@mui/joy";
 import Image from "next/image";
 import engineer from "../../../../images/engineer-note.jpg";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import Edit from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Team({ team }: any) {
   const theme = useTheme();
   return (
     <>
-      <Card variant="outlined">
+      <Card variant="outlined" sx={{ position: "relative" }}>
         <CardOverflow>
+          <Box sx={{ position: "absolute" }}>
+            <Dropdown>
+              <MenuButton slots={{ root: IconButton }}>
+                <MoreHorizIcon />
+              </MenuButton>
+              <Menu placement="bottom-end">
+                <MenuItem>
+                  <ListItemDecorator>
+                    <Edit />
+                  </ListItemDecorator>
+                  Edit post
+                </MenuItem>
+
+                <MenuItem>
+                  <ListItemDecorator>
+                    <DeleteIcon />
+                  </ListItemDecorator>
+                  Delete
+                </MenuItem>
+              </Menu>
+            </Dropdown>
+          </Box>
           <AspectRatio maxHeight={140}>
             <Image src={engineer} alt="cardImage" loading="lazy" />
           </AspectRatio>
@@ -60,7 +90,7 @@ export default function Team({ team }: any) {
           <Stack
             spacing={3}
             direction="row"
-            sx={{ display: "flex", justifyContent: "center", my: 3 }}
+            sx={{ display: "flex", justifyContent: "center", my: 2 }}
           >
             <Box>
               <Typography component="h5" color="primary">
