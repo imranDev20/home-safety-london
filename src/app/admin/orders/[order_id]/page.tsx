@@ -42,7 +42,7 @@ export default function SingleOrderPage() {
           px: 0,
           fontSize: 13,
         }}
-        separator={<KeyboardArrowRight fontSize="md" />}
+        separator={<KeyboardArrowRight />}
       >
         <JoyLink
           component={Link}
