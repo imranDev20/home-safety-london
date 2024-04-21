@@ -15,7 +15,7 @@ import {
 } from "@mui/joy";
 import Link from "next/link";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import HookFormError from "../_components/common/hook-form-error";
+import HookFormError from "../../_components/common/hook-form-error";
 
 export default function SignUp() {
   const {

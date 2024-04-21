@@ -1,10 +1,9 @@
 "use client";
-import Faq from "@/app/(home)/_components/faq";
-import Hero from "@/app/(home)/_components/hero";
-import LondonMap from "@/app/(home)/_components/london-map";
-import Services from "@/app/(home)/_components/services";
-import Testimonial from "@/app/(home)/_components/testimonial";
-import ContactForm from "./_components/contact-form";
+import Faq from "@/app/(site)/_components/faq";
+import Hero from "@/app/(site)/_components/hero";
+import LondonMap from "@/app/(site)/_components/london-map";
+import Services from "@/app/(site)/_components/services";
+import Testimonial from "@/app/(site)/_components/testimonial";
 import About from "./_components/about";
 import SubServices from "./_components/sub-services";
 import Partners from "../_components/common/partners";

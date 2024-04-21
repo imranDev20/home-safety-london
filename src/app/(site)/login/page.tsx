@@ -19,8 +19,8 @@ import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import GoogleIcon from "@mui/icons-material/Google";
 
-import NextLink from "../_components/common/next-link";
-import HookFormError from "../_components/common/hook-form-error";
+import NextLink from "../../_components/common/next-link";
+import HookFormError from "../../_components/common/hook-form-error";
 
 export default function Login() {
   const {

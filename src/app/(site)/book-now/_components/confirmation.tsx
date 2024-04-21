@@ -16,37 +16,12 @@ export default function Confirmation({ order }: { order: Order }) {
   const theme = useTheme();
 
   useEffect(() => {
-    if (!order.isPersonalStepComplete) {
-      router.push(pathname + "?" + createQueryString("active_step", "1"));
-    }
-  }, [order.isPersonalStepComplete, pathname, router]);
+    // if (!order.isPersonalStepComplete) {
+    //   router.push(pathname + "?" + createQueryString("active_step", "1"));
+    // }
+  }, [pathname, router]);
 
   const items = getServiceItems(order);
-
-  if (!order.isServiceStepComplete && !order.isPersonalStepComplete) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          height: 300,
-        }}
-      >
-        <CircularProgress size="lg" thickness={3} />
-        <Typography
-          sx={{
-            mt: 3,
-            fontWeight: 500,
-            fontSize: 20,
-          }}
-        >
-          Loading
-        </Typography>
-      </Box>
-    );
-  }
 
   return (
     <>
