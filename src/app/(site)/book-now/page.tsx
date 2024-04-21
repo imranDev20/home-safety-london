@@ -1,19 +1,19 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/joy/Box";
 import { Card, CardContent, Container, Grid, Typography } from "@mui/joy";
-import PageHeader from "../_components/common/page-header";
+import PageHeader from "../../_components/common/page-header";
 import BackgroundImage from "@/images/about-bg.jpeg";
-import Paragraph from "../_components/common/paragraph";
-import PersonalDetails from "./_components/personal-details";
+import Paragraph from "../../_components/common/paragraph";
 import { Order } from "@/types/misc";
 import { useSearchParams } from "next/navigation";
-import Payments from "./_components/payments";
-import Confirmation from "./_components/confirmation";
-import Heading from "../_components/common/heading";
 import ServiceDetails from "./_components/service-details";
+import PersonalDetails from "./_components/personal-details";
+import Confirmation from "./_components/confirmation";
+import Payments from "./_components/payments";
+import Heading from "@/app/_components/common/heading";
 
-export default function QuotePage() {
+export default function BookNowPage() {
   const searchParams = useSearchParams();
 
   const [order, setOrder] = useState<Order>({
@@ -25,14 +25,12 @@ export default function QuotePage() {
     bedRooms: "",
     tflZone: "",
     time: "",
-    isServiceStepComplete: false,
     name: "",
     email: "",
     phone: "",
     house: "",
     postCode: "",
     city: "",
-    isPersonalStepComplete: false,
     date: null,
   });
 
@@ -85,18 +83,13 @@ export default function QuotePage() {
             >
               <CardContent>
                 {activeStep === 1 || Number.isNaN(activeStep) ? (
-                  <ServiceDetails order={order} setOrder={setOrder} />
+                  <ServiceDetails />
                 ) : null}
-                {activeStep === 2 ? (
-                  <PersonalDetails order={order} setOrder={setOrder} />
-                ) : null}
+                {activeStep === 2 ? <PersonalDetails /> : null}
 
                 {activeStep === 3 ? <Confirmation order={order} /> : null}
 
-                {order.isPersonalStepComplete &&
-                  order.isServiceStepComplete && (
-                    <Payments activeStep={activeStep} order={order} />
-                  )}
+                <Payments activeStep={activeStep} order={order} />
               </CardContent>
             </Card>
           </Grid>

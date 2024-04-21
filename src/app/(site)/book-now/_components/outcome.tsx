@@ -174,29 +174,6 @@ export default function Outcome() {
         </Box>
       )}
 
-      {(message?.status === null || message?.status === "processing") && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-            height: 300,
-          }}
-        >
-          <CircularProgress size="lg" thickness={3} />
-          <Typography
-            sx={{
-              mt: 3,
-              fontWeight: 500,
-              fontSize: 20,
-            }}
-          >
-            Loading
-          </Typography>
-        </Box>
-      )}
-
       {message?.status === "requires_payment_method" && (
         <Box
           sx={{

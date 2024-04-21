@@ -3,9 +3,9 @@ import { CssVarsProvider } from "@mui/joy/styles";
 import CssBaseline from "@mui/joy/CssBaseline";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Header from "./_components/global/header";
-import Footer from "./_components/global/footer";
-import TopLoader from "./_components/common/top-loader";
+import Header from "../_components/global/header";
+import Footer from "../_components/global/footer";
+import TopLoader from "../_components/common/top-loader";
 import { Suspense } from "react";
 import dbConnect from "@/app/api/_lib/dbConnect";
 

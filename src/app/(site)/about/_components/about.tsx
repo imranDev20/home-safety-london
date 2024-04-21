@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Box, Button, Container, Divider, Grid, Typography } from "@mui/joy";
-import engineer from "../../../images/engineer.webp";
+import engineer from "@/images/engineer.webp";
 import Image from "next/image";
 import { theme } from "@/shared/theme";
 import { EicrIcon } from "@/app/_components/common/icons";

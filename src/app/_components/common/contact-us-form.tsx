@@ -8,6 +8,7 @@ import {
   Grid,
   Input,
   InputProps,
+  Textarea,
   Typography,
 } from "@mui/joy";
 import { Controller, useForm } from "react-hook-form";
@@ -175,11 +176,10 @@ export default function ContactUsForm() {
                       control={control}
                       render={({ field }) => (
                         <FormControl error={!!errors.message} sx={{ mb: 1 }}>
-                          <Input
+                          <Textarea
                             {...field}
+                            minRows={5}
                             placeholder="Your Message here..."
-                            type="text"
-                            fullWidth
                             variant="soft"
                             size="lg"
                           />

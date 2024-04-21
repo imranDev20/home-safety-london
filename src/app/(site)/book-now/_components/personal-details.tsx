@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Divider,
   FormControl,
+  FormLabel,
   Grid,
   Input,
   InputProps,
@@ -39,13 +40,7 @@ const PhoneInputAdapter = React.forwardRef<InputProps, any>(
   }
 );
 
-export default function PersonalDetails({
-  order,
-  setOrder,
-}: {
-  order: Order;
-  setOrder: Dispatch<SetStateAction<Order>>;
-}) {
+export default function PersonalDetails() {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -55,51 +50,25 @@ export default function PersonalDetails({
     formState: { errors },
   } = useForm<PersonalFormInput>({
     defaultValues: {
-      name: order.name || "",
-      email: order.email || "",
-      phone: order.phone || "",
-      house: order.house || "",
-      postCode: order.postCode || "",
+      name: "",
+      email: "",
+      phone: "",
+      house: "",
+      postCode: "",
       city: "London",
     },
   });
 
   const onPersonalDetailsSubmit: SubmitHandler<PersonalFormInput> = (data) => {
-    setOrder({ ...order, ...data, isPersonalStepComplete: true });
     router.push(pathname + "?" + createQueryString("active_step", "3"));
     window.scrollTo(0, 300);
   };
 
   useEffect(() => {
-    if (!order.isServiceStepComplete) {
-      router.push(pathname + "?" + createQueryString("active_step", "1"));
-    }
-  }, [order.isServiceStepComplete, pathname, router]);
-
-  if (!order.isServiceStepComplete) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          height: 300,
-        }}
-      >
-        <CircularProgress size="lg" thickness={3} />
-        <Typography
-          sx={{
-            mt: 3,
-            fontWeight: 500,
-            fontSize: 20,
-          }}
-        >
-          Loading
-        </Typography>
-      </Box>
-    );
-  }
+    // if (!order.isServiceStepComplete) {
+    //   router.push(pathname + "?" + createQueryString("active_step", "1"));
+    // }
+  }, [pathname, router]);
 
   return (
     <>
@@ -128,13 +97,8 @@ export default function PersonalDetails({
             }}
             render={({ field }) => (
               <FormControl error={!!errors.name}>
-                <Input
-                  {...field}
-                  fullWidth
-                  size="lg"
-                  variant="outlined"
-                  placeholder="Your name"
-                />
+                <FormLabel>Name</FormLabel>
+                <Input {...field} fullWidth size="lg" variant="outlined" />
                 <HookFormError name="name" errors={errors} />
               </FormControl>
             )}
@@ -153,13 +117,8 @@ export default function PersonalDetails({
             }}
             render={({ field }) => (
               <FormControl error={!!errors.email}>
-                <Input
-                  {...field}
-                  fullWidth
-                  size="lg"
-                  variant="outlined"
-                  placeholder="Your email address"
-                />
+                <FormLabel>Email</FormLabel>
+                <Input {...field} fullWidth size="lg" variant="outlined" />
                 <HookFormError name="email" errors={errors} />
               </FormControl>
             )}
@@ -180,10 +139,10 @@ export default function PersonalDetails({
             }}
             render={({ field }) => (
               <FormControl error={!!errors.phone}>
+                <FormLabel>Phone</FormLabel>
                 <Input
                   size="lg"
                   {...field}
-                  placeholder="Phone number"
                   slotProps={{
                     input: {
                       component: PhoneInputAdapter,
@@ -220,13 +179,8 @@ export default function PersonalDetails({
             }}
             render={({ field }) => (
               <FormControl error={!!errors.house}>
-                <Input
-                  size="lg"
-                  {...field}
-                  fullWidth
-                  variant="outlined"
-                  placeholder="Your house number and street name"
-                />
+                <FormLabel>House No and Street Name</FormLabel>
+                <Input size="lg" {...field} fullWidth variant="outlined" />
                 <HookFormError name="house" errors={errors} />
               </FormControl>
             )}
@@ -245,18 +199,18 @@ export default function PersonalDetails({
             }}
             render={({ field: { value, onChange } }) => (
               <FormControl error={!!errors.postCode}>
+                <FormLabel>Post Code</FormLabel>
                 <Input
                   size="lg"
                   value={value}
                   onChange={(e) => onChange(e.target.value.toUpperCase())}
                   fullWidth
                   variant="outlined"
-                  placeholder="Your post code"
                 />
+                <HookFormError name="postCode" errors={errors} />
               </FormControl>
             )}
           />
-          <HookFormError name="postCode" errors={errors} />
         </Grid>
         <Grid xs={6}>
           <Controller
@@ -264,12 +218,12 @@ export default function PersonalDetails({
             name="city"
             render={({ field }) => (
               <FormControl error={!!errors.city}>
+                <FormLabel>London</FormLabel>
                 <Input
                   {...field}
                   size="lg"
                   disabled
                   fullWidth
-                  placeholder="City"
                   variant="outlined"
                 />
                 <HookFormError name="city" errors={errors} />
