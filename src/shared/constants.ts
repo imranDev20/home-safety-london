@@ -1,4 +1,3 @@
-// Admin Panel
 import {
   Dashboard,
   Diversity2,
@@ -8,6 +7,7 @@ import {
   ShoppingCart,
   Support,
 } from "@mui/icons-material";
+import PersonIcon from '@mui/icons-material/Person';
 
 import {
   EicrIcon,
@@ -16,8 +16,9 @@ import {
   FireRiskIcon,
   GasSafteyIcon,
   PatIcon,
-  PlumbingIcon,
 } from "@/app/_components/common/icons";
+
+import ElectricImage from "@/images/electric.jpg";
 
 export const ADMIN_OPTIONS = [
   {
@@ -51,6 +52,11 @@ export const ADMIN_OPTIONS = [
     Icon: Support,
   },
   {
+    route: "/admin/profile",
+    label: "Profile",
+    Icon: PersonIcon,
+  },
+  {
     route: "/admin/settings",
     label: "Settings",
     Icon: Settings,
@@ -60,37 +66,29 @@ export const ADMIN_OPTIONS = [
 export const SITE_OPTIONS = [
   {
     route: "/",
-    label: "Hone",
-    Icon: Dashboard,
+    label: "Home",
   },
   {
     route: "/about-us",
     label: "About us",
-    Icon: Dashboard,
   },
   {
     route: "/services",
     label: "Services",
-    Icon: Dashboard,
   },
   {
     route: "/contact",
     label: "Contact",
-    Icon: Dashboard,
   },
   {
     route: "/terms-and-conditions",
     label: "Terms & Conditions",
-    Icon: Dashboard,
   },
   {
     route: "/privacy-policy",
     label: "Privacy Policy",
-    Icon: Dashboard,
   },
 ];
-
-export const SOCIALS = [];
 
 export const ORDER_STATUS = [
   "pending",
@@ -117,67 +115,6 @@ export const CATEGORIES = [
   {
     name: "Health & Safety",
   },
-];
-
-// Website
-
-export const SERVICES = [
-  {
-    id: 1,
-    serviceName: "EICR",
-    serviceDetail: "Electrical Certificate",
-    Icon: EicrIcon,
-  },
-  {
-    id: 2,
-    serviceName: "Fire",
-    serviceDetail: "Risk Assessment",
-    Icon: FireRiskIcon,
-  },
-  {
-    id: 3,
-    serviceName: "Fire",
-    serviceDetail: "Alarm Certificate",
-    Icon: FireIcon,
-  },
-  { id: 4, serviceName: "PAT", serviceDetail: "Testing", Icon: PatIcon },
-  {
-    id: 5,
-    serviceName: "GAS",
-    serviceDetail: "Safety Certificate",
-    Icon: GasSafteyIcon,
-  },
-  {
-    id: 6,
-    serviceName: "EPC",
-    serviceDetail: "Energy Performancer Certificate",
-    Icon: EpcIcon,
-  },
-  {
-    id: 7,
-    serviceName: "Fire",
-    serviceDetail: "Alarm Installation",
-    Icon: FireIcon,
-  },
-  {
-    id: 8,
-    serviceName: "Fuse",
-    serviceDetail: "Box Installation",
-    Icon: FireRiskIcon,
-  },
-  {
-    id: 9,
-    serviceName: "Boiler",
-    serviceDetail: "Box Installation",
-    Icon: EpcIcon,
-  },
-  {
-    id: 10,
-    serviceName: "Electrial",
-    serviceDetail: "Repairs",
-    Icon: EicrIcon,
-  },
-  { id: 11, serviceName: "GAS", serviceDetail: "Repairs", Icon: GasSafteyIcon },
 ];
 
 export const PRICE_INFO = [
@@ -229,3 +166,261 @@ export const PRICE_INFO = [
     ],
   },
 ];
+
+// INSERT CORRESPONDING IMAGE AND DATA HERE
+export const SERVICES = [
+  {
+    id: 1,
+    title: "Electrical Services",
+    route: "/electrical-services",
+    description: "Description of Electrical Services goes here...",
+    sub_services: [
+      {
+        id: 1,
+        route: "/eicr",
+        title: "EICR Certificate",
+        Icon: EicrIcon,
+        image: ElectricImage,
+        description:
+          "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
+        residential: {
+          unit: "bedrooms",
+          pricing: [
+            { units: "Studio Flat", price: 79 },
+            { units: "1-2 bedrooms", price: 99 },
+            { units: "3-4 bedrooms", price: 119 },
+            { units: "5-6 bedrooms", price: 149 },
+          ],
+        },
+        commercial: {
+          unit: "circuits",
+          pricing: [
+            { units: "1-5 circuits", price: 150 },
+            { units: "6-10 circuits", price: 199 },
+            { units: "11-20 circuits", price: 249 },
+          ],
+        },
+      },
+      {
+        id: 2,
+        route: "/pat",
+        title: "Portable Appliance Testing",
+        accronym: "PAT",
+        Icon: PatIcon,
+        image: ElectricImage,
+        description:
+          "PAT stands for portable appliance testing, a procedure in which electrical portable appliances are tested/inspected by a certified electrician registered with a body e.g. NICEIC or NAPIT.",
+        residential: [
+          { units: "1-10 items", price: 59 },
+          { units: " 11-20 items", price: 79 },
+          { units: " 21-40 items", price: 99 },
+        ],
+        commercial: [
+          { units: "1-10 items", price: 150 },
+          { units: "11-20 circuits", price: 199 },
+          { units: "21-30 circuits", price: 249 },
+          { units: "Any extra item", price: 249 },
+        ],
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "Gas Services",
+    route: "/gas-services",
+    description: "Description of Gas Services goes here...",
+    image: "gas.jpg",
+
+    // INSERT CORRESPONDING DATA
+    sub_services: [
+      {
+        id: 1,
+        route: "/gas-certificate",
+        title: "Gas Certificate",
+        Icon: GasSafteyIcon,
+        image: ElectricImage,
+        description:
+          "Gas Safety certificate is a document which affirms that inspection of all gas appliances is carried out in the property to make sure gas pipework, flues and each gas appliance are working properly, there is no danger and are checked during gas safety check by a gas safe registered engineer.",
+        residential: {
+          unit: "bedrooms",
+          pricing: [
+            { units: "1-2 gas appliances ", price: 79 },
+            { units: " 3 gas appliances ", price: 99 },
+            { units: "4 gas appliances", price: 119 },
+          ],
+        },
+        commercial: {
+          unit: "circuits",
+          pricing: [{ units: "Starting from", price: 150 }],
+        },
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "Fire Services",
+    route: "/fire-services",
+    description: "Description of Fire Services goes here...",
+    image: "fire.jpg",
+
+    // INSERT CORRESPONDING DATA
+    sub_services: [
+      {
+        id: 1,
+        route: "/fire-alarm-certificate",
+        title: "Fire Alarm Certificate",
+        Icon: FireIcon,
+        image: ElectricImage,
+        description:
+          "Fire alarm certificate is a document/report issued by a qualified electrician after inspection and testing of the property’s alarms in accordance with regulation BS5839. These rules and regulations are part of the fire detection and fire alarm systems for building, they cover design commissioning and maintenance.",
+        residential: {
+          unit: "bedrooms",
+          pricing: [
+            { units: "1-3 detectors", price: 79 },
+            { units: "Any extra detector", price: 99 },
+          ],
+        },
+        commercial: {
+          unit: "circuits",
+          pricing: [
+            { units: "1-3 detectors", price: 150 },
+            { units: "Any extra detector", price: 199 },
+          ],
+        },
+      },
+      {
+        id: 2,
+        route: "/fire-risk-assessment",
+        title: "Fire Risk Assessment",
+        Icon: FireRiskIcon,
+        image: ElectricImage,
+        description:
+          "A fire risk assessment is a systematic evaluation of a building or premises to identify potential fire hazards and assess the level of risk they pose. The purpose of a fire risk assessment is to make sure the safety of occupant and to implement appropriate fire safety measures to prevent fires and protect lives and property. We provide fire safety risk assessment service to landlords, homeowners, employers for residential homes, flats, HMO properties, offices and businesses respectively.",
+        commercial: [
+          { units: "Single storey communal area ", price: 150 },
+          { units: "Two storey communal area", price: 199 },
+          { units: " Three storey communal area", price: 249 },
+        ],
+        residential: [
+          { units: "1-3 bedrooms", price: 79 },
+          { units: " 4-6 bedrooms", price: 79 },
+        ],
+      },
+      {
+        id: 3,
+        route: "/emergency-lighting-certificate",
+        title: "Emergency Lighting Certificate",
+        Icon: FireRiskIcon,
+        image: ElectricImage,
+        description:
+          "The legal requirement is that non-domestic buildings must be safe at all times, even if mains power failure occurs. Therefore, nearly all such buildings must have emergency lighting fitted. The Industry Committee for Emergency Lighting (ICEL)",
+        commercial: [{ units: "Single storey communal area ", price: 150 }],
+        residential: [{ units: "1-3 bedrooms", price: 79 }],
+      },
+      {
+        id: 4,
+        route: "/fire-alarm-installation",
+        title: "Fire Alarm Installation",
+        Icon: FireRiskIcon,
+        image: ElectricImage,
+        description:
+          "In the United Kingdom, BS5389 governs fire alarm installation. British Standards is abbreviated as BS, and the number 5389 refers to the specific standard for fire safety devices. According to this standard, a smoke sensor is a sensor that senses smoke by the heat of combustion products or any other particularly designed smoke-specific indication, in particular to use an alarm before smoke becomes thick enough just to react with an open fire’s flame.",
+        commercial: [{ units: "Single storey communal area ", price: 150 }],
+        residential: [{ units: "1-3 bedrooms", price: 79 }],
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: "Health & Safety",
+    route: "/health-safety",
+    description: "Description of Health & Safety Services goes here...",
+    image: "health.jpg",
+
+    // INSERT CORRESPONDING DATA
+    sub_services: [
+      {
+        id: 1,
+        route: "/energy-performance-certificate",
+        title: "Energy Performance Certificate",
+        Icon: EpcIcon,
+        image: ElectricImage,
+        description:
+          "London Property Inspections residential energy certification team can provide your EPC quickly to make sure that your property is on the market in the shortest possible time. We have been known to produce certificates and have them back to the customers within 3 hours and have an average turnaround time of 2 days from processing of order to order completion.",
+        residential: {
+          unit: "bedrooms",
+          pricing: [
+            { units: "Studio Flat", price: 79 },
+            { units: "1-3 bedrooms", price: 99 },
+            { units: "4-6 bedrooms", price: 119 },
+          ],
+        },
+        commercial: {
+          unit: "circuits",
+          pricing: [{ units: "Price starts from", price: 150 }],
+        },
+      },
+    ],
+  },
+];
+
+export const FAQS = [
+  {
+    id: 1,
+    ques: "What is the validity of an EICR",
+    ans: "EICR is valid for 3-5 years",
+    service: "Electrical Services",
+    sub_service: "EICR",
+  },
+  {
+    id: 2,
+    ques: "What is validity of PAT Testing?",
+    ans: "Pat testing is valid for 1 year.",
+    service: "Electrical Services",
+    sub_service: "PAT",
+  },
+  {
+    id: 3,
+    ques: "What is the validity of GAS SAFETY Certificate",
+    ans: "Gas safety certificate is valid for 1 year.",
+    service: "Gas Services",
+    sub_service: "Gas Certificate",
+  },
+  {
+    id: 4,
+    ques: "What is turnaround time for fire alarm certificate?",
+    ans: "London Property Inspections can carry out an fire alarm inspection within 24 hours if customer need an report on urgent basis. Sometimes we carry out an inspection on the same day.",
+    service: "Fire Services",
+    sub_service: "Fire Alarm Certificate",
+  },
+  {
+    id: 5,
+    ques: "What is the validity of EPC?",
+    ans: "EPC is valid for 10 years.",
+    service: "Health & Safety",
+    sub_service: "EPC",
+  },
+  {
+    id: 6,
+    ques: "How can I know the electrician is qualified?",
+    ans: "All of our electricians (contractors) are qualified with NICEIC, NAPIT and STROMA. Registration number of electricians is provided to customer for verification purposes prior to the inspection",
+    service: "Electrical Services",
+    sub_service: "EICR",
+  },
+  {
+    id: 7,
+    ques: "How do I receive fire alarm certificate?",
+    ans: "Fire alarm certificate is provided in digital format (pdf) via email. You can also download it from our website.",
+    service: "Fire Services",
+    sub_service: "Fire Alarm Certificate",
+  },
+];
+
+const MODIFIED_SERVICES = SERVICES.map((service) =>
+  service.sub_services.map((s_service) => ({
+    ...s_service,
+    parentService: service.title,
+  }))
+);
+
+export const SUB_SERVICES = MODIFIED_SERVICES.flatMap((service) => service);

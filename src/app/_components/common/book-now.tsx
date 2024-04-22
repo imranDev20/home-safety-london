@@ -6,7 +6,7 @@ import {
   Divider,
   Stack,
   Typography,
-} from "@mui/material";
+} from "@mui/joy";
 import Link from "next/link";
 import React from "react";
 
@@ -49,7 +49,7 @@ const BookNow = () => {
             color="primary"
             size="lg"
             component={Link}
-            href="/quote?property_type=residential"
+            href="/book-now?property_type=residential"
           >
             Residential Property
           </Button>
@@ -59,7 +59,7 @@ const BookNow = () => {
             color="primary"
             size="lg"
             component={Link}
-            href="/quote?property_type=commercial"
+            href="/book-now?property_type=commercial"
           >
             Commercial Property
           </Button>

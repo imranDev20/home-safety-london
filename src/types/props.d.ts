@@ -1,4 +1,4 @@
-import { TypographyProps } from "@mui/material";
+import { TypographyProps } from "@mui/joy";
 import { StaticImageData } from "next/image";
 import { ReactNode, ReactElement } from "react";
 import { Faq, Service } from "./misc";

@@ -23,6 +23,7 @@ import Link from "next/link";
 import SearchIcon from "@mui/icons-material/Search";
 import { CATEGORIES, ORDER_STATUS } from "@/shared/constants";
 import { snakeCaseToNormalText } from "@/shared/functions";
+import OrderTable from "./_components/order-table";
 
 const Orders = () => {
   const theme = useTheme();
@@ -34,7 +35,7 @@ const Orders = () => {
           px: 0,
           fontSize: 13,
         }}
-        separator={<KeyboardArrowRight fontSize="md" />}
+        separator={<KeyboardArrowRight />}
       >
         <JoyLink
           component={Link}
@@ -68,7 +69,7 @@ const Orders = () => {
         </Button>
       </Stack>
 
-      <Grid container spacing={1} sx={{ mt: 3 }}>
+      <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>
         <Grid md={6}>
           <FormControl size="sm">
             <FormLabel
@@ -167,6 +168,7 @@ const Orders = () => {
           </FormControl>
         </Grid>
       </Grid>
+      <OrderTable />
     </>
   );
 };

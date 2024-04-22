@@ -14,12 +14,10 @@ export type Service = {
   description: string;
   slug: string;
   startingPrice: number;
-
   detailedPackages: {
     name: string;
     price: number;
   }[];
-
   additionalPackage?: {
     name: string;
     price: number;
@@ -35,13 +33,11 @@ export type Order = {
   bedRooms: string;
   tflZone: string;
   time: string;
-  isServiceStepComplete: boolean;
   name: string;
   email: string;
   phone: string;
   house: string;
   postCode: string;
   city: string;
-  isPersonalStepComplete: boolean;
   date: null | Dayjs;
 };
