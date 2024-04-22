@@ -66,7 +66,7 @@ function Customers() {
       </Stack>
 
       <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>
-        <Grid md={6}>
+        <Grid xs={12} sm={6} md={6}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
@@ -81,7 +81,7 @@ function Customers() {
           </FormControl>
         </Grid>
 
-        <Grid md={2}>
+        <Grid xs={12} sm={6} md={2}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
@@ -115,7 +115,7 @@ function Customers() {
           </FormControl>
         </Grid>
 
-        <Grid md={2}>
+        <Grid xs={12} sm={6} md={2}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
@@ -140,7 +140,7 @@ function Customers() {
           </FormControl>
         </Grid>
 
-        <Grid md={2}>
+        <Grid xs={12} sm={6} md={2}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"

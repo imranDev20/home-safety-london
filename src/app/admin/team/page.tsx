@@ -66,11 +66,11 @@ const Team = () => {
           spacing={3}
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: { xs: "center", sm: "space-between" },
             alignItems: "center",
           }}
         >
-          <Grid xs={5}>
+          <Grid xs={12} sm={6} md={5}>
             <Box>
               <FormControl size="sm">
                 <Input
@@ -82,22 +82,23 @@ const Team = () => {
             </Box>
           </Grid>
           <Grid
-            xs={4}
+            xs={12}
+            sm={5}
+            md={4}
             sx={{
               display: "flex",
-              flexDirection: "row",
-              justifyContent: "end",
+              flexDirection: { xs: "column", sm: "row" },
+              justifyContent: { xs: "center", sm: "end" },
             }}
           >
             <Box>
-              <Button variant="solid" startDecorator={<AddIcon />}>
+              <Button variant="solid" fullWidth startDecorator={<AddIcon />}>
                 Add New Member
               </Button>
             </Box>
           </Grid>
         </Grid>
       </Stack>
-
       {/* import team page component */}
       <Teams />
     </>

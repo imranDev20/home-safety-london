@@ -23,6 +23,7 @@ import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
+import { Hidden } from "@mui/material";
 
 const rows = [
   {
@@ -375,6 +376,68 @@ export default function OrderTable() {
           </tbody>
         </Table>
       </Sheet>
+      <Hidden smUp>
+        {stableSort(rows, getComparator(order, "id")).map((row) => (
+          <Sheet key={row.id} sx={{ mb: 2, p: 2, borderRadius: 10 }}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Box sx={{ marginBottom: "16px" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    mb: 1,
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Avatar size="sm" sx={{ mr: 1 }}>
+                      {row.customer.initial}
+                    </Avatar>
+                    <Typography level="h4" component="h4">
+                      {row.customer.name}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography level="body-xs">
+                      <Chip
+                        variant="soft"
+                        size="sm"
+                        startDecorator={
+                          {
+                            Paid: <CheckRoundedIcon />,
+                            Refunded: <AutorenewRoundedIcon />,
+                            Cancelled: <BlockIcon />,
+                          }[row.status]
+                        }
+                        color={
+                          {
+                            Paid: "success",
+                            Refunded: "neutral",
+                            Cancelled: "danger",
+                          }[row.status] as ColorPaletteProp
+                        }
+                      >
+                        {row.status}
+                      </Chip>
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Typography level="body-xs">{row.customer.email}</Typography>
+                <Typography level="body-xs">
+                  {row.date} . {row.id}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <Link level="body-xs" component="button">
+                  Download
+                </Link>
+                <RowMenu />
+              </Box>
+            </Box>
+          </Sheet>
+        ))}
+      </Hidden>
       <Box
         className="Pagination-laptopUp"
         sx={{
