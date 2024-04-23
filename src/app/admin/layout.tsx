@@ -24,10 +24,9 @@ import { ADMIN_OPTIONS } from "@/shared/constants";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import TopLoader from "../_components/common/top-loader";
-import { Inter } from "next/font/google";
-import Menu from "@mui/icons-material/Menu";
 import { Hidden } from "@mui/material";
+import Menu from "@mui/icons-material/Menu";
+import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 

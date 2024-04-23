@@ -376,9 +376,10 @@ export default function OrderTable() {
           </tbody>
         </Table>
       </Sheet>
+
       <Hidden smUp>
         {stableSort(rows, getComparator(order, "id")).map((row) => (
-          <Sheet key={row.id} sx={{ mb: 2, p: 2, borderRadius: 10 }}>
+          <Sheet key={row.id} sx={{ paddingY: "16px" }}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Box sx={{ marginBottom: "16px" }}>
                 <Box
