@@ -92,7 +92,7 @@ export default function Teams() {
       <Stack>
         <Grid container spacing={3}>
           {TEAMS.map((team) => (
-            <Grid xs={4} key={team.id}>
+            <Grid xs={12} sm={6} md={4} key={team.id}>
               <Team team={team} />
             </Grid>
           ))}
