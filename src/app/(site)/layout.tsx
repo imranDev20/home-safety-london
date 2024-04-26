@@ -1,6 +1,3 @@
-import { theme } from "@/shared/theme";
-import { CssVarsProvider } from "@mui/joy/styles";
-import CssBaseline from "@mui/joy/CssBaseline";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Header from "../_components/global/header";
@@ -8,6 +5,7 @@ import Footer from "../_components/global/footer";
 import TopLoader from "../_components/common/top-loader";
 import { Suspense } from "react";
 import LocalizationWrapper from "./_components/localization-wrapper";
+import ThemeRegistry from "../_components/theme-registry";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,18 +20,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <CssVarsProvider theme={theme}>
-      <LocalizationWrapper>
-        <html lang="en">
-          <body className={inter.className}>
+    <LocalizationWrapper>
+      <html lang="en">
+        <body className={inter.className}>
+          <ThemeRegistry options={{ key: "joy" }}>
             <TopLoader />
             <Header />
             <Suspense>{children}</Suspense>
             <Footer />
-          </body>
-        </html>
-      </LocalizationWrapper>
-      <CssBaseline />
-    </CssVarsProvider>
+          </ThemeRegistry>
+        </body>
+      </html>
+    </LocalizationWrapper>
   );
 }

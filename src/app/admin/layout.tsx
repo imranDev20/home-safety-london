@@ -2,8 +2,6 @@
 import {
   Avatar,
   Box,
-  CssBaseline,
-  CssVarsProvider,
   Divider,
   Drawer,
   IconButton,
@@ -24,9 +22,9 @@ import { ADMIN_OPTIONS } from "@/shared/constants";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-import Menu from "@mui/icons-material/Menu";
 import { Inter } from "next/font/google";
+import ThemeRegistry from "../_components/theme-registry";
+import TopLoader from "../_components/common/top-loader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,44 +39,11 @@ export default function AdminLayout({
   const [open, setOpen] = React.useState(false);
 
   return (
-    <CssVarsProvider theme={theme}>
-      <CssBaseline />
-      <html lang="en">
-        <body className={inter.className}>
-          {/* <TopLoader /> */}
-
+    <html lang="en">
+      <body className={inter.className}>
+        <ThemeRegistry options={{ key: "joy" }}>
+          <TopLoader />
           <Stack>
-            <Hidden mdUp>
-              <Sheet
-                sx={{
-                  width: "100%",
-                  py: 2,
-                  px: 3,
-                  boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                }}
-              >
-                <IconButton
-                  variant="outlined"
-                  color="neutral"
-                  onClick={() => setOpen(true)}
-                >
-                  <Menu />
-                </IconButton>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                  }}
-                >
-                  <HealthAndSafetyIcon />
-                  <Typography level="title-lg">Home Safety</Typography>
-                </Box>
-              </Sheet>
-            </Hidden>
             <Drawer open={open} onClose={() => setOpen(false)}>
               <Box
                 sx={{
@@ -177,116 +142,114 @@ export default function AdminLayout({
                 minHeight: "100dvh",
               }}
             >
-              <Hidden mdDown>
-                <Sheet
-                  sx={{
-                    maxWidth: "240px",
-                    height: "100dvh",
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    borderRight: "1px solid",
-                    borderRightColor: theme.palette.divider,
-                  }}
-                >
-                  <Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        mb: 3,
-                        gap: 1,
-                      }}
-                    >
-                      <HealthAndSafetyIcon />
-                      <Typography level="title-lg">Home Safety</Typography>
-                    </Box>
+              <Sheet
+                sx={{
+                  maxWidth: "240px",
+                  height: "100dvh",
+                  p: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  borderRight: "1px solid",
+                  borderRightColor: theme.palette.divider,
+                }}
+              >
+                <Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      mb: 3,
+                      gap: 1,
+                    }}
+                  >
+                    <HealthAndSafetyIcon />
+                    <Typography level="title-lg">Home Safety</Typography>
+                  </Box>
 
-                    <Input
-                      size="sm"
-                      startDecorator={<Search />}
-                      placeholder="Search"
-                    />
-                    <List
-                      size="sm"
-                      sx={{
-                        mt: 2,
-                      }}
-                    >
-                      {ADMIN_OPTIONS.map((option) => (
-                        <ListItem
-                          key={option.route}
+                  <Input
+                    size="sm"
+                    startDecorator={<Search />}
+                    placeholder="Search"
+                  />
+                  <List
+                    size="sm"
+                    sx={{
+                      mt: 2,
+                    }}
+                  >
+                    {ADMIN_OPTIONS.map((option) => (
+                      <ListItem
+                        key={option.route}
+                        sx={{
+                          mb: 1,
+                          textDecoration: "none",
+                        }}
+                        component={Link}
+                        href={option.route}
+                      >
+                        <ListItemButton
+                          selected={pathname === option.route}
                           sx={{
-                            mb: 1,
-                            textDecoration: "none",
+                            fontWeight: 500,
+                            borderRadius: theme.radius.sm,
                           }}
-                          component={Link}
-                          href={option.route}
                         >
-                          <ListItemButton
-                            selected={pathname === option.route}
+                          <ListItemDecorator
                             sx={{
-                              fontWeight: 500,
-                              borderRadius: theme.radius.sm,
+                              minInlineSize: "2rem",
                             }}
                           >
-                            <ListItemDecorator
-                              sx={{
-                                minInlineSize: "2rem",
-                              }}
-                            >
-                              <option.Icon />
-                            </ListItemDecorator>
+                            <option.Icon />
+                          </ListItemDecorator>
 
-                            <Typography
-                              sx={{
-                                fontSize: 14,
-                              }}
-                            >
-                              {option.label}
-                            </Typography>
-                          </ListItemButton>
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Box>
+                          <Typography
+                            sx={{
+                              fontSize: 14,
+                            }}
+                          >
+                            {option.label}
+                          </Typography>
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
 
-                  <Box>
-                    <Divider
-                      sx={{
-                        my: 2,
-                      }}
-                    />
+                <Box>
+                  <Divider
+                    sx={{
+                      my: 2,
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <Box
                       sx={{
                         display: "flex",
                         gap: 1,
-                        alignItems: "center",
-                        justifyContent: "space-between",
                       }}
                     >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: 1,
-                        }}
-                      >
-                        <Avatar size="sm" />
-                        <Box>
-                          <Typography level="title-sm">Kamal Ahmed</Typography>
-                          <Typography component="span" level="body-xs">
-                            kamal@gmail.com
-                          </Typography>
-                        </Box>
+                      <Avatar size="sm" />
+                      <Box>
+                        <Typography level="title-sm">Kamal Ahmed</Typography>
+                        <Typography component="span" level="body-xs">
+                          kamal@gmail.com
+                        </Typography>
                       </Box>
-
-                      <IconButton variant="plain" size="sm">
-                        <Logout />
-                      </IconButton>
                     </Box>
+
+                    <IconButton variant="plain" size="sm">
+                      <Logout />
+                    </IconButton>
                   </Box>
-                </Sheet>
-              </Hidden>
+                </Box>
+              </Sheet>
 
               <Box
                 sx={{
@@ -299,8 +262,8 @@ export default function AdminLayout({
               </Box>
             </Box>
           </Stack>
-        </body>
-      </html>
-    </CssVarsProvider>
+        </ThemeRegistry>
+      </body>
+    </html>
   );
 }

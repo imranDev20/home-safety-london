@@ -22,6 +22,9 @@ export type PersonalFormInput = {
   postCode: string;
   city: string;
   parkingOptions: string;
+  inspectionDate: string | null;
+  inspectionTime: string | null;
+  orderNotes: string;
 };
 
 export type ServiceType =

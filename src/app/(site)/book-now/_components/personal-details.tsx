@@ -5,7 +5,6 @@ import {
   Box,
   Button,
   Chip,
-  CircularProgress,
   Divider,
   FormControl,
   FormLabel,
@@ -15,18 +14,16 @@ import {
   Radio,
   RadioGroup,
   Sheet,
+  Textarea,
   Typography,
 } from "@mui/joy";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-number-input/input";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { isValid } from "postcode";
-import React, { Dispatch, SetStateAction, useEffect } from "react";
-import { Order } from "@/types/misc";
+import React, { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createQueryString } from "@/shared/functions";
-import { CorporateFare, Home } from "@mui/icons-material";
-// import PhoneNumberInput from "@/app/_components/common/phone-number-input";
 
 const PhoneInputAdapter = React.forwardRef<InputProps, any>(
   function PhoneInputAdapter(props, ref) {
@@ -388,6 +385,69 @@ export default function PersonalDetails() {
                   </Sheet>
                 ))}
               </RadioGroup>
+            )}
+          />
+        </Grid>
+
+        <Grid xs={6}>
+          <Controller
+            control={control}
+            name="city"
+            render={({ field }) => (
+              <FormControl error={!!errors.city}>
+                <FormLabel>Select Inspection Date</FormLabel>
+
+                <Input
+                  {...field}
+                  type="date"
+                  size="lg"
+                  fullWidth
+                  variant="outlined"
+                />
+                <HookFormError name="city" errors={errors} />
+              </FormControl>
+            )}
+          />
+        </Grid>
+
+        <Grid xs={6}>
+          <Controller
+            control={control}
+            name="postCode"
+            rules={{
+              required: "Post code can't be empty",
+            }}
+            render={({ field }) => (
+              <FormControl error={!!errors.postCode}>
+                <FormLabel>Select Inspection Time</FormLabel>
+                <Input
+                  {...field}
+                  size="lg"
+                  fullWidth
+                  variant="outlined"
+                  type="time"
+                />
+                <HookFormError name="postCode" errors={errors} />
+              </FormControl>
+            )}
+          />
+        </Grid>
+
+        <Grid xs={12}>
+          <Controller
+            control={control}
+            name="orderNotes"
+            render={({ field }) => (
+              <FormControl
+                error={!!errors.postCode}
+                sx={{
+                  mt: 2,
+                }}
+              >
+                <FormLabel>Order Notes (Optional)</FormLabel>
+                <Textarea {...field} size="lg" variant="outlined" minRows={3} />
+                <HookFormError name="postCode" errors={errors} />
+              </FormControl>
             )}
           />
         </Grid>
