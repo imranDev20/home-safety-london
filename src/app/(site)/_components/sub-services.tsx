@@ -102,7 +102,7 @@ export default function SubServices() {
       </Typography>
       <Grid container spacing={2}>
         {FIRST_ROW.map((item) => (
-          <Grid xs={3} key={item.id}>
+          <Grid xs={12} sm={6} md={3} key={item.id}>
             <Card
               variant="outlined"
               component={Link}
@@ -148,7 +148,7 @@ export default function SubServices() {
         }}
       >
         {SECOND_ROW.map((item) => (
-          <Grid xs={2} key={item.id}>
+          <Grid xs={12} sm={6} md={2} key={item.id}>
             <Card
               variant="outlined"
               sx={{

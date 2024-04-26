@@ -20,7 +20,7 @@ export default function About() {
   return (
     <Container sx={{ my: 20 }}>
       <Grid container spacing={4}>
-        <Grid xs={6}>
+        <Grid xs={12} md={6}>
           <Box
             sx={{
               width: "100%",
@@ -30,19 +30,34 @@ export default function About() {
               overflow: "hidden",
             }}
           >
-            <Image
-              fill
-              style={{
-                objectFit: "cover",
+            <Box
+              sx={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                "@media (min-width: 900px)": {
+                  position: "absolute",
+                },
               }}
-              sizes="500px"
-              // sizes="(max-width: 768px) 30vw, 15vw"
-              src={electric}
-              alt="eletrician-image"
-            />
+            >
+              <Image
+                layout="intrinsic"
+                width={500}
+                objectFit="cover"
+                style={{
+                  width: "100%",
+                  objectFit: "cover",
+                }}
+                // sizes="(max-width: 768px) 30vw, 15vw"
+                sizes="500px"
+                src={electric}
+                alt="eletrician-image"
+              />
+            </Box>
           </Box>
         </Grid>
-        <Grid xs={6}>
+        <Grid xs={12} md={6}>
           <Box>
             <Typography
               sx={{

@@ -72,7 +72,7 @@ export default function Faq() {
             spacing={3}
             sx={{ display: "flex", justifyContent: "center" }}
           >
-            <Grid xs={6} sx={{ height: "100%" }}>
+            <Grid xs={12} md={6} sx={{ height: "100%" }}>
               <Image
                 src={enginnerNote}
                 alt="faqNote"
@@ -85,7 +85,7 @@ export default function Faq() {
                 }}
               />
             </Grid>
-            <Grid xs={6}>
+            <Grid xs={12} md={6}>
               <AccordionGroup
                 variant="outlined"
                 transition="0.2s"

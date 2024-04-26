@@ -85,7 +85,7 @@ export default function Services() {
           }}
         >
           {SERVICES_PRICE.map((service) => (
-            <Grid xs={6} key={service.id}>
+            <Grid xs={12} sm={6} md={6} key={service.id}>
               <Service service={service} />
             </Grid>
           ))}

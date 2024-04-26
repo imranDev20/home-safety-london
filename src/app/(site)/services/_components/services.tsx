@@ -19,7 +19,7 @@ export default function ServicesItem() {
       </Box>
       <Grid container spacing={3}>
         {SUB_SERVICES.map((service) => (
-          <Grid xs={4} key={service.id}>
+          <Grid xs={12} sm={6} md={4} key={service.id}>
             <Service service={service} />
           </Grid>
         ))}

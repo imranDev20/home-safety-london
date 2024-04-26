@@ -47,7 +47,7 @@ export default function Footer() {
               justifyContent: "space-between",
             }}
           >
-            <Grid xs={4}>
+            <Grid xs={12} sm={6} md={4}>
               <Box>
                 <Typography component="h3" level="h3" sx={{ mb: 2 }}>
                   London Home Safety
@@ -60,7 +60,7 @@ export default function Footer() {
                 </Typography>
               </Box>
             </Grid>
-            <Grid xs={2}>
+            <Grid xs={12} sm={6} md={2}>
               <List>
                 <ListItem nested>
                   <ListSubheader
@@ -83,7 +83,7 @@ export default function Footer() {
                 </ListItem>
               </List>
             </Grid>
-            <Grid xs={2}>
+            <Grid xs={12} sm={6} md={2}>
               <List>
                 <ListItem nested sx={{}}>
                   <ListSubheader
@@ -110,7 +110,7 @@ export default function Footer() {
                 </ListItem>
               </List>
             </Grid>
-            <Grid xs={3}>
+            <Grid xs={12} sm={6} md={3}>
               <List>
                 <ListItem nested sx={{}}>
                   <ListSubheader
@@ -119,6 +119,7 @@ export default function Footer() {
                       fontWeight: "xl",
                       color: "white",
                       mb: 1,
+                      display: "block",
                     }}
                   >
                     Contact us
@@ -152,13 +153,29 @@ export default function Footer() {
               my: 5,
             }}
           />
-          <Box sx={{ display: "flex", justifyContent: "space-between", py: 2 }}>
-            <Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row", md: "row" },
+              justifyContent: {
+                xs: "center",
+                sm: "space-between",
+                md: "space-between",
+              },
+              py: 2,
+            }}
+          >
+            <Box sx={{ textAlign: { xs: "center", sm: "left" } }}>
               <Typography>
                 ©{year} Home Safety London. All Right Reserved
               </Typography>
             </Box>
-            <Box sx={{ display: "flex" }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: { xs: "center", sm: "flex-start" },
+              }}
+            >
               <Typography>Support</Typography>
               <Divider orientation="vertical" sx={{ mx: 1 }} />
               <Typography>Disclaimer</Typography>
