@@ -43,9 +43,13 @@ export default function Hero() {
       >
         <Container>
           <Grid container spacing={5}>
-            <Grid xs={8}>
+            <Grid xs={12} sm={12} md={8}>
               <Box sx={{ position: "relative" }}>
-                <Grid container spacing={3}>
+                <Grid
+                  container
+                  spacing={3}
+                  sx={{ textAlign: { xs: "center", md: "left" } }}
+                >
                   <Box>
                     <Typography
                       sx={{
@@ -95,6 +99,8 @@ export default function Hero() {
                       direction="row"
                       sx={{
                         mt: 5,
+                        display: { xs: "flex", md: "block" },
+                        justifyContent: { xs: "center", md: "start" },
                       }}
                     >
                       <Button
@@ -124,7 +130,7 @@ export default function Hero() {
                 </Grid>
               </Box>
             </Grid>
-            <Grid xs={4}>
+            <Grid xs={12} sm={12} md={4} sx={{ mt: { xs: 3, md: 0 } }}>
               <BookNow />
             </Grid>
           </Grid>

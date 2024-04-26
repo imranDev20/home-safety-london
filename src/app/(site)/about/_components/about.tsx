@@ -11,7 +11,7 @@ export default function AboutUs() {
   return (
     <Container sx={{ my: 10 }}>
       <Grid container spacing={4}>
-        <Grid xs={6}>
+        <Grid xs={12} sm={6} md={6}>
           <Box>
             <Image
               src={engineer}
@@ -26,7 +26,7 @@ export default function AboutUs() {
             />
           </Box>
         </Grid>
-        <Grid xs={6}>
+        <Grid xs={12} sm={6} md={6}>
           <Box>
             <Typography
               sx={{

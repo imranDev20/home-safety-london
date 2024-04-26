@@ -10,7 +10,12 @@ import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import {
   Button,
   Container,
+  Drawer,
+  IconButton,
+  Input,
   ListItemDecorator,
+  ModalClose,
+  Sheet,
   Stack,
   Typography,
   useTheme,
@@ -24,9 +29,14 @@ import {
   Phone,
   WhatsApp,
 } from "@mui/icons-material";
-import { CATEGORIES, SERVICES } from "@/shared/constants";
+import { ADMIN_OPTIONS, CATEGORIES, SERVICES } from "@/shared/constants";
 import Link from "next/link";
 import { customSlugify } from "@/shared/functions";
+import { Hidden } from "@mui/material";
+import Menu from "@mui/icons-material/Menu";
+import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
+import { Search } from "@mui/icons-material";
+import { usePathname } from "next/navigation";
 
 type Options = {
   initialActiveIndex: null | number;
@@ -232,6 +242,8 @@ export default function Header() {
     useRovingIndex();
 
   const theme = useTheme();
+  const [open, setOpen] = React.useState(false);
+  const pathname = usePathname();
 
   return (
     <Box
@@ -250,10 +262,13 @@ export default function Header() {
         <Container
           sx={{
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent: { xs: "flex-start", sm: "center", md: "flex-end" },
           }}
         >
-          <Stack spacing={5} direction="row">
+          <Stack
+            spacing={{ xs: 3, sm: 4, md: 5 }}
+            direction={{ xs: "column", sm: "row" }}
+          >
             <Box
               sx={{
                 display: "flex",
@@ -281,6 +296,7 @@ export default function Header() {
               sx={{
                 display: "flex",
                 alignItems: "center",
+                mt: 0,
               }}
             >
               <Phone
@@ -304,6 +320,7 @@ export default function Header() {
               sx={{
                 display: "flex",
                 alignItems: "center",
+                mt: 0,
               }}
             >
               <Email
@@ -326,33 +343,73 @@ export default function Header() {
         </Container>
       </Box>
 
-      <Container
-        sx={{
-          zIndex: 100000,
-          position: "relative",
-        }}
-      >
+      <Hidden mdUp>
+        <Sheet
+          sx={{
+            width: "100%",
+            py: 2,
+            px: 3,
+            boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <HealthAndSafetyIcon />
+            <Typography level="title-lg">Home Safety London</Typography>
+          </Box>
+          <IconButton
+            variant="outlined"
+            color="neutral"
+            onClick={() => setOpen(true)}
+          >
+            <Menu />
+          </IconButton>
+        </Sheet>
+      </Hidden>
+
+      <Drawer open={open} onClose={() => setOpen(false)}>
         <Box
           sx={{
             display: "flex",
-            py: 2,
             alignItems: "center",
+            justifyContent: "space-between",
+            mt: 1,
+            px: 2,
+            pb: 2,
           }}
         >
-          <Box>
-            <Typography level="h4">Home Safety London</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <HealthAndSafetyIcon />
+            <Typography component="h5">Home Safety London</Typography>
           </Box>
-
+          <ModalClose id="close-icon" sx={{ position: "initial" }} />
+        </Box>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
           <List
             role="menubar"
-            orientation="horizontal"
+            orientation="vertical"
             sx={{
               "--List-radius": "8px",
               "--List-padding": "4px",
               "--List-gap": "8px",
               "--ListItem-gap": "0px",
               justifyContent: "flex-end",
-              mr: 4,
+              mx: 4,
             }}
           >
             <ListItem role="none">
@@ -386,7 +443,7 @@ export default function Header() {
                 About
               </ListItemButton>
             </ListItem>
-            <ListItem role="none">
+            <ListItem role="none" sx={{ zIndex: 10 }}>
               <ServicesMenu
                 onMouseEnter={() => {
                   setActiveIndex(1);
@@ -412,11 +469,110 @@ export default function Header() {
               </ListItemButton>
             </ListItem>
           </List>
-          <Button startDecorator={<Login />} component={Link} href="/login">
+          <Button
+            startDecorator={<Login />}
+            component={Link}
+            href="/login"
+            sx={{ mx: 4 }}
+          >
             Login
           </Button>
         </Box>
-      </Container>
+      </Drawer>
+
+      <Hidden mdDown>
+        <Container
+          sx={{
+            zIndex: 100000,
+            position: "relative",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              py: 2,
+              alignItems: "center",
+            }}
+          >
+            <Box>
+              <Typography level="h4">Home Safety London</Typography>
+            </Box>
+
+            <List
+              role="menubar"
+              orientation="horizontal"
+              sx={{
+                "--List-radius": "8px",
+                "--List-padding": "4px",
+                "--List-gap": "8px",
+                "--ListItem-gap": "0px",
+                justifyContent: "flex-end",
+                mr: 4,
+              }}
+            >
+              <ListItem role="none">
+                <ListItemButton
+                  component={Link}
+                  role="menuitem"
+                  {...getTargetProps(0)}
+                  href="/"
+                  sx={{
+                    textDecoration: "none",
+                    fontWeight: 600,
+                  }}
+                >
+                  <ListItemDecorator>
+                    <HomeRounded />
+                  </ListItemDecorator>
+                  Home
+                </ListItemButton>
+              </ListItem>
+
+              <ListItem role="none">
+                <ListItemButton
+                  role="menuitem"
+                  {...getTargetProps(0)}
+                  component={Link}
+                  href="/about"
+                  sx={{
+                    fontWeight: 600,
+                  }}
+                >
+                  About
+                </ListItemButton>
+              </ListItem>
+              <ListItem role="none">
+                <ServicesMenu
+                  onMouseEnter={() => {
+                    setActiveIndex(1);
+                    targets[1].focus();
+                  }}
+                  focusNext={focusNext}
+                  focusPrevious={focusPrevious}
+                  {...getTargetProps(1)}
+                />
+              </ListItem>
+
+              <ListItem role="none">
+                <ListItemButton
+                  role="menuitem"
+                  {...getTargetProps(0)}
+                  component={Link}
+                  href="/contact"
+                  sx={{
+                    fontWeight: 600,
+                  }}
+                >
+                  Contact
+                </ListItemButton>
+              </ListItem>
+            </List>
+            <Button startDecorator={<Login />} component={Link} href="/login">
+              Login
+            </Button>
+          </Box>
+        </Container>
+      </Hidden>
     </Box>
   );
 }

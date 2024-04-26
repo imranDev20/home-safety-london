@@ -20,7 +20,7 @@ export default function ContactAddress() {
     <Sheet variant="soft">
       <Container sx={{ py: 10 }}>
         <Grid container spacing={3}>
-          <Grid xs={4}>
+          <Grid xs={12} sm={6} md={4}>
             <Card variant="plain" sx={{ height: "100%" }}>
               <CardContent>
                 <Box
@@ -59,7 +59,7 @@ export default function ContactAddress() {
               </CardContent>
             </Card>
           </Grid>
-          <Grid xs={4}>
+          <Grid xs={12} sm={6} md={4}>
             <Card variant="plain" sx={{ height: "100%" }}>
               <CardContent>
                 <Box
@@ -101,7 +101,7 @@ export default function ContactAddress() {
             </Card>
           </Grid>
 
-          <Grid xs={4}>
+          <Grid xs={12} sm={6} md={4}>
             <Card variant="plain" sx={{ height: "100%" }}>
               <CardContent>
                 <Box
