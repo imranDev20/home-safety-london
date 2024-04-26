@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Card, CardContent, Container, Sheet, Typography } from "@mui/joy";
 import { useTheme } from "@mui/joy/styles";
 import StarIcon from "@mui/icons-material/Star";
@@ -9,6 +9,24 @@ import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
 export default function Testimonial() {
   const theme = useTheme();
+  const [slidesToShow, setSlidesToShow] = useState(3);
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth <= 600) {
+        setSlidesToShow(1);
+      } else if (window.innerWidth <= 960) {
+        setSlidesToShow(2);
+      } else {
+        setSlidesToShow(3);
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const REVIEW_ITEM = [
     {
       id: 1,
@@ -90,6 +108,7 @@ export default function Testimonial() {
             level="h1"
             sx={{
               mb: 3,
+              textAlign: "center",
             }}
           >
             What Our Customers Say About Us
@@ -101,7 +120,7 @@ export default function Testimonial() {
           naturalSlideHeight={200}
           isIntrinsicHeight={true}
           totalSlides={REVIEW_ITEM.length}
-          visibleSlides={3}
+          visibleSlides={slidesToShow}
           infinite
           isPlaying
           interval={5000}
