@@ -61,7 +61,7 @@ export default function ServicesCard() {
       </Box>
       <Grid container spacing={3}>
         {SERVICES.map((service) => (
-          <Grid xs={3} key={service.id}>
+          <Grid xs={12} sm={6} md={3} key={service.id}>
             <ServiceCard service={service} />
           </Grid>
         ))}

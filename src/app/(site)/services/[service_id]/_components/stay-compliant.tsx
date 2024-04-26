@@ -51,8 +51,8 @@ export default function StayCompliant() {
       </Box>
       <Grid container spacing={3} sx={{ py: 5 }}>
         {BOOKING_SYSTEM.map((book) => (
-          <Grid xs={3} key={book.id}>
-            <Card variant="soft" sx={{ height: "100%" }}>
+          <Grid xs={12} sm={6} md={3} key={book.id}>
+            <Card variant="soft" sx={{ height: "100%", textAlign: "center" }}>
               <FireRiskIcon sx={{ fontSize: 55, mx: "auto" }} />
               <Typography level="title-md">{book.bookingName}</Typography>
               <Typography>{book.bookingDetail}</Typography>
