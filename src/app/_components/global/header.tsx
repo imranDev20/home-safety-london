@@ -10,6 +10,7 @@ import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import {
   Button,
   Container,
+  Divider,
   Drawer,
   IconButton,
   Input,
@@ -343,14 +344,14 @@ export default function Header() {
         </Container>
       </Box>
 
-      <Hidden mdUp>
+      {/* Mobile & tablet screen navbar */}
+      <Container>
         <Sheet
           sx={{
             width: "100%",
             py: 2,
             px: 3,
-            boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-            display: "flex",
+            display: { xs: "flex", sm: "flex", md: "none" },
             justifyContent: "space-between",
             alignItems: "center",
             gap: 2,
@@ -374,8 +375,9 @@ export default function Header() {
             <Menu />
           </IconButton>
         </Sheet>
-      </Hidden>
+      </Container>
 
+      {/* Mobile & tablet screen drawer */}
       <Drawer open={open} onClose={() => setOpen(false)}>
         <Box
           sx={{
@@ -399,6 +401,7 @@ export default function Header() {
           </Box>
           <ModalClose id="close-icon" sx={{ position: "initial" }} />
         </Box>
+        <Divider />
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <List
             role="menubar"
@@ -480,99 +483,98 @@ export default function Header() {
         </Box>
       </Drawer>
 
-      <Hidden mdDown>
-        <Container
+      {/* large screen navbar */}
+      <Container
+        sx={{
+          zIndex: 100000,
+          position: "relative",
+        }}
+      >
+        <Box
           sx={{
-            zIndex: 100000,
-            position: "relative",
+            display: { xs: "none", sm: "none", md: "flex" },
+            py: 2,
+            alignItems: "center",
           }}
         >
-          <Box
+          <Box>
+            <Typography level="h4">Home Safety London</Typography>
+          </Box>
+
+          <List
+            role="menubar"
+            orientation="horizontal"
             sx={{
-              display: "flex",
-              py: 2,
-              alignItems: "center",
+              "--List-radius": "8px",
+              "--List-padding": "4px",
+              "--List-gap": "8px",
+              "--ListItem-gap": "0px",
+              justifyContent: "flex-end",
+              mr: 4,
             }}
           >
-            <Box>
-              <Typography level="h4">Home Safety London</Typography>
-            </Box>
+            <ListItem role="none">
+              <ListItemButton
+                component={Link}
+                role="menuitem"
+                {...getTargetProps(0)}
+                href="/"
+                sx={{
+                  textDecoration: "none",
+                  fontWeight: 600,
+                }}
+              >
+                <ListItemDecorator>
+                  <HomeRounded />
+                </ListItemDecorator>
+                Home
+              </ListItemButton>
+            </ListItem>
 
-            <List
-              role="menubar"
-              orientation="horizontal"
-              sx={{
-                "--List-radius": "8px",
-                "--List-padding": "4px",
-                "--List-gap": "8px",
-                "--ListItem-gap": "0px",
-                justifyContent: "flex-end",
-                mr: 4,
-              }}
-            >
-              <ListItem role="none">
-                <ListItemButton
-                  component={Link}
-                  role="menuitem"
-                  {...getTargetProps(0)}
-                  href="/"
-                  sx={{
-                    textDecoration: "none",
-                    fontWeight: 600,
-                  }}
-                >
-                  <ListItemDecorator>
-                    <HomeRounded />
-                  </ListItemDecorator>
-                  Home
-                </ListItemButton>
-              </ListItem>
+            <ListItem role="none">
+              <ListItemButton
+                role="menuitem"
+                {...getTargetProps(0)}
+                component={Link}
+                href="/about"
+                sx={{
+                  fontWeight: 600,
+                }}
+              >
+                About
+              </ListItemButton>
+            </ListItem>
+            <ListItem role="none">
+              <ServicesMenu
+                onMouseEnter={() => {
+                  setActiveIndex(1);
+                  targets[1].focus();
+                }}
+                focusNext={focusNext}
+                focusPrevious={focusPrevious}
+                {...getTargetProps(1)}
+              />
+            </ListItem>
 
-              <ListItem role="none">
-                <ListItemButton
-                  role="menuitem"
-                  {...getTargetProps(0)}
-                  component={Link}
-                  href="/about"
-                  sx={{
-                    fontWeight: 600,
-                  }}
-                >
-                  About
-                </ListItemButton>
-              </ListItem>
-              <ListItem role="none">
-                <ServicesMenu
-                  onMouseEnter={() => {
-                    setActiveIndex(1);
-                    targets[1].focus();
-                  }}
-                  focusNext={focusNext}
-                  focusPrevious={focusPrevious}
-                  {...getTargetProps(1)}
-                />
-              </ListItem>
-
-              <ListItem role="none">
-                <ListItemButton
-                  role="menuitem"
-                  {...getTargetProps(0)}
-                  component={Link}
-                  href="/contact"
-                  sx={{
-                    fontWeight: 600,
-                  }}
-                >
-                  Contact
-                </ListItemButton>
-              </ListItem>
-            </List>
-            <Button startDecorator={<Login />} component={Link} href="/login">
-              Login
-            </Button>
-          </Box>
-        </Container>
-      </Hidden>
+            <ListItem role="none">
+              <ListItemButton
+                role="menuitem"
+                {...getTargetProps(0)}
+                component={Link}
+                href="/contact"
+                sx={{
+                  fontWeight: 600,
+                }}
+              >
+                Contact
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Button startDecorator={<Login />} component={Link} href="/login">
+            Login
+          </Button>
+        </Box>
+      </Container>
     </Box>
   );
 }
