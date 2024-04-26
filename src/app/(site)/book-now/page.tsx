@@ -16,24 +16,6 @@ import Heading from "@/app/_components/common/heading";
 export default function BookNowPage() {
   const searchParams = useSearchParams();
 
-  const [order, setOrder] = useState<Order>({
-    isGas: false,
-    isEpc: false,
-    isEicr: false,
-    appliances: "",
-    fuseBoards: "",
-    bedRooms: "",
-    tflZone: "",
-    time: "",
-    name: "",
-    email: "",
-    phone: "",
-    house: "",
-    postCode: "",
-    city: "",
-    date: null,
-  });
-
   const activeStep = parseInt(searchParams.get("active_step") as string) || 1;
 
   useEffect(() => {
@@ -85,11 +67,10 @@ export default function BookNowPage() {
                 {activeStep === 1 || Number.isNaN(activeStep) ? (
                   <ServiceDetails />
                 ) : null}
+
                 {activeStep === 2 ? <PersonalDetails /> : null}
-
-                {activeStep === 3 ? <Confirmation order={order} /> : null}
-
-                <Payments activeStep={activeStep} order={order} />
+                {activeStep === 3 ? <Confirmation /> : null}
+                <Payments />
               </CardContent>
             </Card>
           </Grid>

@@ -1,10 +1,8 @@
 "use client";
-import { Dispatch, SetStateAction } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { createQueryString, isObjectEmpty } from "@/shared/functions";
+import { isObjectEmpty } from "@/shared/functions";
 import { ServiceFormInput, ServiceType } from "@/types/form";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-// import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import {
   Box,
@@ -135,8 +133,6 @@ export default function ServiceDetails() {
     control,
     watch,
     handleSubmit,
-    clearErrors,
-    setValue,
     formState: { errors },
   } = useForm<ServiceFormInput>({
     defaultValues: {
@@ -158,11 +154,6 @@ export default function ServiceDetails() {
     console.log(data);
     // router.push(pathname + "?" + createQueryString("active_step", "2"));
     // window.scrollTo(0, 300);
-  };
-
-  const daysBefore = () => {
-    const today = dayjs();
-    return dayjs(today.set("hour", today.get("hour") + 72));
   };
 
   return (

@@ -14,6 +14,14 @@ interface PreOrder {
     postcode: string;
     city: string;
   };
+  parking_options: {
+    parking_type: string;
+    parking_cost: number;
+  };
+  congestion_zone: {
+    zone_type: string;
+    zone_cost: number;
+  };
   is_personal_details_complete: boolean;
   tax_rate: number;
   order_total: number;
@@ -63,6 +71,26 @@ const preOrderSchema = new mongoose.Schema<PreOrder>({
       },
     },
   },
+  parking_options: {
+    type: {
+      parking_type: {
+        type: String,
+      },
+      parking_cost: {
+        type: Number,
+      },
+    },
+  },
+  congestion_zone: {
+    type: {
+      zone_type: {
+        type: String,
+      },
+      zone_cost: {
+        type: Number,
+      },
+    },
+  },
   is_personal_details_complete: {
     type: Boolean,
   },
@@ -85,6 +113,8 @@ preOrderSchema.pre<PreOrder>("save", function (next) {
       "email",
       "phone_no",
       "address",
+      "parking_options",
+      "congestion_zone",
       "is_personal_details_complete",
     ];
     for (const field of requiredFields) {

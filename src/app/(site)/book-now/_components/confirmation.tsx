@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function Confirmation({ order }: { order: Order }) {
+export default function Confirmation() {
   const router = useRouter();
   const pathname = usePathname();
   const theme = useTheme();
@@ -21,11 +21,11 @@ export default function Confirmation({ order }: { order: Order }) {
     // }
   }, [pathname, router]);
 
-  const items = getServiceItems(order);
+  // const items = getServiceItems(order);
 
   return (
     <>
-      <Typography
+      {/* <Typography
         component="h3"
         level="h4"
         sx={{
@@ -305,7 +305,7 @@ export default function Confirmation({ order }: { order: Order }) {
                 0.2}
           </Box>
         </Box>
-      </Box>
+      </Box> */}
 
       <Box
         sx={{
