@@ -24,7 +24,7 @@ import { ADMIN_OPTIONS } from "@/shared/constants";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Hidden } from "@mui/material";
+
 import Menu from "@mui/icons-material/Menu";
 import { Inter } from "next/font/google";
 

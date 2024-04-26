@@ -9,13 +9,7 @@ import { createQueryString, getServiceItems } from "@/shared/functions";
 import dayjs from "dayjs";
 import { Box, CircularProgress, Typography } from "@mui/joy";
 
-export default function Payments({
-  activeStep,
-  order,
-}: {
-  activeStep: number;
-  order: Order;
-}) {
+export default function Payments() {
   const [stripePromise, setStripePromise] = useState<any>();
   const [clientSecret, setClientSecret] = useState("");
   const router = useRouter();
@@ -97,8 +91,8 @@ export default function Payments({
             },
           }}
         >
-          {activeStep === 4 ? <PaymentDetails order={order} /> : null}
-          {activeStep === 5 ? <Outcome /> : null}
+          {/* {activeStep === 4 ? <PaymentDetails /> : null}
+          {activeStep === 5 ? <Outcome /> : null} */}
         </Elements>
       )}
     </>

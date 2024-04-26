@@ -21,6 +21,7 @@ export type PersonalFormInput = {
   house: string;
   postCode: string;
   city: string;
+  parkingOptions: string;
 };
 
 export type ServiceType =

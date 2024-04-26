@@ -12,6 +12,9 @@ import {
   Grid,
   Input,
   InputProps,
+  Radio,
+  RadioGroup,
+  Sheet,
   Typography,
 } from "@mui/joy";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -22,6 +25,7 @@ import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Order } from "@/types/misc";
 import { usePathname, useRouter } from "next/navigation";
 import { createQueryString } from "@/shared/functions";
+import { CorporateFare, Home } from "@mui/icons-material";
 // import PhoneNumberInput from "@/app/_components/common/phone-number-input";
 
 const PhoneInputAdapter = React.forwardRef<InputProps, any>(
@@ -56,6 +60,7 @@ export default function PersonalDetails() {
       house: "",
       postCode: "",
       city: "London",
+      parkingOptions: "",
     },
   });
 
@@ -228,6 +233,161 @@ export default function PersonalDetails() {
                 />
                 <HookFormError name="city" errors={errors} />
               </FormControl>
+            )}
+          />
+        </Grid>
+
+        <Grid xs={12}>
+          <Typography
+            component="h3"
+            level="h4"
+            sx={{
+              mb: 3,
+              mt: 3,
+            }}
+          >
+            Select Parking Options
+          </Typography>
+          <Controller
+            control={control}
+            name="parkingOptions"
+            render={({ field }) => (
+              <RadioGroup
+                size="lg"
+                sx={{ gap: 1.5, mb: 5, display: "flex", flexDirection: "row" }}
+                {...field}
+              >
+                {[
+                  {
+                    value: "flat",
+                    name: "Free Parking Available",
+                  },
+                  {
+                    value: "house",
+                    name: "Paid Parking Available",
+                  },
+                  {
+                    value: "hmo",
+                    name: "No Parking Available",
+                  },
+                ].map((option) => (
+                  <Sheet
+                    key={option.value}
+                    sx={{
+                      p: 2,
+                      borderRadius: "md",
+                      boxShadow: "sm",
+                      flex: 1,
+                    }}
+                  >
+                    <Radio
+                      label={
+                        <Box>
+                          <Typography>{option.name}</Typography>
+                        </Box>
+                      }
+                      overlay
+                      disableIcon
+                      value={option.value}
+                      slotProps={{
+                        label: ({ checked }) => ({
+                          sx: {
+                            fontWeight: "lg",
+                            fontSize: "md",
+                            color: checked ? "text.primary" : "text.secondary",
+                          },
+                        }),
+                        action: ({ checked }) => ({
+                          sx: (theme) => ({
+                            ...(checked && {
+                              "--variant-borderWidth": "2px",
+                              "&&": {
+                                // && to increase the specificity to win the base :hover styles
+                                borderColor: theme.vars.palette.primary[500],
+                              },
+                            }),
+                          }),
+                        }),
+                      }}
+                    />
+                  </Sheet>
+                ))}
+              </RadioGroup>
+            )}
+          />
+        </Grid>
+
+        <Grid xs={12}>
+          <Typography
+            component="h3"
+            level="h4"
+            sx={{
+              mb: 3,
+            }}
+          >
+            Is property in congestion zone?
+          </Typography>
+          <Controller
+            control={control}
+            name="parkingOptions"
+            render={({ field }) => (
+              <RadioGroup
+                size="lg"
+                sx={{ gap: 1.5, mb: 5, display: "flex", flexDirection: "row" }}
+                {...field}
+              >
+                {[
+                  {
+                    value: "flat",
+                    name: "Yes",
+                  },
+                  {
+                    value: "house",
+                    name: "No",
+                  },
+                ].map((option) => (
+                  <Sheet
+                    key={option.value}
+                    sx={{
+                      p: 2,
+                      borderRadius: "md",
+                      boxShadow: "sm",
+                      flex: 1,
+                    }}
+                  >
+                    <Radio
+                      label={
+                        <Box>
+                          <Typography>{option.name}</Typography>
+                        </Box>
+                      }
+                      overlay
+                      disableIcon
+                      value={option.value}
+                      slotProps={{
+                        label: ({ checked }) => ({
+                          sx: {
+                            fontWeight: "lg",
+                            fontSize: "md",
+                            color: checked ? "text.primary" : "text.secondary",
+                          },
+                        }),
+                        action: ({ checked }) => ({
+                          sx: (theme) => ({
+                            ...(checked && {
+                              "--variant-borderWidth": "2px",
+                              "&&": {
+                                // && to increase the specificity to win the base :hover styles
+                                borderColor: theme.vars.palette.primary[500],
+                              },
+                            }),
+                          }),
+                        }),
+                      }}
+                    />
+                  </Sheet>
+                ))}
+              </RadioGroup>
             )}
           />
         </Grid>

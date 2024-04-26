@@ -10,7 +10,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { createQueryString } from "@/shared/functions";
 import { Order } from "@/types/misc";
 
-export default function PaymentDetails({ order }: { order: Order }) {
+export default function PaymentDetails() {
   const [status, setStatus] = useState<string>();
   const [loading, setLoading] = useState(false);
   const stripe = useStripe();
@@ -36,7 +36,7 @@ export default function PaymentDetails({ order }: { order: Order }) {
           window.location.pathname +
           "?" +
           createQueryString("active_step", "5"),
-        receipt_email: order.email,
+        // receipt_email: order.email,
       },
     });
 
@@ -90,7 +90,7 @@ export default function PaymentDetails({ order }: { order: Order }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <PaymentElement
+      {/* <PaymentElement
         options={{
           defaultValues: {
             billingDetails: {
@@ -106,7 +106,7 @@ export default function PaymentDetails({ order }: { order: Order }) {
             },
           },
         }}
-      />
+      /> */}
 
       <Button variant="outlined" type="submit" loading={loading} sx={{ mt: 2 }}>
         Pay
