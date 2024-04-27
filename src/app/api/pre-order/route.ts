@@ -3,7 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 import PreOrder from "../_models/PreOrder";
 
 export async function GET() {
-  return NextResponse.json({ name: "user" });
+  try {
+    await dbConnect();
+    return NextResponse.json({ name: "user" });
+  } catch (error: any) {
+    console.log(error);
+    return NextResponse.json({ message: error.message }, { status: 500 });
+  }
 }
 
 // export async function PATCH(req: NextRequest) {

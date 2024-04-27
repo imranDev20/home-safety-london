@@ -31,3 +31,26 @@ export async function PUT(req: NextRequest, res: NextResponse) {
     return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { pre_order_id: string } },
+  res: NextResponse
+) {
+  try {
+    await dbConnect();
+    const id = params.pre_order_id;
+    console.log(params.pre_order_id);
+
+    const preOrder = await PreOrder.findById(id);
+
+    return NextResponse.json({
+      success: true,
+      message: "Data fetched successfully!",
+      data: preOrder,
+    });
+  } catch (error: any) {
+    console.log(error);
+    return NextResponse.json({ message: error.message }, { status: 500 });
+  }
+}

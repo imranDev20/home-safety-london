@@ -1,10 +1,18 @@
 import mongoose from "mongoose";
+import { Schema } from "mongoose";
+
+interface OrderItem {
+  name: string;
+  price: number;
+  quantity: string | number;
+  unit: string;
+}
 
 interface PreOrder {
   property_type: string;
   property_sub_type: string;
-  bedrooms: number;
-  order_items: string[];
+  bedrooms: string;
+  order_items: OrderItem[];
   is_service_details_complete: boolean;
   customer_name: string;
   email: string;
@@ -28,7 +36,26 @@ interface PreOrder {
   taxed_total: number;
 }
 
-const preOrderSchema = new mongoose.Schema<PreOrder>({
+const orderItemSchema = new Schema<OrderItem>({
+  name: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  quantity: {
+    type: Schema.Types.Mixed, // Allows both string and number
+    required: true,
+  },
+  unit: {
+    type: String,
+    required: true,
+  },
+});
+
+const preOrderSchema = new Schema<PreOrder>({
   property_type: {
     type: String,
     required: true,
@@ -38,11 +65,11 @@ const preOrderSchema = new mongoose.Schema<PreOrder>({
     required: true,
   },
   bedrooms: {
-    type: Number,
+    type: String,
     required: true,
   },
   order_items: {
-    type: [String],
+    type: [orderItemSchema],
     required: true,
   },
   is_service_details_complete: {
@@ -94,15 +121,6 @@ const preOrderSchema = new mongoose.Schema<PreOrder>({
   is_personal_details_complete: {
     type: Boolean,
   },
-  tax_rate: {
-    type: Number,
-  },
-  order_total: {
-    type: Number,
-  },
-  taxed_total: {
-    type: Number,
-  },
 });
 
 // Custom validator for fields below is_service_details_complete
@@ -117,6 +135,7 @@ preOrderSchema.pre<PreOrder>("save", function (next) {
       "congestion_zone",
       "is_personal_details_complete",
     ];
+
     for (const field of requiredFields) {
       if (!(this as any)[field]) {
         return next(
@@ -131,21 +150,22 @@ preOrderSchema.pre<PreOrder>("save", function (next) {
     }
   }
 
-  if (this.is_personal_details_complete) {
-    const requiredFields = ["tax_rate", "order_total"];
-    for (const field of requiredFields) {
-      if (!(this as any)[field]) {
-        return next(
-          new Error(
-            `${field.replace(
-              "_",
-              " "
-            )} is required when service details are complete.`
-          )
-        );
-      }
-    }
-  }
+  // if (this.is_personal_details_complete) {
+  //   const requiredFields = ["tax_rate", "order_total"];
+
+  //   for (const field of requiredFields) {
+  //     if (!(this as any)[field]) {
+  //       return next(
+  //         new Error(
+  //           `${field.replace(
+  //             "_",
+  //             " "
+  //           )} is required when service details are complete.`
+  //         )
+  //       );
+  //     }
+  //   }
+  // }
   next();
 });
 

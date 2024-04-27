@@ -4,14 +4,11 @@ export type ServiceFormInput = {
   propertyType: "residential" | "commercial";
   propertySubtype: "flat" | "house" | "hmo" | "";
   bedrooms: string;
-  eicr: false;
-  gas_cert: false;
-  epc: false;
-  pat: false;
-  gas_boiler: false;
-  fire_safety: false;
-  fire_risk: false;
-  emergency_light: false;
+  orderItems: {
+    name: string;
+    price: number;
+    unit: string;
+  }[];
 };
 
 export type PersonalFormInput = {
@@ -21,9 +18,10 @@ export type PersonalFormInput = {
   house: string;
   postCode: string;
   city: string;
+  congestionArea: string;
   parkingOptions: string;
-  inspectionDate: string | null;
-  inspectionTime: string | null;
+  inspectionDate: string;
+  inspectionTime: string;
   orderNotes: string;
 };
 

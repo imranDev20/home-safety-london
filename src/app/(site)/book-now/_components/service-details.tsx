@@ -1,9 +1,12 @@
 "use client";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { isObjectEmpty } from "@/shared/functions";
+import {
+  getPreOrderIdFromLocalStorage,
+  isObjectEmpty,
+  toSnakeCase,
+} from "@/shared/functions";
 import { ServiceFormInput, ServiceType } from "@/types/form";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import dayjs from "dayjs";
 import {
   Box,
   Button,
@@ -19,6 +22,10 @@ import {
 } from "@mui/joy";
 import { CorporateFare, Home } from "@mui/icons-material";
 import HookFormError from "@/app/_components/common/hook-form-error";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { getPreOrderById } from "@/services/pre-order.services";
+import { useEffect } from "react";
 
 type PropertyType = "residential" | "commercial";
 
@@ -29,32 +36,32 @@ const PRICING = [
     mininumAmount: 1,
     bedroomWisePrice: [
       {
-        bedroom: "studio_flat",
+        bedrooms: "studio_flat",
         firstUnitCost: 79,
         extraUnitCost: 80,
       },
       {
-        bedroom: "1",
+        bedrooms: "1",
         firstUnitCost: 99,
         extraUnitCost: 80,
       },
       {
-        bedroom: "2",
+        bedrooms: "2",
         firstUnitCost: 99,
         extraUnitCost: 80,
       },
       {
-        bedroom: "3",
+        bedrooms: "3",
         firstUnitCost: 119,
         extraUnitCost: 80,
       },
       {
-        bedroom: "4",
+        bedrooms: "4",
         firstUnitCost: 119,
         extraUnitCost: 80,
       },
       {
-        bedroom: "5",
+        bedrooms: "5",
         firstUnitCost: 119,
         extraUnitCost: 80,
       },
@@ -67,41 +74,267 @@ const RESIDENTIAL_SERVICES = [
     id: 1,
     title: "EICR - Electrical Certificate",
     name: "eicr",
+    priceData: [
+      {
+        bedrooms: "studio_flat",
+        price: 79,
+      },
+      {
+        bedrooms: "1",
+        price: 99,
+      },
+      {
+        bedrooms: "2",
+        price: 99,
+      },
+      {
+        bedrooms: "3",
+        price: 119,
+      },
+      {
+        bedrooms: "4",
+        price: 119,
+      },
+      {
+        bedrooms: "5",
+        price: 149,
+      },
+    ],
+    quantity: 1,
+    unit: "fuse box",
+    extraUnitCost: 80,
   },
   {
     id: 2,
     title: "Gas Safety Certificate",
     name: "gas_cert",
+    priceData: [
+      {
+        bedrooms: "studio_flat",
+        price: 79,
+      },
+      {
+        bedrooms: "1",
+        price: 99,
+      },
+      {
+        bedrooms: "2",
+        price: 99,
+      },
+      {
+        bedrooms: "3",
+        price: 119,
+      },
+      {
+        bedrooms: "4",
+        price: 119,
+      },
+      {
+        bedrooms: "5",
+        price: 149,
+      },
+    ],
+    quantity: 1,
+    unit: "appliance",
+    extraUnitCost: 10,
   },
   {
     id: 3,
     title: "Energy Performance Certificate",
     name: "epc",
+    priceData: [
+      {
+        bedrooms: "studio_flat",
+        price: 79,
+      },
+      {
+        bedrooms: "1",
+        price: 99,
+      },
+      {
+        bedrooms: "2",
+        price: 99,
+      },
+      {
+        bedrooms: "3",
+        price: 119,
+      },
+      {
+        bedrooms: "4",
+        price: 119,
+      },
+      {
+        bedrooms: "5",
+        price: 149,
+      },
+    ],
+
+    unit: "something",
   },
   {
     id: 4,
     title: "PAT Testing",
     name: "pat",
+    priceData: [
+      {
+        bedrooms: "studio_flat",
+        price: 79,
+      },
+      {
+        bedrooms: "1",
+        price: 99,
+      },
+      {
+        bedrooms: "2",
+        price: 99,
+      },
+      {
+        bedrooms: "3",
+        price: 119,
+      },
+      {
+        bedrooms: "4",
+        price: 119,
+      },
+      {
+        bedrooms: "5",
+        price: 149,
+      },
+    ],
+
+    unit: "something",
   },
   {
     id: 5,
     title: "Gas Safety Certificate + Boiler Service",
     name: "gas_boiler",
+    priceData: [
+      {
+        bedrooms: "studio_flat",
+        price: 79,
+      },
+      {
+        bedrooms: "1",
+        price: 99,
+      },
+      {
+        bedrooms: "2",
+        price: 99,
+      },
+      {
+        bedrooms: "3",
+        price: 119,
+      },
+      {
+        bedrooms: "4",
+        price: 119,
+      },
+      {
+        bedrooms: "5",
+        price: 149,
+      },
+    ],
+
+    unit: "something",
   },
   {
     id: 6,
     title: "Fire Safety Certificate",
     name: "fire_safety",
+    priceData: [
+      {
+        bedrooms: "studio_flat",
+        price: 79,
+      },
+      {
+        bedrooms: "1",
+        price: 99,
+      },
+      {
+        bedrooms: "2",
+        price: 99,
+      },
+      {
+        bedrooms: "3",
+        price: 119,
+      },
+      {
+        bedrooms: "4",
+        price: 119,
+      },
+      {
+        bedrooms: "5",
+        price: 149,
+      },
+    ],
+
+    unit: "something",
   },
   {
     id: 7,
     title: "Fire Risk Assessment",
     name: "fire_risk",
+    priceData: [
+      {
+        bedrooms: "studio_flat",
+        price: 79,
+      },
+      {
+        bedrooms: "1",
+        price: 99,
+      },
+      {
+        bedrooms: "2",
+        price: 99,
+      },
+      {
+        bedrooms: "3",
+        price: 119,
+      },
+      {
+        bedrooms: "4",
+        price: 119,
+      },
+      {
+        bedrooms: "5",
+        price: 149,
+      },
+    ],
+
+    unit: "something",
   },
   {
     id: 8,
     title: "Emergency Lighting Certificate",
     name: "emergency_light",
+    priceData: [
+      {
+        bedrooms: "studio_flat",
+        price: 79,
+      },
+      {
+        bedrooms: "1",
+        price: 99,
+      },
+      {
+        bedrooms: "2",
+        price: 99,
+      },
+      {
+        bedrooms: "3",
+        price: 119,
+      },
+      {
+        bedrooms: "4",
+        price: 119,
+      },
+      {
+        bedrooms: "5",
+        price: 149,
+      },
+    ],
+
+    unit: "something",
   },
 ];
 
@@ -110,16 +343,100 @@ const COMMERCIAL_SERVICES = [
     id: 1,
     title: "EICR - Electrical Certificate",
     name: "com_eicr",
+    priceData: [
+      {
+        bedrooms: "studio_flat",
+        price: 79,
+      },
+      {
+        bedrooms: "1",
+        price: 99,
+      },
+      {
+        bedrooms: "2",
+        price: 99,
+      },
+      {
+        bedrooms: "3",
+        price: 119,
+      },
+      {
+        bedrooms: "4",
+        price: 119,
+      },
+      {
+        bedrooms: "5",
+        price: 149,
+      },
+    ],
+
+    unit: "something",
   },
   {
     id: 2,
     title: "PAT Testing",
     name: "com_pat",
+    priceData: [
+      {
+        bedrooms: "studio_flat",
+        price: 79,
+      },
+      {
+        bedrooms: "1",
+        price: 99,
+      },
+      {
+        bedrooms: "2",
+        price: 99,
+      },
+      {
+        bedrooms: "3",
+        price: 119,
+      },
+      {
+        bedrooms: "4",
+        price: 119,
+      },
+      {
+        bedrooms: "5",
+        price: 149,
+      },
+    ],
+
+    unit: "something",
   },
   {
     id: 3,
     title: "Fire Safety Certificate",
     name: "com_fire_safety",
+    priceData: [
+      {
+        bedrooms: "studio_flat",
+        price: 79,
+      },
+      {
+        bedrooms: "1",
+        price: 99,
+      },
+      {
+        bedrooms: "2",
+        price: 99,
+      },
+      {
+        bedrooms: "3",
+        price: 119,
+      },
+      {
+        bedrooms: "4",
+        price: 119,
+      },
+      {
+        bedrooms: "5",
+        price: 149,
+      },
+    ],
+
+    unit: "something",
   },
 ];
 
@@ -129,21 +446,44 @@ export default function ServiceDetails() {
   const pathname = usePathname();
   const theme = useTheme();
 
+  const { status, data, error, isFetching } = useQuery({
+    queryKey: ["pre-order"],
+    queryFn: () => {
+      const preOrderId = getPreOrderIdFromLocalStorage();
+      return getPreOrderById(preOrderId as string);
+    },
+  });
+
   const {
     control,
     watch,
     handleSubmit,
     formState: { errors },
+    setValue,
+    reset,
   } = useForm<ServiceFormInput>({
     defaultValues: {
       propertyType:
         (searchParams.get("property_type") as PropertyType) || "residential",
       propertySubtype: "",
       bedrooms: "",
+      orderItems: [],
     },
   });
 
+  const preOrderData = data?.data;
+
   const propertyType = watch("propertyType");
+
+  useEffect(() => {
+    if (preOrderData) {
+      reset({
+        propertyType: preOrderData.property_type,
+        propertySubtype: preOrderData.property_sub_type,
+        bedrooms: preOrderData.bedrooms,
+      });
+    }
+  }, [preOrderData, reset]);
 
   const ServicesBySelectedType =
     propertyType === "residential" ? RESIDENTIAL_SERVICES : COMMERCIAL_SERVICES;
@@ -287,17 +627,14 @@ export default function ServiceDetails() {
                   {
                     value: "flat",
                     name: "Flat",
-                    Icon: Home,
                   },
                   {
                     value: "house",
                     name: "House",
-                    Icon: CorporateFare,
                   },
                   {
                     value: "hmo",
                     name: "HMO",
-                    Icon: CorporateFare,
                   },
                 ].map((option) => (
                   <Sheet
@@ -358,14 +695,28 @@ export default function ServiceDetails() {
           <Controller
             control={control}
             name="bedrooms"
-            render={({ field }) => (
+            render={({ field: { value, onChange } }) => (
               <RadioGroup
                 size="lg"
                 sx={{
                   gap: 1.5,
                   mb: 5,
                 }}
-                {...field}
+                value={value}
+                onChange={(e) => {
+                  const items = watch("orderItems");
+                  const newItems = items.map((item) => ({
+                    ...item,
+                    price: RESIDENTIAL_SERVICES.find(
+                      (res_ser) => res_ser.name === item.name
+                    )?.priceData.find(
+                      (price) => price.bedrooms === e.target.value
+                    )?.price as number,
+                  }));
+
+                  setValue("orderItems", newItems);
+                  onChange(e.target.value);
+                }}
               >
                 <Grid container spacing={2}>
                   {["Studio Flat", "1", "2", "3", "4", "5"].map(
@@ -389,7 +740,7 @@ export default function ServiceDetails() {
                             }
                             overlay
                             disableIcon
-                            value={option}
+                            value={toSnakeCase(option)}
                             slotProps={{
                               label: ({ checked }) => ({
                                 sx: {
@@ -456,11 +807,23 @@ export default function ServiceDetails() {
               >
                 <Controller
                   control={control}
-                  name={option.name as ServiceType}
+                  name="orderItems"
                   render={({ field: { onChange, value } }) => (
                     <Checkbox
-                      checked={value || false}
-                      onChange={(e) => onChange(e.target.checked)}
+                      // checked={watch('orderItems').includes()}
+                      onChange={(e) => {
+                        const items = watch("orderItems");
+                        const tempItems = [...items];
+
+                        tempItems.push({
+                          name: option.name,
+                          price: option.priceData.find(
+                            (item) => item.bedrooms === watch("bedrooms")
+                          )?.price as number,
+                          unit: option.unit,
+                        });
+                        onChange(tempItems);
+                      }}
                       label={
                         <Box>
                           <Typography>{option.title}</Typography>

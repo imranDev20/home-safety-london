@@ -92,3 +92,36 @@ export function getServiceItems(order: Order) {
       )?.price,
     }));
 }
+
+export const setToken = (token: string) => {
+  localStorage.setItem("accessToken", token);
+};
+
+export const getToken = () => {
+  return localStorage.getItem("accessToken");
+};
+
+export const removeToken = () => {
+  localStorage.removeItem("accessToken");
+};
+
+export const setPreOrderIdToLocalStorage = (preOrderId: string) => {
+  localStorage.setItem("preOrderId", preOrderId);
+};
+
+// Function to get pre-order ID from local storage
+export const getPreOrderIdFromLocalStorage = () => {
+  return localStorage.getItem("preOrderId");
+};
+
+// Function to remove pre-order ID from local storage
+export const removePreOrderIdFromLocalStorage = () => {
+  localStorage.removeItem("preOrderId");
+};
+
+export function toSnakeCase(str: string) {
+  return str
+    .replace(/\s+/g, "_") // Replace spaces with underscores
+    .replace(/[^a-zA-Z0-9_]/g, "") // Remove special characters
+    .toLowerCase(); // Convert to lowercase
+}

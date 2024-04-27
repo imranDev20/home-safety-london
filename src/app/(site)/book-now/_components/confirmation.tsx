@@ -1,12 +1,6 @@
-import {
-  calculateTotal,
-  createQueryString,
-  getServiceItems,
-} from "@/shared/functions";
-import { Order } from "@/types/misc";
-import { Box, Button, CircularProgress, Typography } from "@mui/joy";
+import { createQueryString } from "@/shared/functions";
+import { Box, Button, Typography } from "@mui/joy";
 import { useTheme } from "@mui/joy/styles";
-import dayjs from "dayjs";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -20,8 +14,6 @@ export default function Confirmation() {
     //   router.push(pathname + "?" + createQueryString("active_step", "1"));
     // }
   }, [pathname, router]);
-
-  // const items = getServiceItems(order);
 
   return (
     <>
@@ -315,9 +307,6 @@ export default function Confirmation() {
       >
         <Button
           variant="solid"
-          onClick={() => {
-            router.push(pathname + "?" + createQueryString("active_step", "4"));
-          }}
           sx={{
             mt: 2,
           }}

@@ -58,12 +58,17 @@ export default function PersonalDetails() {
       postCode: "",
       city: "London",
       parkingOptions: "",
+      congestionArea: "",
+      inspectionDate: "",
+      inspectionTime: "",
+      orderNotes: "",
     },
   });
 
   const onPersonalDetailsSubmit: SubmitHandler<PersonalFormInput> = (data) => {
-    router.push(pathname + "?" + createQueryString("active_step", "3"));
-    window.scrollTo(0, 300);
+    // router.push(pathname + "?" + createQueryString("active_step", "3"));
+    console.log(data);
+    // window.scrollTo(0, 300);
   };
 
   useEffect(() => {
@@ -326,7 +331,7 @@ export default function PersonalDetails() {
           </Typography>
           <Controller
             control={control}
-            name="parkingOptions"
+            name="congestionArea"
             render={({ field }) => (
               <RadioGroup
                 size="lg"
@@ -392,9 +397,12 @@ export default function PersonalDetails() {
         <Grid xs={6}>
           <Controller
             control={control}
-            name="city"
+            name="inspectionDate"
+            rules={{
+              required: "Inspection date can't be empty",
+            }}
             render={({ field }) => (
-              <FormControl error={!!errors.city}>
+              <FormControl error={!!errors.inspectionDate}>
                 <FormLabel>Select Inspection Date</FormLabel>
 
                 <Input
@@ -404,7 +412,7 @@ export default function PersonalDetails() {
                   fullWidth
                   variant="outlined"
                 />
-                <HookFormError name="city" errors={errors} />
+                <HookFormError name="inspectionDate" errors={errors} />
               </FormControl>
             )}
           />
@@ -413,12 +421,12 @@ export default function PersonalDetails() {
         <Grid xs={6}>
           <Controller
             control={control}
-            name="postCode"
+            name="inspectionTime"
             rules={{
-              required: "Post code can't be empty",
+              required: "Inspection time can't be empty",
             }}
             render={({ field }) => (
-              <FormControl error={!!errors.postCode}>
+              <FormControl error={!!errors.inspectionTime}>
                 <FormLabel>Select Inspection Time</FormLabel>
                 <Input
                   {...field}
@@ -427,7 +435,7 @@ export default function PersonalDetails() {
                   variant="outlined"
                   type="time"
                 />
-                <HookFormError name="postCode" errors={errors} />
+                <HookFormError name="inspectionTime" errors={errors} />
               </FormControl>
             )}
           />
@@ -439,14 +447,14 @@ export default function PersonalDetails() {
             name="orderNotes"
             render={({ field }) => (
               <FormControl
-                error={!!errors.postCode}
+                error={!!errors.orderNotes}
                 sx={{
                   mt: 2,
                 }}
               >
                 <FormLabel>Order Notes (Optional)</FormLabel>
                 <Textarea {...field} size="lg" variant="outlined" minRows={3} />
-                <HookFormError name="postCode" errors={errors} />
+                <HookFormError name="orderNotes" errors={errors} />
               </FormControl>
             )}
           />
