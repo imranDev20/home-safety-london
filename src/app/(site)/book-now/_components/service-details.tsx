@@ -4,6 +4,7 @@ import {
   createQueryString,
   getPreOrderIdFromLocalStorage,
   isObjectEmpty,
+  setPreOrderIdToLocalStorage,
   toSnakeCase,
 } from "@/shared/functions";
 import { ServiceFormInput } from "@/types/form";
@@ -32,7 +33,7 @@ import HookFormError from "@/app/_components/common/hook-form-error";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPreOrderById, updatePreOrder } from "@/services/pre-order.services";
 import { useEffect, useState } from "react";
-import { PreOrderType } from "@/types/pre-order";
+import { PreOrderServicesPayload } from "@/types/pre-order";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 
 type PropertyType = "residential" | "commercial";
@@ -413,21 +414,20 @@ export default function ServiceDetails() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const theme = useTheme();
-  const [openSnackbar, setOpenSnackbar] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data: preOrderData, isLoading: isPreOrderDataLoading } = useQuery({
-    queryKey: ["pre-order"],
-    queryFn: async () => {
-      const preOrderId = getPreOrderIdFromLocalStorage();
-      const response = await getPreOrderById(preOrderId as string);
-      return response.data;
-    },
-  });
+  // const { data: preOrderData, isLoading: isPreOrderDataLoading } = useQuery({
+  //   queryKey: ["pre-order"],
+  //   queryFn: async () => {
+  //     const preOrderId = getPreOrderIdFromLocalStorage();
+  //     const response = await getPreOrderById(preOrderId as string);
+  //     return response.data;
+  //   },
+  // });
 
   const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
     useMutation({
-      mutationFn: async (preOrder: PreOrderType) => {
+      mutationFn: async (preOrder: PreOrderServicesPayload) => {
         const response = await updatePreOrder(undefined, preOrder);
         return response;
       },
@@ -438,7 +438,6 @@ export default function ServiceDetails() {
     watch,
     handleSubmit,
     formState: { errors },
-    setValue,
     reset,
   } = useForm<ServiceFormInput>({
     defaultValues: {
@@ -452,16 +451,16 @@ export default function ServiceDetails() {
 
   const propertyType = watch("propertyType");
 
-  useEffect(() => {
-    if (preOrderData) {
-      reset({
-        propertyType: preOrderData.property_type,
-        propertySubtype: preOrderData.property_sub_type,
-        bedrooms: preOrderData.bedrooms,
-        orderItems: preOrderData.orderItems,
-      });
-    }
-  }, [preOrderData, reset]);
+  // useEffect(() => {
+  //   if (preOrderData) {
+  //     reset({
+  //       propertyType: preOrderData.property_type,
+  //       propertySubtype: preOrderData.property_sub_type,
+  //       bedrooms: preOrderData.bedrooms,
+  //       orderItems: preOrderData.orderItems,
+  //     });
+  //   }
+  // }, [preOrderData, reset]);
 
   const ServicesBySelectedType =
     propertyType === "residential" ? RESIDENTIAL_SERVICES : COMMERCIAL_SERVICES;
@@ -474,6 +473,7 @@ export default function ServiceDetails() {
         property_type: data.propertyType,
         property_sub_type: data.propertySubtype,
         bedrooms: data.bedrooms,
+        is_service_details_complete: true,
         order_items: ServicesBySelectedType.filter((el) =>
           data.orderItems.includes(el.name)
         ).map((item) => ({
@@ -487,9 +487,10 @@ export default function ServiceDetails() {
       };
 
       const response = await preOrderMutate(payload);
-      console.log(response);
 
       if (response?.status === "success") {
+        setPreOrderIdToLocalStorage(response.data._id);
+
         router.push(pathname + "?" + createQueryString("active_step", "2"));
         window.scrollTo(0, 300);
         enqueueSnackbar(response.message, "success");
@@ -498,29 +499,28 @@ export default function ServiceDetails() {
       }
     } catch (error: any) {
       enqueueSnackbar(error.message, "error");
-      console.log(error);
     }
   };
 
-  if (isPreOrderDataLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          height: "50vh",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <CircularProgress
-          thickness={4}
-          sx={{ "--CircularProgress-size": "100px" }}
-        >
-          Loading
-        </CircularProgress>
-      </Box>
-    );
-  }
+  // if (isPreOrderDataLoading) {
+  //   return (
+  //     <Box
+  //       sx={{
+  //         display: "flex",
+  //         height: "50vh",
+  //         justifyContent: "center",
+  //         alignItems: "center",
+  //       }}
+  //     >
+  //       <CircularProgress
+  //         thickness={4}
+  //         sx={{ "--CircularProgress-size": "100px" }}
+  //       >
+  //         Loading
+  //       </CircularProgress>
+  //     </Box>
+  //   );
+  // }
 
   return (
     <Box

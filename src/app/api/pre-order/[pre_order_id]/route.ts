@@ -16,7 +16,7 @@ export async function PUT(
     const newObjectId =
       orderId === "undefined" ? new mongoose.Types.ObjectId() : null;
 
-    const data = await PreOrder.updateOne(
+    const data = await PreOrder.findOneAndUpdate(
       { _id: orderId !== "undefined" ? orderId : newObjectId },
       preOrder,
       {

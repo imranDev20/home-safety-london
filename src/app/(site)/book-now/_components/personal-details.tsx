@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Divider,
   FormControl,
   FormLabel,
@@ -23,7 +24,14 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 import { isValid } from "postcode";
 import React, { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { createQueryString } from "@/shared/functions";
+import {
+  createQueryString,
+  getPreOrderIdFromLocalStorage,
+} from "@/shared/functions";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getPreOrderById, updatePreOrder } from "@/services/pre-order.services";
+import { PreOrderPersonalPayload } from "@/types/pre-order";
+import { useSnackbar } from "@/app/_components/snackbar-provider";
 
 const PhoneInputAdapter = React.forwardRef<InputProps, any>(
   function PhoneInputAdapter(props, ref) {
@@ -44,6 +52,7 @@ const PhoneInputAdapter = React.forwardRef<InputProps, any>(
 export default function PersonalDetails() {
   const router = useRouter();
   const pathname = usePathname();
+  const { enqueueSnackbar } = useSnackbar();
 
   const {
     control,
@@ -65,10 +74,59 @@ export default function PersonalDetails() {
     },
   });
 
-  const onPersonalDetailsSubmit: SubmitHandler<PersonalFormInput> = (data) => {
-    // router.push(pathname + "?" + createQueryString("active_step", "3"));
-    console.log(data);
-    // window.scrollTo(0, 300);
+  const { data: preOrderData, isLoading: isPreOrderDataLoading } = useQuery({
+    queryKey: ["pre-order"],
+    queryFn: async () => {
+      const preOrderId = getPreOrderIdFromLocalStorage();
+      const response = await getPreOrderById(preOrderId as string);
+      return response.data;
+    },
+  });
+
+  const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
+    useMutation({
+      mutationFn: async (preOrder: PreOrderPersonalPayload) => {
+        const response = await updatePreOrder(undefined, preOrder);
+        return response;
+      },
+    });
+
+  const onPersonalDetailsSubmit: SubmitHandler<PersonalFormInput> = async (
+    data
+  ) => {
+    try {
+      const payload = {
+        customer_name: data.name,
+        email: data.email,
+        phone_no: data.phone,
+        address: {
+          house_street: data.house,
+          postcode: data.postCode,
+          city: data.city,
+        },
+        parking_options: {
+          parking_type: data.parkingOptions,
+          parking_cost: 5,
+        },
+        congestion_zone: {
+          zone_type: data.congestionArea,
+          zone_cost: 5,
+        },
+        is_personal_details_complete: true,
+      };
+
+      const response = await preOrderMutate(payload);
+
+      if (response?.status === "success") {
+        router.push(pathname + "?" + createQueryString("active_step", "3"));
+        window.scrollTo(0, 300);
+        enqueueSnackbar(response.message, "success");
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error: any) {
+      enqueueSnackbar(error.message, "error");
+    }
   };
 
   useEffect(() => {
@@ -76,6 +134,26 @@ export default function PersonalDetails() {
     //   router.push(pathname + "?" + createQueryString("active_step", "1"));
     // }
   }, [pathname, router]);
+
+  if (isPreOrderDataLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          height: "50vh",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress
+          thickness={4}
+          sx={{ "--CircularProgress-size": "100px" }}
+        >
+          Loading
+        </CircularProgress>
+      </Box>
+    );
+  }
 
   return (
     <>
