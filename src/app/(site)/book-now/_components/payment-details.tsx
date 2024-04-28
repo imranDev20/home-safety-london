@@ -8,7 +8,6 @@ import {
 import { Alert, Button } from "@mui/joy";
 import { useRouter, usePathname } from "next/navigation";
 import { createQueryString } from "@/shared/functions";
-import { Order } from "@/types/misc";
 
 export default function PaymentDetails() {
   const [status, setStatus] = useState<string>();
