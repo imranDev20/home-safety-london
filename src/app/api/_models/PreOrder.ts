@@ -6,6 +6,7 @@ interface OrderItem {
   price: number;
   quantity: string | number;
   unit: string;
+  title: string;
 }
 
 interface PreOrder {
@@ -38,6 +39,10 @@ interface PreOrder {
 
 const orderItemSchema = new Schema<OrderItem>({
   name: {
+    type: String,
+    required: true,
+  },
+  title: {
     type: String,
     required: true,
   },

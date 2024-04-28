@@ -1,11 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Box from "@mui/joy/Box";
 import { Card, CardContent, Container, Grid, Typography } from "@mui/joy";
 import PageHeader from "../../_components/common/page-header";
 import BackgroundImage from "@/images/about-bg.jpeg";
 import Paragraph from "../../_components/common/paragraph";
-import { Order } from "@/types/misc";
 import { useSearchParams } from "next/navigation";
 import ServiceDetails from "./_components/service-details";
 import PersonalDetails from "./_components/personal-details";

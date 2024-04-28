@@ -1,11 +1,12 @@
 "use client";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import {
+  createQueryString,
   getPreOrderIdFromLocalStorage,
   isObjectEmpty,
   toSnakeCase,
 } from "@/shared/functions";
-import { ServiceFormInput, ServiceType } from "@/types/form";
+import { ServiceFormInput } from "@/types/form";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Box,
@@ -19,55 +20,22 @@ import {
   Typography,
   useTheme,
   Grid,
+  CircularProgress,
+  Snackbar,
 } from "@mui/joy";
-import { CorporateFare, Home } from "@mui/icons-material";
+import {
+  CorporateFare,
+  Home,
+  PlaylistAddCheckCircleRounded,
+} from "@mui/icons-material";
 import HookFormError from "@/app/_components/common/hook-form-error";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { getPreOrderById } from "@/services/pre-order.services";
-import { useEffect } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getPreOrderById, updatePreOrder } from "@/services/pre-order.services";
+import { useEffect, useState } from "react";
+import { PreOrderType } from "@/types/pre-order";
+import { useSnackbar } from "@/app/_components/snackbar-provider";
 
 type PropertyType = "residential" | "commercial";
-
-const PRICING = [
-  {
-    serviceName: "EICR - Electrical Certificate",
-    unit: "fuse box",
-    mininumAmount: 1,
-    bedroomWisePrice: [
-      {
-        bedrooms: "studio_flat",
-        firstUnitCost: 79,
-        extraUnitCost: 80,
-      },
-      {
-        bedrooms: "1",
-        firstUnitCost: 99,
-        extraUnitCost: 80,
-      },
-      {
-        bedrooms: "2",
-        firstUnitCost: 99,
-        extraUnitCost: 80,
-      },
-      {
-        bedrooms: "3",
-        firstUnitCost: 119,
-        extraUnitCost: 80,
-      },
-      {
-        bedrooms: "4",
-        firstUnitCost: 119,
-        extraUnitCost: 80,
-      },
-      {
-        bedrooms: "5",
-        firstUnitCost: 119,
-        extraUnitCost: 80,
-      },
-    ],
-  },
-];
 
 const RESIDENTIAL_SERVICES = [
   {
@@ -168,7 +136,7 @@ const RESIDENTIAL_SERVICES = [
         price: 149,
       },
     ],
-
+    quantity: 1,
     unit: "something",
   },
   {
@@ -201,7 +169,7 @@ const RESIDENTIAL_SERVICES = [
         price: 149,
       },
     ],
-
+    quantity: 1,
     unit: "something",
   },
   {
@@ -234,7 +202,7 @@ const RESIDENTIAL_SERVICES = [
         price: 149,
       },
     ],
-
+    quantity: 1,
     unit: "something",
   },
   {
@@ -267,7 +235,7 @@ const RESIDENTIAL_SERVICES = [
         price: 149,
       },
     ],
-
+    quantity: 1,
     unit: "something",
   },
   {
@@ -300,7 +268,7 @@ const RESIDENTIAL_SERVICES = [
         price: 149,
       },
     ],
-
+    quantity: 1,
     unit: "something",
   },
   {
@@ -333,7 +301,7 @@ const RESIDENTIAL_SERVICES = [
         price: 149,
       },
     ],
-
+    quantity: 1,
     unit: "something",
   },
 ];
@@ -369,7 +337,7 @@ const COMMERCIAL_SERVICES = [
         price: 149,
       },
     ],
-
+    quantity: 1,
     unit: "something",
   },
   {
@@ -402,7 +370,7 @@ const COMMERCIAL_SERVICES = [
         price: 149,
       },
     ],
-
+    quantity: 1,
     unit: "something",
   },
   {
@@ -435,7 +403,7 @@ const COMMERCIAL_SERVICES = [
         price: 149,
       },
     ],
-
+    quantity: 1,
     unit: "something",
   },
 ];
@@ -445,14 +413,25 @@ export default function ServiceDetails() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const theme = useTheme();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
-  const { status, data, error, isFetching } = useQuery({
+  const { data: preOrderData, isLoading: isPreOrderDataLoading } = useQuery({
     queryKey: ["pre-order"],
-    queryFn: () => {
+    queryFn: async () => {
       const preOrderId = getPreOrderIdFromLocalStorage();
-      return getPreOrderById(preOrderId as string);
+      const response = await getPreOrderById(preOrderId as string);
+      return response.data;
     },
   });
+
+  const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
+    useMutation({
+      mutationFn: async (preOrder: PreOrderType) => {
+        const response = await updatePreOrder(undefined, preOrder);
+        return response;
+      },
+    });
 
   const {
     control,
@@ -471,8 +450,6 @@ export default function ServiceDetails() {
     },
   });
 
-  const preOrderData = data?.data;
-
   const propertyType = watch("propertyType");
 
   useEffect(() => {
@@ -481,6 +458,7 @@ export default function ServiceDetails() {
         propertyType: preOrderData.property_type,
         propertySubtype: preOrderData.property_sub_type,
         bedrooms: preOrderData.bedrooms,
+        orderItems: preOrderData.orderItems,
       });
     }
   }, [preOrderData, reset]);
@@ -488,13 +466,61 @@ export default function ServiceDetails() {
   const ServicesBySelectedType =
     propertyType === "residential" ? RESIDENTIAL_SERVICES : COMMERCIAL_SERVICES;
 
-  const handleServiceDetailsSubmit: SubmitHandler<ServiceFormInput> = (
+  const handleServiceDetailsSubmit: SubmitHandler<ServiceFormInput> = async (
     data
   ) => {
-    console.log(data);
-    // router.push(pathname + "?" + createQueryString("active_step", "2"));
-    // window.scrollTo(0, 300);
+    try {
+      const payload = {
+        property_type: data.propertyType,
+        property_sub_type: data.propertySubtype,
+        bedrooms: data.bedrooms,
+        order_items: ServicesBySelectedType.filter((el) =>
+          data.orderItems.includes(el.name)
+        ).map((item) => ({
+          title: item.title,
+          name: item.name,
+          price: item.priceData.find((val) => val.bedrooms === data.bedrooms)
+            ?.price as number,
+          quantity: item.quantity,
+          unit: item.unit,
+        })),
+      };
+
+      const response = await preOrderMutate(payload);
+      console.log(response);
+
+      if (response?.status === "success") {
+        router.push(pathname + "?" + createQueryString("active_step", "2"));
+        window.scrollTo(0, 300);
+        enqueueSnackbar(response.message, "success");
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error: any) {
+      enqueueSnackbar(error.message, "error");
+      console.log(error);
+    }
   };
+
+  if (isPreOrderDataLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          height: "50vh",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress
+          thickness={4}
+          sx={{ "--CircularProgress-size": "100px" }}
+        >
+          Loading
+        </CircularProgress>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -502,7 +528,6 @@ export default function ServiceDetails() {
       onSubmit={handleSubmit(handleServiceDetailsSubmit)}
       noValidate
     >
-      {/* <SnackbarProvider /> */}
       <Typography
         component="h3"
         level="h4"
@@ -695,28 +720,14 @@ export default function ServiceDetails() {
           <Controller
             control={control}
             name="bedrooms"
-            render={({ field: { value, onChange } }) => (
+            render={({ field }) => (
               <RadioGroup
                 size="lg"
                 sx={{
                   gap: 1.5,
                   mb: 5,
                 }}
-                value={value}
-                onChange={(e) => {
-                  const items = watch("orderItems");
-                  const newItems = items.map((item) => ({
-                    ...item,
-                    price: RESIDENTIAL_SERVICES.find(
-                      (res_ser) => res_ser.name === item.name
-                    )?.priceData.find(
-                      (price) => price.bedrooms === e.target.value
-                    )?.price as number,
-                  }));
-
-                  setValue("orderItems", newItems);
-                  onChange(e.target.value);
-                }}
+                {...field}
               >
                 <Grid container spacing={2}>
                   {["Studio Flat", "1", "2", "3", "4", "5"].map(
@@ -810,19 +821,20 @@ export default function ServiceDetails() {
                   name="orderItems"
                   render={({ field: { onChange, value } }) => (
                     <Checkbox
-                      // checked={watch('orderItems').includes()}
+                      checked={value?.includes(option.name)}
                       onChange={(e) => {
                         const items = watch("orderItems");
                         const tempItems = [...items];
 
-                        tempItems.push({
-                          name: option.name,
-                          price: option.priceData.find(
-                            (item) => item.bedrooms === watch("bedrooms")
-                          )?.price as number,
-                          unit: option.unit,
-                        });
-                        onChange(tempItems);
+                        if (e.target.checked) {
+                          tempItems.push(option.name);
+                          onChange(tempItems);
+                        } else {
+                          const newItems = tempItems.filter(
+                            (item) => item !== option.name
+                          );
+                          onChange(newItems);
+                        }
                       }}
                       label={
                         <Box>
@@ -890,6 +902,8 @@ export default function ServiceDetails() {
           sx={{
             mt: 5,
           }}
+          loading={isPreOrderMutatePending}
+          loadingPosition="end"
         >
           Next: Personal Details
         </Button>

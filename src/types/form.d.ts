@@ -4,11 +4,7 @@ export type ServiceFormInput = {
   propertyType: "residential" | "commercial";
   propertySubtype: "flat" | "house" | "hmo" | "";
   bedrooms: string;
-  orderItems: {
-    name: string;
-    price: number;
-    unit: string;
-  }[];
+  orderItems: string[];
 };
 
 export type PersonalFormInput = {

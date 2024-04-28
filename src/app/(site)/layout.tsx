@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import LocalizationWrapper from "./_components/localization-wrapper";
 import ThemeRegistry from "../_components/theme-registry";
 import QueryProvider from "../_components/query-provider";
+import { SnackbarProvider } from "../_components/snackbar-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,10 +27,12 @@ export default function RootLayout({
         <body className={inter.className}>
           <QueryProvider>
             <ThemeRegistry options={{ key: "joy" }}>
-              <TopLoader />
-              <Header />
-              <Suspense>{children}</Suspense>
-              <Footer />
+              <SnackbarProvider>
+                <TopLoader />
+                <Header />
+                <Suspense>{children}</Suspense>
+                <Footer />
+              </SnackbarProvider>
             </ThemeRegistry>
           </QueryProvider>
         </body>

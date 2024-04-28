@@ -1,12 +1,9 @@
 import slugify from "react-slugify";
+import dayjs from "dayjs";
 
 export function snakeCaseToNormalText(snakeCaseString: string) {
   return snakeCaseString.replace(/_/g, " ").toLowerCase();
 }
-
-import { Order } from "@/types/misc";
-import dayjs from "dayjs";
-import { PRICE_INFO } from "./constants";
 
 export function toTitleCase(input: string): string {
   const smallWords = [
@@ -71,26 +68,6 @@ export const getFutureTime = () => {
 
 export function calculateTotal(numbers: number[]): number {
   return numbers.reduce((total, num) => total + num, 0);
-}
-
-export function getServiceItems(order: Order) {
-  return Object.entries(order)
-    .filter(([key, value]) =>
-      PRICE_INFO.map((price) => price.type).includes(key)
-    )
-    .filter(([key, value]) => value !== "")
-    .map(([key, value]) => ({
-      name: PRICE_INFO.find((price) => price.type === key)?.service,
-      label: PRICE_INFO.find((price) => price.type === key)?.label,
-      type: key,
-      quantity: PRICE_INFO.find((price) => price.type === key)?.price.find(
-        (val) => val.quantity === value
-      )?.quantity,
-
-      price: PRICE_INFO.find((price) => price.type === key)?.price.find(
-        (val) => val.quantity === value
-      )?.price,
-    }));
 }
 
 export const setToken = (token: string) => {

@@ -9,7 +9,10 @@ export const getPreOrderById = async (preOrderId: string) => {
   }
 };
 
-export const updatePreOrder = async (preOrderId: string, updatedData: any) => {
+export const updatePreOrder = async (
+  preOrderId: string | undefined,
+  updatedData: any
+) => {
   try {
     const response = await http.put(`/pre-order/${preOrderId}`, updatedData);
     return response.data;
