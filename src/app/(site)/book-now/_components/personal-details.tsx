@@ -57,6 +57,7 @@ export default function PersonalDetails() {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<PersonalFormInput>({
     defaultValues: {
@@ -86,10 +87,32 @@ export default function PersonalDetails() {
   const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
     useMutation({
       mutationFn: async (preOrder: PreOrderPersonalPayload) => {
-        const response = await updatePreOrder(undefined, preOrder);
+        const preOrderId = getPreOrderIdFromLocalStorage();
+        const response = await updatePreOrder(
+          preOrderId || undefined,
+          preOrder
+        );
         return response;
       },
     });
+
+  useEffect(() => {
+    if (preOrderData) {
+      reset({
+        name: "",
+        email: "",
+        phone: "",
+        house: "",
+        postCode: "",
+        city: "London",
+        parkingOptions: "",
+        congestionArea: "",
+        inspectionDate: "",
+        inspectionTime: "",
+        orderNotes: "",
+      });
+    }
+  }, [preOrderData, reset]);
 
   const onPersonalDetailsSubmit: SubmitHandler<PersonalFormInput> = async (
     data
@@ -548,6 +571,8 @@ export default function PersonalDetails() {
           <Button
             type="submit"
             variant="solid"
+            loading={isPreOrderMutatePending}
+            loadingPosition="end"
             sx={{
               mt: 2,
             }}
