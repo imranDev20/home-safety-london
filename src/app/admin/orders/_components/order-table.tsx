@@ -379,7 +379,7 @@ export default function OrderTable() {
 
       <Hidden smUp>
         {stableSort(rows, getComparator(order, "id")).map((row) => (
-          <Sheet key={row.id} sx={{ paddingY: "16px" }}>
+          <Sheet key={row.id} sx={{ padding: "16px", mb: 2 }}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Box sx={{ marginBottom: "16px" }}>
                 <Box
@@ -439,6 +439,8 @@ export default function OrderTable() {
           </Sheet>
         ))}
       </Hidden>
+
+      {/* Page pagination */}
       <Box
         className="Pagination-laptopUp"
         sx={{

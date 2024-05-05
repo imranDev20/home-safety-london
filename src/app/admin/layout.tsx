@@ -18,7 +18,7 @@ import {
   useTheme,
 } from "@mui/joy";
 import Sheet from "@mui/joy/Sheet";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Logout, Search } from "@mui/icons-material";
 import { ADMIN_OPTIONS } from "@/shared/constants";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
@@ -48,37 +48,39 @@ export default function AdminLayout({
           {/* <TopLoader /> */}
 
           <Stack>
-            <Hidden mdUp>
-              <Sheet
+            {/* Mobile & tablet screen navbar */}
+            <Sheet
+              sx={{
+                width: "100%",
+                py: 2,
+                px: 3,
+                boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                display: { xs: "flex", sm: "flex", md: "none" },
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              <Box
                 sx={{
-                  width: "100%",
-                  py: 2,
-                  px: 3,
-                  boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
                   display: "flex",
                   alignItems: "center",
-                  gap: 2,
+                  gap: 1,
                 }}
               >
-                <IconButton
-                  variant="outlined"
-                  color="neutral"
-                  onClick={() => setOpen(true)}
-                >
-                  <Menu />
-                </IconButton>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                  }}
-                >
-                  <HealthAndSafetyIcon />
-                  <Typography level="title-lg">Home Safety</Typography>
-                </Box>
-              </Sheet>
-            </Hidden>
+                <HealthAndSafetyIcon />
+                <Typography level="title-lg">Home Safety</Typography>
+              </Box>
+              <IconButton
+                variant="outlined"
+                color="neutral"
+                onClick={() => setOpen(true)}
+              >
+                <Menu />
+              </IconButton>
+            </Sheet>
+
+            {/* Mobile & tablet device screens drawer */}
             <Drawer open={open} onClose={() => setOpen(false)}>
               <Box
                 sx={{
@@ -177,117 +179,117 @@ export default function AdminLayout({
                 minHeight: "100dvh",
               }}
             >
-              <Hidden mdDown>
-                <Sheet
-                  sx={{
-                    maxWidth: "240px",
-                    height: "100dvh",
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    borderRight: "1px solid",
-                    borderRightColor: theme.palette.divider,
-                  }}
-                >
-                  <Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        mb: 3,
-                        gap: 1,
-                      }}
-                    >
-                      <HealthAndSafetyIcon />
-                      <Typography level="title-lg">Home Safety</Typography>
-                    </Box>
+              {/* dashboard sidebar navigation */}
+              <Sheet
+                sx={{
+                  maxWidth: "240px",
+                  height: "100dvh",
+                  p: 2,
+                  display: { xs: "none", sm: "none", md: "flex" },
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  borderRight: "1px solid",
+                  borderRightColor: theme.palette.divider,
+                }}
+              >
+                <Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      mb: 3,
+                      gap: 1,
+                    }}
+                  >
+                    <HealthAndSafetyIcon />
+                    <Typography level="title-lg">Home Safety</Typography>
+                  </Box>
 
-                    <Input
-                      size="sm"
-                      startDecorator={<Search />}
-                      placeholder="Search"
-                    />
-                    <List
-                      size="sm"
-                      sx={{
-                        mt: 2,
-                      }}
-                    >
-                      {ADMIN_OPTIONS.map((option) => (
-                        <ListItem
-                          key={option.route}
+                  <Input
+                    size="sm"
+                    startDecorator={<Search />}
+                    placeholder="Search"
+                  />
+                  <List
+                    size="sm"
+                    sx={{
+                      mt: 2,
+                    }}
+                  >
+                    {ADMIN_OPTIONS.map((option) => (
+                      <ListItem
+                        key={option.route}
+                        sx={{
+                          mb: 1,
+                          textDecoration: "none",
+                        }}
+                        component={Link}
+                        href={option.route}
+                      >
+                        <ListItemButton
+                          selected={pathname === option.route}
                           sx={{
-                            mb: 1,
-                            textDecoration: "none",
+                            fontWeight: 500,
+                            borderRadius: theme.radius.sm,
                           }}
-                          component={Link}
-                          href={option.route}
                         >
-                          <ListItemButton
-                            selected={pathname === option.route}
+                          <ListItemDecorator
                             sx={{
-                              fontWeight: 500,
-                              borderRadius: theme.radius.sm,
+                              minInlineSize: "2rem",
                             }}
                           >
-                            <ListItemDecorator
-                              sx={{
-                                minInlineSize: "2rem",
-                              }}
-                            >
-                              <option.Icon />
-                            </ListItemDecorator>
+                            <option.Icon />
+                          </ListItemDecorator>
 
-                            <Typography
-                              sx={{
-                                fontSize: 14,
-                              }}
-                            >
-                              {option.label}
-                            </Typography>
-                          </ListItemButton>
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Box>
+                          <Typography
+                            sx={{
+                              fontSize: 14,
+                            }}
+                          >
+                            {option.label}
+                          </Typography>
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
 
-                  <Box>
-                    <Divider
-                      sx={{
-                        my: 2,
-                      }}
-                    />
+                <Box>
+                  <Divider
+                    sx={{
+                      my: 2,
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <Box
                       sx={{
                         display: "flex",
                         gap: 1,
-                        alignItems: "center",
-                        justifyContent: "space-between",
                       }}
                     >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: 1,
-                        }}
-                      >
-                        <Avatar size="sm" />
-                        <Box>
-                          <Typography level="title-sm">Kamal Ahmed</Typography>
-                          <Typography component="span" level="body-xs">
-                            kamal@gmail.com
-                          </Typography>
-                        </Box>
+                      <Avatar size="sm" />
+                      <Box>
+                        <Typography level="title-sm">Kamal Ahmed</Typography>
+                        <Typography component="span" level="body-xs">
+                          kamal@gmail.com
+                        </Typography>
                       </Box>
-
-                      <IconButton variant="plain" size="sm">
-                        <Logout />
-                      </IconButton>
                     </Box>
-                  </Box>
-                </Sheet>
-              </Hidden>
 
+                    <IconButton variant="plain" size="sm">
+                      <Logout />
+                    </IconButton>
+                  </Box>
+                </Box>
+              </Sheet>
+
+              {/* Dashboard main items */}
               <Box
                 sx={{
                   flex: 1,
