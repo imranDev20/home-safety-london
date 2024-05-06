@@ -13,22 +13,27 @@ export async function PUT(
     const preOrder = await req.json();
     const orderId = params.pre_order_id;
 
+    console.log(typeof orderId);
+
     const newObjectId =
       orderId === "undefined" ? new mongoose.Types.ObjectId() : null;
 
-    const data = await PreOrder.findOneAndUpdate(
+    const data = await PreOrder.findOneAndReplace(
       { _id: orderId !== "undefined" ? orderId : newObjectId },
       preOrder,
       {
         upsert: true,
         new: true,
+        runValidators: true,
       }
     );
+
+    console.log(data);
 
     return NextResponse.json(
       {
         status: "success",
-        message: "Resource successfully updated",
+        message: "Order progress updated",
         data: data,
       },
       {

@@ -416,19 +416,35 @@ export default function ServiceDetails() {
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
 
-  // const { data: preOrderData, isLoading: isPreOrderDataLoading } = useQuery({
-  //   queryKey: ["pre-order"],
-  //   queryFn: async () => {
-  //     const preOrderId = getPreOrderIdFromLocalStorage();
-  //     const response = await getPreOrderById(preOrderId as string);
-  //     return response.data;
-  //   },
-  // });
+  const {
+    data: preOrderData,
+    isLoading: isPreOrderDataLoading,
+    refetch: refetchPreOrder,
+  } = useQuery({
+    queryKey: ["pre-order"],
+    queryFn: async () => {
+      const preOrderId = getPreOrderIdFromLocalStorage();
+      const response = await getPreOrderById(preOrderId as string);
+      return response.data;
+    },
+    enabled: false,
+  });
+
+  useEffect(() => {
+    const preOrderId = getPreOrderIdFromLocalStorage();
+    if (preOrderId) {
+      refetchPreOrder();
+    }
+  }, [refetchPreOrder]);
 
   const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
     useMutation({
       mutationFn: async (preOrder: PreOrderServicesPayload) => {
-        const response = await updatePreOrder(undefined, preOrder);
+        const preOrderId = getPreOrderIdFromLocalStorage();
+        const response = await updatePreOrder(
+          preOrderId || undefined,
+          preOrder
+        );
         return response;
       },
     });
@@ -443,7 +459,7 @@ export default function ServiceDetails() {
     defaultValues: {
       propertyType:
         (searchParams.get("property_type") as PropertyType) || "residential",
-      propertySubtype: "",
+      residentType: "",
       bedrooms: "",
       orderItems: [],
     },
@@ -451,16 +467,16 @@ export default function ServiceDetails() {
 
   const propertyType = watch("propertyType");
 
-  // useEffect(() => {
-  //   if (preOrderData) {
-  //     reset({
-  //       propertyType: preOrderData.property_type,
-  //       propertySubtype: preOrderData.property_sub_type,
-  //       bedrooms: preOrderData.bedrooms,
-  //       orderItems: preOrderData.orderItems,
-  //     });
-  //   }
-  // }, [preOrderData, reset]);
+  useEffect(() => {
+    if (preOrderData) {
+      reset({
+        propertyType: preOrderData.property_type,
+        residentType: preOrderData.resident_type,
+        bedrooms: preOrderData.bedrooms,
+        orderItems: preOrderData.order_items.map((item: any) => item.name),
+      });
+    }
+  }, [preOrderData, reset]);
 
   const ServicesBySelectedType =
     propertyType === "residential" ? RESIDENTIAL_SERVICES : COMMERCIAL_SERVICES;
@@ -471,7 +487,7 @@ export default function ServiceDetails() {
     try {
       const payload = {
         property_type: data.propertyType,
-        property_sub_type: data.propertySubtype,
+        resident_type: data.residentType,
         bedrooms: data.bedrooms,
         is_service_details_complete: true,
         order_items: ServicesBySelectedType.filter((el) =>
@@ -489,10 +505,12 @@ export default function ServiceDetails() {
       const response = await preOrderMutate(payload);
 
       if (response?.status === "success") {
-        setPreOrderIdToLocalStorage(response.data._id);
-
         router.push(pathname + "?" + createQueryString("active_step", "2"));
         window.scrollTo(0, 300);
+
+        console.log(response);
+
+        setPreOrderIdToLocalStorage(response.data._id);
         enqueueSnackbar(response.message, "success");
       } else {
         throw new Error(response.message);
@@ -502,25 +520,25 @@ export default function ServiceDetails() {
     }
   };
 
-  // if (isPreOrderDataLoading) {
-  //   return (
-  //     <Box
-  //       sx={{
-  //         display: "flex",
-  //         height: "50vh",
-  //         justifyContent: "center",
-  //         alignItems: "center",
-  //       }}
-  //     >
-  //       <CircularProgress
-  //         thickness={4}
-  //         sx={{ "--CircularProgress-size": "100px" }}
-  //       >
-  //         Loading
-  //       </CircularProgress>
-  //     </Box>
-  //   );
-  // }
+  if (isPreOrderDataLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          height: "50vh",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress
+          thickness={4}
+          sx={{ "--CircularProgress-size": "100px" }}
+        >
+          Loading
+        </CircularProgress>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -637,11 +655,17 @@ export default function ServiceDetails() {
               mb: 3,
             }}
           >
-            Select Property Type
+            Select Resident Type
           </Typography>
           <Controller
             control={control}
-            name="propertySubtype"
+            name="residentType"
+            rules={{
+              required: {
+                value: true,
+                message: "Resident type is required",
+              },
+            }}
             render={({ field }) => (
               <RadioGroup
                 size="lg"
@@ -720,6 +744,12 @@ export default function ServiceDetails() {
           <Controller
             control={control}
             name="bedrooms"
+            rules={{
+              required: {
+                value: propertyType === "residential",
+                message: "You must select number of bedrooms",
+              },
+            }}
             render={({ field }) => (
               <RadioGroup
                 size="lg"
@@ -825,7 +855,6 @@ export default function ServiceDetails() {
                       onChange={(e) => {
                         const items = watch("orderItems");
                         const tempItems = [...items];
-
                         if (e.target.checked) {
                           tempItems.push(option.name);
                           onChange(tempItems);

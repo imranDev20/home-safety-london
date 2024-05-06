@@ -11,7 +11,7 @@ interface OrderItem {
 
 interface PreOrder {
   property_type: string;
-  property_sub_type: string;
+  resident_type: string;
   bedrooms: string;
   order_items: OrderItem[];
   is_service_details_complete: boolean;
@@ -64,14 +64,26 @@ const preOrderSchema = new Schema<PreOrder>({
   property_type: {
     type: String,
     required: true,
+    enum: ["residential", "commercial"],
   },
-  property_sub_type: {
+  resident_type: {
     type: String,
-    required: true,
+    required: function () {
+      return this.property_type === "residential";
+    },
+    validate: {
+      validator: function (value: string): boolean {
+        if (this && "property_type" in this) {
+          return this.property_type !== "commercial" || !value;
+        }
+        return false;
+      },
+      message: (props) =>
+        `resident_type cannot be provided when property_type is commercial`,
+    },
   },
   bedrooms: {
     type: String,
-    required: true,
   },
   order_items: {
     type: [orderItemSchema],
@@ -155,22 +167,6 @@ preOrderSchema.pre<PreOrder>("save", function (next) {
     }
   }
 
-  // if (this.is_personal_details_complete) {
-  //   const requiredFields = ["tax_rate", "order_total"];
-
-  //   for (const field of requiredFields) {
-  //     if (!(this as any)[field]) {
-  //       return next(
-  //         new Error(
-  //           `${field.replace(
-  //             "_",
-  //             " "
-  //           )} is required when service details are complete.`
-  //         )
-  //       );
-  //     }
-  //   }
-  // }
   next();
 });
 

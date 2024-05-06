@@ -2,7 +2,7 @@ import { Dayjs } from "dayjs";
 
 export type ServiceFormInput = {
   propertyType: "residential" | "commercial";
-  propertySubtype: "flat" | "house" | "hmo" | "";
+  residentType: "flat" | "house" | "hmo" | "";
   bedrooms: string;
   orderItems: string[];
 };

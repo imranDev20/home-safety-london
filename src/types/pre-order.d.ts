@@ -1,6 +1,6 @@
 export type PreOrderServicesPayload = {
   property_type: string;
-  property_sub_type: string;
+  resident_type: string;
   bedrooms: string;
   order_items: {
     title: string;

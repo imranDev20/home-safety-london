@@ -75,13 +75,18 @@ export default function PersonalDetails() {
     },
   });
 
-  const { data: preOrderData, isLoading: isPreOrderDataLoading } = useQuery({
+  const {
+    data: preOrderData,
+    isLoading: isPreOrderDataLoading,
+    refetch: refetchPreOrder,
+  } = useQuery({
     queryKey: ["pre-order"],
     queryFn: async () => {
       const preOrderId = getPreOrderIdFromLocalStorage();
       const response = await getPreOrderById(preOrderId as string);
       return response.data;
     },
+    enabled: false,
   });
 
   const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
@@ -97,14 +102,21 @@ export default function PersonalDetails() {
     });
 
   useEffect(() => {
+    const preOrderId = getPreOrderIdFromLocalStorage();
+    if (preOrderId) {
+      refetchPreOrder();
+    }
+  }, [refetchPreOrder]);
+
+  useEffect(() => {
     if (preOrderData) {
       reset({
-        name: "",
-        email: "",
-        phone: "",
-        house: "",
-        postCode: "",
-        city: "London",
+        name: preOrderData?.customer_name || "",
+        email: preOrderData?.email || "",
+        phone: preOrderData?.phone_no || "",
+        house: preOrderData?.address?.house_street || "",
+        postCode: preOrderData?.address?.postcode || "",
+        city: preOrderData?.address?.city || "",
         parkingOptions: "",
         congestionArea: "",
         inspectionDate: "",
