@@ -12,8 +12,10 @@ import {
   Grid,
   Input,
   InputProps,
+  Option,
   Radio,
   RadioGroup,
+  Select,
   Sheet,
   Textarea,
   Typography,
@@ -216,7 +218,7 @@ export default function PersonalDetails() {
               required: "Name can't be empty",
             }}
             render={({ field }) => (
-              <FormControl error={!!errors.name}>
+              <FormControl error={!!errors.name} size="lg">
                 <FormLabel>Name</FormLabel>
                 <Input {...field} fullWidth size="lg" variant="outlined" />
                 <HookFormError name="name" errors={errors} />
@@ -236,7 +238,7 @@ export default function PersonalDetails() {
               },
             }}
             render={({ field }) => (
-              <FormControl error={!!errors.email}>
+              <FormControl error={!!errors.email} size="lg">
                 <FormLabel>Email</FormLabel>
                 <Input {...field} fullWidth size="lg" variant="outlined" />
                 <HookFormError name="email" errors={errors} />
@@ -258,7 +260,7 @@ export default function PersonalDetails() {
               },
             }}
             render={({ field }) => (
-              <FormControl error={!!errors.phone}>
+              <FormControl error={!!errors.phone} size="lg">
                 <FormLabel>Phone</FormLabel>
                 <Input
                   size="lg"
@@ -276,18 +278,17 @@ export default function PersonalDetails() {
         </Grid>
 
         <Grid xs={12}>
-          <Divider>
-            <Chip
-              sx={{
-                fontWeight: 500,
-                fontSize: 16,
-                px: 2,
-                py: 0.5,
-              }}
-            >
-              Address
-            </Chip>
-          </Divider>
+          <Divider
+            sx={{
+              my: 3,
+            }}
+          />
+        </Grid>
+
+        <Grid xs={12}>
+          <Typography component="h3" level="h4">
+            Address
+          </Typography>
         </Grid>
 
         <Grid xs={12}>
@@ -298,7 +299,7 @@ export default function PersonalDetails() {
               required: "House & Street can't be empty",
             }}
             render={({ field }) => (
-              <FormControl error={!!errors.house}>
+              <FormControl error={!!errors.house} size="lg">
                 <FormLabel>House No and Street Name</FormLabel>
                 <Input size="lg" {...field} fullWidth variant="outlined" />
                 <HookFormError name="house" errors={errors} />
@@ -318,7 +319,7 @@ export default function PersonalDetails() {
               },
             }}
             render={({ field: { value, onChange } }) => (
-              <FormControl error={!!errors.postCode}>
+              <FormControl error={!!errors.postCode} size="lg">
                 <FormLabel>Post Code</FormLabel>
                 <Input
                   size="lg"
@@ -337,8 +338,8 @@ export default function PersonalDetails() {
             control={control}
             name="city"
             render={({ field }) => (
-              <FormControl error={!!errors.city}>
-                <FormLabel>London</FormLabel>
+              <FormControl error={!!errors.city} size="lg">
+                <FormLabel>City</FormLabel>
                 <Input
                   {...field}
                   size="lg"
@@ -515,7 +516,7 @@ export default function PersonalDetails() {
               required: "Inspection date can't be empty",
             }}
             render={({ field }) => (
-              <FormControl error={!!errors.inspectionDate}>
+              <FormControl error={!!errors.inspectionDate} size="lg">
                 <FormLabel>Select Inspection Date</FormLabel>
 
                 <Input
@@ -539,15 +540,18 @@ export default function PersonalDetails() {
               required: "Inspection time can't be empty",
             }}
             render={({ field }) => (
-              <FormControl error={!!errors.inspectionTime}>
+              <FormControl error={!!errors.inspectionTime} size="lg">
                 <FormLabel>Select Inspection Time</FormLabel>
-                <Input
+                <Select
+                  defaultValue="dog"
                   {...field}
                   size="lg"
-                  fullWidth
-                  variant="outlined"
-                  type="time"
-                />
+                  placeholder="Please select a slot"
+                >
+                  <Option value="dog">08:00 - 12:00</Option>
+                  <Option value="cat">12:00 - 04:00</Option>
+                  <Option value="fish">04:00 - 08:00</Option>
+                </Select>
                 <HookFormError name="inspectionTime" errors={errors} />
               </FormControl>
             )}
@@ -564,6 +568,7 @@ export default function PersonalDetails() {
                 sx={{
                   mt: 2,
                 }}
+                size="lg"
               >
                 <FormLabel>Order Notes (Optional)</FormLabel>
                 <Textarea {...field} size="lg" variant="outlined" minRows={3} />

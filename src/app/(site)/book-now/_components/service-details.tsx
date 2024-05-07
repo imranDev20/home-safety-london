@@ -455,6 +455,7 @@ export default function ServiceDetails() {
     handleSubmit,
     formState: { errors },
     reset,
+    setError,
   } = useForm<ServiceFormInput>({
     defaultValues: {
       propertyType:
@@ -485,10 +486,20 @@ export default function ServiceDetails() {
     data
   ) => {
     try {
+      if (data.orderItems.length === 0) {
+        setError("orderItems", {
+          type: "required",
+          message: "Please select at least one service",
+        });
+        return;
+      }
+
       const payload = {
         property_type: data.propertyType,
-        resident_type: data.residentType,
-        bedrooms: data.bedrooms,
+        ...(propertyType === "residential" && {
+          resident_type: data.residentType,
+          bedrooms: data.bedrooms,
+        }),
         is_service_details_complete: true,
         order_items: ServicesBySelectedType.filter((el) =>
           data.orderItems.includes(el.name)
@@ -566,7 +577,7 @@ export default function ServiceDetails() {
         control={control}
         name="propertyType"
         render={({ field }) => (
-          <FormControl>
+          <FormControl error={!!errors.propertyType}>
             <RadioGroup
               {...field}
               size="lg"
@@ -667,67 +678,76 @@ export default function ServiceDetails() {
               },
             }}
             render={({ field }) => (
-              <RadioGroup
-                size="lg"
-                sx={{ gap: 1.5, mb: 5, display: "flex", flexDirection: "row" }}
-                {...field}
-              >
-                {[
-                  {
-                    value: "flat",
-                    name: "Flat",
-                  },
-                  {
-                    value: "house",
-                    name: "House",
-                  },
-                  {
-                    value: "hmo",
-                    name: "HMO",
-                  },
-                ].map((option) => (
-                  <Sheet
-                    key={option.value}
-                    sx={{
-                      p: 2,
-                      borderRadius: "md",
-                      boxShadow: "sm",
-                      flex: 1,
-                    }}
-                  >
-                    <Radio
-                      label={
-                        <Box>
-                          <Typography>{option.name}</Typography>
-                        </Box>
-                      }
-                      overlay
-                      disableIcon
-                      value={option.value}
-                      slotProps={{
-                        label: ({ checked }) => ({
-                          sx: {
-                            fontWeight: "lg",
-                            fontSize: "md",
-                            color: checked ? "text.primary" : "text.secondary",
-                          },
-                        }),
-                        action: ({ checked }) => ({
-                          sx: (theme) => ({
-                            ...(checked && {
-                              "--variant-borderWidth": "2px",
-                              "&&": {
-                                // && to increase the specificity to win the base :hover styles
-                                borderColor: theme.vars.palette.primary[500],
-                              },
+              <FormControl error={!!errors.residentType}>
+                <RadioGroup
+                  size="lg"
+                  sx={{
+                    gap: 1.5,
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
+                  {...field}
+                >
+                  {[
+                    {
+                      value: "flat",
+                      name: "Flat",
+                    },
+                    {
+                      value: "house",
+                      name: "House",
+                    },
+                    {
+                      value: "hmo",
+                      name: "HMO",
+                    },
+                  ].map((option) => (
+                    <Sheet
+                      key={option.value}
+                      sx={{
+                        p: 2,
+                        borderRadius: "md",
+                        boxShadow: "sm",
+                        flex: 1,
+                      }}
+                    >
+                      <Radio
+                        label={
+                          <Box>
+                            <Typography>{option.name}</Typography>
+                          </Box>
+                        }
+                        overlay
+                        disableIcon
+                        value={option.value}
+                        slotProps={{
+                          label: ({ checked }) => ({
+                            sx: {
+                              fontWeight: "lg",
+                              fontSize: "md",
+                              color: checked
+                                ? "text.primary"
+                                : "text.secondary",
+                            },
+                          }),
+                          action: ({ checked }) => ({
+                            sx: (theme) => ({
+                              ...(checked && {
+                                "--variant-borderWidth": "2px",
+                                "&&": {
+                                  // && to increase the specificity to win the base :hover styles
+                                  borderColor: theme.vars.palette.primary[500],
+                                },
+                              }),
                             }),
                           }),
-                        }),
-                      }}
-                    />
-                  </Sheet>
-                ))}
-              </RadioGroup>
+                        }}
+                      />
+                    </Sheet>
+                  ))}
+                </RadioGroup>
+                <HookFormError name="residentType" errors={errors} />
+              </FormControl>
             )}
           />
           <Typography
@@ -751,67 +771,69 @@ export default function ServiceDetails() {
               },
             }}
             render={({ field }) => (
-              <RadioGroup
-                size="lg"
-                sx={{
-                  gap: 1.5,
-                  mb: 5,
-                }}
-                {...field}
-              >
-                <Grid container spacing={2}>
-                  {["Studio Flat", "1", "2", "3", "4", "5"].map(
-                    (option, index) => (
-                      <Grid xs={6} key={option}>
-                        <Sheet
-                          key={option}
-                          sx={{
-                            p: 2,
-                            borderRadius: "md",
-                            boxShadow: "sm",
-                          }}
-                        >
-                          <Radio
-                            label={
-                              <Box>
-                                <Typography>{`${option} ${
-                                  index !== 0 ? "Bedrooms" : ""
-                                }`}</Typography>
-                              </Box>
-                            }
-                            overlay
-                            disableIcon
-                            value={toSnakeCase(option)}
-                            slotProps={{
-                              label: ({ checked }) => ({
-                                sx: {
-                                  fontWeight: "lg",
-                                  fontSize: "md",
-                                  color: checked
-                                    ? "text.primary"
-                                    : "text.secondary",
-                                },
-                              }),
-                              action: ({ checked }) => ({
-                                sx: (theme) => ({
-                                  ...(checked && {
-                                    "--variant-borderWidth": "2px",
-                                    "&&": {
-                                      // && to increase the specificity to win the base :hover styles
-                                      borderColor:
-                                        theme.vars.palette.primary[500],
-                                    },
+              <FormControl error={!!errors.bedrooms}>
+                <RadioGroup
+                  size="lg"
+                  sx={{
+                    gap: 1.5,
+                  }}
+                  {...field}
+                >
+                  <Grid container spacing={2}>
+                    {["Studio Flat", "1", "2", "3", "4", "5"].map(
+                      (option, index) => (
+                        <Grid xs={6} key={option}>
+                          <Sheet
+                            key={option}
+                            sx={{
+                              p: 2,
+                              borderRadius: "md",
+                              boxShadow: "sm",
+                            }}
+                          >
+                            <Radio
+                              label={
+                                <Box>
+                                  <Typography>{`${option} ${
+                                    index !== 0 ? "Bedrooms" : ""
+                                  }`}</Typography>
+                                </Box>
+                              }
+                              overlay
+                              disableIcon
+                              value={toSnakeCase(option)}
+                              slotProps={{
+                                label: ({ checked }) => ({
+                                  sx: {
+                                    fontWeight: "lg",
+                                    fontSize: "md",
+                                    color: checked
+                                      ? "text.primary"
+                                      : "text.secondary",
+                                  },
+                                }),
+                                action: ({ checked }) => ({
+                                  sx: (theme) => ({
+                                    ...(checked && {
+                                      "--variant-borderWidth": "2px",
+                                      "&&": {
+                                        // && to increase the specificity to win the base :hover styles
+                                        borderColor:
+                                          theme.vars.palette.primary[500],
+                                      },
+                                    }),
                                   }),
                                 }),
-                              }),
-                            }}
-                          />
-                        </Sheet>
-                      </Grid>
-                    )
-                  )}
-                </Grid>
-              </RadioGroup>
+                              }}
+                            />
+                          </Sheet>
+                        </Grid>
+                      )
+                    )}
+                  </Grid>
+                </RadioGroup>
+                <HookFormError name="bedrooms" errors={errors} />
+              </FormControl>
             )}
           />
         </>
@@ -886,7 +908,6 @@ export default function ServiceDetails() {
                               "--variant-borderWidth": "2px",
 
                               "&&": {
-                                // && to increase the specificity to win the base :hover styles
                                 backgroundColor: "transparent",
                                 border: "2px solid",
                                 borderColor: theme.vars.palette.primary[500],
@@ -906,6 +927,15 @@ export default function ServiceDetails() {
             </Grid>
           ))}
         </Grid>
+        <FormControl error={!!errors.orderItems}>
+          <FormHelperText
+            sx={{
+              fontSize: 16,
+            }}
+          >
+            <HookFormError name="orderItems" errors={errors} />
+          </FormHelperText>
+        </FormControl>
       </Box>
 
       <Box

@@ -10,6 +10,7 @@ interface OrderItem {
 }
 
 interface PreOrder {
+  current_step: string;
   property_type: string;
   resident_type: string;
   bedrooms: string;
@@ -84,6 +85,19 @@ const preOrderSchema = new Schema<PreOrder>({
   },
   bedrooms: {
     type: String,
+    required: function () {
+      return this.property_type === "residential";
+    },
+    validate: {
+      validator: function (value: string): boolean {
+        if (this && "property_type" in this) {
+          return this.property_type !== "commercial" || !value;
+        }
+        return false;
+      },
+      message: (props) =>
+        `bedrooms cannot be provided when property_type is commercial`,
+    },
   },
   order_items: {
     type: [orderItemSchema],
@@ -91,7 +105,6 @@ const preOrderSchema = new Schema<PreOrder>({
   },
   is_service_details_complete: {
     type: Boolean,
-    required: true,
   },
   customer_name: {
     type: String,
@@ -140,33 +153,7 @@ const preOrderSchema = new Schema<PreOrder>({
   },
 });
 
-// Custom validator for fields below is_service_details_complete
-preOrderSchema.pre<PreOrder>("save", function (next) {
-  if (this.is_service_details_complete) {
-    const requiredFields = [
-      "customer_name",
-      "email",
-      "phone_no",
-      "address",
-      "parking_options",
-      "congestion_zone",
-      "is_personal_details_complete",
-    ];
-
-    for (const field of requiredFields) {
-      if (!(this as any)[field]) {
-        return next(
-          new Error(
-            `${field.replace(
-              "_",
-              " "
-            )} is required when service details are complete.`
-          )
-        );
-      }
-    }
-  }
-
+preOrderSchema.pre("findOneAndReplace", function (next) {
   next();
 });
 

@@ -13,8 +13,6 @@ export async function PUT(
     const preOrder = await req.json();
     const orderId = params.pre_order_id;
 
-    console.log(typeof orderId);
-
     const newObjectId =
       orderId === "undefined" ? new mongoose.Types.ObjectId() : null;
 
@@ -27,8 +25,6 @@ export async function PUT(
         runValidators: true,
       }
     );
-
-    console.log(data);
 
     return NextResponse.json(
       {
