@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Divider,
   FormControl,
+  FormHelperText,
   FormLabel,
   Grid,
   Input,
@@ -19,6 +20,7 @@ import {
   Sheet,
   Textarea,
   Typography,
+  colors,
 } from "@mui/joy";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-number-input/input";
@@ -29,11 +31,42 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   createQueryString,
   getPreOrderIdFromLocalStorage,
+  isObjectEmpty,
 } from "@/shared/functions";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPreOrderById, updatePreOrder } from "@/services/pre-order.services";
 import { PreOrderPersonalPayload } from "@/types/pre-order";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
+
+const parkingOptions = [
+  {
+    value: "free",
+    name: "Free Parking Available",
+    cost: 0,
+  },
+  {
+    value: "paid",
+    name: "Paid Parking Available",
+    cost: 5,
+  },
+  {
+    value: "unavailable",
+    name: "No Parking Available",
+    cost: 5,
+  },
+];
+const congestionZoneOptions = [
+  {
+    value: "congestion",
+    name: "Yes",
+    cost: 18,
+  },
+  {
+    value: "non_congestion",
+    name: "No",
+    cost: 0,
+  },
+];
 
 const PhoneInputAdapter = React.forwardRef<InputProps, any>(
   function PhoneInputAdapter(props, ref) {
@@ -60,6 +93,7 @@ export default function PersonalDetails() {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<PersonalFormInput>({
     defaultValues: {
@@ -70,7 +104,7 @@ export default function PersonalDetails() {
       postCode: "",
       city: "London",
       parkingOptions: "",
-      congestionArea: "",
+      congestionZone: "",
       inspectionDate: "",
       inspectionTime: "",
       orderNotes: "",
@@ -110,28 +144,37 @@ export default function PersonalDetails() {
     }
   }, [refetchPreOrder]);
 
-  useEffect(() => {
-    if (preOrderData) {
-      reset({
-        name: preOrderData?.customer_name || "",
-        email: preOrderData?.email || "",
-        phone: preOrderData?.phone_no || "",
-        house: preOrderData?.address?.house_street || "",
-        postCode: preOrderData?.address?.postcode || "",
-        city: preOrderData?.address?.city || "",
-        parkingOptions: "",
-        congestionArea: "",
-        inspectionDate: "",
-        inspectionTime: "",
-        orderNotes: "",
-      });
-    }
-  }, [preOrderData, reset]);
+  // useEffect(() => {
+  //   if (preOrderData) {
+  //     reset({
+  //       name: preOrderData?.customer_name || "",
+  //       email: preOrderData?.email || "",
+  //       phone: preOrderData?.phone_no || "",
+  //       house: preOrderData?.address?.house_street || "",
+  //       postCode: preOrderData?.address?.postcode || "",
+  //       city: preOrderData?.address?.city || "London",
+  //       parkingOptions: "",
+  //       congestionZone: "",
+  //       inspectionDate: "",
+  //       inspectionTime: "",
+  //       orderNotes: "",
+  //     });
+  //   }
+  // }, [preOrderData, reset]);
 
   const onPersonalDetailsSubmit: SubmitHandler<PersonalFormInput> = async (
     data
   ) => {
     try {
+      console.log(congestionZoneOptions);
+      const selectedCongestionZone = congestionZoneOptions.find(
+        (option) => option.value === data.congestionZone
+      );
+
+      const selectedParkingOption = parkingOptions.find(
+        (option) => option.value === data.parkingOptions
+      );
+
       const payload = {
         customer_name: data.name,
         email: data.email,
@@ -142,25 +185,27 @@ export default function PersonalDetails() {
           city: data.city,
         },
         parking_options: {
-          parking_type: data.parkingOptions,
-          parking_cost: 5,
+          parking_type: selectedParkingOption?.value,
+          parking_cost: selectedParkingOption?.cost,
         },
         congestion_zone: {
-          zone_type: data.congestionArea,
-          zone_cost: 5,
+          zone_type: selectedCongestionZone?.value,
+          zone_cost: selectedCongestionZone?.cost,
         },
         is_personal_details_complete: true,
       };
 
-      const response = await preOrderMutate(payload);
+      console.log(payload);
 
-      if (response?.status === "success") {
-        router.push(pathname + "?" + createQueryString("active_step", "3"));
-        window.scrollTo(0, 300);
-        enqueueSnackbar(response.message, "success");
-      } else {
-        throw new Error(response.message);
-      }
+      // const response = await preOrderMutate(payload);
+
+      // if (response?.status === "success") {
+      //   router.push(pathname + "?" + createQueryString("active_step", "3"));
+      //   window.scrollTo(0, 300);
+      //   enqueueSnackbar(response.message, "success");
+      // } else {
+      //   throw new Error(response.message);
+      // }
     } catch (error: any) {
       enqueueSnackbar(error.message, "error");
     }
@@ -204,400 +249,454 @@ export default function PersonalDetails() {
         Personal Details
       </Typography>
 
-      <Grid
-        container
-        spacing={3}
-        component="form"
-        onSubmit={handleSubmit(onPersonalDetailsSubmit)}
-      >
-        <Grid xs={12}>
-          <Controller
-            control={control}
-            name="name"
-            rules={{
-              required: "Name can't be empty",
-            }}
-            render={({ field }) => (
-              <FormControl error={!!errors.name} size="lg">
-                <FormLabel>Name</FormLabel>
-                <Input {...field} fullWidth size="lg" variant="outlined" />
-                <HookFormError name="name" errors={errors} />
-              </FormControl>
-            )}
-          />
+      <Box component="form" onSubmit={handleSubmit(onPersonalDetailsSubmit)}>
+        <Grid container spacing={3}>
+          <Grid xs={12}>
+            <Controller
+              control={control}
+              name="name"
+              rules={{
+                required: "Name can't be empty",
+              }}
+              render={({ field }) => (
+                <FormControl error={!!errors.name} size="lg">
+                  <FormLabel>Name</FormLabel>
+                  <Input {...field} fullWidth size="lg" variant="outlined" />
+                  <HookFormError name="name" errors={errors} />
+                </FormControl>
+              )}
+            />
+          </Grid>
+          <Grid xs={12}>
+            <Controller
+              control={control}
+              name="email"
+              rules={{
+                required: "Email can't be empty",
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: "Email is not valid",
+                },
+              }}
+              render={({ field }) => (
+                <FormControl error={!!errors.email} size="lg">
+                  <FormLabel>Email</FormLabel>
+                  <Input {...field} fullWidth size="lg" variant="outlined" />
+                  <HookFormError name="email" errors={errors} />
+                </FormControl>
+              )}
+            />
+          </Grid>
+
+          <Grid xs={12}>
+            <Controller
+              control={control}
+              name="phone"
+              rules={{
+                required: "You did not provide a phone number",
+                validate: (value: string) => {
+                  const valid = isValidPhoneNumber(value);
+
+                  return valid || `Your provided phone number is not valid`;
+                },
+              }}
+              render={({ field }) => (
+                <FormControl error={!!errors.phone} size="lg">
+                  <FormLabel>Phone</FormLabel>
+                  <Input
+                    size="lg"
+                    {...field}
+                    slotProps={{
+                      input: {
+                        component: PhoneInputAdapter,
+                      },
+                    }}
+                  />
+                  <HookFormError name="phone" errors={errors} />
+                </FormControl>
+              )}
+            />
+          </Grid>
         </Grid>
-        <Grid xs={12}>
-          <Controller
-            control={control}
-            name="email"
-            rules={{
-              required: "Email can't be empty",
-              pattern: {
-                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                message: "Email is not valid",
-              },
-            }}
-            render={({ field }) => (
-              <FormControl error={!!errors.email} size="lg">
-                <FormLabel>Email</FormLabel>
-                <Input {...field} fullWidth size="lg" variant="outlined" />
-                <HookFormError name="email" errors={errors} />
-              </FormControl>
-            )}
-          />
+        <Divider
+          sx={{
+            my: 5,
+          }}
+        />
+
+        <Grid container spacing={3}>
+          <Grid xs={12}>
+            <Typography component="h3" level="h4">
+              Address
+            </Typography>
+          </Grid>
+
+          <Grid xs={12}>
+            <Controller
+              control={control}
+              name="house"
+              rules={{
+                required: "House & Street can't be empty",
+              }}
+              render={({ field }) => (
+                <FormControl error={!!errors.house} size="lg">
+                  <FormLabel>House No and Street Name</FormLabel>
+                  <Input size="lg" {...field} fullWidth variant="outlined" />
+                  <HookFormError name="house" errors={errors} />
+                </FormControl>
+              )}
+            />
+          </Grid>
+
+          <Grid xs={6}>
+            <Controller
+              control={control}
+              name="postCode"
+              rules={{
+                required: "Post code can't be empty",
+                validate: (value) => {
+                  return isValid(value) || "Not a valid British post code";
+                },
+              }}
+              render={({ field: { value, onChange } }) => (
+                <FormControl error={!!errors.postCode} size="lg">
+                  <FormLabel>Post Code</FormLabel>
+                  <Input
+                    size="lg"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value.toUpperCase())}
+                    fullWidth
+                    variant="outlined"
+                  />
+                  <HookFormError name="postCode" errors={errors} />
+                </FormControl>
+              )}
+            />
+          </Grid>
+          <Grid xs={6}>
+            <Controller
+              control={control}
+              name="city"
+              render={({ field }) => (
+                <FormControl error={!!errors.city} size="lg">
+                  <FormLabel>City</FormLabel>
+                  <Input
+                    {...field}
+                    size="lg"
+                    disabled
+                    fullWidth
+                    variant="outlined"
+                  />
+                  <HookFormError name="city" errors={errors} />
+                </FormControl>
+              )}
+            />
+          </Grid>
         </Grid>
 
-        <Grid xs={12}>
-          <Controller
-            control={control}
-            name="phone"
-            rules={{
-              required: "You did not provide a phone number",
-              validate: (value: string) => {
-                const valid = isValidPhoneNumber(value);
+        <Divider
+          sx={{
+            my: 5,
+          }}
+        />
 
-                return valid || `Your provided phone number is not valid`;
-              },
-            }}
-            render={({ field }) => (
-              <FormControl error={!!errors.phone} size="lg">
-                <FormLabel>Phone</FormLabel>
-                <Input
-                  size="lg"
-                  {...field}
-                  slotProps={{
-                    input: {
-                      component: PhoneInputAdapter,
-                    },
+        <Grid container spacing={3}>
+          <Grid xs={12}>
+            <Typography
+              component="h3"
+              level="h4"
+              sx={{
+                mb: 1.5,
+              }}
+            >
+              Select Parking Options
+            </Typography>
+            <Controller
+              control={control}
+              name="parkingOptions"
+              rules={{
+                required: "Please select a parking option",
+              }}
+              render={({ field }) => (
+                <FormControl error={!!errors.parkingOptions}>
+                  <RadioGroup
+                    size="lg"
+                    sx={{
+                      gap: 1.5,
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                    {...field}
+                  >
+                    {parkingOptions.map((option) => (
+                      <Sheet
+                        key={option.value}
+                        sx={{
+                          p: 2,
+                          borderRadius: "md",
+                          boxShadow: "sm",
+                          flex: 1,
+                        }}
+                      >
+                        <Radio
+                          label={
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                              }}
+                            >
+                              <Typography>{option.name}</Typography>
+                              <Typography
+                                sx={{
+                                  fontSize: 17,
+                                  color: colors.green[400],
+                                }}
+                              >
+                                + £{option.cost}
+                              </Typography>
+                            </Box>
+                          }
+                          overlay
+                          disableIcon
+                          value={option.value}
+                          slotProps={{
+                            label: ({ checked }) => ({
+                              sx: {
+                                fontWeight: "lg",
+                                fontSize: "md",
+                                color: checked
+                                  ? "text.primary"
+                                  : "text.secondary",
+                              },
+                            }),
+                            action: ({ checked }) => ({
+                              sx: (theme) => ({
+                                ...(checked && {
+                                  "--variant-borderWidth": "2px",
+                                  "&&": {
+                                    // && to increase the specificity to win the base :hover styles
+                                    borderColor:
+                                      theme.vars.palette.primary[500],
+                                  },
+                                }),
+                              }),
+                            }),
+                          }}
+                        />
+                      </Sheet>
+                    ))}
+                  </RadioGroup>
+                  <HookFormError name="parkingOptions" errors={errors} />
+                </FormControl>
+              )}
+            />
+          </Grid>
+
+          <Grid xs={12}>
+            <Typography
+              component="h3"
+              level="h4"
+              sx={{
+                mb: 1.5,
+                mt: 3,
+              }}
+            >
+              Is property in congestion zone?
+            </Typography>
+            <Controller
+              control={control}
+              name="congestionZone"
+              rules={{
+                required: "Please select area type",
+              }}
+              render={({ field }) => (
+                <FormControl error={!!errors.congestionZone}>
+                  <RadioGroup
+                    size="lg"
+                    sx={{
+                      gap: 1.5,
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                    {...field}
+                  >
+                    {congestionZoneOptions.map((option) => (
+                      <Sheet
+                        key={option.value}
+                        sx={{
+                          p: 2,
+                          borderRadius: "md",
+                          boxShadow: "sm",
+                          flex: 1,
+                        }}
+                      >
+                        <Radio
+                          label={
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                              }}
+                            >
+                              <Typography>{option.name}</Typography>
+                              <Typography
+                                sx={{
+                                  fontSize: 17,
+                                  color: colors.green[400],
+                                }}
+                              >
+                                + £{option.cost}
+                              </Typography>
+                            </Box>
+                          }
+                          overlay
+                          disableIcon
+                          value={option.value}
+                          slotProps={{
+                            label: ({ checked }) => ({
+                              sx: {
+                                fontWeight: "lg",
+                                fontSize: "md",
+                                color: checked
+                                  ? "text.primary"
+                                  : "text.secondary",
+                              },
+                            }),
+                            action: ({ checked }) => ({
+                              sx: (theme) => ({
+                                ...(checked && {
+                                  "--variant-borderWidth": "2px",
+                                  "&&": {
+                                    // && to increase the specificity to win the base :hover styles
+                                    borderColor:
+                                      theme.vars.palette.primary[500],
+                                  },
+                                }),
+                              }),
+                            }),
+                          }}
+                        />
+                      </Sheet>
+                    ))}
+                  </RadioGroup>
+                  <HookFormError name="congestionZone" errors={errors} />
+                </FormControl>
+              )}
+            />
+          </Grid>
+        </Grid>
+
+        <Divider sx={{ my: 5 }} />
+
+        <Grid container spacing={3}>
+          <Grid xs={6}>
+            <Controller
+              control={control}
+              name="inspectionDate"
+              rules={{
+                required: "Inspection date can't be empty",
+              }}
+              render={({ field }) => (
+                <FormControl error={!!errors.inspectionDate} size="lg">
+                  <FormLabel>Select Inspection Date</FormLabel>
+
+                  <Input
+                    {...field}
+                    type="date"
+                    size="lg"
+                    fullWidth
+                    variant="outlined"
+                  />
+                  <HookFormError name="inspectionDate" errors={errors} />
+                </FormControl>
+              )}
+            />
+          </Grid>
+
+          <Grid xs={6}>
+            <Controller
+              control={control}
+              name="inspectionTime"
+              rules={{
+                required: "Inspection time can't be empty",
+              }}
+              render={({ field: { value, onChange } }) => (
+                <FormControl error={!!errors.inspectionTime} size="lg">
+                  <FormLabel>Select Inspection Time</FormLabel>
+                  <Select
+                    value={value}
+                    onChange={(_, newValue) => onChange(newValue)}
+                    size="lg"
+                    placeholder="Please select a slot"
+                  >
+                    <Option value="8-12">08:00 - 12:00</Option>
+                    <Option value="12-4">12:00 - 04:00</Option>
+                    <Option value="4-8">04:00 - 08:00</Option>
+                  </Select>
+                  <HookFormError name="inspectionTime" errors={errors} />
+                </FormControl>
+              )}
+            />
+          </Grid>
+
+          <Grid xs={12}>
+            <Controller
+              control={control}
+              name="orderNotes"
+              render={({ field }) => (
+                <FormControl
+                  error={!!errors.orderNotes}
+                  sx={{
+                    mt: 2,
                   }}
-                />
-                <HookFormError name="phone" errors={errors} />
-              </FormControl>
-            )}
-          />
-        </Grid>
-
-        <Grid xs={12}>
-          <Divider
-            sx={{
-              my: 3,
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12}>
-          <Typography component="h3" level="h4">
-            Address
-          </Typography>
-        </Grid>
-
-        <Grid xs={12}>
-          <Controller
-            control={control}
-            name="house"
-            rules={{
-              required: "House & Street can't be empty",
-            }}
-            render={({ field }) => (
-              <FormControl error={!!errors.house} size="lg">
-                <FormLabel>House No and Street Name</FormLabel>
-                <Input size="lg" {...field} fullWidth variant="outlined" />
-                <HookFormError name="house" errors={errors} />
-              </FormControl>
-            )}
-          />
-        </Grid>
-
-        <Grid xs={6}>
-          <Controller
-            control={control}
-            name="postCode"
-            rules={{
-              required: "Post code can't be empty",
-              validate: (value) => {
-                return isValid(value) || "Not a valid British post code";
-              },
-            }}
-            render={({ field: { value, onChange } }) => (
-              <FormControl error={!!errors.postCode} size="lg">
-                <FormLabel>Post Code</FormLabel>
-                <Input
                   size="lg"
-                  value={value}
-                  onChange={(e) => onChange(e.target.value.toUpperCase())}
-                  fullWidth
-                  variant="outlined"
-                />
-                <HookFormError name="postCode" errors={errors} />
-              </FormControl>
-            )}
-          />
-        </Grid>
-        <Grid xs={6}>
-          <Controller
-            control={control}
-            name="city"
-            render={({ field }) => (
-              <FormControl error={!!errors.city} size="lg">
-                <FormLabel>City</FormLabel>
-                <Input
-                  {...field}
-                  size="lg"
-                  disabled
-                  fullWidth
-                  variant="outlined"
-                />
-                <HookFormError name="city" errors={errors} />
-              </FormControl>
-            )}
-          />
-        </Grid>
-
-        <Grid xs={12}>
-          <Typography
-            component="h3"
-            level="h4"
-            sx={{
-              mb: 3,
-              mt: 3,
-            }}
-          >
-            Select Parking Options
-          </Typography>
-          <Controller
-            control={control}
-            name="parkingOptions"
-            render={({ field }) => (
-              <RadioGroup
-                size="lg"
-                sx={{ gap: 1.5, mb: 5, display: "flex", flexDirection: "row" }}
-                {...field}
-              >
-                {[
-                  {
-                    value: "flat",
-                    name: "Free Parking Available",
-                  },
-                  {
-                    value: "house",
-                    name: "Paid Parking Available",
-                  },
-                  {
-                    value: "hmo",
-                    name: "No Parking Available",
-                  },
-                ].map((option) => (
-                  <Sheet
-                    key={option.value}
-                    sx={{
-                      p: 2,
-                      borderRadius: "md",
-                      boxShadow: "sm",
-                      flex: 1,
-                    }}
-                  >
-                    <Radio
-                      label={
-                        <Box>
-                          <Typography>{option.name}</Typography>
-                        </Box>
-                      }
-                      overlay
-                      disableIcon
-                      value={option.value}
-                      slotProps={{
-                        label: ({ checked }) => ({
-                          sx: {
-                            fontWeight: "lg",
-                            fontSize: "md",
-                            color: checked ? "text.primary" : "text.secondary",
-                          },
-                        }),
-                        action: ({ checked }) => ({
-                          sx: (theme) => ({
-                            ...(checked && {
-                              "--variant-borderWidth": "2px",
-                              "&&": {
-                                // && to increase the specificity to win the base :hover styles
-                                borderColor: theme.vars.palette.primary[500],
-                              },
-                            }),
-                          }),
-                        }),
-                      }}
-                    />
-                  </Sheet>
-                ))}
-              </RadioGroup>
-            )}
-          />
-        </Grid>
-
-        <Grid xs={12}>
-          <Typography
-            component="h3"
-            level="h4"
-            sx={{
-              mb: 3,
-            }}
-          >
-            Is property in congestion zone?
-          </Typography>
-          <Controller
-            control={control}
-            name="congestionArea"
-            render={({ field }) => (
-              <RadioGroup
-                size="lg"
-                sx={{ gap: 1.5, mb: 5, display: "flex", flexDirection: "row" }}
-                {...field}
-              >
-                {[
-                  {
-                    value: "flat",
-                    name: "Yes",
-                  },
-                  {
-                    value: "house",
-                    name: "No",
-                  },
-                ].map((option) => (
-                  <Sheet
-                    key={option.value}
-                    sx={{
-                      p: 2,
-                      borderRadius: "md",
-                      boxShadow: "sm",
-                      flex: 1,
-                    }}
-                  >
-                    <Radio
-                      label={
-                        <Box>
-                          <Typography>{option.name}</Typography>
-                        </Box>
-                      }
-                      overlay
-                      disableIcon
-                      value={option.value}
-                      slotProps={{
-                        label: ({ checked }) => ({
-                          sx: {
-                            fontWeight: "lg",
-                            fontSize: "md",
-                            color: checked ? "text.primary" : "text.secondary",
-                          },
-                        }),
-                        action: ({ checked }) => ({
-                          sx: (theme) => ({
-                            ...(checked && {
-                              "--variant-borderWidth": "2px",
-                              "&&": {
-                                // && to increase the specificity to win the base :hover styles
-                                borderColor: theme.vars.palette.primary[500],
-                              },
-                            }),
-                          }),
-                        }),
-                      }}
-                    />
-                  </Sheet>
-                ))}
-              </RadioGroup>
-            )}
-          />
-        </Grid>
-
-        <Grid xs={6}>
-          <Controller
-            control={control}
-            name="inspectionDate"
-            rules={{
-              required: "Inspection date can't be empty",
-            }}
-            render={({ field }) => (
-              <FormControl error={!!errors.inspectionDate} size="lg">
-                <FormLabel>Select Inspection Date</FormLabel>
-
-                <Input
-                  {...field}
-                  type="date"
-                  size="lg"
-                  fullWidth
-                  variant="outlined"
-                />
-                <HookFormError name="inspectionDate" errors={errors} />
-              </FormControl>
-            )}
-          />
-        </Grid>
-
-        <Grid xs={6}>
-          <Controller
-            control={control}
-            name="inspectionTime"
-            rules={{
-              required: "Inspection time can't be empty",
-            }}
-            render={({ field }) => (
-              <FormControl error={!!errors.inspectionTime} size="lg">
-                <FormLabel>Select Inspection Time</FormLabel>
-                <Select
-                  defaultValue="dog"
-                  {...field}
-                  size="lg"
-                  placeholder="Please select a slot"
                 >
-                  <Option value="dog">08:00 - 12:00</Option>
-                  <Option value="cat">12:00 - 04:00</Option>
-                  <Option value="fish">04:00 - 08:00</Option>
-                </Select>
-                <HookFormError name="inspectionTime" errors={errors} />
-              </FormControl>
-            )}
-          />
+                  <FormLabel>Order Notes (Optional)</FormLabel>
+                  <Textarea
+                    {...field}
+                    size="lg"
+                    variant="outlined"
+                    minRows={3}
+                  />
+                  <HookFormError name="orderNotes" errors={errors} />
+                </FormControl>
+              )}
+            />
+          </Grid>
         </Grid>
 
-        <Grid xs={12}>
-          <Controller
-            control={control}
-            name="orderNotes"
-            render={({ field }) => (
-              <FormControl
-                error={!!errors.orderNotes}
-                sx={{
-                  mt: 2,
-                }}
-                size="lg"
-              >
-                <FormLabel>Order Notes (Optional)</FormLabel>
-                <Textarea {...field} size="lg" variant="outlined" minRows={3} />
-                <HookFormError name="orderNotes" errors={errors} />
-              </FormControl>
-            )}
-          />
-        </Grid>
-
-        <Grid
-          xs={12}
+        <Box
           sx={{
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
+          <FormControl error={!isObjectEmpty(errors)}>
+            <FormHelperText
+              sx={{
+                fontSize: 16,
+              }}
+            >
+              {!isObjectEmpty(errors) &&
+                "Please select all the necessary fields"}
+            </FormHelperText>
+          </FormControl>
+
           <Button
             type="submit"
             variant="solid"
+            sx={{
+              mt: 5,
+            }}
             loading={isPreOrderMutatePending}
             loadingPosition="end"
-            sx={{
-              mt: 2,
-            }}
           >
-            Next: Confirmation
+            Next: Personal Details
           </Button>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </>
   );
 }

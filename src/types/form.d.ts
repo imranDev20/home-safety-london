@@ -14,7 +14,7 @@ export type PersonalFormInput = {
   house: string;
   postCode: string;
   city: string;
-  congestionArea: string;
+  congestionZone: string;
   parkingOptions: string;
   inspectionDate: string;
   inspectionTime: string;

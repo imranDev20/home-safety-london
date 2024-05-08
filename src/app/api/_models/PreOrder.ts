@@ -132,6 +132,7 @@ const preOrderSchema = new Schema<PreOrder>({
     type: {
       parking_type: {
         type: String,
+        enum: ["paid", "free", "unavailable"],
       },
       parking_cost: {
         type: Number,
@@ -142,6 +143,7 @@ const preOrderSchema = new Schema<PreOrder>({
     type: {
       zone_type: {
         type: String,
+        enum: ["congestion", "non_congestion"],
       },
       zone_cost: {
         type: Number,
