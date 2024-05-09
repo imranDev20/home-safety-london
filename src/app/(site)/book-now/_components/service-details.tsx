@@ -495,6 +495,7 @@ export default function ServiceDetails() {
       }
 
       const payload = {
+        ...preOrderData,
         property_type: data.propertyType,
         ...(propertyType === "residential" && {
           resident_type: data.residentType,

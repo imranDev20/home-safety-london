@@ -2,7 +2,7 @@ import slugify from "react-slugify";
 import dayjs from "dayjs";
 
 export function snakeCaseToNormalText(snakeCaseString: string) {
-  return snakeCaseString.replace(/_/g, " ").toLowerCase();
+  return snakeCaseString?.replace(/_/g, " ")?.toLowerCase();
 }
 
 export function toTitleCase(input: string): string {

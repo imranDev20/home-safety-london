@@ -1,303 +1,314 @@
-import { createQueryString } from "@/shared/functions";
-import { Box, Button, Typography } from "@mui/joy";
-import { useTheme } from "@mui/joy/styles";
+import { PreOrder } from "@/app/api/_models/PreOrder";
+import { getPreOrderById } from "@/services/pre-order.services";
+import {
+  createQueryString,
+  getPreOrderIdFromLocalStorage,
+  snakeCaseToNormalText,
+} from "@/shared/functions";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Table,
+  Typography,
+} from "@mui/joy";
+
+import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Confirmation() {
   const router = useRouter();
   const pathname = usePathname();
-  const theme = useTheme();
+
+  const {
+    data: preOrderData,
+    isLoading: isPreOrderDataLoading,
+    refetch: refetchPreOrder,
+  } = useQuery<PreOrder>({
+    queryKey: ["pre-order"],
+    queryFn: async () => {
+      const preOrderId = getPreOrderIdFromLocalStorage();
+      const response = await getPreOrderById(preOrderId as string);
+      return response.data;
+    },
+    enabled: false,
+  });
 
   useEffect(() => {
-    // if (!order.isPersonalStepComplete) {
-    //   router.push(pathname + "?" + createQueryString("active_step", "1"));
-    // }
-  }, [pathname, router]);
+    const preOrderId = getPreOrderIdFromLocalStorage();
+    if (preOrderId) {
+      refetchPreOrder();
+    }
+  }, [refetchPreOrder]);
+
+  if (isPreOrderDataLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          height: "50vh",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress
+          thickness={4}
+          sx={{ "--CircularProgress-size": "100px" }}
+        >
+          Loading
+        </CircularProgress>
+      </Box>
+    );
+  }
 
   return (
     <>
-      {/* <Typography
+      <Typography
         component="h3"
         level="h4"
         sx={{
           mb: 3,
         }}
       >
-        Confirm Order
+        Confirmation
+      </Typography>
+      <Typography
+        component="h3"
+        level="title-lg"
+        sx={{
+          mb: 1,
+        }}
+      >
+        Selected Services
       </Typography>
 
-      <Box
+      <Table variant="outlined" color="neutral">
+        <thead>
+          <tr>
+            <th style={{ width: "55%" }}>Service Name</th>
+            <th>Quantity</th>
+            <th
+              style={{
+                textAlign: "right",
+              }}
+            >
+              Price
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {preOrderData?.order_items.map((item) => (
+            <tr key={item.name}>
+              <td>{item.title}</td>
+              <td>
+                {item.quantity} x {item.unit}
+              </td>
+              <td
+                style={{
+                  textAlign: "right",
+                }}
+              >
+                £{item.price}
+              </td>
+            </tr>
+          ))}
+
+          <tr>
+            <td></td>
+            <td></td>
+            <td
+              style={{
+                textAlign: "right",
+              }}
+            >
+              Total: £
+            </td>
+          </tr>
+        </tbody>
+      </Table>
+
+      <Grid
+        container
+        spacing={3}
         sx={{
-          border: "1px solid",
-          borderColor: theme.colorSchemes.light.palette.divider,
-          borderRadius: 5,
+          mt: 3,
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            borderBottom: "1px solid",
-            borderBottomColor: "rgba(0, 0, 0, 0.12)",
-            p: 2,
-          }}
-        >
-          <Typography sx={{ fontWeight: 500 }}>Services</Typography>
-          <Typography sx={{ fontWeight: 500 }}>Charges</Typography>
-        </Box>
-
-        {items.map((item, index) => (
-          <Box
-            key={item.name}
+        <Grid xs={6}>
+          <Typography
+            component="h3"
+            level="title-lg"
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              borderBottom: items.length - 1 !== index ? "1px solid" : "none",
-              borderBottomColor: "rgba(0, 0, 0, 0.12)",
-              px: 2,
-              py: 2,
+              mb: 1,
             }}
           >
-            <Box>
-              <Typography>{item.label}</Typography>
-              <Typography
-                sx={{
-                  fontSize: 15,
-                }}
-                level="body-sm"
-                textColor="neutral.500"
-              >
-                {item.quantity} x {item.type.toLowerCase()}
-              </Typography>
-            </Box>
-            <Box>£{item.price}</Box>
-          </Box>
-        ))}
-      </Box>
-
-      <Box
-        sx={{
-          border: "1px solid",
-          borderColor: theme.colorSchemes.light.palette.divider,
-          borderRadius: 5,
-          mt: 4,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            borderBottom: "1px solid",
-            borderBottomColor: "rgba(0, 0, 0, 0.12)",
-            p: 2,
-          }}
-        >
-          <Typography sx={{ fontWeight: 500 }}>Additional</Typography>
-          <Typography sx={{ fontWeight: 500 }}>Charges</Typography>
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            borderBottom: "1px solid",
-            borderBottomColor: "rgba(0, 0, 0, 0.12)",
-            px: 2,
-            py: 2,
-          }}
-        >
-          <Box>
-            <Typography>TFL Zone</Typography>
-            <Typography
-              sx={{
-                fontSize: 15,
-              }}
-              level="body-sm"
-              textColor="neutral.500"
-            >
-              {order.tflZone === "inside_tfl_1"
-                ? "Inside TFL Zone 1"
-                : order.tflZone === "outside_tfl_5"
-                ? "Outside TFL Zone 5"
-                : "None"}
+            Personal Details
+          </Typography>
+          <Typography component="p">
+            <Typography component="span" level="title-md">
+              Name:{" "}
             </Typography>
-          </Box>
-          <Box>
-            £
-            {order.tflZone === "inside_tfl_1"
-              ? 30
-              : order.tflZone === "outside_tfl_5"
-              ? 10
-              : 0}
-          </Box>
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            px: 2,
-            py: 2,
-          }}
-        >
-          <Box>
-            <Typography>Scheduled Time</Typography>
-            <Typography
-              sx={{
-                fontSize: 15,
-              }}
-              level="body-sm"
-              textColor="neutral.500"
-            >
-              {order.time === "24"
-                ? "Within 24 Hours"
-                : order.time === "48"
-                ? "Within 48 Hours"
-                : dayjs(order.date).format("DD MMMM, YYYY")}
+            <Typography component="span" level="body-md">
+              {preOrderData?.customer_name}
             </Typography>
-          </Box>
-          <Box>£{order.time === "24" ? 100 : order.time === "48" ? 40 : 0}</Box>
-        </Box>
-      </Box>
+          </Typography>
 
-      <Box
-        sx={{
-          border: "1px solid",
-          borderColor: theme.colorSchemes.light.palette.divider,
-          borderRadius: 5,
-          mt: 4,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            px: 2,
-            py: 2,
-            borderBottom: "1px solid",
-            borderBottomColor: theme.colorSchemes.light.palette.divider,
-          }}
-        >
-          <Box>
-            <Typography>Subtotal</Typography>
-            <Typography
-              sx={{
-                fontSize: 15,
-              }}
-              level="body-sm"
-              textColor="neutral.500"
-            >
-              Services + Additional
+          <Typography component="p">
+            <Typography component="span" level="title-md">
+              Email:{" "}
             </Typography>
-          </Box>
-          <Box>
-            £
-            {calculateTotal([
-              ...items.map((item) => parseInt(item.price as string)),
-              order.tflZone === "inside_tfl_1"
-                ? 30
-                : order.tflZone === "outside_tfl_5"
-                ? 10
-                : 0,
-              order.time === "24" ? 100 : order.time === "48" ? 40 : 0,
-            ])}
-          </Box>
-        </Box>
+            <Typography component="span" level="body-md">
+              {preOrderData?.email}
+            </Typography>
+          </Typography>
 
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            px: 2,
-            py: 2,
-          }}
-        >
-          <Box>
-            <Typography>VAT</Typography>
-            <Typography
-              sx={{
-                fontSize: 15,
-              }}
-              level="body-sm"
-              textColor="neutral.500"
-            >
-              20% of Total
+          <Typography component="p">
+            <Typography component="span" level="title-md">
+              Phone No:{" "}
             </Typography>
-          </Box>
-          <Box>
-            £
-            {calculateTotal([
-              ...items.map((item) => parseInt(item.price as string)),
-              order.tflZone === "inside_tfl_1"
-                ? 30
-                : order.tflZone === "outside_tfl_5"
-                ? 10
-                : 0,
-              order.time === "24" ? 100 : order.time === "48" ? 40 : 0,
-            ]) * 0.2}
-          </Box>
-        </Box>
-      </Box>
+            <Typography component="span" level="body-md">
+              {preOrderData?.phone_no}
+            </Typography>
+          </Typography>
+        </Grid>
 
-      <Box
-        sx={{
-          border: "1px solid",
-          borderColor: theme.colorSchemes.light.palette.divider,
-          borderRadius: 5,
-          mt: 4,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            px: 2,
-            py: 2,
-          }}
-        >
-          <Box>
-            <Typography>Total</Typography>
-            <Typography
-              sx={{
-                fontSize: 15,
-              }}
-              level="body-sm"
-              textColor="neutral.500"
-            >
-              Including VAT
+        <Grid xs={6}>
+          <Typography
+            component="h3"
+            level="title-lg"
+            sx={{
+              mb: 1,
+            }}
+          >
+            Address
+          </Typography>
+          <Typography component="p">
+            <Typography component="span" level="title-md">
+              House No / Street Name:{" "}
             </Typography>
-          </Box>
-          <Box>
-            £
-            {calculateTotal([
-              ...items.map((item) => parseInt(item.price as string)),
-              order.tflZone === "inside_tfl_1"
-                ? 30
-                : order.tflZone === "outside_tfl_5"
-                ? 10
-                : 0,
-              order.time === "24" ? 100 : order.time === "48" ? 40 : 0,
-            ]) +
-              calculateTotal([
-                ...items.map((item) => parseInt(item.price as string)),
-                order.tflZone === "inside_tfl_1"
-                  ? 30
-                  : order.tflZone === "outside_tfl_5"
-                  ? 10
-                  : 0,
-                order.time === "24" ? 100 : order.time === "48" ? 40 : 0,
-              ]) *
-                0.2}
-          </Box>
-        </Box>
-      </Box> */}
+            <Typography
+              component="span"
+              level="body-md"
+              sx={{
+                textTransform: "capitalize",
+              }}
+            >
+              {preOrderData?.address?.house_street}
+            </Typography>
+          </Typography>
+
+          <Typography component="p">
+            <Typography component="span" level="title-md">
+              Post Code:{" "}
+            </Typography>
+            <Typography
+              component="span"
+              level="body-md"
+              sx={{
+                textTransform: "capitalize",
+              }}
+            >
+              {preOrderData?.address?.postcode}
+            </Typography>
+          </Typography>
+
+          <Typography component="p">
+            <Typography component="span" level="title-md">
+              City:{" "}
+            </Typography>
+            <Typography component="span" level="body-md">
+              {preOrderData?.address?.city}
+            </Typography>
+          </Typography>
+        </Grid>
+
+        <Grid xs={6}>
+          <Typography
+            component="h3"
+            level="title-lg"
+            sx={{
+              mb: 1,
+            }}
+          >
+            Inspection Scheduled
+          </Typography>
+          <Typography component="p">
+            <Typography component="span" level="title-md">
+              Date of Inspection:{" "}
+            </Typography>
+            <Typography
+              component="span"
+              level="body-md"
+              sx={{
+                textTransform: "capitalize",
+              }}
+            >
+              {preOrderData?.inspection_date}
+            </Typography>
+          </Typography>
+
+          <Typography component="p">
+            <Typography component="span" level="title-md">
+              Time of Day:{" "}
+            </Typography>
+            <Typography
+              component="span"
+              level="body-md"
+              sx={{
+                textTransform: "capitalize",
+              }}
+            >
+              {preOrderData?.inspection_time}
+            </Typography>
+          </Typography>
+        </Grid>
+
+        <Grid xs={6}>
+          <Typography
+            component="h3"
+            level="title-lg"
+            sx={{
+              mb: 1,
+            }}
+          >
+            Additional Details
+          </Typography>
+          <Typography component="p">
+            <Typography component="span" level="title-md">
+              Congestion Zone:{" "}
+            </Typography>
+            <Typography
+              component="span"
+              level="body-md"
+              sx={{
+                textTransform: "capitalize",
+              }}
+            >
+              {preOrderData &&
+                snakeCaseToNormalText(
+                  preOrderData?.congestion_zone?.zone_type as string
+                )}
+            </Typography>
+          </Typography>
+
+          <Typography component="p">
+            <Typography component="span" level="title-md">
+              Parking Options:{" "}
+            </Typography>
+            <Typography
+              component="span"
+              level="body-md"
+              sx={{
+                textTransform: "capitalize",
+              }}
+            >
+              {preOrderData?.parking_options?.parking_type}
+            </Typography>
+          </Typography>
+        </Grid>
+      </Grid>
 
       <Box
         sx={{
@@ -310,6 +321,9 @@ export default function Confirmation() {
           sx={{
             mt: 2,
           }}
+          onClick={() =>
+            router.push(pathname + "?" + createQueryString("active_step", "4"))
+          }
         >
           Next: Payment Details
         </Button>

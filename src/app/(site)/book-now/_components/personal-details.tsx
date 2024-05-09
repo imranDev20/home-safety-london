@@ -144,29 +144,28 @@ export default function PersonalDetails() {
     }
   }, [refetchPreOrder]);
 
-  // useEffect(() => {
-  //   if (preOrderData) {
-  //     reset({
-  //       name: preOrderData?.customer_name || "",
-  //       email: preOrderData?.email || "",
-  //       phone: preOrderData?.phone_no || "",
-  //       house: preOrderData?.address?.house_street || "",
-  //       postCode: preOrderData?.address?.postcode || "",
-  //       city: preOrderData?.address?.city || "London",
-  //       parkingOptions: "",
-  //       congestionZone: "",
-  //       inspectionDate: "",
-  //       inspectionTime: "",
-  //       orderNotes: "",
-  //     });
-  //   }
-  // }, [preOrderData, reset]);
+  useEffect(() => {
+    if (preOrderData) {
+      reset({
+        name: preOrderData?.customer_name || "",
+        email: preOrderData?.email || "",
+        phone: preOrderData?.phone_no || "",
+        house: preOrderData?.address?.house_street || "",
+        postCode: preOrderData?.address?.postcode || "",
+        city: preOrderData?.address?.city || "London",
+        parkingOptions: preOrderData?.parking_options?.parking_type || "",
+        congestionZone: preOrderData?.congestion_zone?.zone_type || "",
+        inspectionDate: preOrderData?.inspection_date || "",
+        inspectionTime: preOrderData?.inspection_time || "",
+        orderNotes: preOrderData?.order_notes || "",
+      });
+    }
+  }, [preOrderData, reset]);
 
   const onPersonalDetailsSubmit: SubmitHandler<PersonalFormInput> = async (
     data
   ) => {
     try {
-      console.log(congestionZoneOptions);
       const selectedCongestionZone = congestionZoneOptions.find(
         (option) => option.value === data.congestionZone
       );
@@ -176,6 +175,7 @@ export default function PersonalDetails() {
       );
 
       const payload = {
+        ...preOrderData,
         customer_name: data.name,
         email: data.email,
         phone_no: data.phone,
@@ -185,27 +185,28 @@ export default function PersonalDetails() {
           city: data.city,
         },
         parking_options: {
-          parking_type: selectedParkingOption?.value,
-          parking_cost: selectedParkingOption?.cost,
+          parking_type: selectedParkingOption?.value as string,
+          parking_cost: selectedParkingOption?.cost as number,
         },
         congestion_zone: {
-          zone_type: selectedCongestionZone?.value,
-          zone_cost: selectedCongestionZone?.cost,
+          zone_type: selectedCongestionZone?.value as string,
+          zone_cost: selectedCongestionZone?.cost as number,
         },
+        inspection_date: data.inspectionDate,
+        inspection_time: data.inspectionTime,
+        order_notes: data.orderNotes,
         is_personal_details_complete: true,
       };
 
-      console.log(payload);
+      const response = await preOrderMutate(payload);
 
-      // const response = await preOrderMutate(payload);
-
-      // if (response?.status === "success") {
-      //   router.push(pathname + "?" + createQueryString("active_step", "3"));
-      //   window.scrollTo(0, 300);
-      //   enqueueSnackbar(response.message, "success");
-      // } else {
-      //   throw new Error(response.message);
-      // }
+      if (response?.status === "success") {
+        router.push(pathname + "?" + createQueryString("active_step", "3"));
+        window.scrollTo(0, 300);
+        enqueueSnackbar(response.message, "success");
+      } else {
+        throw new Error(response.message);
+      }
     } catch (error: any) {
       enqueueSnackbar(error.message, "error");
     }
@@ -630,9 +631,9 @@ export default function PersonalDetails() {
                     size="lg"
                     placeholder="Please select a slot"
                   >
-                    <Option value="8-12">08:00 - 12:00</Option>
-                    <Option value="12-4">12:00 - 04:00</Option>
-                    <Option value="4-8">04:00 - 08:00</Option>
+                    <Option value="8 AM - 12 PM">08:00 AM - 12:00 PM</Option>
+                    <Option value="12 PM - 4 PM">12:00 PM - 04:00 PM</Option>
+                    <Option value="4 PM - 8 AM">04:00 AM - 08:00 PM</Option>
                   </Select>
                   <HookFormError name="inspectionTime" errors={errors} />
                 </FormControl>

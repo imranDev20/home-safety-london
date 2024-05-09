@@ -9,7 +9,7 @@ interface OrderItem {
   title: string;
 }
 
-interface PreOrder {
+export interface PreOrder {
   current_step: string;
   property_type: string;
   resident_type: string;
@@ -32,10 +32,10 @@ interface PreOrder {
     zone_type: string;
     zone_cost: number;
   };
+  inspection_date: string;
+  inspection_time: string;
+  order_notes: string;
   is_personal_details_complete: boolean;
-  tax_rate: number;
-  order_total: number;
-  taxed_total: number;
 }
 
 const orderItemSchema = new Schema<OrderItem>({
@@ -149,6 +149,15 @@ const preOrderSchema = new Schema<PreOrder>({
         type: Number,
       },
     },
+  },
+  inspection_date: {
+    type: String,
+  },
+  inspection_time: {
+    type: String,
+  },
+  order_notes: {
+    type: String,
   },
   is_personal_details_complete: {
     type: Boolean,

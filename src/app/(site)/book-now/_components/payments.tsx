@@ -1,80 +1,83 @@
-import { Order } from "@/types/misc";
 import Outcome from "./outcome";
 import PaymentDetails from "./payment-details";
 import { Elements } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { usePathname, useRouter } from "next/navigation";
-import { createQueryString, getServiceItems } from "@/shared/functions";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  createQueryString,
+  getPreOrderIdFromLocalStorage,
+} from "@/shared/functions";
 import dayjs from "dayjs";
 import { Box, CircularProgress, Typography } from "@mui/joy";
+import axios from "axios";
+import { PreOrder } from "@/app/api/_models/PreOrder";
+import { useQuery } from "@tanstack/react-query";
+import { getPreOrderById } from "@/services/pre-order.services";
 
 export default function Payments() {
   const [stripePromise, setStripePromise] = useState<any>();
   const [clientSecret, setClientSecret] = useState("");
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const activeStep = parseInt(searchParams.get("active_step") as string) || 1;
+
+  const {
+    data: preOrderData,
+    isLoading: isPreOrderDataLoading,
+    refetch: refetchPreOrder,
+  } = useQuery<PreOrder>({
+    queryKey: ["pre-order"],
+    queryFn: async () => {
+      const preOrderId = getPreOrderIdFromLocalStorage();
+      const response = await getPreOrderById(preOrderId as string);
+      return response.data;
+    },
+    enabled: false,
+  });
 
   useEffect(() => {
-    // if (!order.isPersonalStepComplete) {
-    //   router.push(pathname + "?" + createQueryString("active_step", "1"));
-    // }
-  }, [pathname, router]);
+    const preOrderId = getPreOrderIdFromLocalStorage();
+    if (preOrderId) {
+      refetchPreOrder();
+    }
+  }, [refetchPreOrder]);
 
-  // useEffect(() => {
-  //   const fetchKey = async () => {
-  //     try {
-  //       const response = await axios.get("/api/config");
-  //       setStripePromise(loadStripe(response.data.publishableKey));
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchKey = async () => {
+      try {
+        const response = await axios.get("/api/config");
+        setStripePromise(loadStripe(response.data.publishableKey));
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  //   fetchKey();
-  // }, []);
+    fetchKey();
+  }, []);
 
-  // useEffect(() => {
-  //   const fetchClientSecret = async () => {
-  //     try {
-  //       const orderPayload = {
-  //         name: order.name,
-  //         email: order.email,
-  //         phone: order.phone,
-  //         house: order.house,
-  //         postCode: order.postCode,
-  //         city: order.city,
-  //         zone: {
-  //           name: order.tflZone,
-  //           price:
-  //             order.tflZone === "inside_tfl_1"
-  //               ? 30
-  //               : order.tflZone === "outside_tfl_5"
-  //               ? 10
-  //               : 0,
-  //         },
-  //         time: {
-  //           name: order.time || order.date,
-  //           price: order.time === "24" ? 100 : order.time === "48" ? 40 : 0,
-  //         },
+  useEffect(() => {
+    const fetchClientSecret = async () => {
+      try {
+        const orderPayload = {
+          ...preOrderData,
+        };
 
-  //         items: getServiceItems(order),
-  //         ...(order.date ? { date: dayjs(order.date).format() } : null),
-  //       };
+        const response = await axios.post(
+          "/api/create-payment-intent",
+          orderPayload
+        );
 
-  //       const response = await axios.post(
-  //         "/api/create-payment-intent",
-  //         orderPayload
-  //       );
+        setClientSecret(response.data.clientSecret);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  //       setClientSecret(response.data.clientSecret);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   fetchClientSecret();
-  // }, [order]);
+    fetchClientSecret();
+  }, [preOrderData]);
 
   return (
     <>
@@ -91,8 +94,8 @@ export default function Payments() {
             },
           }}
         >
-          {/* {activeStep === 4 ? <PaymentDetails /> : null}
-          {activeStep === 5 ? <Outcome /> : null} */}
+          {activeStep === 4 ? <PaymentDetails /> : null}
+          {activeStep === 5 ? <Outcome /> : null}
         </Elements>
       )}
     </>

@@ -270,7 +270,7 @@ export default function Header() {
               }}
             >
               <WhatsApp
-                color="secondary"
+                // color="secondary"
                 sx={{
                   mr: 1,
                   fontWeight: 30,
@@ -293,7 +293,7 @@ export default function Header() {
               }}
             >
               <Phone
-                color="secondary"
+                // color="secondary"
                 sx={{
                   mr: 1,
                   fontWeight: 30,
@@ -316,7 +316,7 @@ export default function Header() {
               }}
             >
               <Email
-                color="secondary"
+                // color="secondary"
                 sx={{
                   mr: 1,
                   fontWeight: 30,

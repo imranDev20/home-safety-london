@@ -14,7 +14,6 @@ import Heading from "@/app/_components/common/heading";
 
 export default function BookNowPage() {
   const searchParams = useSearchParams();
-
   const activeStep = parseInt(searchParams.get("active_step") as string) || 1;
 
   useEffect(() => {

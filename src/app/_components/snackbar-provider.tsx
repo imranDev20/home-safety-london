@@ -57,7 +57,7 @@ export const SnackbarProvider = ({
           }
           open={open}
           onClose={handleClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
           startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
           endDecorator={
             <Button
