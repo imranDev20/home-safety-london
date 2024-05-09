@@ -12,10 +12,12 @@ export default function Outcome() {
   const stripe = useStripe();
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const [message, setMessage] = useState<null | {
     status: string;
     text: string;
   }>(null);
+
   const pathname = usePathname();
   const [info, setInfo] = useState({
     email: "",
@@ -36,8 +38,6 @@ export default function Outcome() {
         );
 
         const { paymentIntent } = response;
-
-        console.log(response);
 
         setInfo({
           email: response.paymentIntent?.receipt_email as string,

@@ -24,20 +24,17 @@ import {
 
 import {
   Email,
+  HealthAndSafety,
   HomeRounded,
   Login,
+  Menu,
   Person,
   Phone,
   WhatsApp,
 } from "@mui/icons-material";
-import { ADMIN_OPTIONS, CATEGORIES, SERVICES } from "@/shared/constants";
+import { CATEGORIES, SERVICES } from "@/shared/constants";
 import Link from "next/link";
 import { customSlugify } from "@/shared/functions";
-import { Hidden } from "@mui/material";
-import Menu from "@mui/icons-material/Menu";
-import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
-import { Search } from "@mui/icons-material";
-import { usePathname } from "next/navigation";
 
 type Options = {
   initialActiveIndex: null | number;
@@ -156,6 +153,7 @@ const ServicesMenu = React.forwardRef(
 
     const open = Boolean(anchorEl);
     const id = open ? "about-popper" : undefined;
+
     return (
       <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
         <div onMouseLeave={() => setAnchorEl(null)}>
@@ -243,8 +241,6 @@ export default function Header() {
     useRovingIndex();
 
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const pathname = usePathname();
 
   return (
     <Box
@@ -263,13 +259,10 @@ export default function Header() {
         <Container
           sx={{
             display: "flex",
-            justifyContent: { xs: "flex-start", sm: "center", md: "flex-end" },
+            justifyContent: "flex-end",
           }}
         >
-          <Stack
-            spacing={{ xs: 3, sm: 4, md: 5 }}
-            direction={{ xs: "column", sm: "row" }}
-          >
+          <Stack spacing={5} direction="row">
             <Box
               sx={{
                 display: "flex",
@@ -277,7 +270,7 @@ export default function Header() {
               }}
             >
               <WhatsApp
-                color="secondary"
+                // color="secondary"
                 sx={{
                   mr: 1,
                   fontWeight: 30,
@@ -297,11 +290,10 @@ export default function Header() {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                mt: 0,
               }}
             >
               <Phone
-                color="secondary"
+                // color="secondary"
                 sx={{
                   mr: 1,
                   fontWeight: 30,
@@ -321,11 +313,10 @@ export default function Header() {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                mt: 0,
               }}
             >
               <Email
-                color="secondary"
+                // color="secondary"
                 sx={{
                   mr: 1,
                   fontWeight: 30,
@@ -364,40 +355,30 @@ export default function Header() {
               gap: 1,
             }}
           >
-            <HealthAndSafetyIcon />
+            <HealthAndSafety />
             <Typography level="title-lg">Home Safety London</Typography>
           </Box>
-          <IconButton
+          {/* <IconButton
             variant="outlined"
             color="neutral"
             onClick={() => setOpen(true)}
           >
             <Menu />
-          </IconButton>
+          </IconButton> */}
         </Sheet>
       </Container>
 
       {/* Mobile & tablet screen drawer */}
-      <Drawer open={open} onClose={() => setOpen(false)}>
+      {/* <Drawer open={open} onClose={() => setOpen(false)}>
         <Box
           sx={{
             display: "flex",
+            py: 2,
             alignItems: "center",
-            justifyContent: "space-between",
-            mt: 1,
-            px: 2,
-            pb: 2,
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <HealthAndSafetyIcon />
-            <Typography component="h5">Home Safety London</Typography>
+          <Box>
+            <Typography level="h4">Home Safety London</Typography>
           </Box>
           <ModalClose id="close-icon" sx={{ position: "initial" }} />
         </Box>
@@ -405,14 +386,14 @@ export default function Header() {
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <List
             role="menubar"
-            orientation="vertical"
+            orientation="horizontal"
             sx={{
               "--List-radius": "8px",
               "--List-padding": "4px",
               "--List-gap": "8px",
               "--ListItem-gap": "0px",
               justifyContent: "flex-end",
-              mx: 4,
+              mr: 4,
             }}
           >
             <ListItem role="none">
@@ -446,7 +427,7 @@ export default function Header() {
                 About
               </ListItemButton>
             </ListItem>
-            <ListItem role="none" sx={{ zIndex: 10 }}>
+            <ListItem role="none">
               <ServicesMenu
                 onMouseEnter={() => {
                   setActiveIndex(1);
@@ -472,16 +453,11 @@ export default function Header() {
               </ListItemButton>
             </ListItem>
           </List>
-          <Button
-            startDecorator={<Login />}
-            component={Link}
-            href="/login"
-            sx={{ mx: 4 }}
-          >
+          <Button startDecorator={<Login />} component={Link} href="/login">
             Login
           </Button>
         </Box>
-      </Drawer>
+      </Drawer> */}
 
       {/* large screen navbar */}
       <Container

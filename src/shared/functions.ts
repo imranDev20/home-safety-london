@@ -1,12 +1,9 @@
 import slugify from "react-slugify";
+import dayjs from "dayjs";
 
 export function snakeCaseToNormalText(snakeCaseString: string) {
-  return snakeCaseString.replace(/_/g, " ").toLowerCase();
+  return snakeCaseString?.replace(/_/g, " ")?.toLowerCase();
 }
-
-import { Order } from "@/types/misc";
-import dayjs from "dayjs";
-import { PRICE_INFO } from "./constants";
 
 export function toTitleCase(input: string): string {
   const smallWords = [
@@ -73,22 +70,35 @@ export function calculateTotal(numbers: number[]): number {
   return numbers.reduce((total, num) => total + num, 0);
 }
 
-export function getServiceItems(order: Order) {
-  return Object.entries(order)
-    .filter(([key, value]) =>
-      PRICE_INFO.map((price) => price.type).includes(key)
-    )
-    .filter(([key, value]) => value !== "")
-    .map(([key, value]) => ({
-      name: PRICE_INFO.find((price) => price.type === key)?.service,
-      label: PRICE_INFO.find((price) => price.type === key)?.label,
-      type: key,
-      quantity: PRICE_INFO.find((price) => price.type === key)?.price.find(
-        (val) => val.quantity === value
-      )?.quantity,
+export const setToken = (token: string) => {
+  localStorage.setItem("accessToken", token);
+};
 
-      price: PRICE_INFO.find((price) => price.type === key)?.price.find(
-        (val) => val.quantity === value
-      )?.price,
-    }));
+export const getToken = () => {
+  return localStorage.getItem("accessToken");
+};
+
+export const removeToken = () => {
+  localStorage.removeItem("accessToken");
+};
+
+export const setPreOrderIdToLocalStorage = (preOrderId: string) => {
+  localStorage.setItem("preOrderId", preOrderId);
+};
+
+// Function to get pre-order ID from local storage
+export const getPreOrderIdFromLocalStorage = () => {
+  return localStorage.getItem("preOrderId");
+};
+
+// Function to remove pre-order ID from local storage
+export const removePreOrderIdFromLocalStorage = () => {
+  localStorage.removeItem("preOrderId");
+};
+
+export function toSnakeCase(str: string) {
+  return str
+    .replace(/\s+/g, "_") // Replace spaces with underscores
+    .replace(/[^a-zA-Z0-9_]/g, "") // Remove special characters
+    .toLowerCase(); // Convert to lowercase
 }

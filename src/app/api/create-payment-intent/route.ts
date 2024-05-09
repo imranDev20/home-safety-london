@@ -16,19 +16,7 @@ export async function POST(req: NextRequest) {
 
     const paymentIntent = await stripe.paymentIntents.create({
       currency: "gbp",
-      amount:
-        (calculateTotal([
-          ...order.items.map((item: any) => item.price),
-          order.zone.price,
-          order.time.price,
-        ]) +
-          calculateTotal([
-            ...order.items.map((item: any) => item.price),
-            order.zone.price,
-            order.time.price,
-          ]) *
-            0.2) *
-        100,
+      amount: 12000,
       payment_method_types: ["link", "card", "paypal", "revolut_pay"],
       description: "Thanks for your purchase!",
     });
@@ -54,6 +42,7 @@ export async function POST(req: NextRequest) {
       );
     }
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       {
         message: "Internal Server Error",

@@ -30,8 +30,6 @@ export const theme = extendTheme({
           "900": "#004d40",
         },
         secondary: {
-          // Credit:
-          // https://github.com/tailwindlabs/tailwindcss/blob/master/src/public/colors.js
           "50": "#fefce8",
           "100": "#fef9c3",
           "200": "#fef08a",

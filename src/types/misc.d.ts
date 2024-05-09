@@ -23,21 +23,3 @@ export type Service = {
     price: number;
   }[];
 };
-
-export type Order = {
-  isGas: boolean;
-  isEpc: boolean;
-  isEicr: boolean;
-  appliances: string;
-  fuseBoards: string;
-  bedRooms: string;
-  tflZone: string;
-  time: string;
-  name: string;
-  email: string;
-  phone: string;
-  house: string;
-  postCode: string;
-  city: string;
-  date: null | Dayjs;
-};
