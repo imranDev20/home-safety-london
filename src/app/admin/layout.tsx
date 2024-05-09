@@ -16,7 +16,7 @@ import {
   useTheme,
 } from "@mui/joy";
 import Sheet from "@mui/joy/Sheet";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Logout, Search } from "@mui/icons-material";
 import { ADMIN_OPTIONS } from "@/shared/constants";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
@@ -142,20 +142,13 @@ export default function AdminLayout({
                 minHeight: "100dvh",
               }}
             >
-<<<<<<< HEAD
               {/* dashboard sidebar navigation */}
-=======
->>>>>>> 6000e6ea7c8a064d8929e778fbc59e8df7eb2ef8
               <Sheet
                 sx={{
                   maxWidth: "240px",
                   height: "100dvh",
                   p: 2,
-<<<<<<< HEAD
                   display: { xs: "none", sm: "none", md: "flex" },
-=======
-                  display: "flex",
->>>>>>> 6000e6ea7c8a064d8929e778fbc59e8df7eb2ef8
                   flexDirection: "column",
                   justifyContent: "space-between",
                   borderRight: "1px solid",
@@ -251,16 +244,6 @@ export default function AdminLayout({
                         </Typography>
                       </Box>
                     </Box>
-<<<<<<< HEAD
-=======
-
-                    <IconButton variant="plain" size="sm">
-                      <Logout />
-                    </IconButton>
-                  </Box>
-                </Box>
-              </Sheet>
->>>>>>> 6000e6ea7c8a064d8929e778fbc59e8df7eb2ef8
 
                     <IconButton variant="plain" size="sm">
                       <Logout />
