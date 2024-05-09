@@ -1,10 +1,20 @@
 import mongoose from "mongoose";
+import { Schema } from "mongoose";
 
-interface PreOrder {
+interface OrderItem {
+  name: string;
+  price: number;
+  quantity: string | number;
+  unit: string;
+  title: string;
+}
+
+export interface PreOrder {
+  current_step: string;
   property_type: string;
-  property_sub_type: string;
-  bedrooms: number;
-  order_items: string[];
+  resident_type: string;
+  bedrooms: string;
+  order_items: OrderItem[];
   is_service_details_complete: boolean;
   customer_name: string;
   email: string;
@@ -22,32 +32,79 @@ interface PreOrder {
     zone_type: string;
     zone_cost: number;
   };
+  inspection_date: string;
+  inspection_time: string;
+  order_notes: string;
   is_personal_details_complete: boolean;
-  tax_rate: number;
-  order_total: number;
-  taxed_total: number;
 }
 
-const preOrderSchema = new mongoose.Schema<PreOrder>({
-  property_type: {
+const orderItemSchema = new Schema<OrderItem>({
+  name: {
     type: String,
     required: true,
   },
-  property_sub_type: {
+  title: {
     type: String,
     required: true,
   },
-  bedrooms: {
+  price: {
     type: Number,
     required: true,
   },
+  quantity: {
+    type: Schema.Types.Mixed, // Allows both string and number
+    required: true,
+  },
+  unit: {
+    type: String,
+    required: true,
+  },
+});
+
+const preOrderSchema = new Schema<PreOrder>({
+  property_type: {
+    type: String,
+    required: true,
+    enum: ["residential", "commercial"],
+  },
+  resident_type: {
+    type: String,
+    required: function () {
+      return this.property_type === "residential";
+    },
+    validate: {
+      validator: function (value: string): boolean {
+        if (this && "property_type" in this) {
+          return this.property_type !== "commercial" || !value;
+        }
+        return false;
+      },
+      message: (props) =>
+        `resident_type cannot be provided when property_type is commercial`,
+    },
+  },
+  bedrooms: {
+    type: String,
+    required: function () {
+      return this.property_type === "residential";
+    },
+    validate: {
+      validator: function (value: string): boolean {
+        if (this && "property_type" in this) {
+          return this.property_type !== "commercial" || !value;
+        }
+        return false;
+      },
+      message: (props) =>
+        `bedrooms cannot be provided when property_type is commercial`,
+    },
+  },
   order_items: {
-    type: [String],
+    type: [orderItemSchema],
     required: true,
   },
   is_service_details_complete: {
     type: Boolean,
-    required: true,
   },
   customer_name: {
     type: String,
@@ -75,6 +132,7 @@ const preOrderSchema = new mongoose.Schema<PreOrder>({
     type: {
       parking_type: {
         type: String,
+        enum: ["paid", "free", "unavailable"],
       },
       parking_cost: {
         type: Number,
@@ -85,67 +143,28 @@ const preOrderSchema = new mongoose.Schema<PreOrder>({
     type: {
       zone_type: {
         type: String,
+        enum: ["congestion", "non_congestion"],
       },
       zone_cost: {
         type: Number,
       },
     },
   },
+  inspection_date: {
+    type: String,
+  },
+  inspection_time: {
+    type: String,
+  },
+  order_notes: {
+    type: String,
+  },
   is_personal_details_complete: {
     type: Boolean,
   },
-  tax_rate: {
-    type: Number,
-  },
-  order_total: {
-    type: Number,
-  },
-  taxed_total: {
-    type: Number,
-  },
 });
 
-// Custom validator for fields below is_service_details_complete
-preOrderSchema.pre<PreOrder>("save", function (next) {
-  if (this.is_service_details_complete) {
-    const requiredFields = [
-      "customer_name",
-      "email",
-      "phone_no",
-      "address",
-      "parking_options",
-      "congestion_zone",
-      "is_personal_details_complete",
-    ];
-    for (const field of requiredFields) {
-      if (!(this as any)[field]) {
-        return next(
-          new Error(
-            `${field.replace(
-              "_",
-              " "
-            )} is required when service details are complete.`
-          )
-        );
-      }
-    }
-  }
-
-  if (this.is_personal_details_complete) {
-    const requiredFields = ["tax_rate", "order_total"];
-    for (const field of requiredFields) {
-      if (!(this as any)[field]) {
-        return next(
-          new Error(
-            `${field.replace(
-              "_",
-              " "
-            )} is required when service details are complete.`
-          )
-        );
-      }
-    }
-  }
+preOrderSchema.pre("findOneAndReplace", function (next) {
   next();
 });
 

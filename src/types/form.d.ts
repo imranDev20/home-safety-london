@@ -2,16 +2,9 @@ import { Dayjs } from "dayjs";
 
 export type ServiceFormInput = {
   propertyType: "residential" | "commercial";
-  propertySubtype: "flat" | "house" | "hmo" | "";
+  residentType: "flat" | "house" | "hmo" | "";
   bedrooms: string;
-  eicr: false;
-  gas_cert: false;
-  epc: false;
-  pat: false;
-  gas_boiler: false;
-  fire_safety: false;
-  fire_risk: false;
-  emergency_light: false;
+  orderItems: string[];
 };
 
 export type PersonalFormInput = {
@@ -21,7 +14,11 @@ export type PersonalFormInput = {
   house: string;
   postCode: string;
   city: string;
+  congestionZone: string;
   parkingOptions: string;
+  inspectionDate: string;
+  inspectionTime: string;
+  orderNotes: string;
 };
 
 export type ServiceType =

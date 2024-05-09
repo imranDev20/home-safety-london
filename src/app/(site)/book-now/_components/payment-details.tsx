@@ -1,14 +1,20 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   PaymentElement,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
 
-import { Alert, Button } from "@mui/joy";
+import { Alert, Box, Button } from "@mui/joy";
 import { useRouter, usePathname } from "next/navigation";
-import { createQueryString } from "@/shared/functions";
-import { Order } from "@/types/misc";
+import {
+  createQueryString,
+  getPreOrderIdFromLocalStorage,
+} from "@/shared/functions";
+import { getPreOrderById } from "@/services/pre-order.services";
+import { PreOrder } from "@/app/api/_models/PreOrder";
+import { useQuery } from "@tanstack/react-query";
+import { useSnackbar } from "@/app/_components/snackbar-provider";
 
 export default function PaymentDetails() {
   const [status, setStatus] = useState<string>();
@@ -17,6 +23,28 @@ export default function PaymentDetails() {
   const elements = useElements();
   const router = useRouter();
   const pathname = usePathname();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const {
+    data: preOrderData,
+    isLoading: isPreOrderDataLoading,
+    refetch: refetchPreOrder,
+  } = useQuery<PreOrder>({
+    queryKey: ["pre-order"],
+    queryFn: async () => {
+      const preOrderId = getPreOrderIdFromLocalStorage();
+      const response = await getPreOrderById(preOrderId as string);
+      return response.data;
+    },
+    enabled: false,
+  });
+
+  useEffect(() => {
+    const preOrderId = getPreOrderIdFromLocalStorage();
+    if (preOrderId) {
+      refetchPreOrder();
+    }
+  }, [refetchPreOrder]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,10 +68,11 @@ export default function PaymentDetails() {
       },
     });
 
-    console.log(response);
     setLoading(false);
 
     if (response.paymentIntent) {
+      const status = response.paymentIntent.status;
+
       router.push(
         pathname +
           "?" +
@@ -56,9 +85,12 @@ export default function PaymentDetails() {
             response.paymentIntent.client_secret as string
           ) +
           "&" +
-          createQueryString("redirect_status", response.paymentIntent.status)
+          createQueryString("redirect_status", status)
       );
-      setStatus(response.paymentIntent.status);
+
+      enqueueSnackbar(status, status === "succeeded" ? "success" : "error");
+
+      // setStatus(response.paymentIntent.status);
     }
 
     // use this code if we ever need to show error as outcome
@@ -83,48 +115,46 @@ export default function PaymentDetails() {
     // }
 
     if (response.error) {
-      setStatus(response.error.message);
+      enqueueSnackbar(response.error.message as string, "error");
       return;
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* <PaymentElement
+      <PaymentElement
         options={{
           defaultValues: {
             billingDetails: {
-              email: order.email,
-              name: order.name,
-              phone: order.phone,
+              email: preOrderData?.email,
+              name: preOrderData?.customer_name,
+              phone: preOrderData?.phone_no,
               address: {
                 country: "GB",
                 city: "London",
-                postal_code: order.postCode,
-                line1: order.house,
+                postal_code: preOrderData?.address?.postcode,
+                line1: preOrderData?.address?.house_street,
               },
             },
           },
         }}
-      /> */}
+      />
 
-      <Button variant="outlined" type="submit" loading={loading} sx={{ mt: 2 }}>
-        Pay
-      </Button>
-
-      {status && (
-        <Alert
-          sx={{
-            mt: 2,
-
-            "& .MuiAlert-icon": {
-              alignItems: "center",
-            },
-          }}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Button
+          variant="outlined"
+          type="submit"
+          loading={loading}
+          sx={{ mt: 4 }}
         >
-          {status}
-        </Alert>
-      )}
+          Pay
+        </Button>
+      </Box>
     </form>
   );
 }

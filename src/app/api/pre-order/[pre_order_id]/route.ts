@@ -1,23 +1,35 @@
 import dbConnect from "@/app/api/_lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 import PreOrder from "../../_models/PreOrder";
+import mongoose from "mongoose";
 
-export async function PUT(req: NextRequest, res: NextResponse) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { pre_order_id: string } },
+  res: NextResponse
+) {
   try {
     await dbConnect();
     const preOrder = await req.json();
+    const orderId = params.pre_order_id;
 
-    const orderId = "66127fd3bd2086dd8d33cdab";
+    const newObjectId =
+      orderId === "undefined" ? new mongoose.Types.ObjectId() : null;
 
-    const data = await PreOrder.findByIdAndUpdate(orderId, preOrder, {
-      upsert: true,
-      new: true,
-    });
+    const data = await PreOrder.findOneAndReplace(
+      { _id: orderId !== "undefined" ? orderId : newObjectId },
+      preOrder,
+      {
+        upsert: true,
+        new: true,
+        runValidators: true,
+      }
+    );
 
     return NextResponse.json(
       {
         status: "success",
-        message: "Resource successfully retrieved",
+        message: "Order progress updated",
         data: data,
       },
       {
@@ -26,6 +38,28 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         },
       }
     );
+  } catch (error: any) {
+    console.log(error);
+    return NextResponse.json({ message: error.message }, { status: 500 });
+  }
+}
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { pre_order_id: string } },
+  res: NextResponse
+) {
+  try {
+    await dbConnect();
+    const id = params.pre_order_id;
+
+    const preOrder = await PreOrder.findById(id);
+
+    return NextResponse.json({
+      success: true,
+      message: "Data fetched successfully!",
+      data: preOrder,
+    });
   } catch (error: any) {
     console.log(error);
     return NextResponse.json({ message: error.message }, { status: 500 });
