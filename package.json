@@ -16,6 +16,7 @@
     "@mui/icons-material": "^5.15.9",
     "@mui/joy": "^5.0.0-beta.27",
     "@mui/material": "^5.0.0-beta.36",
+    "@mui/x-date-pickers": "^7.3.2",
     "@stripe/react-stripe-js": "^2.6.2",
     "@svgr/webpack": "^8.1.0",
     "@tanstack/react-query": "^5.29.0",
@@ -32,6 +33,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.51.0",
     "react-phone-number-input": "^3.4.0",
+    "react-responsive": "^10.0.0",
     "react-slugify": "^3.0.3",
     "stripe": "^14.20.0"
   },

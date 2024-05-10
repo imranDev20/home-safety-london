@@ -2,6 +2,8 @@
 import {
   Avatar,
   Box,
+  CssBaseline,
+  CssVarsProvider,
   Divider,
   Drawer,
   IconButton,
@@ -22,9 +24,9 @@ import { ADMIN_OPTIONS } from "@/shared/constants";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+import Menu from "@mui/icons-material/Menu";
 import { Inter } from "next/font/google";
-import ThemeRegistry from "../_components/theme-registry";
-import TopLoader from "../_components/common/top-loader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,11 +41,46 @@ export default function AdminLayout({
   const [open, setOpen] = React.useState(false);
 
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <ThemeRegistry options={{ key: "joy" }}>
-          <TopLoader />
+    <CssVarsProvider theme={theme}>
+      <CssBaseline />
+      <html lang="en">
+        <body className={inter.className}>
+          {/* <TopLoader /> */}
+
           <Stack>
+            {/* Mobile & tablet screen navbar */}
+            <Sheet
+              sx={{
+                width: "100%",
+                py: 2,
+                px: 3,
+                boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                display: { xs: "flex", sm: "flex", md: "none" },
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <HealthAndSafetyIcon />
+                <Typography level="title-lg">Home Safety</Typography>
+              </Box>
+              <IconButton
+                variant="outlined"
+                color="neutral"
+                onClick={() => setOpen(true)}
+              >
+                <Menu />
+              </IconButton>
+            </Sheet>
+
+            {/* Mobile & tablet device screens drawer */}
             <Drawer open={open} onClose={() => setOpen(false)}>
               <Box
                 sx={{
@@ -264,8 +301,8 @@ export default function AdminLayout({
               </Box>
             </Box>
           </Stack>
-        </ThemeRegistry>
-      </body>
-    </html>
+        </body>
+      </html>
+    </CssVarsProvider>
   );
 }
