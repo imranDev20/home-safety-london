@@ -18,7 +18,7 @@ import {
   useTheme,
 } from "@mui/joy";
 import Sheet from "@mui/joy/Sheet";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Logout, Search } from "@mui/icons-material";
 import { ADMIN_OPTIONS } from "@/shared/constants";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
