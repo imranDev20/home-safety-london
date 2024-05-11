@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { ColorPaletteProp } from "@mui/joy/styles";
 import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
@@ -23,6 +23,7 @@ import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
+import { useMediaQuery } from "react-responsive";
 
 const rows = [
   {
@@ -203,143 +204,306 @@ function RowMenu() {
   );
 }
 
+// order table responsive breakPoint
+const Desktop = ({ children }: { children: ReactNode }) => {
+  const isDesktop = useMediaQuery({ minWidth: 900 });
+  return isDesktop ? children : null;
+};
+const Tablet = ({ children }: { children: ReactNode }) => {
+  const isTablet = useMediaQuery({ minWidth: 601, maxWidth: 899 });
+  return isTablet ? children : null;
+};
+const Mobile = ({ children }: { children: ReactNode }) => {
+  const isMobile = useMediaQuery({ maxWidth: 600 });
+  return isMobile ? children : null;
+};
+
 export default function CustomersTable() {
   const [order, setOrder] = React.useState<Order>("desc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
 
   return (
     <React.Fragment>
-      <Sheet
-        sx={{
-          display: { xs: "none", sm: "initial" },
-          width: "100%",
-          borderRadius: "sm",
-          flexShrink: 1,
-          overflow: "auto",
-          minHeight: 0,
-        }}
-      >
-        <Table
-          aria-labelledby="tableTitle"
-          variant="outlined"
-          stickyHeader
-          hoverRow
+      <Desktop>
+        <Sheet
           sx={{
-            "--TableCell-headBackground":
-              "var(--joy-palette-background-level1)",
-            "--Table-headerUnderlineThickness": "1px",
-            "--TableRow-hoverBackground":
-              "var(--joy-palette-background-level1)",
-            "--TableCell-paddingY": "4px",
-            "--TableCell-paddingX": "8px",
+            width: "100%",
+            borderRadius: "sm",
+            flexShrink: 1,
+            overflow: "auto",
+            minHeight: 0,
           }}
         >
-          <thead>
-            <tr>
-              <th
-                style={{ width: 40, textAlign: "center", padding: "12px 6px" }}
-              >
-                <Checkbox
-                  size="sm"
-                  indeterminate={
-                    selected.length > 0 && selected.length !== rows.length
-                  }
-                  checked={selected.length === rows.length}
-                  onChange={(event) => {
-                    setSelected(
-                      event.target.checked ? rows.map((row) => row.id) : []
-                    );
+          <Table
+            aria-labelledby="tableTitle"
+            variant="outlined"
+            stickyHeader
+            hoverRow
+            sx={{
+              "--TableCell-headBackground":
+                "var(--joy-palette-background-level1)",
+              "--Table-headerUnderlineThickness": "1px",
+              "--TableRow-hoverBackground":
+                "var(--joy-palette-background-level1)",
+              "--TableCell-paddingY": "4px",
+              "--TableCell-paddingX": "8px",
+            }}
+          >
+            <thead>
+              <tr>
+                <th
+                  style={{
+                    width: 40,
+                    textAlign: "center",
+                    padding: "12px 6px",
                   }}
-                  color={
-                    selected.length > 0 || selected.length === rows.length
-                      ? "primary"
-                      : undefined
-                  }
-                  sx={{ verticalAlign: "text-bottom" }}
-                />
-              </th>
-
-              <th style={{ width: 180, padding: "12px 6px" }}>CUSTOMER</th>
-              <th style={{ width: 150, padding: "12px 6px" }}>EMAIL</th>
-              <th style={{ width: 120, padding: "12px 6px" }}>PHONE</th>
-              <th style={{ width: 100, padding: "12px 6px" }}>ADDRESS</th>
-              <th style={{ width: 100, padding: "12px 6px" }}>JOINING DATE</th>
-              <th style={{ width: 100, padding: "12px 6px" }}>STATUS</th>
-              <th style={{ width: 100, padding: "12px 6px" }}>ACTION</th>
-            </tr>
-          </thead>
-          <tbody>
-            {stableSort(rows, getComparator(order, "id")).map((row) => (
-              <tr key={row.id}>
-                <td style={{ textAlign: "center", width: 120 }}>
+                >
                   <Checkbox
                     size="sm"
-                    checked={selected.includes(row.id)}
-                    color={selected.includes(row.id) ? "primary" : undefined}
+                    indeterminate={
+                      selected.length > 0 && selected.length !== rows.length
+                    }
+                    checked={selected.length === rows.length}
                     onChange={(event) => {
-                      setSelected((ids) =>
-                        event.target.checked
-                          ? ids.concat(row.id)
-                          : ids.filter((itemId) => itemId !== row.id)
+                      setSelected(
+                        event.target.checked ? rows.map((row) => row.id) : []
                       );
                     }}
-                    slotProps={{ checkbox: { sx: { textAlign: "left" } } }}
+                    color={
+                      selected.length > 0 || selected.length === rows.length
+                        ? "primary"
+                        : undefined
+                    }
                     sx={{ verticalAlign: "text-bottom" }}
                   />
-                </td>
-                <td>
-                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                    <Avatar size="sm">{row.customer.initial}</Avatar>
-                    <Typography level="body-xs">{row.customer.name}</Typography>
-                  </Box>
-                </td>
-                <td>
-                  <Typography level="body-xs">{row.customer.email}</Typography>
-                </td>
-                <td>
-                  <Typography level="body-xs">+123 456 7890</Typography>
-                </td>
+                </th>
 
-                <td>
-                  <Typography level="body-xs">London WC1N 3AX</Typography>
-                </td>
-                <td>
-                  <Typography level="body-xs">{row.date}</Typography>
-                </td>
-                <td>
-                  <Chip
-                    variant="soft"
-                    size="sm"
-                    startDecorator={
-                      {
-                        ACTIVE: <CheckRoundedIcon />,
-                        BLOCK: <BlockIcon />,
-                      }[row.status]
-                    }
-                    color={
-                      {
-                        ACTIVE: "success",
-                        BLOCK: "danger",
-                      }[row.status] as ColorPaletteProp
-                    }
-                  >
-                    {row.status}
-                  </Chip>
-                </td>
-
-                <td>
-                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Link level="body-xs" component="button">
-                      Download
-                    </Link>
-                    <RowMenu />
-                  </Box>
-                </td>
+                <th style={{ width: 180, padding: "12px 6px" }}>CUSTOMER</th>
+                <th style={{ width: 150, padding: "12px 6px" }}>EMAIL</th>
+                <th style={{ width: 120, padding: "12px 6px" }}>PHONE</th>
+                <th style={{ width: 100, padding: "12px 6px" }}>ADDRESS</th>
+                <th style={{ width: 100, padding: "12px 6px" }}>
+                  JOINING DATE
+                </th>
+                <th style={{ width: 100, padding: "12px 6px" }}>STATUS</th>
+                <th style={{ width: 100, padding: "12px 6px" }}>ACTION</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
-      </Sheet>
+            </thead>
+            <tbody>
+              {stableSort(rows, getComparator(order, "id")).map((row) => (
+                <tr key={row.id}>
+                  <td style={{ textAlign: "center", width: 120 }}>
+                    <Checkbox
+                      size="sm"
+                      checked={selected.includes(row.id)}
+                      color={selected.includes(row.id) ? "primary" : undefined}
+                      onChange={(event) => {
+                        setSelected((ids) =>
+                          event.target.checked
+                            ? ids.concat(row.id)
+                            : ids.filter((itemId) => itemId !== row.id)
+                        );
+                      }}
+                      slotProps={{ checkbox: { sx: { textAlign: "left" } } }}
+                      sx={{ verticalAlign: "text-bottom" }}
+                    />
+                  </td>
+                  <td>
+                    <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                      <Avatar size="sm">{row.customer.initial}</Avatar>
+                      <Typography level="body-xs">
+                        {row.customer.name}
+                      </Typography>
+                    </Box>
+                  </td>
+                  <td>
+                    <Typography level="body-xs">
+                      {row.customer.email}
+                    </Typography>
+                  </td>
+                  <td>
+                    <Typography level="body-xs">+123 456 7890</Typography>
+                  </td>
+
+                  <td>
+                    <Typography level="body-xs">London WC1N 3AX</Typography>
+                  </td>
+                  <td>
+                    <Typography level="body-xs">{row.date}</Typography>
+                  </td>
+                  <td>
+                    <Chip
+                      variant="soft"
+                      size="sm"
+                      startDecorator={
+                        {
+                          ACTIVE: <CheckRoundedIcon />,
+                          BLOCK: <BlockIcon />,
+                        }[row.status]
+                      }
+                      color={
+                        {
+                          ACTIVE: "success",
+                          BLOCK: "danger",
+                        }[row.status] as ColorPaletteProp
+                      }
+                    >
+                      {row.status}
+                    </Chip>
+                  </td>
+
+                  <td>
+                    <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                      <Link level="body-xs" component="button">
+                        Download
+                      </Link>
+                      <RowMenu />
+                    </Box>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Sheet>
+      </Desktop>
+
+      <Tablet>
+        {stableSort(rows, getComparator(order, "id")).map((row) => (
+          <Sheet
+            key={row.id}
+            sx={{
+              width: "100%",
+              mb: 2,
+              p: 2,
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Box>
+              <Box
+                sx={{ display: "flex", gap: 1, alignItems: "center", mb: 2 }}
+              >
+                <Avatar size="sm">{row.customer.initial}</Avatar>
+                <Typography level="h4" component="h4">
+                  {row.customer.name}
+                </Typography>
+              </Box>
+              <Typography level="body-md">Join : {row.date}</Typography>
+              <Typography level="body-md">
+                Email : {row.customer.email}
+              </Typography>
+
+              <Typography level="body-md">Phone : +123 456 7890</Typography>
+
+              <Typography level="body-md">Address : London WC1N 3AX</Typography>
+            </Box>
+
+            <Box>
+              <Chip
+                variant="soft"
+                size="sm"
+                startDecorator={
+                  {
+                    ACTIVE: <CheckRoundedIcon />,
+                    BLOCK: <BlockIcon />,
+                  }[row.status]
+                }
+                color={
+                  {
+                    ACTIVE: "success",
+                    BLOCK: "danger",
+                  }[row.status] as ColorPaletteProp
+                }
+              >
+                {row.status}
+              </Chip>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                  alignItems: "flex-start",
+                  mt: 2,
+                }}
+              >
+                <Link level="body-xs" component="button">
+                  Download
+                </Link>
+                <RowMenu />
+              </Box>
+            </Box>
+          </Sheet>
+        ))}
+      </Tablet>
+      <Mobile>
+        {stableSort(rows, getComparator(order, "id")).map((row) => (
+          <Sheet
+            key={row.id}
+            sx={{
+              width: "100%",
+              mb: 2,
+              p: 2,
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Box>
+              <Box
+                sx={{ display: "flex", gap: 1, alignItems: "center", mb: 2 }}
+              >
+                <Avatar size="sm">{row.customer.initial}</Avatar>
+                <Typography level="h4" component="h4">
+                  {row.customer.name}
+                </Typography>
+              </Box>
+              <Typography level="body-xs">{row.date}</Typography>
+              <Typography level="body-xs">{row.customer.email}</Typography>
+
+              <Typography level="body-xs">+123 456 7890</Typography>
+
+              <Typography level="body-xs">London WC1N 3AX</Typography>
+            </Box>
+
+            <Box>
+              <Chip
+                variant="soft"
+                size="sm"
+                startDecorator={
+                  {
+                    ACTIVE: <CheckRoundedIcon />,
+                    BLOCK: <BlockIcon />,
+                  }[row.status]
+                }
+                color={
+                  {
+                    ACTIVE: "success",
+                    BLOCK: "danger",
+                  }[row.status] as ColorPaletteProp
+                }
+              >
+                {row.status}
+              </Chip>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                  alignItems: "flex-start",
+                  mt: 2,
+                }}
+              >
+                <Link level="body-xs" component="button">
+                  Download
+                </Link>
+                <RowMenu />
+              </Box>
+            </Box>
+          </Sheet>
+        ))}
+      </Mobile>
+
       <Box
         className="Pagination-laptopUp"
         sx={{

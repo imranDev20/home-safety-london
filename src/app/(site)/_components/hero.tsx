@@ -54,7 +54,7 @@ export default function Hero() {
                     <Typography
                       sx={{
                         fontWeight: 800,
-                        fontSize: 50,
+                        fontSize: { xs: 30, sm: 35, md: 50 },
                         color: "white",
                         mb: 3,
                       }}
@@ -85,7 +85,7 @@ export default function Hero() {
                     <Typography
                       sx={{
                         color: "#d9d9d9",
-                        fontSize: 20,
+                        fontSize: { xs: 15, sm: 16, md: 20 },
                       }}
                     >
                       Welcome to Home Safety London, where we&apos;re dedicated
