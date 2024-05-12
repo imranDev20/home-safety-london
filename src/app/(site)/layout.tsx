@@ -4,7 +4,6 @@ import Header from "../_components/global/header";
 import Footer from "../_components/global/footer";
 import TopLoader from "../_components/common/top-loader";
 import { Suspense } from "react";
-import LocalizationWrapper from "./_components/localization-wrapper";
 import ThemeRegistry from "../_components/theme-registry";
 import QueryProvider from "../_components/query-provider";
 import { SnackbarProvider } from "../_components/snackbar-provider";
@@ -22,21 +21,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <LocalizationWrapper>
-      <html lang="en">
-        <body className={inter.className}>
-          <QueryProvider>
-            <ThemeRegistry options={{ key: "joy" }}>
-              <SnackbarProvider>
-                <TopLoader />
-                <Header />
-                <Suspense>{children}</Suspense>
-                <Footer />
-              </SnackbarProvider>
-            </ThemeRegistry>
-          </QueryProvider>
-        </body>
-      </html>
-    </LocalizationWrapper>
+    <html lang="en">
+      <body className={inter.className}>
+        <QueryProvider>
+          <ThemeRegistry options={{ key: "joy" }}>
+            <SnackbarProvider>
+              <TopLoader />
+              <Header />
+              <Suspense>{children}</Suspense>
+              <Footer />
+            </SnackbarProvider>
+          </ThemeRegistry>
+        </QueryProvider>
+      </body>
+    </html>
   );
 }
