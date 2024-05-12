@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const paymentIntent = await stripe.paymentIntents.create({
       currency: "gbp",
       amount: 12000,
-      payment_method_types: ["link", "card", "paypal", "revolut_pay"],
+      payment_method_types: ["card"],
       description: "Thanks for your purchase!",
     });
 

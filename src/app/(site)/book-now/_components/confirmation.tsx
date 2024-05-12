@@ -17,6 +17,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Payments from "./payments";
 
 export default function Confirmation() {
   const router = useRouter();
@@ -67,12 +68,13 @@ export default function Confirmation() {
     <>
       <Typography
         component="h3"
-        level="h4"
+        level="h3"
+        fontWeight="xl"
         sx={{
           mb: 3,
         }}
       >
-        Confirmation
+        Confirmation & Payment
       </Typography>
       <Typography
         component="h3"
@@ -147,28 +149,28 @@ export default function Confirmation() {
             Personal Details
           </Typography>
           <Typography component="p">
-            <Typography component="span" level="title-md">
+            <Typography component="span" level="title-sm">
               Name:{" "}
             </Typography>
-            <Typography component="span" level="body-md">
+            <Typography component="span" level="body-sm">
               {preOrderData?.customer_name}
             </Typography>
           </Typography>
 
           <Typography component="p">
-            <Typography component="span" level="title-md">
+            <Typography component="span" level="title-sm">
               Email:{" "}
             </Typography>
-            <Typography component="span" level="body-md">
+            <Typography component="span" level="body-sm">
               {preOrderData?.email}
             </Typography>
           </Typography>
 
           <Typography component="p">
-            <Typography component="span" level="title-md">
+            <Typography component="span" level="title-sm">
               Phone No:{" "}
             </Typography>
-            <Typography component="span" level="body-md">
+            <Typography component="span" level="body-sm">
               {preOrderData?.phone_no}
             </Typography>
           </Typography>
@@ -185,12 +187,12 @@ export default function Confirmation() {
             Address
           </Typography>
           <Typography component="p">
-            <Typography component="span" level="title-md">
+            <Typography component="span" level="title-sm">
               House No / Street Name:{" "}
             </Typography>
             <Typography
               component="span"
-              level="body-md"
+              level="body-sm"
               sx={{
                 textTransform: "capitalize",
               }}
@@ -200,12 +202,12 @@ export default function Confirmation() {
           </Typography>
 
           <Typography component="p">
-            <Typography component="span" level="title-md">
+            <Typography component="span" level="title-sm">
               Post Code:{" "}
             </Typography>
             <Typography
               component="span"
-              level="body-md"
+              level="body-sm"
               sx={{
                 textTransform: "capitalize",
               }}
@@ -215,10 +217,10 @@ export default function Confirmation() {
           </Typography>
 
           <Typography component="p">
-            <Typography component="span" level="title-md">
+            <Typography component="span" level="title-sm">
               City:{" "}
             </Typography>
-            <Typography component="span" level="body-md">
+            <Typography component="span" level="body-sm">
               {preOrderData?.address?.city}
             </Typography>
           </Typography>
@@ -235,12 +237,12 @@ export default function Confirmation() {
             Inspection Scheduled
           </Typography>
           <Typography component="p">
-            <Typography component="span" level="title-md">
+            <Typography component="span" level="title-sm">
               Date of Inspection:{" "}
             </Typography>
             <Typography
               component="span"
-              level="body-md"
+              level="body-sm"
               sx={{
                 textTransform: "capitalize",
               }}
@@ -250,12 +252,12 @@ export default function Confirmation() {
           </Typography>
 
           <Typography component="p">
-            <Typography component="span" level="title-md">
+            <Typography component="span" level="title-sm">
               Time of Day:{" "}
             </Typography>
             <Typography
               component="span"
-              level="body-md"
+              level="body-sm"
               sx={{
                 textTransform: "capitalize",
               }}
@@ -276,12 +278,12 @@ export default function Confirmation() {
             Additional Details
           </Typography>
           <Typography component="p">
-            <Typography component="span" level="title-md">
+            <Typography component="span" level="title-sm">
               Congestion Zone:{" "}
             </Typography>
             <Typography
               component="span"
-              level="body-md"
+              level="body-sm"
               sx={{
                 textTransform: "capitalize",
               }}
@@ -294,12 +296,12 @@ export default function Confirmation() {
           </Typography>
 
           <Typography component="p">
-            <Typography component="span" level="title-md">
+            <Typography component="span" level="title-sm">
               Parking Options:{" "}
             </Typography>
             <Typography
               component="span"
-              level="body-md"
+              level="body-sm"
               sx={{
                 textTransform: "capitalize",
               }}
@@ -309,6 +311,8 @@ export default function Confirmation() {
           </Typography>
         </Grid>
       </Grid>
+
+      <Payments />
 
       <Box
         sx={{

@@ -68,7 +68,6 @@ export default function BookNowPage() {
 
                 {activeStep === 2 ? <PersonalDetails /> : null}
                 {activeStep === 3 ? <Confirmation /> : null}
-                <Payments />
               </CardContent>
             </Card>
           </Grid>
