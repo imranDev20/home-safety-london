@@ -242,6 +242,8 @@ export default function Header() {
 
   const theme = useTheme();
 
+  const [open, setOpen] = React.useState(false);
+
   return (
     <Box
       component="header"
@@ -259,10 +261,16 @@ export default function Header() {
         <Container
           sx={{
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent: { xs: "flex-start", sm: "center", lg: "flex-end" },
           }}
         >
-          <Stack spacing={5} direction="row">
+          <Stack
+            sx={{
+              display: "flex",
+              gap: 4,
+              flexDirection: { xs: "column", sm: "row", md: "row" },
+            }}
+          >
             <Box
               sx={{
                 display: "flex",
@@ -336,16 +344,22 @@ export default function Header() {
       </Box>
 
       {/* Mobile & tablet screen navbar */}
-      <Container>
-        <Sheet
+      <Sheet
+        sx={{
+          width: "100%",
+          py: 2,
+          px: 3,
+          display: { xs: "flex", sm: "flex", md: "none" },
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
+        <Container
           sx={{
-            width: "100%",
-            py: 2,
-            px: 3,
-            display: { xs: "flex", sm: "flex", md: "none" },
+            display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            gap: 2,
           }}
         >
           <Box
@@ -358,23 +372,24 @@ export default function Header() {
             <HealthAndSafety />
             <Typography level="title-lg">Home Safety London</Typography>
           </Box>
-          {/* <IconButton
+          <IconButton
             variant="outlined"
             color="neutral"
             onClick={() => setOpen(true)}
           >
             <Menu />
-          </IconButton> */}
-        </Sheet>
-      </Container>
+          </IconButton>
+        </Container>
+      </Sheet>
 
       {/* Mobile & tablet screen drawer */}
-      {/* <Drawer open={open} onClose={() => setOpen(false)}>
+      <Drawer open={open} onClose={() => setOpen(false)}>
         <Box
           sx={{
             display: "flex",
-            py: 2,
+            p: 2,
             alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <Box>
@@ -383,17 +398,22 @@ export default function Header() {
           <ModalClose id="close-icon" sx={{ position: "initial" }} />
         </Box>
         <Divider />
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <List
             role="menubar"
-            orientation="horizontal"
+            orientation="vertical"
             sx={{
               "--List-radius": "8px",
               "--List-padding": "4px",
               "--List-gap": "8px",
               "--ListItem-gap": "0px",
               justifyContent: "flex-end",
-              mr: 4,
+              m: 2,
             }}
           >
             <ListItem role="none">
@@ -453,11 +473,18 @@ export default function Header() {
               </ListItemButton>
             </ListItem>
           </List>
-          <Button startDecorator={<Login />} component={Link} href="/login">
-            Login
-          </Button>
+          <Box sx={{ mx: 3 }}>
+            <Button
+              startDecorator={<Login />}
+              fullWidth
+              component={Link}
+              href="/login"
+            >
+              Login
+            </Button>
+          </Box>
         </Box>
-      </Drawer> */}
+      </Drawer>
 
       {/* large screen navbar */}
       <Container
