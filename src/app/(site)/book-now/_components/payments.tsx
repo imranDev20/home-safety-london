@@ -3,7 +3,7 @@ import PaymentDetails from "./payment-details";
 import { Elements } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   createQueryString,
   getPreOrderIdFromLocalStorage,
@@ -18,8 +18,6 @@ import { getPreOrderById } from "@/services/pre-order.services";
 export default function Payments() {
   const [stripePromise, setStripePromise] = useState<any>();
   const [clientSecret, setClientSecret] = useState("");
-  const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const activeStep = parseInt(searchParams.get("active_step") as string) || 1;
@@ -79,6 +77,26 @@ export default function Payments() {
     fetchClientSecret();
   }, [preOrderData]);
 
+  if (!stripePromise && !clientSecret) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          height: "50vh",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress
+          thickness={4}
+          sx={{ "--CircularProgress-size": "100px" }}
+        >
+          Loading
+        </CircularProgress>
+      </Box>
+    );
+  }
+
   return (
     <>
       {stripePromise && clientSecret && (
@@ -87,10 +105,9 @@ export default function Payments() {
           options={{
             clientSecret,
             loader: "always",
-
             appearance: {
               theme: "stripe",
-              labels: "floating",
+              labels: "above",
             },
           }}
         >

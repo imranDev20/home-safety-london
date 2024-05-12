@@ -10,6 +10,7 @@ import { useRouter, usePathname } from "next/navigation";
 import {
   createQueryString,
   getPreOrderIdFromLocalStorage,
+  snakeCaseToNormalText,
 } from "@/shared/functions";
 import { getPreOrderById } from "@/services/pre-order.services";
 import { PreOrder } from "@/app/api/_models/PreOrder";
@@ -17,7 +18,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 
 export default function PaymentDetails() {
-  const [status, setStatus] = useState<string>();
   const [loading, setLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
@@ -68,29 +68,38 @@ export default function PaymentDetails() {
       },
     });
 
+    console.log(response);
+
     setLoading(false);
 
     if (response.paymentIntent) {
       const status = response.paymentIntent.status;
 
-      router.push(
-        pathname +
-          "?" +
-          createQueryString("active_step", "5") +
-          "&" +
-          createQueryString("payment_intent", response.paymentIntent.id) +
-          "&" +
-          createQueryString(
-            "payment_intent_client_secret",
-            response.paymentIntent.client_secret as string
-          ) +
-          "&" +
-          createQueryString("redirect_status", status)
+      if (status === "succeeded") {
+        router.push(
+          pathname +
+            "?" +
+            createQueryString("active_step", "5") +
+            "&" +
+            createQueryString("payment_intent", response.paymentIntent.id) +
+            "&" +
+            createQueryString(
+              "payment_intent_client_secret",
+              response.paymentIntent.client_secret as string
+            ) +
+            "&" +
+            createQueryString("redirect_status", status)
+        );
+      }
+
+      enqueueSnackbar(
+        snakeCaseToNormalText(status),
+        status === "succeeded"
+          ? "success"
+          : status == "requires_action"
+          ? "warning"
+          : "error"
       );
-
-      enqueueSnackbar(status, status === "succeeded" ? "success" : "error");
-
-      // setStatus(response.paymentIntent.status);
     }
 
     // use this code if we ever need to show error as outcome
@@ -152,11 +161,9 @@ export default function PaymentDetails() {
           loading={loading}
           sx={{ mt: 4 }}
         >
-          Pay
+          Complete Payment
         </Button>
       </Box>
     </form>
   );
 }
-
-// http://localhost:3000/quote?payment_intent=pi_3OBcCZJZT84KLAtm0JExs2nR&payment_intent_client_secret=pi_3OBcCZJZT84KLAtm0JExs2nR_secret_4aIBn0NJlR0XPAPb9LDmABNWW&redirect_status=failed

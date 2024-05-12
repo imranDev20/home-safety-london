@@ -27,6 +27,7 @@ export default function Testimonial() {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   const REVIEW_ITEM = [
     {
       id: 1,

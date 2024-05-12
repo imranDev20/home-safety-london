@@ -30,16 +30,16 @@ export const theme = extendTheme({
           "900": "#004d40",
         },
         secondary: {
-          "50": "#fefce8",
-          "100": "#fef9c3",
-          "200": "#fef08a",
-          "300": "#fde047",
-          "400": "#facc15",
-          "500": "#eab308",
-          "600": "#ca8a04",
-          "700": "#a16207",
-          "800": "#854d0e",
-          "900": "#713f12",
+          "50": "#FFF2E6",
+          "100": "#FFE5CC",
+          "200": "#FFD8B3",
+          "300": "#FFCA99",
+          "400": "#FFBD80",
+          "500": "#EF8D3B",
+          "600": "#D17934",
+          "700": "#BB651E",
+          "800": "#A7520A",
+          "900": "#8D3A00",
 
           // Adjust the global variant tokens as you'd like.
           // The tokens should be the same for all color schemes.

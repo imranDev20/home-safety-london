@@ -35,6 +35,7 @@ import {
 import { CATEGORIES, SERVICES } from "@/shared/constants";
 import Link from "next/link";
 import { customSlugify } from "@/shared/functions";
+import { usePathname } from "next/navigation";
 
 type Options = {
   initialActiveIndex: null | number;
@@ -241,6 +242,7 @@ export default function Header() {
     useRovingIndex();
 
   const theme = useTheme();
+  const pathname = usePathname();
 
   return (
     <Box
@@ -270,12 +272,13 @@ export default function Header() {
               }}
             >
               <WhatsApp
-                // color="secondary"
                 sx={{
                   mr: 1,
                   fontWeight: 30,
+                  color: theme.colorSchemes.light.palette.secondary[500],
                 }}
               />
+
               <Typography
                 level="body-md"
                 sx={{
@@ -293,10 +296,10 @@ export default function Header() {
               }}
             >
               <Phone
-                // color="secondary"
                 sx={{
                   mr: 1,
                   fontWeight: 30,
+                  color: theme.colorSchemes.light.palette.secondary[500],
                 }}
               />
               <Typography
@@ -316,10 +319,10 @@ export default function Header() {
               }}
             >
               <Email
-                // color="secondary"
                 sx={{
                   mr: 1,
                   fontWeight: 30,
+                  color: theme.colorSchemes.light.palette.secondary[500],
                 }}
               />
               <Typography
@@ -493,11 +496,16 @@ export default function Header() {
               <ListItemButton
                 component={Link}
                 role="menuitem"
+                selected={pathname === "/"}
                 {...getTargetProps(0)}
                 href="/"
                 sx={{
                   textDecoration: "none",
                   fontWeight: 600,
+
+                  ".Mui-selected": {
+                    backgroundColor: "white",
+                  },
                 }}
               >
                 <ListItemDecorator>
