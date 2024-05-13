@@ -14,6 +14,7 @@ import CityGuilds from "@/images/partner-logos/city-guilds.svg";
 import ElmhurstEnergy from "@/images/partner-logos/elmhurst-energy.jpeg";
 import EalRecognised from "@/images/partner-logos/eal.png";
 import PartP from "@/images/partner-logos/part-p.png";
+import { useMediaQuery } from "react-responsive";
 
 const SPONSER_PARTNER = [
   {
@@ -59,6 +60,14 @@ const SPONSER_PARTNER = [
 ];
 
 export default function Partners() {
+  const isDesktop = useMediaQuery({
+    query: "(min-width: 900px)",
+  });
+
+  const isTabletOrMobile = useMediaQuery({
+    query: "(minWidth: 601,max-width: 899px)",
+  });
+  const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
   return (
     <Container sx={{ py: 8 }}>
       <Box
@@ -77,7 +86,7 @@ export default function Partners() {
         infinite
         isPlaying
         interval={5000}
-        visibleSlides={7}
+        visibleSlides={isDesktop ? 7 : isTabletOrMobile ? 4 : isMobile ? 2 : 0}
       >
         <Slider>
           {SPONSER_PARTNER.map((partner, index) => (
@@ -88,6 +97,7 @@ export default function Partners() {
                   justifyContent: "center",
                   alignItems: "center",
                   height: "100%",
+                  mx: "auto",
                   width:
                     partner.id === 4 ||
                     partner.id === 5 ||

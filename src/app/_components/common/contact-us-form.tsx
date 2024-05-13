@@ -73,7 +73,7 @@ export default function ContactUsForm() {
               justifyContent: "center",
             }}
           >
-            <Grid xs={7}>
+            <Grid xs={12} sm={10} md={7} sx={{ px: { xs: 4, sm: 4, md: 0 } }}>
               <Box>
                 <Grid container spacing={2}>
                   <Grid xs={12}>
