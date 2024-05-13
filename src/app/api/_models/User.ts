@@ -13,7 +13,7 @@ interface IUser {
   };
 }
 
-const userSchema: Schema = new mongoose.Schema<IUser>(
+const userSchema = new mongoose.Schema<IUser>(
   {
     name: {
       type: String,
