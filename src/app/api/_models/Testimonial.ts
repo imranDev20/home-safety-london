@@ -8,7 +8,7 @@ interface ITestimonial extends Document {
   user: mongoose.Types.ObjectId;
 }
 
-const testimonialSchema: Schema = new Schema<ITestimonial>(
+const testimonialSchema = new mongoose.Schema<ITestimonial>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },

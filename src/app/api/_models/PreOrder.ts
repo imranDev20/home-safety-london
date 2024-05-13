@@ -52,7 +52,7 @@ const orderItemSchema = new Schema<IOrderItem>({
     required: true,
   },
   quantity: {
-    type: Schema.Types.Mixed, // Allows both string and number
+    type: Schema.Types.Mixed,
     required: true,
   },
   unit: {
