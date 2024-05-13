@@ -19,7 +19,10 @@
     "@svgr/webpack": "^8.1.0",
     "@tanstack/react-query": "^5.29.0",
     "axios": "^1.6.8",
+    "bcrypt": "^5.1.1",
     "dayjs": "^1.11.10",
+    "express-rate-limit": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
     "lottie-react": "^2.4.0",
     "mongoose": "^8.2.2",
     "next": "14.1.0",
@@ -40,6 +43,8 @@
     "@mui/material": "npm:@mui/joy@latest"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

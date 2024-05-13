@@ -9,15 +9,21 @@ export async function GET(req: NextRequest, res: NextResponse) {
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
-    const user = await req.json();
 
-    await User.create(user);
-    const data = await User.find({}).exec();
+    const userData = await req.json();
+    const newUser = await User.create(userData);
 
-    return NextResponse.json({ name: data });
+    return NextResponse.json({
+      success: true,
+      message: "User created successfully",
+      data: newUser,
+    });
   } catch (error: any) {
     console.log(error);
-    return NextResponse.json({ message: error.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: error.message },
+      { status: 500 }
+    );
   }
 }
 

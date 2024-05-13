@@ -9,13 +9,10 @@ export async function PATCH(
   try {
     await dbConnect();
     const testimonialId = params.testimonial_id;
-
     const { updates, userId } = await req.json();
 
-    // Find the testimonial by ID
     const testimonial = await Testimonial.findById(testimonialId);
 
-    // Check if the testimonial exists and the user is authorized to update it
     if (!testimonial || testimonial.user.toString() !== userId) {
       return NextResponse.json(
         {
@@ -26,7 +23,6 @@ export async function PATCH(
       );
     }
 
-    // Update the testimonial
     const updatedTestimonial = await Testimonial.findByIdAndUpdate(
       testimonialId,
       updates,
