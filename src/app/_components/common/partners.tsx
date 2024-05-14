@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Container, Typography } from "@mui/joy";
 import { CarouselProvider, Slider, Slide } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
@@ -60,14 +60,35 @@ const SPONSER_PARTNER = [
 ];
 
 export default function Partners() {
-  const isDesktop = useMediaQuery({
-    query: "(min-width: 900px)",
-  });
+  // const isDesktop = useMediaQuery({
+  //   query: "(min-width: 900px)",
+  // });
 
-  const isTabletOrMobile = useMediaQuery({
-    query: "(minWidth: 601,max-width: 899px)",
-  });
-  const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
+  // const isTabletOrMobile = useMediaQuery({
+  //   query: "(minWidth: 601,max-width: 899px)",
+  // });
+  // const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
+
+  const [slidesToShow, setSlidesToShow] = useState(7);
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth <= 600) {
+        setSlidesToShow(2);
+      } else if (window.innerWidth <= 900) {
+        setSlidesToShow(3);
+      } else if (window.innerWidth <= 960) {
+        setSlidesToShow(4);
+      } else {
+        setSlidesToShow(7);
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   return (
     <Container sx={{ py: 8 }}>
       <Box
@@ -86,7 +107,7 @@ export default function Partners() {
         infinite
         isPlaying
         interval={5000}
-        visibleSlides={isDesktop ? 7 : isTabletOrMobile ? 4 : isMobile ? 2 : 0}
+        visibleSlides={slidesToShow}
       >
         <Slider>
           {SPONSER_PARTNER.map((partner, index) => (

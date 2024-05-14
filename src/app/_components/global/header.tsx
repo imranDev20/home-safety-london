@@ -12,14 +12,19 @@ import {
   Container,
   Divider,
   Drawer,
+  Dropdown,
   IconButton,
   Input,
   ListItemDecorator,
+  MenuButton,
+  MenuItem,
   ModalClose,
   Sheet,
   Stack,
   Typography,
+  Menu,
   useTheme,
+  selectClasses,
 } from "@mui/joy";
 
 import {
@@ -27,11 +32,11 @@ import {
   HealthAndSafety,
   HomeRounded,
   Login,
-  Menu,
   Person,
   Phone,
   WhatsApp,
 } from "@mui/icons-material";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { CATEGORIES, SERVICES } from "@/shared/constants";
 import Link from "next/link";
 import { customSlugify } from "@/shared/functions";
@@ -236,13 +241,24 @@ const ServicesMenu = React.forwardRef(
 
 ServicesMenu.displayName = "ServicesMenu";
 
+const isLogedIn = true;
+
 export default function Header() {
   const { targets, getTargetProps, setActiveIndex, focusNext, focusPrevious } =
     useRovingIndex();
 
   const theme = useTheme();
-
   const [open, setOpen] = React.useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = React.useState(null);
+
+  const handleMenuOpen = (event: any) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+  const menuOpen = Boolean(menuAnchorEl);
 
   return (
     <Box
@@ -573,9 +589,37 @@ export default function Header() {
               </ListItemButton>
             </ListItem>
           </List>
-          <Button startDecorator={<Login />} component={Link} href="/login">
-            Login
-          </Button>
+          {!isLogedIn ? (
+            <Button startDecorator={<Login />} component={Link} href="/login">
+              Login
+            </Button>
+          ) : (
+            <>
+              <Button
+                onClick={handleMenuOpen}
+                variant="plain"
+                endDecorator={
+                  <KeyboardArrowRight
+                    sx={{
+                      transform: menuOpen ? "rotate(-90deg)" : "rotate(90deg)",
+                      transition: "transform 0.3s ease",
+                    }}
+                  />
+                }
+              >
+                Kamal Hasan
+                {/* <Person /> */}
+              </Button>
+              <Menu
+                anchorEl={menuAnchorEl}
+                open={menuOpen}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+                <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+              </Menu>
+            </>
+          )}
         </Box>
       </Container>
     </Box>

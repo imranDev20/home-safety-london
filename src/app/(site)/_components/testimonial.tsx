@@ -1,15 +1,25 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Box, Card, CardContent, Container, Sheet, Typography } from "@mui/joy";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Sheet,
+  Typography,
+} from "@mui/joy";
 import { useTheme } from "@mui/joy/styles";
 import StarIcon from "@mui/icons-material/Star";
 import { CarouselProvider, Slider, Slide, DotGroup } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
+import TestimonialReview from "./testimonialReview";
 
 export default function Testimonial() {
   const theme = useTheme();
   const [slidesToShow, setSlidesToShow] = useState(3);
+  const [openModal, setOpenModal] = React.useState<boolean>(false);
 
   useEffect(() => {
     function handleResize() {
@@ -188,6 +198,7 @@ export default function Testimonial() {
               justifyContent: "center",
               alignItems: "center",
               mt: 2,
+              mb: 4,
             }}
           >
             <Box
@@ -227,6 +238,20 @@ export default function Testimonial() {
             </Box>
           </Box>
         </CarouselProvider>
+
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            sx={{ px: 6, py: 1, fontSize: 20 }}
+            variant="solid"
+            onClick={() => setOpenModal(true)}
+          >
+            Say Us
+          </Button>
+          <TestimonialReview
+            openModal={openModal}
+            setOpenModal={setOpenModal}
+          />
+        </Box>
       </Container>
     </Sheet>
   );
