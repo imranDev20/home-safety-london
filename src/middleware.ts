@@ -5,16 +5,16 @@ import { authMiddleware } from "./app/api/_middleware/auth";
 
 export async function middleware(req: NextRequest) {
   // Apply the rateLimitMiddleware first
-  const rateLimitResponse = await rateLimitMiddleware(req);
-  if (rateLimitResponse) {
-    return rateLimitResponse;
-  }
+  // const rateLimitResponse = await rateLimitMiddleware(req);
+  // if (rateLimitResponse) {
+  //   return rateLimitResponse;
+  // }
 
   // Apply the authMiddleware next
-  const authResponse = await authMiddleware(req);
-  if (authResponse) {
-    return authResponse;
-  }
+  // const authResponse = await authMiddleware(req);
+  // if (authResponse) {
+  //   return authResponse;
+  // }
 
   // If both middleware functions allow the request to proceed,
   // call the next middleware or route handler
