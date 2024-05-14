@@ -5,6 +5,11 @@ import Link from "next/link";
 import { customSlugify } from "@/shared/functions";
 
 export default function Service({ service }: any) {
+  const { description } = service;
+  const trimDeccription =
+    description.length > 150
+      ? `${description.slice(0, 120)}.....`
+      : description;
   return (
     <Box sx={{ mb: 2 }}>
       <Image
@@ -14,14 +19,31 @@ export default function Service({ service }: any) {
         style={{ width: "100%", height: "100%", borderRadius: 5 }}
       />
 
-      <Card variant="outlined" sx={{ mt: -10, ml: 5, p: 3 }}>
+      <Card
+        variant="outlined"
+        sx={{
+          mt: -10,
+          ml: 5,
+          p: 3,
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
         <service.Icon sx={{ fontSize: 50 }} color="primary" />
-        <Box>
+        <Box sx={{ height: "100%" }}>
           <Typography level="h3" component="h3">
             {service.title}
           </Typography>
-          <Typography color="neutral" sx={{ my: 2 }}>
-            {service.description}
+          <Typography
+            color="neutral"
+            sx={{
+              my: 2,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {trimDeccription}
           </Typography>
         </Box>
 

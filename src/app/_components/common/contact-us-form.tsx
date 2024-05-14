@@ -80,7 +80,7 @@ export default function ContactUsForm() {
                     <Controller
                       name="firstname"
                       rules={{
-                        required: "please enter your name",
+                        required: "Please enter your name",
                       }}
                       control={control}
                       render={({ field }) => (
@@ -107,7 +107,7 @@ export default function ContactUsForm() {
                     <Controller
                       name="email"
                       rules={{
-                        required: "please enter your email",
+                        required: "Please enter your email",
                         pattern: {
                           value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
                           message: "provide a valid email",
@@ -139,7 +139,7 @@ export default function ContactUsForm() {
                       name="phone"
                       control={control}
                       rules={{
-                        required: "please enter your phone number",
+                        required: "Please enter your phone number",
                         validate: (value: string) => {
                           const valid = isValidPhoneNumber(value);
 
@@ -171,7 +171,7 @@ export default function ContactUsForm() {
                     <Controller
                       name="message"
                       rules={{
-                        required: "message is required",
+                        required: "Message is required",
                       }}
                       control={control}
                       render={({ field }) => (
