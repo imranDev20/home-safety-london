@@ -2,6 +2,7 @@ import dbConnect from "@/app/api/_lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 import PreOrder from "../../_models/PreOrder";
 import mongoose from "mongoose";
+import { formatResponse } from "@/shared/functions";
 
 export async function PUT(
   req: NextRequest,
@@ -27,11 +28,7 @@ export async function PUT(
     );
 
     return NextResponse.json(
-      {
-        status: "success",
-        message: "Order progress updated",
-        data: data,
-      },
+      formatResponse(true, data, "Order progress updated"),
       {
         headers: {
           "Set-Cookie": `order_id=${orderId}; sameSite=strict; httpOnly=true; maxAge=60*1*1`,
@@ -39,8 +36,9 @@ export async function PUT(
       }
     );
   } catch (error: any) {
-    console.log(error);
-    return NextResponse.json({ message: error.message }, { status: 500 });
+    return NextResponse.json(formatResponse(false, error.message), {
+      status: 500,
+    });
   }
 }
 

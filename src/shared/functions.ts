@@ -1,5 +1,6 @@
 import slugify from "react-slugify";
 import dayjs from "dayjs";
+import { Pagination } from "@/types/misc";
 
 export function snakeCaseToNormalText(snakeCaseString: string) {
   return snakeCaseString?.replace(/_/g, " ")?.toLowerCase();
@@ -102,3 +103,17 @@ export function toSnakeCase(str: string) {
     .replace(/[^a-zA-Z0-9_]/g, "") // Remove special characters
     .toLowerCase(); // Convert to lowercase
 }
+
+export const formatResponse = (
+  success: boolean,
+  data: any[] | null = null,
+  message: string = "",
+  pagination?: Pagination
+) => {
+  return {
+    success,
+    ...(data ? { data } : {}),
+    message,
+    ...(pagination && { pagination }),
+  };
+};

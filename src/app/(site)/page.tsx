@@ -7,7 +7,7 @@ import About from "./_components/about";
 import SubServices from "./_components/sub-services";
 import Partners from "../_components/common/partners";
 import ContactUsForm from "../_components/common/contact-us-form";
-import Testimonial from "../_components/common/testimonial";
+import Testimonial from "./_components/testimonial";
 
 export default function Home() {
   return (

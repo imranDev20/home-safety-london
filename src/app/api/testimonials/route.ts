@@ -1,24 +1,27 @@
 import dbConnect from "@/app/api/_lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 import Testimonial from "../_models/Testimonial";
+import { formatResponse } from "@/shared/functions";
 
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
-
     const userId = req.nextUrl.searchParams.get("userId");
     const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
     const limit = 10; // Number of testimonials per page
     const skip = (page - 1) * limit; // Number of testimonials to skip
-
     let testimonials;
 
     if (userId) {
       testimonials = await Testimonial.find({ user: userId })
+        .sort({ createdAt: -1 }) // Sort by createdAt in descending order
         .skip(skip)
         .limit(limit);
     } else {
-      testimonials = await Testimonial.find().skip(skip).limit(limit);
+      testimonials = await Testimonial.find()
+        .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+        .skip(skip)
+        .limit(limit);
     }
 
     const totalCount = await Testimonial.countDocuments(
@@ -26,33 +29,28 @@ export async function GET(req: NextRequest) {
     );
     const totalPages = Math.ceil(totalCount / limit);
 
-    return NextResponse.json({
-      success: true,
-      data: testimonials,
-      message: "Testimonials fetched successfully",
-      pagination: {
+    return NextResponse.json(
+      formatResponse(true, testimonials, "Testimonials fetched successfully", {
         currentPage: page,
         totalPages,
         totalCount,
-      },
-    });
+      })
+    );
   } catch (error: any) {
     console.log(error);
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json(formatResponse(false, null, error.message), {
+      status: 500,
+    });
   }
 }
-
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
-    const { name, email, user, rating, content } = await req.json();
+    const { name, subject, user, rating, content } = await req.json();
 
     const newTestimonial = new Testimonial({
       name,
-      email,
+      subject,
       user,
       rating,
       content,
@@ -60,10 +58,9 @@ export async function POST(req: NextRequest) {
 
     const savedTestimonial = await newTestimonial.save();
 
-    return NextResponse.json({
-      success: true,
-      data: savedTestimonial,
-    });
+    return NextResponse.json(
+      formatResponse(true, savedTestimonial, "Testimonial created successfully")
+    );
   } catch (error: any) {
     console.log(error);
     return NextResponse.json(
