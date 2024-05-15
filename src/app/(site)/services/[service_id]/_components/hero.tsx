@@ -50,10 +50,10 @@ export default function ServiceHero() {
         >
           <Container sx={{ my: 10, position: "relative" }}>
             <Grid container spacing={5}>
-              <Grid xs={8} sx={{ my: "auto" }}>
+              <Grid xs={12} sm={12} md={8} sx={{ my: "auto" }}>
                 <Box>
                   <Grid container spacing={4}>
-                    <Grid xs={4}>
+                    <Grid xs={12} sm={4} md={4}>
                       <Card
                         variant="outlined"
                         sx={{ height: "100%", textAlign: "center" }}
@@ -70,7 +70,7 @@ export default function ServiceHero() {
                         </Typography>
                       </Card>
                     </Grid>
-                    <Grid xs={8}>
+                    <Grid xs={12} sm={8} md={8}>
                       <Box>
                         <Typography
                           level="h2"
@@ -98,7 +98,7 @@ export default function ServiceHero() {
                   </Grid>
                 </Box>
               </Grid>
-              <Grid xs={4}>
+              <Grid xs={12} sm={12} md={4}>
                 <BookNow />
               </Grid>
             </Grid>
