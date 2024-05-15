@@ -1,6 +1,6 @@
 import { Pagination } from "./misc";
 
-type Testimonial = {
+export type Testimonial = {
   name: string;
   rating: number;
   content: string;

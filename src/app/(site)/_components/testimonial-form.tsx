@@ -1,100 +1,86 @@
-import React from "react";
-import { Transition } from "react-transition-group";
+import React, { Dispatch, SetStateAction } from "react";
+// import { Transition } from "react-transition-group";
 import Button from "@mui/joy/Button";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import DialogTitle from "@mui/joy/DialogTitle";
-import { Controller, useForm } from "react-hook-form";
-import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import {
   Box,
   DialogContent,
   FormControl,
   FormLabel,
-  Grid,
-  IconButton,
   Input,
   ModalClose,
-  Option,
-  Select,
   Stack,
   Textarea,
-  Typography,
-  selectClasses,
 } from "@mui/joy";
 import HookFormError from "@/app/_components/common/hook-form-error";
-import { Close } from "@mui/icons-material";
 import StarRating from "@/app/_components/common/star-rating";
-
-const reviewServices = [
-  {
-    id: 1,
-    name: "Energy Certificate (EPC)",
-  },
-  {
-    id: 2,
-    name: "EICR",
-  },
-  {
-    id: 3,
-    name: "Gas Certificate & Repair",
-  },
-  {
-    id: 4,
-    name: "Boiler Service & Repair",
-  },
-
-  {
-    id: 5,
-    name: "PAT Testing",
-  },
-  {
-    id: 6,
-    name: "Fire Risk Assessment",
-  },
-  {
-    id: 7,
-    name: "Fire Alarm Certificate",
-  },
-  {
-    id: 8,
-    name: "Fuse Box Installation",
-  },
-  {
-    id: 9,
-    name: "Electrical Repairs",
-  },
-  {
-    id: 10,
-    name: "Fire Alarm Installation",
-  },
-];
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Testimonial } from "@/types/testimonial";
+import { createTestimonial } from "@/services/testimonial.services";
+import { useSnackbar } from "@/app/_components/snackbar-provider";
 
 type TestimonialInput = {
   name: string;
   subject: string;
   rating: number;
-  description: string;
+  content: string;
 };
 
-export default function TestimonialForm({ openModal, setOpenModal }: any) {
+export default function TestimonialForm({
+  openModal,
+  setOpenModal,
+}: {
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<boolean>>;
+}) {
   const {
-    register,
     handleSubmit,
     formState: { errors },
-    reset,
-    getValues,
     control,
   } = useForm<TestimonialInput>({
     defaultValues: {
       name: "",
       subject: "",
       rating: 5,
-      description: "",
+      content: "",
     },
   });
-  const onSubmit = (data: any) => console.log(data);
+  const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
+
+  const {
+    mutateAsync: createTestimonialMutate,
+    isPending: isCreateTestimonialLoading,
+  } = useMutation({
+    mutationFn: async (testimonialData: Testimonial) => {
+      const response = await createTestimonial(testimonialData);
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["testimonials"] });
+    },
+  });
+
+  const onSubmit: SubmitHandler<TestimonialInput> = async (data) => {
+    try {
+      const response = await createTestimonialMutate(data);
+
+      console.log(response);
+
+      if (response?.success) {
+        setOpenModal(false);
+        enqueueSnackbar(response.message, "success");
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error: any) {
+      enqueueSnackbar(error.message, "error");
+    }
+  };
 
   return (
     <React.Fragment>
@@ -185,13 +171,13 @@ export default function TestimonialForm({ openModal, setOpenModal }: any) {
               />
 
               <Controller
-                name="description"
+                name="content"
                 rules={{
                   required: "Description is required",
                 }}
                 control={control}
                 render={({ field }) => (
-                  <FormControl error={!!errors.description}>
+                  <FormControl error={!!errors.content}>
                     <FormLabel>Description</FormLabel>
                     <Textarea
                       {...field}
@@ -199,12 +185,14 @@ export default function TestimonialForm({ openModal, setOpenModal }: any) {
                       variant="outlined"
                       placeholder="Your experience in details..."
                     />
-                    <HookFormError name="description" errors={errors} />
+                    <HookFormError name="content" errors={errors} />
                   </FormControl>
                 )}
               />
 
-              <Button type="submit">Submit</Button>
+              <Button loading={isCreateTestimonialLoading} type="submit">
+                Submit
+              </Button>
             </Stack>
           </form>
         </ModalDialog>
