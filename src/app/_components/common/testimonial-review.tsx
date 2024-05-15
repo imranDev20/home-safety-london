@@ -4,20 +4,23 @@ import Button from "@mui/joy/Button";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import DialogTitle from "@mui/joy/DialogTitle";
-import DialogContent from "@mui/joy/DialogContent";
 import { Controller, useForm } from "react-hook-form";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import Rating from "@mui/material/Rating";
 import {
   Box,
   FormControl,
   Grid,
+  IconButton,
   Input,
   Option,
   Select,
   Textarea,
+  Typography,
   selectClasses,
 } from "@mui/joy";
 import HookFormError from "@/app/_components/common/hook-form-error";
+import { Close } from "@mui/icons-material";
 
 const reviewServices = [
   {
@@ -101,6 +104,8 @@ export default function TestimonialReview({ openModal, setOpenModal }: any) {
             <ModalDialog
               sx={{
                 opacity: 0,
+
+                pb: 4,
                 transition: `opacity 300ms`,
                 ...{
                   entering: { opacity: 1 },
@@ -108,7 +113,16 @@ export default function TestimonialReview({ openModal, setOpenModal }: any) {
                 }[state],
               }}
             >
-              <DialogTitle>Say About Us!</DialogTitle>
+              <DialogTitle
+                sx={{ display: "flex", justifyContent: "center", pb: 3 }}
+              >
+                Say About Us!
+              </DialogTitle>
+              <Box sx={{ position: "absolute", mt: 0, right: 20 }}>
+                <IconButton onClick={() => setOpenModal(false)}>
+                  <Close />
+                </IconButton>
+              </Box>
 
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid
@@ -119,12 +133,7 @@ export default function TestimonialReview({ openModal, setOpenModal }: any) {
                     justifyContent: "center",
                   }}
                 >
-                  <Grid
-                    xs={12}
-                    sm={10}
-                    md={10}
-                    sx={{ px: { xs: 2, sm: 2, md: 0 } }}
-                  >
+                  <Grid xs={12} sm={12} md={10}>
                     <Box>
                       <Grid container spacing={2}>
                         <Grid xs={12} sm={12} md={6}>
@@ -157,7 +166,52 @@ export default function TestimonialReview({ openModal, setOpenModal }: any) {
                             )}
                           />
                         </Grid>
+
                         <Grid xs={12} sm={12} md={6}>
+                          <Controller
+                            name="email"
+                            rules={{
+                              required: "Please enter your email",
+                              pattern: {
+                                value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
+                                message: "provide a valid email",
+                              },
+                            }}
+                            control={control}
+                            render={({ field }) => (
+                              <FormControl
+                                error={!!errors.email}
+                                sx={{
+                                  mb: 1,
+                                }}
+                              >
+                                <Input
+                                  {...field}
+                                  placeholder="Your Email Address"
+                                  type="email"
+                                  fullWidth
+                                  variant="soft"
+                                  size="lg"
+                                />
+                                <HookFormError name="email" errors={errors} />
+                              </FormControl>
+                            )}
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={12} md={6}>
+                          <Typography component="legend">
+                            Rating Here
+                          </Typography>
+                          {/* <Rating
+                            name="simple-controlled"
+                            value={value}
+                            onChange={(event, newValue) => {
+                              setValue(newValue);
+                            }}
+                          /> */}
+                        </Grid>
+
+                        <Grid xs={12} sm={12} md={12}>
                           <Controller
                             name="service"
                             rules={{
