@@ -1,11 +1,9 @@
-import React, { ReactNode } from "react";
-import { ColorPaletteProp } from "@mui/joy/styles";
+"use client";
+import React, { useState } from "react";
 import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import Chip from "@mui/joy/Chip";
-import Divider from "@mui/joy/Divider";
-import Link from "@mui/joy/Link";
+
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import Checkbox from "@mui/joy/Checkbox";
@@ -15,138 +13,23 @@ import Menu from "@mui/joy/Menu";
 import MenuButton from "@mui/joy/MenuButton";
 import MenuItem from "@mui/joy/MenuItem";
 import Dropdown from "@mui/joy/Dropdown";
-
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import BlockIcon from "@mui/icons-material/Block";
-import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import { useMediaQuery } from "react-responsive";
+import { useRouter } from "next/navigation";
+import { FIXED_HEIGHT } from "@/shared/constants";
+import { useQuery } from "@tanstack/react-query";
+import { getUsers } from "@/services/user.services";
+import dayjs from "dayjs";
+import { Pagination } from "@/types/misc";
+import { User } from "@/types/user";
+import FormDrawer from "@/app/_components/common/form-drawer";
 
-const rows = [
-  {
-    id: "INV-1234",
-    date: "Feb 3, 2023",
-    status: "ACTIVE",
-    customer: {
-      initial: "O",
-      name: "Olivia Ryhe",
-      email: "olivia@email.com",
-    },
-  },
-  {
-    id: "INV-1233",
-    date: "Feb 3, 2023",
-    status: "ACTIVE",
-    customer: {
-      initial: "S",
-      name: "Steve Hampton",
-      email: "steve.hamp@email.com",
-    },
-  },
-  {
-    id: "INV-1232",
-    date: "Feb 3, 2023",
-    status: "ACTIVE",
-    customer: {
-      initial: "C",
-      name: "Ciaran Murray",
-      email: "ciaran.murray@email.com",
-    },
-  },
-  {
-    id: "INV-1231",
-    date: "Feb 3, 2023",
-    status: "BLOCK",
-    customer: {
-      initial: "M",
-      name: "Maria Macdonald",
-      email: "maria.mc@email.com",
-    },
-  },
-  {
-    id: "INV-1230",
-    date: "Feb 3, 2023",
-    status: "ACTIVE",
-    customer: {
-      initial: "C",
-      name: "Charles Fulton",
-      email: "fulton@email.com",
-    },
-  },
-  {
-    id: "INV-1229",
-    date: "Feb 3, 2023",
-    status: "BLOCK",
-    customer: {
-      initial: "J",
-      name: "Jay Hooper",
-      email: "hooper@email.com",
-    },
-  },
-  {
-    id: "INV-1228",
-    date: "Feb 3, 2023",
-    status: "ACTIVE",
-    customer: {
-      initial: "K",
-      name: "Krystal Stevens",
-      email: "k.stevens@email.com",
-    },
-  },
-  {
-    id: "INV-1227",
-    date: "Feb 3, 2023",
-    status: "BLOCK",
-    customer: {
-      initial: "S",
-      name: "Sachin Flynn",
-      email: "s.flyn@email.com",
-    },
-  },
-  {
-    id: "INV-1226",
-    date: "Feb 3, 2023",
-    status: "ACTIVE",
-    customer: {
-      initial: "B",
-      name: "Bradley Rosales",
-      email: "brad123@email.com",
-    },
-  },
-  {
-    id: "INV-1225",
-    date: "Feb 3, 2023",
-    status: "BLOCK",
-    customer: {
-      initial: "O",
-      name: "Olivia Ryhe",
-      email: "olivia@email.com",
-    },
-  },
-  {
-    id: "INV-1224",
-    date: "Feb 3, 2023",
-    status: "ACTIVE",
-    customer: {
-      initial: "S",
-      name: "Steve Hampton",
-      email: "steve.hamp@email.com",
-    },
-  },
-  {
-    id: "INV-1223",
-    date: "Feb 3, 2023",
-    status: "ACTIVE",
-    customer: {
-      initial: "C",
-      name: "Ciaran Murray",
-      email: "ciaran.murray@email.com",
-    },
-  },
-];
+type CustomersResponse = {
+  users: Partial<User>[];
+  message: string;
+  pagination: Pagination;
+};
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -205,103 +88,151 @@ function RowMenu() {
 }
 
 // order table responsive breakPoint
-const Desktop = ({ children }: { children: ReactNode }) => {
-  const isDesktop = useMediaQuery({ minWidth: 900 });
-  return isDesktop ? children : null;
-};
-const Tablet = ({ children }: { children: ReactNode }) => {
-  const isTablet = useMediaQuery({ minWidth: 601, maxWidth: 899 });
-  return isTablet ? children : null;
-};
-const Mobile = ({ children }: { children: ReactNode }) => {
-  const isMobile = useMediaQuery({ maxWidth: 600 });
-  return isMobile ? children : null;
-};
+// const Desktop = ({ children }: { children: ReactNode }) => {
+//   const isDesktop = useMediaQuery({ minWidth: 900 });
+//   return isDesktop ? children : null;
+// };
+// const Tablet = ({ children }: { children: ReactNode }) => {
+//   const isTablet = useMediaQuery({ minWidth: 601, maxWidth: 899 });
+//   return isTablet ? children : null;
+// };
+// const Mobile = ({ children }: { children: ReactNode }) => {
+//   const isMobile = useMediaQuery({ maxWidth: 600 });
+//   return isMobile ? children : null;
+// };
 
 export default function CustomersTable() {
   const [order, setOrder] = React.useState<Order>("desc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const router = useRouter();
+
+  const { data: usersData, isLoading: isGetUsersDataLoading } =
+    useQuery<CustomersResponse>({
+      queryKey: ["users"],
+      queryFn: async () => {
+        const { data, message, pagination } = await getUsers();
+
+        const users = data?.map((user: any) => ({
+          _id: user._id,
+          createdAt: dayjs(user.createdAt).format("DD-MM-YYYY"),
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          // address: user.
+        }));
+
+        return {
+          users,
+          message,
+          pagination,
+        };
+      },
+    });
+
+  // console.log(usersData);
+
+  if (isGetUsersDataLoading) {
+    return "loading...";
+  }
 
   return (
     <React.Fragment>
-      <Desktop>
-        <Sheet
+      <Sheet
+        variant="outlined"
+        sx={{
+          width: "100%",
+          borderRadius: "sm",
+          flexShrink: 1,
+          overflow: "auto",
+          minHeight: `calc(100vh - ${FIXED_HEIGHT}px)`,
+          height: `calc(100vh - ${FIXED_HEIGHT}px)`,
+        }}
+      >
+        <Table
+          aria-labelledby="tableTitle"
+          stickyHeader
+          hoverRow
           sx={{
-            width: "100%",
-            borderRadius: "sm",
-            flexShrink: 1,
-            overflow: "auto",
-            minHeight: 0,
+            "--TableCell-headBackground":
+              "var(--joy-palette-background-level1)",
+            "--Table-headerUnderlineThickness": "1px",
+            "--TableRow-hoverBackground":
+              "var(--joy-palette-background-level1)",
+            "--TableCell-paddingY": "4px",
+            "--TableCell-paddingX": "8px",
           }}
         >
-          <Table
-            aria-labelledby="tableTitle"
-            variant="outlined"
-            stickyHeader
-            hoverRow
-            sx={{
-              "--TableCell-headBackground":
-                "var(--joy-palette-background-level1)",
-              "--Table-headerUnderlineThickness": "1px",
-              "--TableRow-hoverBackground":
-                "var(--joy-palette-background-level1)",
-              "--TableCell-paddingY": "4px",
-              "--TableCell-paddingX": "8px",
-            }}
-          >
-            <thead>
-              <tr>
-                <th
+          <thead>
+            <tr>
+              <th
+                style={{
+                  width: 40,
+                  textAlign: "center",
+                  padding: "12px 6px",
+                }}
+              >
+                <Checkbox
+                  size="sm"
+                  indeterminate={
+                    selected.length > 0 &&
+                    selected.length !== usersData?.users.length
+                  }
+                  checked={selected.length === usersData?.users.length}
+                  onChange={(event) => {
+                    setSelected(
+                      event.target.checked
+                        ? (usersData?.users.map((row) => row._id) as string[])
+                        : []
+                    );
+                  }}
+                  color={
+                    selected.length > 0 ||
+                    selected.length === usersData?.users.length
+                      ? "primary"
+                      : undefined
+                  }
+                  sx={{ verticalAlign: "text-bottom" }}
+                />
+              </th>
+
+              <th style={{ width: 180, padding: "12px 6px" }}>CUSTOMER</th>
+              <th style={{ width: 150, padding: "12px 6px" }}>EMAIL</th>
+              <th style={{ width: 120, padding: "12px 6px" }}>PHONE</th>
+              <th style={{ width: 110, padding: "12px 6px" }}>ADDRESS</th>
+              <th style={{ width: 90, padding: "12px 6px" }}>JOINING DATE</th>
+              <th style={{ width: 50, padding: "12px 6px" }}>ACTION</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stableSort(usersData?.users, getComparator(order, "id")).map(
+              (row) => (
+                <tr
+                  key={row._id}
+                  onClick={() => router.push(`/admin/customers/${row._id}`)}
                   style={{
-                    width: 40,
-                    textAlign: "center",
-                    padding: "12px 6px",
+                    cursor: "pointer",
                   }}
                 >
-                  <Checkbox
-                    size="sm"
-                    indeterminate={
-                      selected.length > 0 && selected.length !== rows.length
-                    }
-                    checked={selected.length === rows.length}
-                    onChange={(event) => {
-                      setSelected(
-                        event.target.checked ? rows.map((row) => row.id) : []
-                      );
-                    }}
-                    color={
-                      selected.length > 0 || selected.length === rows.length
-                        ? "primary"
-                        : undefined
-                    }
-                    sx={{ verticalAlign: "text-bottom" }}
-                  />
-                </th>
-
-                <th style={{ width: 180, padding: "12px 6px" }}>CUSTOMER</th>
-                <th style={{ width: 150, padding: "12px 6px" }}>EMAIL</th>
-                <th style={{ width: 120, padding: "12px 6px" }}>PHONE</th>
-                <th style={{ width: 100, padding: "12px 6px" }}>ADDRESS</th>
-                <th style={{ width: 100, padding: "12px 6px" }}>
-                  JOINING DATE
-                </th>
-                <th style={{ width: 100, padding: "12px 6px" }}>STATUS</th>
-                <th style={{ width: 100, padding: "12px 6px" }}>ACTION</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stableSort(rows, getComparator(order, "id")).map((row) => (
-                <tr key={row.id}>
-                  <td style={{ textAlign: "center", width: 120 }}>
+                  <td
+                    style={{ textAlign: "center", width: 120 }}
+                    onClick={(event) => event.stopPropagation()}
+                  >
                     <Checkbox
                       size="sm"
-                      checked={selected.includes(row.id)}
-                      color={selected.includes(row.id) ? "primary" : undefined}
+                      checked={selected.includes(row._id as string)}
+                      color={
+                        selected.includes(row._id as string)
+                          ? "primary"
+                          : undefined
+                      }
+                      onClick={(event) => event.stopPropagation()}
                       onChange={(event) => {
+                        event.stopPropagation();
+
                         setSelected((ids) =>
                           event.target.checked
-                            ? ids.concat(row.id)
-                            : ids.filter((itemId) => itemId !== row.id)
+                            ? ids.concat(row._id as string)
+                            : ids.filter((itemId) => itemId !== row._id)
                         );
                       }}
                       slotProps={{ checkbox: { sx: { textAlign: "left" } } }}
@@ -310,202 +241,40 @@ export default function CustomersTable() {
                   </td>
                   <td>
                     <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                      <Avatar size="sm">{row.customer.initial}</Avatar>
-                      <Typography level="body-xs">
-                        {row.customer.name}
-                      </Typography>
+                      <Avatar size="sm" variant="outlined">
+                        {row.name?.charAt(0)}
+                      </Avatar>
+                      <Typography level="body-xs">{row.name}</Typography>
                     </Box>
                   </td>
                   <td>
-                    <Typography level="body-xs">
-                      {row.customer.email}
-                    </Typography>
+                    <Typography level="body-xs">{row.email}</Typography>
                   </td>
                   <td>
-                    <Typography level="body-xs">+123 456 7890</Typography>
+                    <Typography level="body-xs">{row.phone}</Typography>
                   </td>
 
                   <td>
                     <Typography level="body-xs">London WC1N 3AX</Typography>
                   </td>
                   <td>
-                    <Typography level="body-xs">{row.date}</Typography>
-                  </td>
-                  <td>
-                    <Chip
-                      variant="soft"
-                      size="sm"
-                      startDecorator={
-                        {
-                          ACTIVE: <CheckRoundedIcon />,
-                          BLOCK: <BlockIcon />,
-                        }[row.status]
-                      }
-                      color={
-                        {
-                          ACTIVE: "success",
-                          BLOCK: "danger",
-                        }[row.status] as ColorPaletteProp
-                      }
-                    >
-                      {row.status}
-                    </Chip>
+                    <Typography level="body-xs">{row.createdAt}</Typography>
                   </td>
 
-                  <td>
-                    <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                      <Link level="body-xs" component="button">
-                        Download
-                      </Link>
-                      <RowMenu />
-                    </Box>
+                  <td
+                    style={{ textAlign: "center", width: 120 }}
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    <RowMenu />
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Sheet>
-      </Desktop>
-
-      <Tablet>
-        {stableSort(rows, getComparator(order, "id")).map((row) => (
-          <Sheet
-            key={row.id}
-            sx={{
-              width: "100%",
-              mb: 2,
-              p: 2,
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <Box>
-              <Box
-                sx={{ display: "flex", gap: 1, alignItems: "center", mb: 2 }}
-              >
-                <Avatar size="sm">{row.customer.initial}</Avatar>
-                <Typography level="h4" component="h4">
-                  {row.customer.name}
-                </Typography>
-              </Box>
-              <Typography level="body-md">Join : {row.date}</Typography>
-              <Typography level="body-md">
-                Email : {row.customer.email}
-              </Typography>
-
-              <Typography level="body-md">Phone : +123 456 7890</Typography>
-
-              <Typography level="body-md">Address : London WC1N 3AX</Typography>
-            </Box>
-
-            <Box>
-              <Chip
-                variant="soft"
-                size="sm"
-                startDecorator={
-                  {
-                    ACTIVE: <CheckRoundedIcon />,
-                    BLOCK: <BlockIcon />,
-                  }[row.status]
-                }
-                color={
-                  {
-                    ACTIVE: "success",
-                    BLOCK: "danger",
-                  }[row.status] as ColorPaletteProp
-                }
-              >
-                {row.status}
-              </Chip>
-
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 1,
-                  alignItems: "flex-start",
-                  mt: 2,
-                }}
-              >
-                <Link level="body-xs" component="button">
-                  Download
-                </Link>
-                <RowMenu />
-              </Box>
-            </Box>
-          </Sheet>
-        ))}
-      </Tablet>
-      <Mobile>
-        {stableSort(rows, getComparator(order, "id")).map((row) => (
-          <Sheet
-            key={row.id}
-            sx={{
-              width: "100%",
-              mb: 2,
-              p: 2,
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <Box>
-              <Box
-                sx={{ display: "flex", gap: 1, alignItems: "center", mb: 2 }}
-              >
-                <Avatar size="sm">{row.customer.initial}</Avatar>
-                <Typography level="h4" component="h4">
-                  {row.customer.name}
-                </Typography>
-              </Box>
-              <Typography level="body-xs">{row.date}</Typography>
-              <Typography level="body-xs">{row.customer.email}</Typography>
-
-              <Typography level="body-xs">+123 456 7890</Typography>
-
-              <Typography level="body-xs">London WC1N 3AX</Typography>
-            </Box>
-
-            <Box>
-              <Chip
-                variant="soft"
-                size="sm"
-                startDecorator={
-                  {
-                    ACTIVE: <CheckRoundedIcon />,
-                    BLOCK: <BlockIcon />,
-                  }[row.status]
-                }
-                color={
-                  {
-                    ACTIVE: "success",
-                    BLOCK: "danger",
-                  }[row.status] as ColorPaletteProp
-                }
-              >
-                {row.status}
-              </Chip>
-
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 1,
-                  alignItems: "flex-start",
-                  mt: 2,
-                }}
-              >
-                <Link level="body-xs" component="button">
-                  Download
-                </Link>
-                <RowMenu />
-              </Box>
-            </Box>
-          </Sheet>
-        ))}
-      </Mobile>
+              )
+            )}
+          </tbody>
+        </Table>
+      </Sheet>
 
       <Box
-        className="Pagination-laptopUp"
         sx={{
           pt: 2,
           gap: 1,

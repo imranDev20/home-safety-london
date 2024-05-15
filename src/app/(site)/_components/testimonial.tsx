@@ -12,7 +12,6 @@ import { GetTestimonialsResponse } from "@/types/testimonial";
 import TestimonialCard from "./testimonial-card";
 
 export default function Testimonial() {
-  const theme = useTheme();
   const [slidesToShow, setSlidesToShow] = useState<number>(3);
   const [openModal, setOpenModal] = React.useState<boolean>(false);
 

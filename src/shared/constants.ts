@@ -7,7 +7,7 @@ import {
   ShoppingCart,
   Support,
 } from "@mui/icons-material";
-import PersonIcon from '@mui/icons-material/Person';
+import PersonIcon from "@mui/icons-material/Person";
 
 import {
   EicrIcon,
@@ -50,11 +50,6 @@ export const ADMIN_OPTIONS = [
     route: "/admin/support",
     label: "Support",
     Icon: Support,
-  },
-  {
-    route: "/admin/profile",
-    label: "Profile",
-    Icon: PersonIcon,
   },
   {
     route: "/admin/settings",
@@ -424,3 +419,5 @@ const MODIFIED_SERVICES = SERVICES.map((service) =>
 );
 
 export const SUB_SERVICES = MODIFIED_SERVICES.flatMap((service) => service);
+
+export const FIXED_HEIGHT = 268;

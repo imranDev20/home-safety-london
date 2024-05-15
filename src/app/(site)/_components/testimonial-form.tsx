@@ -41,6 +41,7 @@ export default function TestimonialForm({
     handleSubmit,
     formState: { errors },
     control,
+    reset,
   } = useForm<TestimonialInput>({
     defaultValues: {
       name: "",
@@ -72,6 +73,7 @@ export default function TestimonialForm({
       console.log(response);
 
       if (response?.success) {
+        reset();
         setOpenModal(false);
         enqueueSnackbar(response.message, "success");
       } else {

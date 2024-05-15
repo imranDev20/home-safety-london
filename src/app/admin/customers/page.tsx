@@ -1,5 +1,5 @@
 "use client";
-import { Home, KeyboardArrowRight } from "@mui/icons-material";
+import { Download, Home, KeyboardArrowRight } from "@mui/icons-material";
 import {
   Breadcrumbs,
   Button,
@@ -17,12 +17,15 @@ import {
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
-import { CATEGORIES, ORDER_STATUS } from "@/shared/constants";
-import { snakeCaseToNormalText } from "@/shared/functions";
 import CustomersTable from "./_components/customers-table";
+import { useState } from "react";
+import FormDrawer from "@/app/_components/common/form-drawer";
+import CreateCustomerForm from "./_components/create-customer-form";
 
 function Customers() {
   const theme = useTheme();
+  const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
+    useState<boolean>(false);
 
   return (
     <>
@@ -56,13 +59,40 @@ function Customers() {
         </JoyLink>
       </Breadcrumbs>
 
-      <Stack justifyContent="space-between" direction="row" alignItems="center">
+      <Stack
+        spacing={2}
+        justifyContent="space-between"
+        alignItems={{
+          xs: "flex-start",
+          md: "center",
+        }}
+        direction={{
+          xs: "column",
+          md: "row",
+        }}
+      >
         <Typography component="h1" level="h2">
           Customers List
         </Typography>
-        <Button size="sm" startDecorator={<AddIcon />}>
-          Add New Customer
-        </Button>
+
+        <Stack
+          spacing={2}
+          direction={{
+            xs: "column",
+            md: "row",
+          }}
+        >
+          <Button size="sm" variant="outlined" startDecorator={<Download />}>
+            Download Excel sheet
+          </Button>
+          <Button
+            size="sm"
+            startDecorator={<AddIcon />}
+            onClick={() => setOpenCreateCustomerDrawer(true)}
+          >
+            Add New Customer
+          </Button>
+        </Stack>
       </Stack>
 
       <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>
@@ -75,98 +105,21 @@ function Customers() {
               Search for customers
             </FormLabel>
             <Input
-              placeholder="Search for customer, email, phone, status...."
+              placeholder="Search for customers with name, email or phone..."
               startDecorator={<SearchIcon />}
             />
           </FormControl>
         </Grid>
-
-        <Grid xs={12} sm={6} md={2}>
-          <FormControl size="sm">
-            <FormLabel
-              id="select-field-demo-label"
-              htmlFor="select-field-demo-button"
-            >
-              Status
-            </FormLabel>
-            <Select
-              placeholder="Filter by status"
-              slotProps={{
-                button: {
-                  id: "select-field-demo-button",
-                  sx: {
-                    textTransform: "capitalize",
-                  },
-                },
-              }}
-            >
-              {ORDER_STATUS.map((order) => (
-                <Option
-                  key={order}
-                  value={order}
-                  sx={{
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {snakeCaseToNormalText(order)}
-                </Option>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-
-        <Grid xs={12} sm={6} md={2}>
-          <FormControl size="sm">
-            <FormLabel
-              id="select-field-demo-label"
-              htmlFor="select-field-demo-button"
-            >
-              Categories
-            </FormLabel>
-            <Select
-              slotProps={{
-                button: {
-                  id: "select-field-demo-button",
-                },
-              }}
-              placeholder="Filter by category"
-            >
-              {CATEGORIES.map((category) => (
-                <Option key={category.name} value={category.name}>
-                  {category.name}
-                </Option>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-
-        <Grid xs={12} sm={6} md={2}>
-          <FormControl size="sm">
-            <FormLabel
-              id="select-field-demo-label"
-              htmlFor="select-field-demo-button"
-            >
-              Assignee
-            </FormLabel>
-            <Select
-              placeholder="Filter by assignee"
-              slotProps={{
-                button: {
-                  id: "select-field-demo-button",
-                },
-              }}
-            >
-              <Option value="dog">Dog</Option>
-              <Option value="cat">Cat</Option>
-              <Option value="fish">Fish</Option>
-              <Option value="bird">Bird</Option>
-            </Select>
-          </FormControl>
-        </Grid>
       </Grid>
 
-      {/* import customers table */}
-      <CustomersTable />
+      {/* <CustomersTable /> */}
+
+      <FormDrawer
+        open={openCreateCustomerDrawer}
+        setOpen={setOpenCreateCustomerDrawer}
+      >
+        <CreateCustomerForm />
+      </FormDrawer>
     </>
   );
 }

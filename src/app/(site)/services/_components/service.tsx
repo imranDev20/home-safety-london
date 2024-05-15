@@ -7,9 +7,8 @@ import { customSlugify } from "@/shared/functions";
 export default function Service({ service }: any) {
   const { description } = service;
   const trimDeccription =
-    description.length > 150
-      ? `${description.slice(0, 120)}.....`
-      : description;
+    description.length > 150 ? `${description.slice(0, 120)}...` : description;
+
   return (
     <Box sx={{ mb: 2 }}>
       <Image
