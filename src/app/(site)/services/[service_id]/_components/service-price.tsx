@@ -22,7 +22,7 @@ export default function ServicePrice() {
     >
       <Grid container spacing={4} sx={{ px: 8 }}>
         {[0, 1].map((item) => (
-          <Grid xs={6} key={item}>
+          <Grid xs={12} sm={12} md={6} key={item}>
             <Box>
               <Card
                 variant="outlined"

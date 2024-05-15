@@ -44,7 +44,7 @@ export default function Login() {
       <Sheet variant="soft">
         <Container sx={{ py: 10 }}>
           <Grid container>
-            <Grid xs={5} sx={{ mx: "auto" }}>
+            <Grid xs={12} sm={8} md={5} sx={{ mx: "auto" }}>
               <Card
                 variant="plain"
                 sx={{
@@ -90,7 +90,7 @@ export default function Login() {
                             >
                               <Input
                                 {...field}
-                                placeholder="Email"
+                                placeholder="Enter your email"
                                 type="email"
                                 fullWidth
                                 variant="soft"
@@ -117,7 +117,7 @@ export default function Login() {
                     sx={{ display: "flex", justifyContent: "center", mt: 3 }}
                   >
                     <Typography>
-                      Have an account? <Link href="/signup">Register</Link>
+                      Have an account? <Link href="/signp">Register</Link>
                     </Typography>
                   </Box>
                 </CardContent>

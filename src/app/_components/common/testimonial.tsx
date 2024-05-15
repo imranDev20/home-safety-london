@@ -99,7 +99,7 @@ export default function Testimonial() {
     <Sheet
       variant="soft"
       sx={{
-        my: 5,
+        mt: 5,
         py: 10,
       }}
     >
@@ -240,11 +240,7 @@ export default function Testimonial() {
         </CarouselProvider>
 
         <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Button
-            sx={{ px: 6, py: 1, fontSize: 20 }}
-            variant="solid"
-            onClick={() => setOpenModal(true)}
-          >
+          <Button size="lg" variant="solid" onClick={() => setOpenModal(true)}>
             Say Us
           </Button>
           <TestimonialReview
