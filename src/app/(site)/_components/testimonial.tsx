@@ -14,7 +14,10 @@ import StarIcon from "@mui/icons-material/Star";
 import { CarouselProvider, Slider, Slide, DotGroup } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
-import TestimonialReview from "./testimonial-review";
+import TestimonialForm from "./testimonial-form";
+import { useQuery } from "@tanstack/react-query";
+import { getTestimonials } from "@/services/testimonial.services";
+import { GetTestimonialsResponse } from "@/types/testimonial";
 
 export default function Testimonial() {
   const theme = useTheme();
@@ -37,64 +40,16 @@ export default function Testimonial() {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  const REVIEW_ITEM = [
-    {
-      id: 1,
-      name: "Shaun Smith",
-      intro: "Had an EICR Check",
-      review:
-        "I was very impressed in regards to the service provided. They are very professional, technician visit was punctual and the EICR report was complete and quickly released. I will use them again next time for sure.",
-    },
-    {
-      id: 2,
-      name: "Emily Johnson",
-      intro: "Had an EICR Check",
-      review:
-        "I was very impressed in regards to the service provided. They are very professional, technician visit was punctual and the EICR report was complete and quickly released. I will use them again next time for sure.",
-    },
-    {
-      id: 3,
-      name: "Noah Williams",
-      intro: "Had an EICR Check",
-      review:
-        "I was very impressed in regards to the service provided. They are very professional, technician visit was punctual and the EICR report was complete and quickly released. I will use them again next time for sure.",
-    },
-    {
-      id: 4,
-      name: "Olivia Brown",
-      intro: "Had an EICR Check",
-      review:
-        "I was very impressed in regards to the service provided. They are very professional, technician visit was punctual and the EICR report was complete and quickly released. I will use them again next time for sure.",
-    },
-    {
-      id: 5,
-      name: "Ethan Jones",
-      intro: "Had an EICR Check",
-      review:
-        "I was very impressed in regards to the service provided. They are very professional, technician visit was punctual and the EICR report was complete and quickly released. I will use them again next time for sure.",
-    },
-    {
-      id: 6,
-      name: "Benjamin Miller",
-      intro: "Had an EICR Check",
-      review:
-        "I was very impressed in regards to the service provided. They are very professional, technician visit was punctual and the EICR report was complete and quickly released. I will use them again next time for sure.",
-    },
-    {
-      id: 7,
-      name: "Sophia Wilson",
-      intro: "Had an EICR Check",
-      review:
-        "I was very impressed in regards to the service provided. They are very professional, technician visit was punctual and the EICR report was complete and quickly released. I will use them again next time for sure.",
-    },
-    {
-      id: 8,
-      name: "Babel Davis",
-      intro: "Had an EICR Check",
-      review:
-        "I was very impressed in regards to the service provided. They are very professional, technician visit was punctual and the EICR report was complete and quickly released. I will use them again next time for sure.",
-    },
-  ];
+
+  const { data: testimonialData, isLoading: isGetTestimonialsLoading } =
+    useQuery<GetTestimonialsResponse>({
+      queryKey: ["testimonials"],
+      queryFn: async () => {
+        const response = await getTestimonials();
+        return response;
+      },
+    });
+
   return (
     <Sheet
       variant="soft"
@@ -129,14 +84,14 @@ export default function Testimonial() {
           naturalSlideWidth={400}
           naturalSlideHeight={200}
           isIntrinsicHeight={true}
-          totalSlides={REVIEW_ITEM.length}
+          totalSlides={testimonialData?.pagination?.totalCount as number}
           visibleSlides={slidesToShow}
           infinite
           isPlaying
           interval={5000}
         >
           <Slider>
-            {REVIEW_ITEM.map((slides, index) => (
+            {testimonialData?.data.map((slides, index) => (
               <Slide index={0} key={index}>
                 <Box
                   sx={{
@@ -167,7 +122,7 @@ export default function Testimonial() {
                           my: 2,
                         }}
                       >
-                        {slides.intro}
+                        {slides.subject}
                       </Typography>
                       <Typography
                         color="neutral"
@@ -176,12 +131,16 @@ export default function Testimonial() {
                           textAlign: "center",
                         }}
                       >
-                        {slides.review}
+                        {slides.content}
                       </Typography>
 
                       <Typography>
-                        {[...Array(5)].map((_, index) => (
+                        {[...Array(slides.rating)].map((_, index) => (
                           <StarIcon key={index} sx={{ color: "#ECBD41" }} />
+                        ))}
+
+                        {[...Array(5 - slides.rating)].map((_, index) => (
+                          <StarIcon key={index} sx={{ color: "#DBDBDB" }} />
                         ))}
                       </Typography>
 
@@ -239,14 +198,11 @@ export default function Testimonial() {
           </Box>
         </CarouselProvider>
 
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
           <Button size="lg" variant="solid" onClick={() => setOpenModal(true)}>
-            Say Us
+            Leave a Testimonial
           </Button>
-          <TestimonialReview
-            openModal={openModal}
-            setOpenModal={setOpenModal}
-          />
+          <TestimonialForm openModal={openModal} setOpenModal={setOpenModal} />
         </Box>
       </Container>
     </Sheet>

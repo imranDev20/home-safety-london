@@ -48,11 +48,11 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
-    const { name, email, user, rating, content } = await req.json();
+    const { name, subject, user, rating, content } = await req.json();
 
     const newTestimonial = new Testimonial({
       name,
-      email,
+      subject,
       user,
       rating,
       content,

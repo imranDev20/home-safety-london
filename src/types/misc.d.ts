@@ -23,3 +23,9 @@ export type Service = {
     price: number;
   }[];
 };
+
+export type Pagination = {
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+};
