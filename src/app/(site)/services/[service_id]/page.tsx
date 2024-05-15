@@ -10,8 +10,8 @@ export default function SingleService() {
     <>
       <PageHeader backgroundImage={BackgroundImage} title="Services" />
       <Advantage />
-      <Testimonial />
       <Partners />
+      <Testimonial />
     </>
   );
 }
