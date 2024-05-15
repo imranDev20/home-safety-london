@@ -2,7 +2,6 @@ import mongoose, { Document, Schema } from "mongoose";
 
 interface ITestimonial extends Document {
   name: string;
-  email: string;
   rating: number;
   content: string;
   user: mongoose.Types.ObjectId | null;
@@ -11,7 +10,6 @@ interface ITestimonial extends Document {
 const testimonialSchema = new mongoose.Schema<ITestimonial>(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

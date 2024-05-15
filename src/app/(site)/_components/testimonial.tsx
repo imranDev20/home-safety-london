@@ -14,7 +14,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { CarouselProvider, Slider, Slide, DotGroup } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
-import TestimonialReview from "./testimonialReview";
+import TestimonialReview from "./testimonial-review";
 
 export default function Testimonial() {
   const theme = useTheme();
