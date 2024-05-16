@@ -18,6 +18,10 @@ import {
   isValidPhoneNumber,
   formatPhoneNumber,
 } from "react-phone-number-input";
+import useRecaptchaToken from "../hooks/use-recaptcha-token";
+import { submitContactUsForm } from "@/services/contact.services";
+import { useMutation } from "@tanstack/react-query";
+import { useSnackbar } from "../snackbar-provider";
 
 const PhoneInputAdapter = React.forwardRef<InputProps, any>(
   function PhoneInputAdapter(props, ref) {
@@ -40,28 +44,56 @@ type ContactFormInput = {
   name: string;
   email: string;
   phone: string;
+  subject: string;
   message: string;
 };
 
 export default function ContactUsForm() {
+  const reCaptchaToken = useRecaptchaToken();
+  const { enqueueSnackbar } = useSnackbar();
+
   const {
     handleSubmit,
     formState: { errors },
     reset,
-
     control,
   } = useForm<ContactFormInput>({
     defaultValues: {
       name: "",
       email: "",
       message: "",
+      subject: "",
       phone: "",
     },
   });
-  const onContactFormSubmit: SubmitHandler<ContactFormInput> = (data) => {
-    const payload = { ...data, phone: formatPhoneNumber(data.phone) };
 
-    console.log(payload);
+  const {
+    mutateAsync: submitContactUsFormMutate,
+    isPending: isSubmitContactUsFormPending,
+  } = useMutation({
+    mutationFn: async (contactFormData: any) => {
+      const response = await submitContactUsForm(contactFormData);
+      return response;
+    },
+  });
+
+  const onContactFormSubmit: SubmitHandler<ContactFormInput> = async (data) => {
+    try {
+      const payload = {
+        ...data,
+        phone: formatPhoneNumber(data.phone),
+        reCaptchaToken,
+      };
+
+      const response = await submitContactUsFormMutate(payload);
+
+      if (response.success) {
+        reset();
+        enqueueSnackbar(response.message, "success");
+      }
+    } catch (error: any) {
+      enqueueSnackbar(error.message, "error");
+    }
   };
 
   return (
@@ -187,6 +219,34 @@ export default function ContactUsForm() {
                       )}
                     />
                   </Grid>
+
+                  <Grid xs={12}>
+                    <Controller
+                      name="subject"
+                      rules={{
+                        required: "Please provide a subject",
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <FormControl
+                          error={!!errors.subject}
+                          sx={{
+                            mb: 1,
+                          }}
+                        >
+                          <Input
+                            {...field}
+                            placeholder="Give a subject"
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            size="lg"
+                          />
+                          <HookFormError name="subject" errors={errors} />
+                        </FormControl>
+                      )}
+                    />
+                  </Grid>
                   <Grid xs={12}>
                     <Controller
                       name="message"
@@ -199,7 +259,7 @@ export default function ContactUsForm() {
                           <Textarea
                             {...field}
                             minRows={5}
-                            placeholder="Your Message here..."
+                            placeholder="Type your Message here..."
                             variant="outlined"
                             size="lg"
                           />
@@ -210,7 +270,13 @@ export default function ContactUsForm() {
                   </Grid>
                 </Grid>
                 <Box sx={{ pt: 2 }}>
-                  <Button type="submit" variant="solid" sx={{ width: "100%" }}>
+                  <Button
+                    type="submit"
+                    variant="solid"
+                    sx={{ width: "100%" }}
+                    loading={isSubmitContactUsFormPending}
+                    loadingPosition="start"
+                  >
                     Send Message
                   </Button>
                 </Box>
