@@ -1,24 +1,12 @@
 "use client";
+import { Download, Home, KeyboardArrowRight } from "@mui/icons-material";
 import {
-  Close,
-  Download,
-  DownloadDone,
-  Home,
-  KeyboardArrowRight,
-  PlaylistAddCheckCircleRounded,
-} from "@mui/icons-material";
-import {
-  Box,
   Breadcrumbs,
   Button,
   FormControl,
   FormLabel,
   Grid,
-  IconButton,
-  Input,
   Link as JoyLink,
-  LinearProgress,
-  Snackbar,
   Stack,
   Typography,
   useTheme,
@@ -125,6 +113,7 @@ function Customers() {
       </Breadcrumbs>
       <Stack
         spacing={2}
+        mt={2}
         justifyContent="space-between"
         alignItems={{
           xs: "flex-start",
@@ -132,7 +121,7 @@ function Customers() {
         }}
         direction={{
           xs: "column",
-          md: "row",
+          sm: "row",
         }}
       >
         <Typography component="h1" level="h2">
@@ -143,7 +132,7 @@ function Customers() {
           spacing={2}
           direction={{
             xs: "column",
-            md: "row",
+            sm: "row",
           }}
         >
           <Button
@@ -154,7 +143,7 @@ function Customers() {
             loading={isExportUsersLoading}
             loadingPosition="start"
           >
-            Download Excel sheet
+            Download Excel
           </Button>
           <Button
             size="sm"
@@ -165,6 +154,7 @@ function Customers() {
           </Button>
         </Stack>
       </Stack>
+
       <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>
         <Grid xs={12} sm={6} md={6}>
           <FormControl size="sm">

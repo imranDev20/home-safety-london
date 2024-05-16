@@ -1,5 +1,4 @@
 "use client";
-import * as React from "react";
 import { Popper } from "@mui/base/Popper";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import Box from "@mui/joy/Box";
@@ -15,30 +14,22 @@ import {
   IconButton,
   ListItemDecorator,
   ModalClose,
-  Sheet,
-  Stack,
   Typography,
-  Menu,
   useTheme,
 } from "@mui/joy";
 
-import {
-  Email,
-  HealthAndSafety,
-  HomeRounded,
-  Login,
-  Phone,
-  WhatsApp,
-} from "@mui/icons-material";
+import { HomeRounded, Login } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import { CATEGORIES, SERVICES } from "@/shared/constants";
 import Link from "next/link";
 import { customSlugify } from "@/shared/functions";
+import { SERVICES, SITE_OPTIONS } from "@/shared/constants";
+import { forwardRef, useRef, useState } from "react";
+import Topbar from "./topbar";
+import { usePathname } from "next/navigation";
 
 type Options = {
-  initialActiveIndex: null | number;
-  vertical: boolean;
+  initialActiveIndex?: number | null;
+  vertical?: boolean;
   handlers?: {
     onKeyDown: (
       event: React.KeyboardEvent<HTMLAnchorElement>,
@@ -57,32 +48,26 @@ const useRovingIndex = (options?: Options) => {
       onKeyDown: () => {},
     },
   } = options || {};
-  const [activeIndex, setActiveIndex] = React.useState<number | null>(
-    initialActiveIndex!
+  const [activeIndex, setActiveIndex] = useState<number | null>(
+    initialActiveIndex
   );
-  const targetRefs = React.useRef<Array<HTMLAnchorElement>>([]);
+  const targetRefs = useRef<Array<HTMLAnchorElement>>([]);
   const targets = targetRefs.current;
   const focusNext = () => {
-    let newIndex = activeIndex! + 1;
-    if (newIndex >= targets.length) {
-      newIndex = 0;
-    }
+    let newIndex = (activeIndex ?? 0) + 1;
+    if (newIndex >= targets.length) newIndex = 0;
     targets[newIndex]?.focus();
     setActiveIndex(newIndex);
   };
   const focusPrevious = () => {
-    let newIndex = activeIndex! - 1;
-    if (newIndex < 0) {
-      newIndex = targets.length - 1;
-    }
+    let newIndex = (activeIndex ?? 0) - 1;
+    if (newIndex < 0) newIndex = targets.length - 1;
     targets[newIndex]?.focus();
     setActiveIndex(newIndex);
   };
   const getTargetProps = (index: number) => ({
     ref: (ref: HTMLAnchorElement) => {
-      if (ref) {
-        targets[index] = ref;
-      }
+      if (ref) targets[index] = ref;
     },
     tabIndex: activeIndex === index ? 0 : -1,
     onKeyDown: (e: React.KeyboardEvent<HTMLAnchorElement>) => {
@@ -96,9 +81,7 @@ const useRovingIndex = (options?: Options) => {
         handlers.onKeyDown?.(e, { setActiveIndex });
       }
     },
-    onClick: () => {
-      setActiveIndex(index);
-    },
+    onClick: () => setActiveIndex(index),
   });
   return {
     activeIndex,
@@ -119,14 +102,12 @@ type ServicesMenuProps = {
   onKeyDown?: (event: React.KeyboardEvent<HTMLAnchorElement>) => void;
 };
 
-const ServicesMenu = React.forwardRef(
+const ServicesMenu = forwardRef(
   (
     { focusNext, focusPrevious, ...props }: ServicesMenuProps,
     ref: React.ForwardedRef<HTMLAnchorElement>
   ) => {
-    const [anchorEl, setAnchorEl] = React.useState<HTMLAnchorElement | null>(
-      null
-    );
+    const [anchorEl, setAnchorEl] = useState<HTMLAnchorElement | null>(null);
     const { targets, setActiveIndex, getTargetProps } = useRovingIndex({
       initialActiveIndex: null,
       vertical: true,
@@ -211,11 +192,11 @@ const ServicesMenu = React.forwardRef(
                 "--ListItemDecorator-size": "32px",
               }}
             >
-              {SERVICES.map((service) => (
+              {SERVICES.map((service, index) => (
                 <ListItem role="none" key={service.title}>
                   <ListItemButton
                     role="menuitem"
-                    {...getTargetProps(0)}
+                    {...getTargetProps(index)}
                     sx={{
                       fontWeight: 600,
                     }}
@@ -236,153 +217,59 @@ const ServicesMenu = React.forwardRef(
 
 ServicesMenu.displayName = "ServicesMenu";
 
+function MobileNavList() {
+  const pathname = usePathname();
+  const theme = useTheme();
+
+  return (
+    <List size="md">
+      {SITE_OPTIONS.filter((val) => val.isShowInHeader).map((option) => (
+        <ListItem
+          key={option.route}
+          sx={{
+            mb: 1,
+            textDecoration: "none",
+          }}
+          component={Link}
+          href={option.route}
+        >
+          <ListItemButton
+            selected={pathname === option.route}
+            sx={{
+              fontWeight: 500,
+              borderRadius: theme.radius.sm,
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: 14,
+              }}
+            >
+              {option.label}
+            </Typography>
+          </ListItemButton>
+        </ListItem>
+      ))}
+    </List>
+  );
+}
+
 export default function Header() {
   const { targets, getTargetProps, setActiveIndex, focusNext, focusPrevious } =
     useRovingIndex();
 
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [openMobileDrawer, setOpenMobileDrawer] = useState(false);
 
   return (
-    <Box
-      component="header"
-      sx={{
-        zIndex: 10,
-        position: "relative",
-      }}
-    >
-      <Box
-        sx={{
-          py: 1.5,
-          backgroundColor: "rgba(0,137,123,0.2)",
-        }}
-      >
-        <Container
-          sx={{
-            display: "flex",
-            justifyContent: { xs: "flex-start", sm: "center", lg: "flex-end" },
-          }}
-        >
-          <Stack
-            sx={{
-              display: "flex",
-              gap: 4,
-              flexDirection: { xs: "column", sm: "row", md: "row" },
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <WhatsApp
-                // color="secondary"
-                sx={{
-                  mr: 1,
-                  fontWeight: 30,
-                }}
-              />
-              <Typography
-                level="body-md"
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                07480 062995
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Phone
-                // color="secondary"
-                sx={{
-                  mr: 1,
-                  fontWeight: 30,
-                }}
-              />
-              <Typography
-                level="body-md"
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                0191 743 1448
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Email
-                // color="secondary"
-                sx={{
-                  mr: 1,
-                  fontWeight: 30,
-                }}
-              />
-              <Typography
-                level="body-md"
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                info@homesafetylondon.co.uk
-              </Typography>
-            </Box>
-          </Stack>
-        </Container>
-      </Box>
-
-      {/* Mobile & tablet screen navbar */}
-      <Sheet
-        sx={{
-          width: "100%",
-          py: 2,
-          px: 3,
-          display: { xs: "flex", sm: "flex", md: "none" },
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
-        <Container
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <HealthAndSafety />
-            <Typography level="title-lg">Home Safety London</Typography>
-          </Box>
-          <IconButton
-            variant="outlined"
-            color="neutral"
-            onClick={() => setOpen(true)}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Container>
-      </Sheet>
+    <Box component="header" sx={{ zIndex: 10, position: "relative" }}>
+      <Topbar />
 
       {/* Mobile & tablet screen drawer */}
-      <Drawer open={open} onClose={() => setOpen(false)}>
+      <Drawer
+        open={openMobileDrawer}
+        onClose={() => setOpenMobileDrawer(false)}
+        size="md"
+      >
         <Box
           sx={{
             display: "flex",
@@ -391,191 +278,109 @@ export default function Header() {
             justifyContent: "space-between",
           }}
         >
-          <Box>
-            <Typography level="h4">Home Safety London</Typography>
-          </Box>
+          <Typography level="h4">Home Safety London</Typography>
           <ModalClose id="close-icon" sx={{ position: "initial" }} />
         </Box>
         <Divider />
+
+        <Box
+          sx={{
+            p: 2,
+          }}
+        >
+          <MobileNavList />
+        </Box>
+      </Drawer>
+
+      {/* large screen navbar */}
+      <Container sx={{ zIndex: 100000, position: "relative" }}>
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
+            py: 2,
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <List
-            role="menubar"
-            orientation="vertical"
-            sx={{
-              "--List-radius": "8px",
-              "--List-padding": "4px",
-              "--List-gap": "8px",
-              "--ListItem-gap": "0px",
-              justifyContent: "flex-end",
-              m: 2,
-            }}
-          >
-            <ListItem role="none">
-              <ListItemButton
-                component={Link}
-                role="menuitem"
-                {...getTargetProps(0)}
-                href="/"
-                sx={{
-                  textDecoration: "none",
-                  fontWeight: 600,
-                }}
-              >
-                <ListItemDecorator>
-                  <HomeRounded />
-                </ListItemDecorator>
-                Home
-              </ListItemButton>
-            </ListItem>
-
-            <ListItem role="none">
-              <ListItemButton
-                role="menuitem"
-                {...getTargetProps(0)}
-                component={Link}
-                href="/about"
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                About
-              </ListItemButton>
-            </ListItem>
-            <ListItem role="none">
-              <ServicesMenu
-                onMouseEnter={() => {
-                  setActiveIndex(1);
-                  targets[1].focus();
-                }}
-                focusNext={focusNext}
-                focusPrevious={focusPrevious}
-                {...getTargetProps(1)}
-              />
-            </ListItem>
-
-            <ListItem role="none">
-              <ListItemButton
-                role="menuitem"
-                {...getTargetProps(0)}
-                component={Link}
-                href="/contact"
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                Contact
-              </ListItemButton>
-            </ListItem>
-          </List>
-          <Box sx={{ mx: 3 }}>
+          <Typography level="h4">Home Safety London</Typography>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <List
+              role="menubar"
+              orientation="horizontal"
+              sx={{
+                "--List-radius": "8px",
+                "--List-padding": "4px",
+                "--List-gap": "8px",
+                "--ListItem-gap": "0px",
+                justifyContent: "flex-end",
+                mr: 4,
+                display: { xs: "none", md: "flex" },
+              }}
+            >
+              <ListItem role="none">
+                <ListItemButton
+                  component={Link}
+                  role="menuitem"
+                  {...getTargetProps(0)}
+                  href="/"
+                  sx={{ textDecoration: "none", fontWeight: 600 }}
+                >
+                  <ListItemDecorator>
+                    <HomeRounded />
+                  </ListItemDecorator>
+                  Home
+                </ListItemButton>
+              </ListItem>
+              <ListItem role="none">
+                <ListItemButton
+                  role="menuitem"
+                  {...getTargetProps(1)}
+                  component={Link}
+                  href="/about"
+                  sx={{ fontWeight: 600 }}
+                >
+                  About
+                </ListItemButton>
+              </ListItem>
+              <ListItem role="none">
+                <ServicesMenu
+                  onMouseEnter={() => {
+                    setActiveIndex(2);
+                    targets[2].focus();
+                  }}
+                  focusNext={focusNext}
+                  focusPrevious={focusPrevious}
+                  {...getTargetProps(2)}
+                />
+              </ListItem>
+              <ListItem role="none">
+                <ListItemButton
+                  role="menuitem"
+                  {...getTargetProps(3)}
+                  component={Link}
+                  href="/contact"
+                  sx={{ fontWeight: 600 }}
+                >
+                  Contact
+                </ListItemButton>
+              </ListItem>
+            </List>
             <Button
+              sx={{ display: { xs: "none", md: "flex" } }}
               startDecorator={<Login />}
-              fullWidth
               component={Link}
               href="/login"
             >
               Login
             </Button>
+            <IconButton
+              variant="outlined"
+              sx={{ display: { xs: "flex", md: "none" } }}
+              onClick={() => setOpenMobileDrawer(true)}
+            >
+              <MenuIcon />
+            </IconButton>
           </Box>
-        </Box>
-      </Drawer>
-
-      {/* large screen navbar */}
-      <Container
-        sx={{
-          zIndex: 100000,
-          position: "relative",
-        }}
-      >
-        <Box
-          sx={{
-            display: { xs: "none", sm: "none", md: "flex" },
-            py: 2,
-            alignItems: "center",
-          }}
-        >
-          <Box>
-            <Typography level="h4">Home Safety London</Typography>
-          </Box>
-
-          <List
-            role="menubar"
-            orientation="horizontal"
-            sx={{
-              "--List-radius": "8px",
-              "--List-padding": "4px",
-              "--List-gap": "8px",
-              "--ListItem-gap": "0px",
-              justifyContent: "flex-end",
-              mr: 4,
-            }}
-          >
-            <ListItem role="none">
-              <ListItemButton
-                component={Link}
-                role="menuitem"
-                {...getTargetProps(0)}
-                href="/"
-                sx={{
-                  textDecoration: "none",
-                  fontWeight: 600,
-                }}
-              >
-                <ListItemDecorator>
-                  <HomeRounded />
-                </ListItemDecorator>
-                Home
-              </ListItemButton>
-            </ListItem>
-
-            <ListItem role="none">
-              <ListItemButton
-                role="menuitem"
-                {...getTargetProps(0)}
-                component={Link}
-                href="/about"
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                About
-              </ListItemButton>
-            </ListItem>
-            <ListItem role="none">
-              <ServicesMenu
-                onMouseEnter={() => {
-                  setActiveIndex(1);
-                  targets[1].focus();
-                }}
-                focusNext={focusNext}
-                focusPrevious={focusPrevious}
-                {...getTargetProps(1)}
-              />
-            </ListItem>
-
-            <ListItem role="none">
-              <ListItemButton
-                role="menuitem"
-                {...getTargetProps(0)}
-                component={Link}
-                href="/contact"
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                Contact
-              </ListItemButton>
-            </ListItem>
-          </List>
-
-          <Button startDecorator={<Login />} component={Link} href="/login">
-            Login
-          </Button>
         </Box>
       </Container>
     </Box>

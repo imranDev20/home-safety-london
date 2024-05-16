@@ -1,54 +1,30 @@
-"use client";
-import { Home, KeyboardArrowRight } from "@mui/icons-material";
-import { Breadcrumbs, useTheme, Link as JoyLink, Typography } from "@mui/joy";
-import Link from "next/link";
 import React from "react";
+import CustomerDetailsHeader from "./_components/customer-details-header";
+import { Box, Grid, Sheet, Stack, Typography } from "@mui/joy";
+import CustomerInfo from "./_components/customer-info";
+import CustomerOrders from "./_components/customer-orders";
+import CustomerStats from "./_components/customer-stats";
 
 const SingleCustomer = () => {
-  const theme = useTheme();
-
   return (
     <>
-      <Breadcrumbs
-        sx={{
-          px: 0,
-          fontSize: 13,
-        }}
-        separator={<KeyboardArrowRight fontSize="md" />}
-      >
-        <JoyLink
-          component={Link}
-          color="neutral"
-          href="/admin/"
-          sx={{
-            color: theme.palette.text.primary,
-            textDecoration: "none",
-          }}
-        >
-          <Home />
-        </JoyLink>
-        <JoyLink
-          component={Link}
-          color="neutral"
-          href="/admin/customers"
-          sx={{
-            textDecoration: "none",
-          }}
-        >
-          Customers
-        </JoyLink>
+      <CustomerDetailsHeader />
 
-        <Typography
-          color="primary"
-          sx={{
-            textDecoration: "none",
-            fontWeight: 500,
-            fontSize: 13,
-          }}
-        >
-          John Doe
-        </Typography>
-      </Breadcrumbs>
+      <CustomerStats />
+      <Grid
+        container
+        spacing={3}
+        sx={{
+          mt: 5,
+        }}
+      >
+        <Grid xs={12} md={4}>
+          <CustomerInfo />
+        </Grid>
+        <Grid xs={12} md={8}>
+          <CustomerOrders />
+        </Grid>
+      </Grid>
     </>
   );
 };

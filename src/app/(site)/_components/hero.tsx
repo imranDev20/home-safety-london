@@ -107,23 +107,10 @@ export default function Hero() {
                         size="lg"
                         startDecorator={<Phone />}
                         variant="solid"
+                        component="a"
+                        href="tel:07480062995"
                       >
-                        Services
-                      </Button>
-                      <Button
-                        size="lg"
-                        startDecorator={<Phone />}
-                        variant="plain"
-                        color="secondary"
-                        sx={{
-                          mt: 5,
-                          ":hover": {
-                            backgroundColor:
-                              theme.colorSchemes.light.palette.secondary[100],
-                          },
-                        }}
-                      >
-                        075-7916-4993
+                        07480 062995
                       </Button>
                     </Stack>
                   </Box>

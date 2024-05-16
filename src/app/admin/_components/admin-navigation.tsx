@@ -29,6 +29,55 @@ interface AdminNavigationProps {
   children: ReactNode;
 }
 
+const NavigationList: React.FC = () => {
+  const pathname = usePathname();
+
+  return (
+    <List
+      size="sm"
+      sx={{
+        mt: 2,
+      }}
+    >
+      {ADMIN_OPTIONS.map((option) => (
+        <ListItem
+          key={option.route}
+          sx={{
+            mb: 1,
+            textDecoration: "none",
+          }}
+          component={Link}
+          href={option.route}
+        >
+          <ListItemButton
+            selected={pathname === option.route}
+            sx={{
+              fontWeight: 500,
+              borderRadius: theme.radius.sm,
+            }}
+          >
+            <ListItemDecorator
+              sx={{
+                minInlineSize: "2rem",
+              }}
+            >
+              <option.Icon />
+            </ListItemDecorator>
+
+            <Typography
+              sx={{
+                fontSize: 14,
+              }}
+            >
+              {option.label}
+            </Typography>
+          </ListItemButton>
+        </ListItem>
+      ))}
+    </List>
+  );
+};
+
 const AdminNavigation: React.FC<AdminNavigationProps> = ({ children }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [openConfirmModal, setOpenConfirmModal] = useState<boolean>(false);
@@ -224,52 +273,3 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ children }) => {
 };
 
 export default AdminNavigation;
-
-const NavigationList: React.FC = () => {
-  const pathname = usePathname();
-
-  return (
-    <List
-      size="sm"
-      sx={{
-        mt: 2,
-      }}
-    >
-      {ADMIN_OPTIONS.map((option) => (
-        <ListItem
-          key={option.route}
-          sx={{
-            mb: 1,
-            textDecoration: "none",
-          }}
-          component={Link}
-          href={option.route}
-        >
-          <ListItemButton
-            selected={pathname === option.route}
-            sx={{
-              fontWeight: 500,
-              borderRadius: theme.radius.sm,
-            }}
-          >
-            <ListItemDecorator
-              sx={{
-                minInlineSize: "2rem",
-              }}
-            >
-              <option.Icon />
-            </ListItemDecorator>
-
-            <Typography
-              sx={{
-                fontSize: 14,
-              }}
-            >
-              {option.label}
-            </Typography>
-          </ListItemButton>
-        </ListItem>
-      ))}
-    </List>
-  );
-};

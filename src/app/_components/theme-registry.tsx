@@ -55,7 +55,6 @@ export default function ThemeRegistry(props: any) {
   return (
     <CacheProvider value={cache}>
       <CssVarsProvider theme={theme}>
-        {/* the custom theme is optional */}
         <CssBaseline />
         {children}
       </CssVarsProvider>

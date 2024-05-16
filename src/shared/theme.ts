@@ -1,6 +1,5 @@
 "use client";
 import { extendTheme } from "@mui/joy/styles";
-
 import type { PaletteRange } from "@mui/joy/styles";
 
 declare module "@mui/joy/styles" {

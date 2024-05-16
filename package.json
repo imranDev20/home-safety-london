@@ -27,6 +27,7 @@
     "jsonwebtoken": "^9.0.2",
     "lottie-react": "^2.4.0",
     "mongoose": "^8.2.2",
+    "@mui/material": "npm:@mui/joy@latest",
     "next": "14.1.0",
     "nextjs-toploader": "^1.6.6",
     "node-cron": "^3.0.3",
@@ -42,6 +43,10 @@
     "react-slugify": "^3.0.3",
     "react-transition-group": "^4.4.5",
     "stripe": "^14.20.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
   },
   "resolutions": {
     "@mui/material": "npm:@mui/joy@latest"

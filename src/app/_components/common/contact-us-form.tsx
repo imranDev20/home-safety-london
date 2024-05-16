@@ -11,10 +11,13 @@ import {
   Textarea,
   Typography,
 } from "@mui/joy";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import HookFormError from "@/app/_components/common/hook-form-error";
 import PhoneInput from "react-phone-number-input/input";
-import { isValidPhoneNumber } from "react-phone-number-input";
+import {
+  isValidPhoneNumber,
+  formatPhoneNumber,
+} from "react-phone-number-input";
 
 const PhoneInputAdapter = React.forwardRef<InputProps, any>(
   function PhoneInputAdapter(props, ref) {
@@ -33,16 +36,33 @@ const PhoneInputAdapter = React.forwardRef<InputProps, any>(
   }
 );
 
+type ContactFormInput = {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+};
+
 export default function ContactUsForm() {
   const {
-    register,
     handleSubmit,
     formState: { errors },
     reset,
-    getValues,
+
     control,
-  } = useForm();
-  const onSubmit = (data: any) => console.log(data);
+  } = useForm<ContactFormInput>({
+    defaultValues: {
+      name: "",
+      email: "",
+      message: "",
+      phone: "",
+    },
+  });
+  const onContactFormSubmit: SubmitHandler<ContactFormInput> = (data) => {
+    const payload = { ...data, phone: formatPhoneNumber(data.phone) };
+
+    console.log(payload);
+  };
 
   return (
     <Container sx={{ py: 10 }}>
@@ -64,7 +84,7 @@ export default function ContactUsForm() {
             the best safety certificate for your needs.
           </Typography>
         </Box>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onContactFormSubmit)}>
           <Grid
             container
             spacing={3}
@@ -78,14 +98,14 @@ export default function ContactUsForm() {
                 <Grid container spacing={2}>
                   <Grid xs={12}>
                     <Controller
-                      name="firstname"
+                      name="name"
                       rules={{
                         required: "Please enter your name",
                       }}
                       control={control}
                       render={({ field }) => (
                         <FormControl
-                          error={!!errors.firstname}
+                          error={!!errors.name}
                           sx={{
                             mb: 1,
                           }}
@@ -95,10 +115,10 @@ export default function ContactUsForm() {
                             placeholder="Your Name"
                             type="text"
                             fullWidth
-                            variant="soft"
+                            variant="outlined"
                             size="lg"
                           />
-                          <HookFormError name="firstname" errors={errors} />
+                          <HookFormError name="name" errors={errors} />
                         </FormControl>
                       )}
                     />
@@ -126,7 +146,7 @@ export default function ContactUsForm() {
                             placeholder="Your Email Address"
                             type="email"
                             fullWidth
-                            variant="soft"
+                            variant="outlined"
                             size="lg"
                           />
                           <HookFormError name="email" errors={errors} />
@@ -153,7 +173,7 @@ export default function ContactUsForm() {
                           <Input
                             {...field}
                             placeholder="Your Phone Number"
-                            variant="soft"
+                            variant="outlined"
                             fullWidth
                             size="lg"
                             slotProps={{
@@ -180,7 +200,7 @@ export default function ContactUsForm() {
                             {...field}
                             minRows={5}
                             placeholder="Your Message here..."
-                            variant="soft"
+                            variant="outlined"
                             size="lg"
                           />
                           <HookFormError name="message" errors={errors} />

@@ -16,7 +16,16 @@ export const getUsers = async (search?: string, role?: string) => {
   }
 };
 
-export const createUser = async (userData) => {
+export const getUserDetails = async (userId: string) => {
+  try {
+    const response = await http.get(`${USERS_PATH}/${userId}`);
+    return response.data;
+  } catch (error: any) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const createUser = async (userData: any) => {
   try {
     const response = await http.post(USERS_PATH, userData);
     return response.data;

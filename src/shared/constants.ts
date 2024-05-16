@@ -62,18 +62,22 @@ export const SITE_OPTIONS = [
   {
     route: "/",
     label: "Home",
+    isShowInHeader: true,
   },
   {
-    route: "/about-us",
+    route: "/about",
     label: "About us",
+    isShowInHeader: true,
   },
   {
     route: "/services",
     label: "Services",
+    isShowInHeader: true,
   },
   {
     route: "/contact",
     label: "Contact",
+    isShowInHeader: true,
   },
   {
     route: "/terms-and-conditions",
@@ -420,4 +424,4 @@ const MODIFIED_SERVICES = SERVICES.map((service) =>
 
 export const SUB_SERVICES = MODIFIED_SERVICES.flatMap((service) => service);
 
-export const FIXED_HEIGHT = 268;
+export const FIXED_HEIGHT = 285;

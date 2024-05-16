@@ -120,13 +120,12 @@ export default function CustomersTable() {
         pagination,
       };
     },
+    refetchOnMount: false,
   });
 
-  useEffect(() => {
-    refetchGetUsers();
-  }, [searchTerm, refetchGetUsers]);
-
-  // console.log(usersData);
+  // useEffect(() => {
+  //   refetchGetUsers();
+  // }, [searchTerm, refetchGetUsers]);
 
   if (isGetUsersDataLoading || isGetUserDataFetching) {
     return "loading...";
