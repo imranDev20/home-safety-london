@@ -37,7 +37,7 @@ const CreateCustomerForm = () => {
       <DialogTitle
         level="h3"
         sx={{
-          mb: 2,
+          mb: 3,
         }}
       >
         Create a customer

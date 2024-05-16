@@ -1,15 +1,24 @@
 "use client";
-import { Download, Home, KeyboardArrowRight } from "@mui/icons-material";
 import {
+  Close,
+  Download,
+  DownloadDone,
+  Home,
+  KeyboardArrowRight,
+  PlaylistAddCheckCircleRounded,
+} from "@mui/icons-material";
+import {
+  Box,
   Breadcrumbs,
   Button,
   FormControl,
   FormLabel,
   Grid,
+  IconButton,
   Input,
   Link as JoyLink,
-  Option,
-  Select,
+  LinearProgress,
+  Snackbar,
   Stack,
   Typography,
   useTheme,
@@ -21,11 +30,67 @@ import CustomersTable from "./_components/customers-table";
 import { useState } from "react";
 import FormDrawer from "@/app/_components/common/form-drawer";
 import CreateCustomerForm from "./_components/create-customer-form";
+import { useQuery } from "@tanstack/react-query";
+import { exportUsers } from "@/services/user.services";
 
 function Customers() {
   const theme = useTheme();
   const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
     useState<boolean>(false);
+
+  const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
+    useQuery({
+      queryKey: ["export-users"],
+      queryFn: async () => {
+        const response = await exportUsers();
+        return response.data;
+      },
+      enabled: false,
+    });
+
+  // Export is set to track progress and show loading bar
+  const handleExportUsers = async () => {
+    try {
+      const response = await refetchExportUsers();
+      const data = response.data;
+
+      if (response.status === "success") {
+        // const progressUpdates = data.progressUpdates;
+        const excelData = data.excelData;
+
+        // Update progress
+        // for (const { progress } of progressUpdates) {
+        //   setProgress(progress);
+        // }
+
+        // Download Excel file
+        const byteArray = new Uint8Array(
+          atob(excelData)
+            .split("")
+            .map((char) => char.charCodeAt(0))
+        );
+        const blob = new Blob([byteArray], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.setAttribute("download", "users.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } else {
+        console.error("Error exporting users:", data.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    // finally {
+    //   setIsDownloading(false);
+    //   setProgress(null);
+    // }
+  };
 
   return (
     <>
@@ -82,7 +147,14 @@ function Customers() {
             md: "row",
           }}
         >
-          <Button size="sm" variant="outlined" startDecorator={<Download />}>
+          <Button
+            size="sm"
+            variant="outlined"
+            startDecorator={<Download />}
+            onClick={handleExportUsers}
+            loading={isExportUsersLoading}
+            loadingPosition="start"
+          >
             Download Excel sheet
           </Button>
           <Button
@@ -112,7 +184,7 @@ function Customers() {
         </Grid>
       </Grid>
 
-      {/* <CustomersTable /> */}
+      <CustomersTable />
 
       <FormDrawer
         open={openCreateCustomerDrawer}

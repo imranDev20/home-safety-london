@@ -41,3 +41,12 @@ export const deleteUser = async (preOrderId: string) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const exportUsers = async () => {
+  try {
+    const response = await http.get(`/users/export`);
+    return response;
+  } catch (error: any) {
+    throw error.response?.data || error.message;
+  }
+};
