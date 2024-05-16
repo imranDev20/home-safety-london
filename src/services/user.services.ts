@@ -3,18 +3,22 @@ import http from "./http.services";
 
 const USERS_PATH = "/users";
 
-export const getUsers = async (role?: string) => {
+export const getUsers = async (search?: string, role?: string) => {
   try {
-    const response = await http.get(USERS_PATH);
+    const url = `${USERS_PATH}${search && search !== "" ? "?q=" + search : ""}${
+      role ? "&role=" + role : ""
+    }`;
+
+    const response = await http.get(url);
     return response.data;
   } catch (error: any) {
     throw error.response?.data || error.message;
   }
 };
 
-export const createUser = async (testimonialData: Testimonial) => {
+export const createUser = async (userData) => {
   try {
-    const response = await http.post(USERS_PATH, testimonialData);
+    const response = await http.post(USERS_PATH, userData);
     return response.data;
   } catch (error: any) {
     throw error.response?.data || error.message;

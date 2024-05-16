@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
@@ -16,14 +16,13 @@ import Dropdown from "@mui/joy/Dropdown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FIXED_HEIGHT } from "@/shared/constants";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "@/services/user.services";
 import dayjs from "dayjs";
 import { Pagination } from "@/types/misc";
 import { User } from "@/types/user";
-import FormDrawer from "@/app/_components/common/form-drawer";
 
 type CustomersResponse = {
   users: Partial<User>[];
@@ -87,51 +86,49 @@ function RowMenu() {
   );
 }
 
-// order table responsive breakPoint
-// const Desktop = ({ children }: { children: ReactNode }) => {
-//   const isDesktop = useMediaQuery({ minWidth: 900 });
-//   return isDesktop ? children : null;
-// };
-// const Tablet = ({ children }: { children: ReactNode }) => {
-//   const isTablet = useMediaQuery({ minWidth: 601, maxWidth: 899 });
-//   return isTablet ? children : null;
-// };
-// const Mobile = ({ children }: { children: ReactNode }) => {
-//   const isMobile = useMediaQuery({ maxWidth: 600 });
-//   return isMobile ? children : null;
-// };
-
 export default function CustomersTable() {
   const [order, setOrder] = React.useState<Order>("desc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get("search");
 
-  const { data: usersData, isLoading: isGetUsersDataLoading } =
-    useQuery<CustomersResponse>({
-      queryKey: ["users"],
-      queryFn: async () => {
-        const { data, message, pagination } = await getUsers();
+  const {
+    data: usersData,
+    isLoading: isGetUsersDataLoading,
+    isFetching: isGetUserDataFetching,
+    refetch: refetchGetUsers,
+  } = useQuery<CustomersResponse>({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const { data, message, pagination } = await getUsers(
+        searchTerm as string
+      );
 
-        const users = data?.map((user: any) => ({
-          _id: user._id,
-          createdAt: dayjs(user.createdAt).format("DD-MM-YYYY"),
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          // address: user.
-        }));
+      const users = data?.map((user: any) => ({
+        _id: user._id,
+        createdAt: dayjs(user.createdAt).format("MMM DD, YYYY"),
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        // address: user.
+      }));
 
-        return {
-          users,
-          message,
-          pagination,
-        };
-      },
-    });
+      return {
+        users,
+        message,
+        pagination,
+      };
+    },
+  });
+
+  useEffect(() => {
+    refetchGetUsers();
+  }, [searchTerm, refetchGetUsers]);
 
   // console.log(usersData);
 
-  if (isGetUsersDataLoading) {
+  if (isGetUsersDataLoading || isGetUserDataFetching) {
     return "loading...";
   }
 
@@ -199,7 +196,7 @@ export default function CustomersTable() {
               <th style={{ width: 150, padding: "12px 6px" }}>EMAIL</th>
               <th style={{ width: 120, padding: "12px 6px" }}>PHONE</th>
               <th style={{ width: 110, padding: "12px 6px" }}>ADDRESS</th>
-              <th style={{ width: 90, padding: "12px 6px" }}>JOINING DATE</th>
+              <th style={{ width: 90, padding: "12px 6px" }}>JOINED</th>
               <th style={{ width: 50, padding: "12px 6px" }}>ACTION</th>
             </tr>
           </thead>

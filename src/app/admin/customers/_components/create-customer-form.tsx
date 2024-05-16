@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import {
   Box,
@@ -8,11 +8,13 @@ import {
   FormLabel,
   Input,
   Stack,
-  Typography,
 } from "@mui/joy";
+import { useSnackbar } from "@/app/_components/snackbar-provider";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createUser } from "@/services/user.services";
 
 interface FormValues {
-  customerName: string;
+  name: string;
   email: string;
   phone: string;
   houseStreet: string;
@@ -20,16 +22,66 @@ interface FormValues {
   city: string;
 }
 
-const CreateCustomerForm = () => {
+const CreateCustomerForm = ({
+  setOpenCreateCustomerDrawer,
+}: {
+  setOpenCreateCustomerDrawer: Dispatch<SetStateAction<boolean>>;
+}) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>();
+    reset,
+  } = useForm<FormValues>({
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      houseStreet: "",
+      postcode: "",
+      city: "",
+    },
+  });
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
-    // Handle form submission here
+  const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
+
+  const {
+    mutateAsync: createUserMutate,
+    isPending: isCreateUserMutateLoading,
+  } = useMutation({
+    mutationFn: async (userData: any) => {
+      const response = await createUser(userData);
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    try {
+      const payload = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        password: "password",
+        orders: [],
+        addresses: [],
+        preferences: {},
+      };
+      const response = await createUserMutate(payload);
+
+      if (response?.success) {
+        reset();
+        setOpenCreateCustomerDrawer(false);
+        enqueueSnackbar(response.message, "success");
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error: any) {
+      // enqueueSnackbar(error.message, "error");
+    }
   };
 
   return (
@@ -46,14 +98,14 @@ const CreateCustomerForm = () => {
         <FormControl required>
           <FormLabel>Customer Name</FormLabel>
           <Controller
-            name="customerName"
+            name="name"
             control={control}
             rules={{ required: true }}
             render={({ field }) => (
               <Input
                 {...field}
                 placeholder="Enter customer name"
-                error={!!errors.customerName}
+                error={!!errors.name}
               />
             )}
           />
@@ -122,7 +174,11 @@ const CreateCustomerForm = () => {
           />
         </FormControl>
 
-        <Button type="submit" sx={{ mt: 2 }}>
+        <Button
+          type="submit"
+          sx={{ mt: 2 }}
+          loading={isCreateUserMutateLoading}
+        >
           Submit
         </Button>
       </Stack>

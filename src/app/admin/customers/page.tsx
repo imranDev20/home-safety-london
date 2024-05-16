@@ -25,13 +25,13 @@ import {
 } from "@mui/joy";
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
-import SearchIcon from "@mui/icons-material/Search";
 import CustomersTable from "./_components/customers-table";
 import { useState } from "react";
 import FormDrawer from "@/app/_components/common/form-drawer";
 import CreateCustomerForm from "./_components/create-customer-form";
 import { useQuery } from "@tanstack/react-query";
 import { exportUsers } from "@/services/user.services";
+import SearchField from "./_components/search-field";
 
 function Customers() {
   const theme = useTheme();
@@ -123,7 +123,6 @@ function Customers() {
           Customers
         </JoyLink>
       </Breadcrumbs>
-
       <Stack
         spacing={2}
         justifyContent="space-between"
@@ -166,7 +165,6 @@ function Customers() {
           </Button>
         </Stack>
       </Stack>
-
       <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>
         <Grid xs={12} sm={6} md={6}>
           <FormControl size="sm">
@@ -176,21 +174,19 @@ function Customers() {
             >
               Search for customers
             </FormLabel>
-            <Input
-              placeholder="Search for customers with name, email or phone..."
-              startDecorator={<SearchIcon />}
-            />
+            <SearchField />
           </FormControl>
         </Grid>
       </Grid>
-
       <CustomersTable />
 
       <FormDrawer
         open={openCreateCustomerDrawer}
         setOpen={setOpenCreateCustomerDrawer}
       >
-        <CreateCustomerForm />
+        <CreateCustomerForm
+          setOpenCreateCustomerDrawer={setOpenCreateCustomerDrawer}
+        />
       </FormDrawer>
     </>
   );

@@ -3,6 +3,7 @@ import ThemeRegistry from "../_components/theme-registry";
 import TopLoader from "../_components/common/top-loader";
 import AdminNavigation from "./_components/admin-navigation";
 import QueryProvider from "../_components/query-provider";
+import { SnackbarProvider } from "../_components/snackbar-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,15 +13,17 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <QueryProvider>
-      <ThemeRegistry options={{ key: "joy" }}>
-        <html lang="en">
-          <body className={inter.className}>
-            <TopLoader />
-            <AdminNavigation>{children}</AdminNavigation>
-          </body>
-        </html>
-      </ThemeRegistry>
-    </QueryProvider>
+    <html lang="en">
+      <body className={inter.className}>
+        <QueryProvider>
+          <ThemeRegistry options={{ key: "joy" }}>
+            <SnackbarProvider>
+              <TopLoader />
+              <AdminNavigation>{children}</AdminNavigation>
+            </SnackbarProvider>
+          </ThemeRegistry>
+        </QueryProvider>
+      </body>
+    </html>
   );
 }
