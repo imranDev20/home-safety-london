@@ -8,11 +8,20 @@ import {
   customerNotificationEmailHtml,
 } from "../_templates/customer-email";
 
+// Type guard to check if an error has a message property
+function isErrorWithMessage(error: unknown): error is { message: string } {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    typeof (error as any).message === "string"
+  );
+}
+
 export async function POST(req: Request) {
   try {
+    // Extract the reCAPTCHA secret key from environment variables
     const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-    const { reCaptchaToken, email, message, subject, name } = await req.json();
-
     if (!secretKey) {
       return NextResponse.json(
         { message: "reCAPTCHA secret key is missing" },
@@ -20,11 +29,14 @@ export async function POST(req: Request) {
       );
     }
 
+    // Parse the request body
+    const { reCaptchaToken, email, message, subject, name } = await req.json();
+
+    // Verify the reCAPTCHA token
     const verificationResponse = await verifyRecaptcha(
       reCaptchaToken,
       secretKey
     );
-
     if (!verificationResponse.success) {
       return NextResponse.json(
         formatResponse(
@@ -38,7 +50,7 @@ export async function POST(req: Request) {
 
     // Send email to admin
     const adminEmailSubject = `${name} wants to contact you`;
-    const adminEmailResponse = await sendEmail({
+    await sendEmail({
       from: email,
       to: process.env.ADMIN_EMAIL as string,
       subject: adminEmailSubject,
@@ -46,29 +58,27 @@ export async function POST(req: Request) {
     });
 
     // Send email to customer
-
-    const customerEmailResponse = await sendEmail({
+    await sendEmail({
       from: '"London Home Safety Limited" <no-reply@londonhomesafetylimited.com>',
       to: email,
       subject: customerEmailSubject,
       html: customerNotificationEmailHtml(name, subject, message),
     });
 
-    if (!adminEmailResponse.success || !customerEmailResponse.success) {
-      return NextResponse.json(
-        formatResponse(false, null, "Internal Server Error"),
-        { status: 500 }
-      );
-    }
-
+    // Return a success response
     return NextResponse.json(
       formatResponse(true, null, "Form submitted successfully")
     );
   } catch (error) {
-    // console.error("Error verifying reCAPTCHA:", error);
-    return NextResponse.json(
-      formatResponse(false, null, "Internal Server Error"),
-      { status: 500 }
-    );
+    // Handle errors and return a user-friendly message
+    const errorMessage = isErrorWithMessage(error)
+      ? error.message
+      : "Internal Server Error";
+
+    console.log(errorMessage);
+
+    return NextResponse.json(formatResponse(false, null, errorMessage), {
+      status: 500,
+    });
   }
 }

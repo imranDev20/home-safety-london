@@ -7,7 +7,6 @@ import {
   ShoppingCart,
   Support,
 } from "@mui/icons-material";
-import PersonIcon from "@mui/icons-material/Person";
 
 import {
   EicrIcon,
@@ -17,7 +16,6 @@ import {
   GasSafteyIcon,
   PatIcon,
 } from "@/app/_components/common/icons";
-
 import ElectricImage from "@/images/electric.jpg";
 
 export const ADMIN_OPTIONS = [
@@ -424,4 +422,6 @@ const MODIFIED_SERVICES = SERVICES.map((service) =>
 
 export const SUB_SERVICES = MODIFIED_SERVICES.flatMap((service) => service);
 
-export const FIXED_HEIGHT = 285;
+// Keep these here. Move the rest to a separate file.
+export const FIXED_HEIGHT: number = 285;
+export const BUSINESS_NAME: string = "London Home Safety Limited";

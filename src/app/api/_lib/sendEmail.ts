@@ -1,5 +1,3 @@
-import { formatResponse } from "@/shared/functions";
-import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
@@ -32,15 +30,10 @@ export async function sendEmail({
       html,
     });
     console.log(`Email sent to ${to}`);
-    return {
-      success: true,
-      message: `Email sent to ${to}`,
-    };
   } catch (error) {
     console.error(`Error sending email to ${to}:`, error);
-    return {
-      success: false,
-      message: `Error sending email to ${to}:`,
-    };
+    throw new Error(
+      "We're sorry, but it looks like something went wrong on our end"
+    );
   }
 }

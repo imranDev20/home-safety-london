@@ -25,13 +25,14 @@ export type Service = {
   }[];
 };
 
+// These are confirmed to be in use
 export type Pagination = {
   currentPage: number;
   totalPages: number;
   totalCount: number;
 };
 
-interface ComponentUseStateProps {
+export type ComponentUseStateProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-}
+};

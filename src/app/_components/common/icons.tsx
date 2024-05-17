@@ -16,6 +16,7 @@ import EngineersSvg from "@/images/icons/engineer.svg";
 import LowPriceSvg from "@/images/icons/low-price.svg";
 import FastResponseSvg from "@/images/icons/fast-response.svg";
 import BookingSvg from "@/images/icons/booking.svg";
+import GoogleColored from "@/images/icons/google-colored.svg";
 
 export const GasSafteyIcon = createSvgIcon(<GasSafteySvg />, "Gas");
 export const PatIcon = createSvgIcon(<PatSvg />, "Pat");
@@ -47,3 +48,4 @@ export const FastResponseIcon = createSvgIcon(
   "FastResponse"
 );
 export const BookingIcon = createSvgIcon(<BookingSvg />, "Booking");
+export const GoogleIcon = createSvgIcon(<GoogleColored />, "GoogleColored");

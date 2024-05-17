@@ -7,18 +7,30 @@ import ListItem from "@mui/joy/ListItem";
 import ListItemButton from "@mui/joy/ListItemButton";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import {
+  Avatar,
   Button,
   Container,
   Divider,
   Drawer,
+  Dropdown,
   IconButton,
   ListItemDecorator,
+  Menu,
+  MenuButton,
+  MenuItem,
   ModalClose,
   Typography,
   useTheme,
 } from "@mui/joy";
 
-import { HomeRounded, Login } from "@mui/icons-material";
+import {
+  History,
+  HomeRounded,
+  Login,
+  Logout,
+  Person,
+  Settings,
+} from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { customSlugify } from "@/shared/functions";
@@ -45,6 +57,15 @@ type Options = {
       }
     ) => void;
   };
+};
+
+type ServicesMenuProps = {
+  focusNext: () => void;
+  focusPrevious: () => void;
+  onMouseEnter?: (
+    event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLAnchorElement>) => void;
 };
 
 const useRovingIndex = (options?: Options) => {
@@ -98,15 +119,6 @@ const useRovingIndex = (options?: Options) => {
     focusNext,
     focusPrevious,
   };
-};
-
-type ServicesMenuProps = {
-  focusNext: () => void;
-  focusPrevious: () => void;
-  onMouseEnter?: (
-    event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => void;
-  onKeyDown?: (event: React.KeyboardEvent<HTMLAnchorElement>) => void;
 };
 
 const ServicesMenu = forwardRef(
@@ -221,7 +233,6 @@ const ServicesMenu = forwardRef(
     );
   }
 );
-
 ServicesMenu.displayName = "ServicesMenu";
 
 function MobileNavList() {
@@ -351,6 +362,7 @@ function Navbar({
             >
               Login
             </Button>
+
             <IconButton
               variant="outlined"
               sx={{ display: { xs: "flex", md: "none" } }}
@@ -367,22 +379,19 @@ function Navbar({
 
 export default function Header() {
   const [openMobileDrawer, setOpenMobileDrawer] = useState<boolean>(false);
-
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
-  const [visible, setVisible] = useState<boolean>(true);
+  const [prevScrollPos, setPrevScrollPos] = useState<number>(0);
+  const [visible, setVisible] = useState<boolean>(false);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.scrollY;
-      setVisible(prevScrollPos > currentScrollPos && currentScrollPos > 200);
+      setVisible(prevScrollPos > currentScrollPos && currentScrollPos > 400);
       setPrevScrollPos(currentScrollPos);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [prevScrollPos]);
-
-  console.log(prevScrollPos);
 
   return (
     <>
@@ -424,7 +433,7 @@ export default function Header() {
           width: "100%",
           backgroundColor: "#fff",
           transition: "top 0.3s ease-in-out",
-          zIndex: 1000000,
+          zIndex: 100,
           boxShadow: "md",
           ...(visible ? {} : { top: "-100%" }),
         }}
