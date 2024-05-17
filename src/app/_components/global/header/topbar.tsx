@@ -1,5 +1,23 @@
-import { Email, Phone, WhatsApp } from "@mui/icons-material";
-import { Box, Container, Stack, Typography, useTheme } from "@mui/joy";
+import {
+  Email,
+  Facebook,
+  Instagram,
+  Login,
+  Phone,
+  Twitter,
+  WhatsApp,
+  X,
+} from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/joy";
+import Link from "next/link";
 import React from "react";
 
 const Topbar = () => {
@@ -12,27 +30,27 @@ const Topbar = () => {
           xs: "none",
           md: "block",
         },
-        py: 1.5,
-        backgroundColor: "rgba(0,137,123,0.2)",
+
+        backgroundColor: theme.palette.background.level1,
       }}
     >
       <Container
         sx={{
           display: "flex",
-          justifyContent: { xs: "flex-start", sm: "center", lg: "flex-end" },
+          justifyContent: "space-between",
         }}
       >
         <Stack
           sx={{
-            display: "flex",
             gap: 4,
-            flexDirection: { xs: "column", sm: "row", md: "row" },
           }}
+          direction="row"
         >
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
+              py: 1.5,
             }}
           >
             <WhatsApp
@@ -43,9 +61,10 @@ const Topbar = () => {
               }}
             />
             <Typography
-              level="body-md"
+              level="body-sm"
               sx={{
                 fontWeight: 600,
+                color: theme.palette.text.secondary,
               }}
             >
               07480 062995
@@ -66,9 +85,10 @@ const Topbar = () => {
               }}
             />
             <Typography
-              level="body-md"
+              level="body-sm"
               sx={{
                 fontWeight: 600,
+                color: theme.palette.text.secondary,
               }}
             >
               0191 743 1448
@@ -89,14 +109,36 @@ const Topbar = () => {
               }}
             />
             <Typography
-              level="body-md"
+              level="body-sm"
               sx={{
                 fontWeight: 600,
+                color: theme.palette.text.secondary,
               }}
             >
               info@homesafetylondon.co.uk
             </Typography>
           </Box>
+        </Stack>
+
+        <Stack direction="row" alignItems="center" gap={5}>
+          <Stack direction="row" alignItems="center" gap={1}>
+            <Facebook
+              sx={{
+                color: theme.palette.secondary[500],
+              }}
+            />
+            <Instagram
+              sx={{
+                color: theme.palette.secondary[500],
+              }}
+            />
+            <X
+              fontSize="xl"
+              sx={{
+                color: theme.palette.secondary[500],
+              }}
+            />
+          </Stack>
         </Stack>
       </Container>
     </Box>

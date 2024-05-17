@@ -5,6 +5,7 @@ import {
   Button,
   Container,
   FormControl,
+  FormLabel,
   Grid,
   Input,
   InputProps,
@@ -138,19 +139,14 @@ export default function ContactUsForm() {
                       }}
                       control={control}
                       render={({ field }) => (
-                        <FormControl
-                          error={!!errors.name}
-                          sx={{
-                            mb: 1,
-                          }}
-                        >
+                        <FormControl error={!!errors.name} size="md">
+                          <FormLabel>Name</FormLabel>
                           <Input
                             {...field}
                             placeholder="Your Name"
                             type="text"
                             fullWidth
                             variant="outlined"
-                            size="lg"
                           />
                           <HookFormError name="name" errors={errors} />
                         </FormControl>
@@ -169,19 +165,14 @@ export default function ContactUsForm() {
                       }}
                       control={control}
                       render={({ field }) => (
-                        <FormControl
-                          error={!!errors.email}
-                          sx={{
-                            mb: 1,
-                          }}
-                        >
+                        <FormControl error={!!errors.email} size="md">
+                          <FormLabel>Email</FormLabel>
                           <Input
                             {...field}
                             placeholder="Your Email Address"
                             type="email"
                             fullWidth
                             variant="outlined"
-                            size="lg"
                           />
                           <HookFormError name="email" errors={errors} />
                         </FormControl>
@@ -203,13 +194,14 @@ export default function ContactUsForm() {
                         },
                       }}
                       render={({ field }) => (
-                        <FormControl error={!!errors.phone} sx={{ mb: 1 }}>
+                        <FormControl error={!!errors.phone} size="md">
+                          <FormLabel>Phone</FormLabel>
+
                           <Input
                             {...field}
                             placeholder="Your Phone Number"
                             variant="outlined"
                             fullWidth
-                            size="lg"
                             slotProps={{
                               input: {
                                 component: PhoneInputAdapter,
@@ -230,19 +222,15 @@ export default function ContactUsForm() {
                       }}
                       control={control}
                       render={({ field }) => (
-                        <FormControl
-                          error={!!errors.subject}
-                          sx={{
-                            mb: 1,
-                          }}
-                        >
+                        <FormControl error={!!errors.subject} size="md">
+                          <FormLabel>Subject</FormLabel>
+
                           <Input
                             {...field}
                             placeholder="Give a subject"
                             type="text"
                             fullWidth
                             variant="outlined"
-                            size="lg"
                           />
                           <HookFormError name="subject" errors={errors} />
                         </FormControl>
@@ -257,10 +245,15 @@ export default function ContactUsForm() {
                       }}
                       control={control}
                       render={({ field }) => (
-                        <FormControl error={!!errors.message} sx={{ mb: 1 }}>
+                        <FormControl
+                          error={!!errors.message}
+                          sx={{ mb: 1 }}
+                          size="md"
+                        >
+                          <FormLabel>Message</FormLabel>
                           <Textarea
                             {...field}
-                            minRows={5}
+                            minRows={4}
                             placeholder="Type your Message here..."
                             variant="outlined"
                             size="lg"
@@ -279,7 +272,7 @@ export default function ContactUsForm() {
                     loading={isSubmitContactUsFormPending}
                     loadingPosition="start"
                   >
-                    Send Message
+                    Submit
                   </Button>
                 </Box>
               </Box>
