@@ -26,6 +26,7 @@ import { SERVICES, SITE_OPTIONS } from "@/shared/constants";
 import { forwardRef, useRef, useState } from "react";
 import Topbar from "./topbar";
 import { usePathname } from "next/navigation";
+import useScrollTrigger from "../hooks/use-scroll-trigger";
 
 type Options = {
   initialActiveIndex?: number | null;
@@ -257,132 +258,133 @@ function MobileNavList() {
 export default function Header() {
   const { targets, getTargetProps, setActiveIndex, focusNext, focusPrevious } =
     useRovingIndex();
+  const trigger = useScrollTrigger({ threshold: 0 });
 
-  const [openMobileDrawer, setOpenMobileDrawer] = useState(false);
+  const [openMobileDrawer, setOpenMobileDrawer] = useState<boolean>(false);
 
   return (
-    <Box component="header" sx={{ zIndex: 10, position: "relative" }}>
-      <Topbar />
+    <>
+      {/* <Box component="header" sx={{ zIndex: 10, position: "relative" }}>
+        <Topbar />
 
-      {/* Mobile & tablet screen drawer */}
-      <Drawer
-        open={openMobileDrawer}
-        onClose={() => setOpenMobileDrawer(false)}
-        size="md"
-      >
-        <Box
-          sx={{
-            display: "flex",
-            p: 2,
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
+        <Drawer
+          open={openMobileDrawer}
+          onClose={() => setOpenMobileDrawer(false)}
+          size="md"
         >
-          <Typography level="h4">Home Safety London</Typography>
-          <ModalClose id="close-icon" sx={{ position: "initial" }} />
-        </Box>
-        <Divider />
-
-        <Box
-          sx={{
-            p: 2,
-          }}
-        >
-          <MobileNavList />
-        </Box>
-      </Drawer>
-
-      {/* large screen navbar */}
-      <Container sx={{ zIndex: 100000, position: "relative" }}>
-        <Box
-          sx={{
-            display: "flex",
-            py: 2,
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography level="h4">Home Safety London</Typography>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <List
-              role="menubar"
-              orientation="horizontal"
-              sx={{
-                "--List-radius": "8px",
-                "--List-padding": "4px",
-                "--List-gap": "8px",
-                "--ListItem-gap": "0px",
-                justifyContent: "flex-end",
-                mr: 4,
-                display: { xs: "none", md: "flex" },
-              }}
-            >
-              <ListItem role="none">
-                <ListItemButton
-                  component={Link}
-                  role="menuitem"
-                  {...getTargetProps(0)}
-                  href="/"
-                  sx={{ textDecoration: "none", fontWeight: 600 }}
-                >
-                  <ListItemDecorator>
-                    <HomeRounded />
-                  </ListItemDecorator>
-                  Home
-                </ListItemButton>
-              </ListItem>
-              <ListItem role="none">
-                <ListItemButton
-                  role="menuitem"
-                  {...getTargetProps(1)}
-                  component={Link}
-                  href="/about"
-                  sx={{ fontWeight: 600 }}
-                >
-                  About
-                </ListItemButton>
-              </ListItem>
-              <ListItem role="none">
-                <ServicesMenu
-                  onMouseEnter={() => {
-                    setActiveIndex(2);
-                    targets[2].focus();
-                  }}
-                  focusNext={focusNext}
-                  focusPrevious={focusPrevious}
-                  {...getTargetProps(2)}
-                />
-              </ListItem>
-              <ListItem role="none">
-                <ListItemButton
-                  role="menuitem"
-                  {...getTargetProps(3)}
-                  component={Link}
-                  href="/contact"
-                  sx={{ fontWeight: 600 }}
-                >
-                  Contact
-                </ListItemButton>
-              </ListItem>
-            </List>
-            <Button
-              sx={{ display: { xs: "none", md: "flex" } }}
-              startDecorator={<Login />}
-              component={Link}
-              href="/login"
-            >
-              Login
-            </Button>
-            <IconButton
-              variant="outlined"
-              sx={{ display: { xs: "flex", md: "none" } }}
-              onClick={() => setOpenMobileDrawer(true)}
-            >
-              <MenuIcon />
-            </IconButton>
+          <Box
+            sx={{
+              display: "flex",
+              p: 2,
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography level="h4">Home Safety London</Typography>
+            <ModalClose id="close-icon" sx={{ position: "initial" }} />
           </Box>
-        </Box>
-      </Container>
-    </Box>
+          <Divider />
+
+          <Box
+            sx={{
+              p: 2,
+            }}
+          >
+            <MobileNavList />
+          </Box>
+        </Drawer>
+
+        <Container sx={{ zIndex: 100000, position: "relative" }}>
+          <Box
+            sx={{
+              display: "flex",
+              py: 2,
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography level="h4">Home Safety London</Typography>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <List
+                role="menubar"
+                orientation="horizontal"
+                sx={{
+                  "--List-radius": "8px",
+                  "--List-padding": "4px",
+                  "--List-gap": "8px",
+                  "--ListItem-gap": "0px",
+                  justifyContent: "flex-end",
+                  mr: 4,
+                  display: { xs: "none", md: "flex" },
+                }}
+              >
+                <ListItem role="none">
+                  <ListItemButton
+                    component={Link}
+                    role="menuitem"
+                    {...getTargetProps(0)}
+                    href="/"
+                    sx={{ textDecoration: "none", fontWeight: 600 }}
+                  >
+                    <ListItemDecorator>
+                      <HomeRounded />
+                    </ListItemDecorator>
+                    Home
+                  </ListItemButton>
+                </ListItem>
+                <ListItem role="none">
+                  <ListItemButton
+                    role="menuitem"
+                    {...getTargetProps(1)}
+                    component={Link}
+                    href="/about"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    About
+                  </ListItemButton>
+                </ListItem>
+                <ListItem role="none">
+                  <ServicesMenu
+                    onMouseEnter={() => {
+                      setActiveIndex(2);
+                      targets[2].focus();
+                    }}
+                    focusNext={focusNext}
+                    focusPrevious={focusPrevious}
+                    {...getTargetProps(2)}
+                  />
+                </ListItem>
+                <ListItem role="none">
+                  <ListItemButton
+                    role="menuitem"
+                    {...getTargetProps(3)}
+                    component={Link}
+                    href="/contact"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    Contact
+                  </ListItemButton>
+                </ListItem>
+              </List>
+              <Button
+                sx={{ display: { xs: "none", md: "flex" } }}
+                startDecorator={<Login />}
+                component={Link}
+                href="/login"
+              >
+                Login
+              </Button>
+              <IconButton
+                variant="outlined"
+                sx={{ display: { xs: "flex", md: "none" } }}
+                onClick={() => setOpenMobileDrawer(true)}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
+          </Box>
+        </Container>
+      </Box> */}
+    </>
   );
 }

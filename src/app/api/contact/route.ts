@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 
     // Send email to admin
     const adminEmailSubject = `${name} wants to contact you`;
-    await sendEmail({
+    const adminEmailResponse = await sendEmail({
       from: email,
       to: process.env.ADMIN_EMAIL as string,
       subject: adminEmailSubject,
@@ -47,18 +47,25 @@ export async function POST(req: Request) {
 
     // Send email to customer
 
-    await sendEmail({
+    const customerEmailResponse = await sendEmail({
       from: '"London Home Safety Limited" <no-reply@londonhomesafetylimited.com>',
       to: email,
       subject: customerEmailSubject,
       html: customerNotificationEmailHtml(name, subject, message),
     });
 
+    if (!adminEmailResponse.success || !customerEmailResponse.success) {
+      return NextResponse.json(
+        formatResponse(false, null, "Internal Server Error"),
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
       formatResponse(true, null, "Form submitted successfully")
     );
   } catch (error) {
-    console.error("Error verifying reCAPTCHA:", error);
+    // console.error("Error verifying reCAPTCHA:", error);
     return NextResponse.json(
       formatResponse(false, null, "Internal Server Error"),
       { status: 500 }

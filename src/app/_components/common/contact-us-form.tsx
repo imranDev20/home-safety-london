@@ -52,6 +52,8 @@ export default function ContactUsForm() {
   const reCaptchaToken = useRecaptchaToken();
   const { enqueueSnackbar } = useSnackbar();
 
+  console.log(reCaptchaToken);
+
   const {
     handleSubmit,
     formState: { errors },
