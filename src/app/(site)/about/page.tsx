@@ -5,15 +5,17 @@ import AboutUs from "./_components/about";
 import Advantage from "./_components/advantage";
 import Achivment from "./_components/achivment";
 import Partners from "../../_components/common/partners";
+import AboutCta from "./_components/about-cta";
 
 const About = () => {
   return (
     <>
       <PageHeader backgroundImage={backgroundImage} title="About Us" />
       <AboutUs />
-      {/* <ExpertTeam /> */}
-      <Advantage />
+      <AboutCta />
       <Partners />
+      <Advantage />
+
       <Achivment />
     </>
   );

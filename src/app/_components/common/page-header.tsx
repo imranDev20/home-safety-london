@@ -1,10 +1,9 @@
 "use client";
-import { Box, Breadcrumbs, Link, Typography, useTheme } from "@mui/joy";
+import { Box, Breadcrumbs, Link, Typography } from "@mui/joy";
 import Image from "next/image";
 import { PageHeaderProps } from "@/types/props";
 
 const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
-  const theme = useTheme();
   return (
     <Box component="section" sx={{ position: "relative" }}>
       <Image

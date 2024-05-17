@@ -6,6 +6,7 @@ import { FireRiskIcon } from "@/app/_components/common/icons";
 
 export default function Achivment() {
   const [counterOn, setCounterOn] = useState(false);
+
   return (
     <Sheet variant="soft">
       <Container sx={{ py: 10 }}>

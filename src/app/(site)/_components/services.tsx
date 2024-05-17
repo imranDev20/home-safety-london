@@ -1,37 +1,31 @@
-import React from "react";
-import { Box, Container, Grid, Sheet, Typography } from "@mui/joy";
+import { Box, Button, Container, Grid, Sheet, Typography } from "@mui/joy";
 import Service from "./service";
+import Link from "next/link";
 
 const SERVICES_PRICE = [
   {
     id: 1,
-    ServiceName: "Electrical Services",
+    serviceName: "Electrical Services",
     serviceDetail:
       "Reliable, efficient, 24/7 electric service. Expert technicians, prompt repairs, affordable rates. Powering homes and businesses with safety and excellence.",
   },
   {
     id: 2,
-    ServiceName: "Gas Services",
+    serviceName: "Gas Services",
     serviceDetail:
       "Reliable gas services for homes and businesses. Installation, repairs, and maintenance. Experienced technicians, 24/7 emergency support, and competitive rates.",
   },
   {
     id: 3,
-    ServiceName: "Fire Services",
+    serviceName: "Fire Services",
     serviceDetail:
       "Fire protection service ensures safety by installing fire alarms, extinguishers, and sprinkler systems, providing crucial support in emergencies, safeguarding lives, and properties.",
   },
   {
     id: 4,
-    ServiceName: "Health & Safety",
+    serviceName: "Health & Safety",
     serviceDetail:
       "Energy performance certification ensures buildings meet energy standards, promoting energy efficiency, reducing costs, and contributing to a sustainable environment.",
-  },
-  {
-    id: 5,
-    ServiceName: "Inventory Services",
-    serviceDetail:
-      "Reliable, efficient, 24/7 electric service. Expert technicians, prompt repairs, affordable rates. Powering homes and businesses with safety and excellence.",
   },
 ];
 
@@ -90,6 +84,12 @@ export default function Services() {
             </Grid>
           ))}
         </Grid>
+
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
+          <Button size="lg" variant="solid" component={Link} href="/services">
+            View All
+          </Button>
+        </Box>
       </Container>
     </Sheet>
   );

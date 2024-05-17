@@ -1,10 +1,12 @@
+import { customSlugify } from "@/shared/functions";
 import { Box, Button, Card, Sheet, Typography } from "@mui/joy";
+import Link from "next/link";
 import React from "react";
 
 interface ServiceProps {
   service: {
     id: number;
-    ServiceName: string;
+    serviceName: string;
     serviceDetail: string;
   };
 }
@@ -19,7 +21,7 @@ export default function Service({ service }: ServiceProps) {
             mb: 2,
           }}
         >
-          {service.ServiceName}
+          {service.serviceName}
         </Typography>
         <Typography sx={{ textAlign: "center", mb: 3 }} color="neutral">
           {service.serviceDetail}
@@ -32,7 +34,13 @@ export default function Service({ service }: ServiceProps) {
             alignItems: "flex-end",
           }}
         >
-          <Button variant="solid">Find Out More</Button>
+          <Button
+            variant="solid"
+            component={Link}
+            href={`/services/${customSlugify(service.serviceName)}`}
+          >
+            Find Out More
+          </Button>
         </Box>
       </Box>
     </Card>

@@ -45,7 +45,8 @@ export const theme = extendTheme({
           // Adjust the global variant tokens as you'd like.
           // The tokens should be the same for all color schemes.
           solidBg: "var(--joy-palette-secondary-400)",
-          solidActiveBg: "var(--joy-palette-secondary-500)",
+          solidActiveBg: "var(--joy-palette-secondary-600)",
+          solidHoverBg: "var(--joy-palette-secondary-600)",
           outlinedBorder: "var(--joy-palette-secondary-500)",
           outlinedColor: "var(--joy-palette-secondary-700)",
           outlinedActiveBg: "var(--joy-palette-secondary-100)",
