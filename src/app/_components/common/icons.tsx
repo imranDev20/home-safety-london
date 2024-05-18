@@ -16,7 +16,11 @@ import EngineersSvg from "@/images/icons/engineer.svg";
 import LowPriceSvg from "@/images/icons/low-price.svg";
 import FastResponseSvg from "@/images/icons/fast-response.svg";
 import BookingSvg from "@/images/icons/booking.svg";
-import GoogleColored from "@/images/icons/google-colored.svg";
+import GoogleColoredSvg from "@/images/icons/google-colored.svg";
+import EicrOutlinedSvg from "@/images/icons/eicr-outlined.svg";
+import GasOutlinedSvg from "@/images/icons/gas-outlined.svg";
+import FireAlarmBellOutlinedSvg from "@/images/icons/fire-alarm-bell.svg";
+import HealthHeartOutlinedSvg from "@/images/icons/health-heart-outlined.svg";
 
 export const GasSafteyIcon = createSvgIcon(<GasSafteySvg />, "Gas");
 export const PatIcon = createSvgIcon(<PatSvg />, "Pat");
@@ -48,4 +52,19 @@ export const FastResponseIcon = createSvgIcon(
   "FastResponse"
 );
 export const BookingIcon = createSvgIcon(<BookingSvg />, "Booking");
-export const GoogleIcon = createSvgIcon(<GoogleColored />, "GoogleColored");
+export const GoogleIcon = createSvgIcon(<GoogleColoredSvg />, "GoogleColored");
+export const EicrOutlinedIcon = createSvgIcon(
+  <EicrOutlinedSvg />,
+  "EicrOutlined"
+);
+
+export const GasOutlinedIcon = createSvgIcon(<GasOutlinedSvg />, "GasOutlined");
+export const FireAlarmBellOutlinedIcon = createSvgIcon(
+  <FireAlarmBellOutlinedSvg />,
+  "FireAlarmBellOutlined"
+);
+
+export const HealthHeartOutlinedIcon = createSvgIcon(
+  <HealthHeartOutlinedSvg />,
+  "HealthHeartOutlined"
+);

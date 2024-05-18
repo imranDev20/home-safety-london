@@ -71,7 +71,9 @@ export default function Header() {
         </Box>
       </Drawer>
 
-      <Navbar setOpenMobileDrawer={setOpenMobileDrawer} />
+      <Box>
+        <Navbar setOpenMobileDrawer={setOpenMobileDrawer} isInverted />
+      </Box>
 
       <Box
         sx={{

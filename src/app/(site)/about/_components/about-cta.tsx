@@ -74,7 +74,6 @@ export default function AboutCta() {
             size="lg"
             sx={{
               mt: 3,
-              color: "white",
             }}
           >
             Book Now

@@ -12,27 +12,23 @@ import React from "react";
 
 const BookNow = () => {
   return (
-    <Card variant="plain">
+    <Card variant="solid" color="primary">
       <CardContent>
         <Typography
           level="h2"
           sx={{
+            color: "white",
             textAlign: "center",
           }}
         >
           Book Now
         </Typography>
 
-        <Divider
-          sx={{
-            my: 2,
-          }}
-        />
         <Typography
           sx={{
+            color: "white",
             textAlign: "center",
           }}
-          color="neutral"
         >
           Select Your Property as appropriate and get quote in 30 seconds!
         </Typography>
@@ -45,26 +41,28 @@ const BookNow = () => {
         >
           <Button
             startDecorator={<Home />}
-            variant="outlined"
-            color="primary"
             size="lg"
             component={Link}
+            sx={{
+              border: "1px solid white",
+            }}
             href="/book-now?property_type=residential"
           >
             Residential Property
           </Button>
           <Button
             startDecorator={<CorporateFare />}
-            variant="outlined"
-            color="primary"
             size="lg"
             component={Link}
+            sx={{
+              border: "1px solid white",
+            }}
             href="/book-now?property_type=commercial"
           >
             Commercial Property
           </Button>
 
-          <Button startDecorator={<Textsms />} size="lg">
+          <Button startDecorator={<Textsms />} size="lg" color="secondary">
             Request a Quote
           </Button>
         </Stack>

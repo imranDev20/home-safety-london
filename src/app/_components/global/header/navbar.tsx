@@ -29,10 +29,12 @@ const NAV_ITEMS = [
   { label: "Contact", path: "/contact" },
 ];
 
-export default function Navbar({
+export default function MyNavbar({
   setOpenMobileDrawer,
+  isInverted,
 }: {
   setOpenMobileDrawer: Dispatch<SetStateAction<boolean>>;
+  isInverted?: boolean;
 }) {
   const { targets, getTargetProps, setActiveIndex, focusNext, focusPrevious } =
     useRovingIndex();
@@ -51,7 +53,14 @@ export default function Navbar({
             justifyContent: "space-between",
           }}
         >
-          <Typography level="h4">LHS</Typography>
+          <Typography
+            level="h4"
+            sx={{
+              color: "white",
+            }}
+          >
+            LHS
+          </Typography>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <List
               role="menubar"
@@ -70,6 +79,7 @@ export default function Navbar({
                 <ListItem key={path} role="none">
                   {path === "/services" ? (
                     <ServicesMenu
+                      isInverted={isInverted}
                       onMouseEnter={() => {
                         setActiveIndex(index);
                         targets[index].focus();
@@ -85,7 +95,21 @@ export default function Navbar({
                       sx={{
                         textDecoration: "none",
                         fontWeight: 600,
-                        "--variant-plainActiveBg": theme.palette.secondary[100],
+                        color: isInverted
+                          ? "white"
+                          : theme.palette.text.primary,
+                        ...(isInverted
+                          ? {
+                              "--variant-plainActiveBg": "transparent",
+                              "--variant-plainHoverBg": "transparent",
+
+                              "--variant-plainHoverColor":
+                                theme.palette.secondary[500],
+
+                              "--variant-plainActiveColor":
+                                theme.palette.secondary[500],
+                            }
+                          : {}),
                       }}
                       {...getTargetProps(index)}
                       href={path}
@@ -114,7 +138,7 @@ export default function Navbar({
                 <NavbarDropdown />
               ) : (
                 <Button
-                  variant="plain"
+                  variant="solid"
                   color="primary"
                   startDecorator={<Login />}
                   component={Link}
@@ -133,6 +157,8 @@ export default function Navbar({
               <Button
                 component={Link}
                 href="/book-now"
+                color="secondary"
+                size="lg"
                 sx={{
                   mr: {
                     xs: 3,

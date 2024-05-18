@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { Box, Card, CardContent, Typography, Button } from "@mui/joy";
+import { Box, Card, CardContent, Typography, Button, useTheme } from "@mui/joy";
 import StarIcon from "@mui/icons-material/Star";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
-import { CSSTransition } from "react-transition-group";
 
-const TRUNCATE_LENGTH = 300;
+const TRUNCATE_LENGTH = 150;
 
 interface TestimonialCardProps {
   slide: any; // Replace with the appropriate type for slide data
 }
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({ slide }) => {
+  const theme = useTheme();
   const [showFullContent, setShowFullContent] = useState(false);
   const truncatedContent =
     slide.content.length > TRUNCATE_LENGTH
@@ -30,7 +30,13 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ slide }) => {
         mx: 2,
       }}
     >
-      <Card variant="plain" sx={{ width: "100%" }}>
+      <Card
+        variant="plain"
+        sx={{
+          width: "100%",
+          backgroundColor: theme.palette.background.level3,
+        }}
+      >
         <CardContent
           sx={{
             display: "flex",

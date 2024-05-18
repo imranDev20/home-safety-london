@@ -31,7 +31,7 @@ const Topbar = () => {
           md: "block",
         },
 
-        backgroundColor: theme.palette.background.level1,
+        backgroundColor: theme.palette.primary[500],
       }}
     >
       <Container
@@ -61,10 +61,10 @@ const Topbar = () => {
               }}
             />
             <Typography
-              level="body-sm"
+              level="body-md"
               sx={{
                 fontWeight: 600,
-                color: theme.palette.text.secondary,
+                color: "white",
               }}
             >
               07480 062995
@@ -85,10 +85,10 @@ const Topbar = () => {
               }}
             />
             <Typography
-              level="body-sm"
+              level="body-md"
               sx={{
                 fontWeight: 600,
-                color: theme.palette.text.secondary,
+                color: "white",
               }}
             >
               0191 743 1448
@@ -109,10 +109,10 @@ const Topbar = () => {
               }}
             />
             <Typography
-              level="body-sm"
+              level="body-md"
               sx={{
                 fontWeight: 600,
-                color: theme.palette.text.secondary,
+                color: "white",
               }}
             >
               info@homesafetylondon.co.uk

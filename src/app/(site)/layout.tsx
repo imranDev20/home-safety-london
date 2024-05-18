@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import Header from "../_components/global/header/header";
 import Footer from "../_components/global/footer";
 import TopLoader from "../_components/common/top-loader";
@@ -9,7 +9,11 @@ import QueryProvider from "../_components/query-provider";
 import { SnackbarProvider } from "../_components/snackbar-provider";
 import ReCaptchaProvider from "../_components/recaptcha-provider";
 
-const inter = Inter({ subsets: ["latin"] });
+const outfit = Outfit({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-outfit",
+});
 
 export const metadata: Metadata = {
   title: "London Home Safety",
@@ -23,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={outfit.className}>
         <ReCaptchaProvider>
           <QueryProvider>
             <ThemeRegistry options={{ key: "joy" }}>

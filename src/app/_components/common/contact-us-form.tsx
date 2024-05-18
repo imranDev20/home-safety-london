@@ -3,14 +3,14 @@ import React from "react";
 import {
   Box,
   Button,
-  Container,
   FormControl,
   FormLabel,
   Grid,
   Input,
   InputProps,
+  Stack,
   Textarea,
-  Typography,
+  useTheme,
 } from "@mui/joy";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import HookFormError from "@/app/_components/common/hook-form-error";
@@ -52,6 +52,7 @@ type ContactFormInput = {
 export default function ContactUsForm() {
   const reCaptchaToken = useRecaptchaToken();
   const { enqueueSnackbar } = useSnackbar();
+  const theme = useTheme();
 
   console.log(reCaptchaToken);
 
@@ -100,186 +101,165 @@ export default function ContactUsForm() {
   };
 
   return (
-    <Container sx={{ py: 10 }}>
-      <Box>
-        <Box sx={{ textAlign: "center", py: 3 }}>
-          <Typography
-            component="h2"
-            level="h2"
-            sx={{
-              textAlign: "center",
-              mb: 2,
+    <Box component="form" onSubmit={handleSubmit(onContactFormSubmit)}>
+      <Stack spacing={2}>
+        <Controller
+          name="name"
+          rules={{
+            required: "Please enter your name",
+          }}
+          control={control}
+          render={({ field }) => (
+            <FormControl error={!!errors.name} size="lg">
+              <Input
+                {...field}
+                placeholder="Your Name"
+                type="text"
+                fullWidth
+                color="secondary"
+                sx={{
+                  color: theme.palette.text.primary,
+                }}
+              />
+              <HookFormError name="name" errors={errors} />
+            </FormControl>
+          )}
+        />
+
+        <Stack gap={2} direction="row">
+          <Controller
+            name="email"
+            rules={{
+              required: "Please enter your email",
+              pattern: {
+                value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
+                message: "provide a valid email",
+              },
             }}
-          >
-            Get In Touch
-          </Typography>
-          <Typography color="neutral">
-            Our friendly customer service team are ready to help you choose
-            <br />
-            the best safety certificate for your needs.
-          </Typography>
-        </Box>
-        <form onSubmit={handleSubmit(onContactFormSubmit)}>
-          <Grid
-            container
-            spacing={3}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
+            control={control}
+            render={({ field }) => (
+              <FormControl
+                error={!!errors.email}
+                size="lg"
+                sx={{
+                  flex: 1,
+                }}
+              >
+                <Input
+                  {...field}
+                  placeholder="Your Email Address"
+                  type="email"
+                  color="secondary"
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    color: theme.palette.text.primary,
+                  }}
+                />
+                <HookFormError name="email" errors={errors} />
+              </FormControl>
+            )}
+          />
+
+          <Controller
+            name="phone"
+            control={control}
+            rules={{
+              required: "Please enter your phone number",
+              validate: (value: string) => {
+                const valid = isValidPhoneNumber(value);
+
+                return valid || `Your provided phone number is not valid`;
+              },
             }}
-          >
-            <Grid xs={12} sm={10} md={7} sx={{ px: { xs: 4, sm: 4, md: 0 } }}>
-              <Box>
-                <Grid container spacing={2}>
-                  <Grid xs={12}>
-                    <Controller
-                      name="name"
-                      rules={{
-                        required: "Please enter your name",
-                      }}
-                      control={control}
-                      render={({ field }) => (
-                        <FormControl error={!!errors.name} size="md">
-                          <FormLabel>Name</FormLabel>
-                          <Input
-                            {...field}
-                            placeholder="Your Name"
-                            type="text"
-                            fullWidth
-                            variant="outlined"
-                          />
-                          <HookFormError name="name" errors={errors} />
-                        </FormControl>
-                      )}
-                    />
-                  </Grid>
-                  <Grid xs={12} sm={12} md={6}>
-                    <Controller
-                      name="email"
-                      rules={{
-                        required: "Please enter your email",
-                        pattern: {
-                          value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
-                          message: "provide a valid email",
-                        },
-                      }}
-                      control={control}
-                      render={({ field }) => (
-                        <FormControl error={!!errors.email} size="md">
-                          <FormLabel>Email</FormLabel>
-                          <Input
-                            {...field}
-                            placeholder="Your Email Address"
-                            type="email"
-                            fullWidth
-                            variant="outlined"
-                          />
-                          <HookFormError name="email" errors={errors} />
-                        </FormControl>
-                      )}
-                    />
-                  </Grid>
-                  <Grid xs={12} sm={12} md={6}>
-                    <Controller
-                      name="phone"
-                      control={control}
-                      rules={{
-                        required: "Please enter your phone number",
-                        validate: (value: string) => {
-                          const valid = isValidPhoneNumber(value);
+            render={({ field }) => (
+              <FormControl
+                error={!!errors.phone}
+                size="lg"
+                sx={{
+                  flex: 1,
+                }}
+              >
+                <Input
+                  {...field}
+                  placeholder="Your Phone Number"
+                  variant="outlined"
+                  fullWidth
+                  color="secondary"
+                  slotProps={{
+                    input: {
+                      component: PhoneInputAdapter,
+                    },
+                  }}
+                  sx={{
+                    color: theme.palette.text.primary,
+                  }}
+                />
+                <HookFormError name="phone" errors={errors} />
+              </FormControl>
+            )}
+          />
+        </Stack>
 
-                          return (
-                            valid || `Your provided phone number is not valid`
-                          );
-                        },
-                      }}
-                      render={({ field }) => (
-                        <FormControl error={!!errors.phone} size="md">
-                          <FormLabel>Phone</FormLabel>
+        <Controller
+          name="subject"
+          rules={{
+            required: "Please provide a subject",
+          }}
+          control={control}
+          render={({ field }) => (
+            <FormControl error={!!errors.subject} size="lg">
+              <Input
+                {...field}
+                placeholder="Give a subject"
+                type="text"
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                sx={{
+                  color: theme.palette.text.primary,
+                }}
+              />
+              <HookFormError name="subject" errors={errors} />
+            </FormControl>
+          )}
+        />
 
-                          <Input
-                            {...field}
-                            placeholder="Your Phone Number"
-                            variant="outlined"
-                            fullWidth
-                            slotProps={{
-                              input: {
-                                component: PhoneInputAdapter,
-                              },
-                            }}
-                          />
-                          <HookFormError name="phone" errors={errors} />
-                        </FormControl>
-                      )}
-                    />
-                  </Grid>
+        <Controller
+          name="message"
+          rules={{
+            required: "Message is required",
+          }}
+          control={control}
+          render={({ field }) => (
+            <FormControl error={!!errors.message} size="lg">
+              <Textarea
+                {...field}
+                minRows={4}
+                placeholder="Type your Message here..."
+                variant="outlined"
+                color="secondary"
+                sx={{
+                  color: theme.palette.text.primary,
+                }}
+              />
+              <HookFormError name="message" errors={errors} />
+            </FormControl>
+          )}
+        />
 
-                  <Grid xs={12}>
-                    <Controller
-                      name="subject"
-                      rules={{
-                        required: "Please provide a subject",
-                      }}
-                      control={control}
-                      render={({ field }) => (
-                        <FormControl error={!!errors.subject} size="md">
-                          <FormLabel>Subject</FormLabel>
-
-                          <Input
-                            {...field}
-                            placeholder="Give a subject"
-                            type="text"
-                            fullWidth
-                            variant="outlined"
-                          />
-                          <HookFormError name="subject" errors={errors} />
-                        </FormControl>
-                      )}
-                    />
-                  </Grid>
-                  <Grid xs={12}>
-                    <Controller
-                      name="message"
-                      rules={{
-                        required: "Message is required",
-                      }}
-                      control={control}
-                      render={({ field }) => (
-                        <FormControl
-                          error={!!errors.message}
-                          sx={{ mb: 1 }}
-                          size="md"
-                        >
-                          <FormLabel>Message</FormLabel>
-                          <Textarea
-                            {...field}
-                            minRows={4}
-                            placeholder="Type your Message here..."
-                            variant="outlined"
-                            size="lg"
-                          />
-                          <HookFormError name="message" errors={errors} />
-                        </FormControl>
-                      )}
-                    />
-                  </Grid>
-                </Grid>
-                <Box sx={{ pt: 2 }}>
-                  <Button
-                    type="submit"
-                    variant="solid"
-                    sx={{ width: "100%" }}
-                    loading={isSubmitContactUsFormPending}
-                    loadingPosition="start"
-                  >
-                    Submit
-                  </Button>
-                </Box>
-              </Box>
-            </Grid>
-          </Grid>
-        </form>
-      </Box>
-    </Container>
+        <Button
+          type="submit"
+          variant="solid"
+          color="secondary"
+          sx={{ width: "100%" }}
+          loading={isSubmitContactUsFormPending}
+          loadingPosition="start"
+          size="lg"
+        >
+          Submit
+        </Button>
+      </Stack>
+    </Box>
   );
 }

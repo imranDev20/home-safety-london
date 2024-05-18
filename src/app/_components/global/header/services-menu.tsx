@@ -16,11 +16,12 @@ type ServicesMenuProps = {
     event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLAnchorElement>) => void;
+  isInverted?: boolean;
 };
 
 const ServicesMenu = forwardRef(
   (
-    { focusNext, focusPrevious, ...props }: ServicesMenuProps,
+    { focusNext, focusPrevious, isInverted, ...props }: ServicesMenuProps,
     ref: React.ForwardedRef<HTMLAnchorElement>
   ) => {
     const [anchorEl, setAnchorEl] = useState<HTMLAnchorElement | null>(null);
@@ -84,7 +85,17 @@ const ServicesMenu = forwardRef(
             sx={(theme) => ({
               ...(open && theme.variants.plainHover.neutral),
               fontWeight: 600,
-              "--variant-plainActiveBg": theme.palette.secondary[100],
+              color: isInverted ? "white" : theme.palette.text.primary,
+              ...(isInverted
+                ? {
+                    "--variant-plainActiveBg": "transparent",
+                    "--variant-plainHoverBg": "transparent",
+
+                    "--variant-plainHoverColor": theme.palette.secondary[500],
+
+                    "--variant-plainActiveColor": theme.palette.secondary[500],
+                  }
+                : {}),
             })}
             component={Link}
             href="/services"

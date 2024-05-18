@@ -12,7 +12,15 @@ import {
 } from "@/app/_components/common/icons";
 import { useTheme } from "@mui/joy/styles";
 
-import { Box, Card, CardContent, Container, Grid, Typography } from "@mui/joy";
+import {
+  Box,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  Sheet,
+  Typography,
+} from "@mui/joy";
 import Link from "next/link";
 
 const FIRST_ROW = [
@@ -40,9 +48,6 @@ const FIRST_ROW = [
     Icon: BoilerIcon,
     route: "/gas-services/boiler-certificate-repair",
   },
-];
-
-const SECOND_ROW = [
   {
     id: 7,
     name: "PAT Testing",
@@ -85,114 +90,71 @@ export default function SubServices() {
   const theme = useTheme();
 
   return (
-    <Container
+    <Sheet
+      variant="solid"
       sx={{
-        my: 10,
+        py: 10,
+        backgroundColor: theme.palette.background.level2,
       }}
     >
-      <Typography
-        level="h1"
-        component="h2"
-        sx={{
-          mb: 3,
-          textAlign: "center",
-        }}
-      >
-        Top Services
-      </Typography>
-      <Grid container spacing={2}>
-        {FIRST_ROW.map((item) => (
-          <Grid xs={12} sm={6} md={3} key={item.id}>
-            <Card
-              variant="outlined"
-              component={Link}
-              href={`/services${item.route}`}
-              sx={{
-                textDecoration: "none",
-                transition: ".3s ease",
-                ":hover": {
-                  border: "1px solid",
-                  borderColor: theme.colorSchemes.light.palette.primary[600],
-                },
-              }}
-            >
-              <CardContent>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <item.Icon
-                    color="primary"
+      <Container maxWidth="lg">
+        <Typography
+          level="h1"
+          component="h2"
+          fontSize={40}
+          sx={{
+            mb: 5,
+            textAlign: "center",
+          }}
+        >
+          Complete Solution Under One Roof
+        </Typography>
+        <Grid container spacing={5}>
+          {FIRST_ROW.map((item) => (
+            <Grid xs={12} md={3} key={item.id}>
+              <Card
+                variant="plain"
+                component={Link}
+                href={`/services${item.route}`}
+                sx={{
+                  textDecoration: "none",
+                  transition: ".3s ease",
+                  borderRadius: "lg",
+                }}
+              >
+                <CardContent>
+                  <Box
                     sx={{
-                      fontSize: 55,
-                      mb: 2,
-                    }}
-                  />
-
-                  <Typography level="title-lg">{item.name}</Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          mt: 1,
-        }}
-      >
-        {SECOND_ROW.map((item) => (
-          <Grid xs={12} sm={6} md={2} key={item.id}>
-            <Card
-              variant="outlined"
-              sx={{
-                textDecoration: "none",
-                transition: ".3s ease",
-                height: "100%",
-                ":hover": {
-                  border: "1px solid",
-                  borderColor: theme.colorSchemes.light.palette.primary[600],
-                },
-              }}
-              component={Link}
-              href={`/services${item.route}`}
-            >
-              <CardContent>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <item.Icon
-                    color="primary"
-                    sx={{
-                      fontSize: 50,
-                      mb: 2,
-                    }}
-                  />
-
-                  <Typography
-                    level="title-lg"
-                    sx={{
-                      textAlign: "center",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: 150,
                     }}
                   >
-                    {item.name}
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+                    <item.Icon
+                      color="primary"
+                      sx={{
+                        fontSize: 55,
+                        mb: 2,
+                      }}
+                    />
+                  </Box>
+                </CardContent>
+              </Card>
+              <Typography
+                level="title-lg"
+                sx={{
+                  textAlign: "center",
+                  mt: 2,
+                }}
+              >
+                {item.name}
+              </Typography>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </Sheet>
   );
 }
