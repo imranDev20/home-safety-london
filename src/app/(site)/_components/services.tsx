@@ -63,7 +63,7 @@ export default function Services() {
         <Typography
           level="h1"
           component="h2"
-          fontSize={40}
+          fontSize={42}
           sx={{
             mb: 5,
             textAlign: "center",

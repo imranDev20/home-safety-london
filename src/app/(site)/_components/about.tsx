@@ -20,43 +20,7 @@ export default function About() {
   return (
     <Container sx={{ my: 20 }}>
       <Grid container spacing={4}>
-        <Grid xs={12} md={6}>
-          <Box
-            sx={{
-              width: "100%",
-              position: "relative",
-              height: "100%",
-              borderRadius: 5,
-              overflow: "hidden",
-            }}
-          >
-            <Box
-              sx={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                justifyContent: "center",
-                "@media (min-width: 900px)": {
-                  position: "absolute",
-                },
-              }}
-            >
-              <Image
-                layout="intrinsic"
-                width={500}
-                objectFit="cover"
-                style={{
-                  width: "100%",
-                  objectFit: "cover",
-                }}
-                // sizes="(max-width: 768px) 30vw, 15vw"
-                sizes="500px"
-                src={electric}
-                alt="eletrician-image"
-              />
-            </Box>
-          </Box>
-        </Grid>
+        <Grid xs={12} md={6}></Grid>
         <Grid xs={12} md={6}>
           <Box>
             <Typography
@@ -71,23 +35,13 @@ export default function About() {
               About us
             </Typography>
             <Typography
-              component="h1"
-              level="h1"
+              component="h2"
               sx={{
                 mb: 2,
               }}
+              fontSize={38}
             >
-              We Are Commited to <br />
-              <Typography
-                component="span"
-                sx={{
-                  color: theme.colorSchemes.light.palette.secondary[500],
-                  fontWeight: 700,
-                }}
-              >
-                Provide Quality
-              </Typography>{" "}
-              Service
+              Reliable & Professional Maintenance Work
             </Typography>
             <Typography color="neutral">
               London Property Inspections have 15 years experience in providing

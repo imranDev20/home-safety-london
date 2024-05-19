@@ -1,14 +1,20 @@
 import {
   BoilerIcon,
+  BoilerOutlinedIcon,
   EicrIcon,
+  EicrOutlinedIcon,
+  EicrOutlinedTwoIcon,
   ElectricalRepairIcon,
-  EpcIcon,
+  EpcOutlinedIcon,
   FireAlarmCertificateIcon,
   FireAlarmInstallIcon,
   FireRiskIcon,
+  FireRiskOutlinedIcon,
   FuseBoxIcon,
+  GasOutlinedIcon,
   GasSafteyIcon,
   PatIcon,
+  PatOutlinedIcon,
 } from "@/app/_components/common/icons";
 import { useTheme } from "@mui/joy/styles";
 
@@ -27,37 +33,37 @@ const FIRST_ROW = [
   {
     id: 1,
     name: "Energy Certificate (EPC)",
-    Icon: EpcIcon,
+    Icon: EpcOutlinedIcon,
     route: "/electrical-services/epc",
   },
   {
     id: 2,
     name: "EICR",
-    Icon: EicrIcon,
+    Icon: EicrOutlinedTwoIcon,
     route: "/electrical-services/eicr",
   },
   {
     id: 3,
     name: "Gas Certificate & Repair",
-    Icon: GasSafteyIcon,
+    Icon: GasOutlinedIcon,
     route: "/gas-services/gas-certificate-repair",
   },
   {
     id: 4,
     name: "Boiler Service & Repair",
-    Icon: BoilerIcon,
+    Icon: BoilerOutlinedIcon,
     route: "/gas-services/boiler-certificate-repair",
   },
   {
     id: 7,
     name: "PAT Testing",
-    Icon: PatIcon,
+    Icon: PatOutlinedIcon,
     route: "/electrical-services/pat",
   },
   {
     id: 1,
     name: "Fire Risk Assessment",
-    Icon: FireRiskIcon,
+    Icon: FireRiskOutlinedIcon,
     route: "/fire-services/fire-risk-assessment",
   },
   {
@@ -83,6 +89,12 @@ const FIRST_ROW = [
     name: "Fire Alarm Installation",
     Icon: FireAlarmInstallIcon,
     route: "/fire-services/fire-alarm-installation",
+  },
+  {
+    id: 7,
+    name: "EV Charger Installation",
+    Icon: FireAlarmInstallIcon,
+    route: "/electrical-services/ev-charger-installation",
   },
 ];
 
@@ -135,8 +147,9 @@ export default function SubServices() {
                     <item.Icon
                       color="primary"
                       sx={{
-                        fontSize: 55,
+                        fontSize: 65,
                         mb: 2,
+                        // color: theme.palette.text.primary,
                       }}
                     />
                   </Box>

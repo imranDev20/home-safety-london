@@ -425,3 +425,4 @@ export const SUB_SERVICES = MODIFIED_SERVICES.flatMap((service) => service);
 // Keep these here. Move the rest to a separate file.
 export const FIXED_HEIGHT: number = 285;
 export const BUSINESS_NAME: string = "London Home Safety Limited";
+export const ADDRESS: string = "43 Felton Road, Barking, London IG11 7YA";

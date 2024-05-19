@@ -1,11 +1,11 @@
-import { Outfit } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import ThemeRegistry from "../_components/theme-registry";
 import TopLoader from "../_components/common/top-loader";
 import AdminNavigation from "./_components/admin-navigation";
 import QueryProvider from "../_components/query-provider";
 import { SnackbarProvider } from "../_components/snackbar-provider";
 
-const outfit = Outfit({ subsets: ["latin"] });
+const outfit = Inter({ subsets: ["latin"] });
 
 export default function AdminLayout({
   children,
