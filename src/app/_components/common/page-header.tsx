@@ -1,12 +1,12 @@
 "use client";
-import { Box, Breadcrumbs, Link, Typography, useTheme } from "@mui/joy";
+import { Box, Breadcrumbs, Link, Typography } from "@mui/joy";
 import Image from "next/image";
 import { PageHeaderProps } from "@/types/props";
+import { hexToRgba } from "@/shared/functions";
 
 const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
-  const theme = useTheme();
   return (
-    <Box component="section" sx={{ position: "relative" }}>
+    <Box component="section" sx={{ position: "relative", mt: -9.5 }}>
       <Image
         src={backgroundImage}
         alt="Background"
@@ -20,7 +20,7 @@ const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
         sx={{
           height: "100%",
           position: "relative",
-          pt: 10,
+          pt: 19.5,
           pb: 10,
           "&::before": {
             content: '""',
@@ -29,7 +29,8 @@ const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
             height: "100%",
             top: 0,
             left: 0,
-            backgroundColor: "rgba(17, 38, 49, .9)",
+            backgroundColor: hexToRgba("#062C64", 0.9),
+            mixBlendMode: "multiply",
           },
         }}
       >

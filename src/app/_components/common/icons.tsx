@@ -16,6 +16,16 @@ import EngineersSvg from "@/images/icons/engineer.svg";
 import LowPriceSvg from "@/images/icons/low-price.svg";
 import FastResponseSvg from "@/images/icons/fast-response.svg";
 import BookingSvg from "@/images/icons/booking.svg";
+import GoogleColoredSvg from "@/images/icons/google-colored.svg";
+import EicrOutlinedSvg from "@/images/icons/eicr-outlined.svg";
+import GasOutlinedSvg from "@/images/icons/gas-outlined.svg";
+import FireAlarmBellOutlinedSvg from "@/images/icons/fire-alarm-bell.svg";
+import HealthHeartOutlinedSvg from "@/images/icons/health-heart-outlined.svg";
+import EpcOutlinedSvg from "@/images/icons/epc-outlined.svg";
+import EicrOutlinedTwoSvg from "@/images/icons/eicr-outlined-2.svg";
+import BoilerOutlinedSvg from "@/images/icons/boiler-outlined.svg";
+import PatOutlinedSvg from "@/images/icons/pat-outlined.svg";
+import FireRiskOutlinedSvg from "@/images/icons/fire-risk-outlined.svg";
 
 export const GasSafteyIcon = createSvgIcon(<GasSafteySvg />, "Gas");
 export const PatIcon = createSvgIcon(<PatSvg />, "Pat");
@@ -47,3 +57,41 @@ export const FastResponseIcon = createSvgIcon(
   "FastResponse"
 );
 export const BookingIcon = createSvgIcon(<BookingSvg />, "Booking");
+export const GoogleIcon = createSvgIcon(<GoogleColoredSvg />, "GoogleColored");
+export const EicrOutlinedIcon = createSvgIcon(
+  <EicrOutlinedSvg />,
+  "EicrOutlined"
+);
+
+export const GasOutlinedIcon = createSvgIcon(<GasOutlinedSvg />, "GasOutlined");
+export const FireAlarmBellOutlinedIcon = createSvgIcon(
+  <FireAlarmBellOutlinedSvg />,
+  "FireAlarmBellOutlined"
+);
+
+export const HealthHeartOutlinedIcon = createSvgIcon(
+  <HealthHeartOutlinedSvg />,
+  "HealthHeartOutlined"
+);
+
+export const EpcOutlinedIcon = createSvgIcon(<EpcOutlinedSvg />, "EpcOutlined");
+
+export const EicrOutlinedTwoIcon = createSvgIcon(
+  <EicrOutlinedTwoSvg />,
+  "EicrOutlinedTwo"
+);
+
+export const BoilerOutlinedIcon = createSvgIcon(
+  <BoilerOutlinedSvg />,
+  "BoilerOutlined"
+);
+
+export const PatOutlinedIcon = createSvgIcon(
+  <PatOutlinedSvg />,
+  "BoilerOutlined"
+);
+
+export const FireRiskOutlinedIcon = createSvgIcon(
+  <FireRiskOutlinedSvg />,
+  "BoilerOutlined"
+);

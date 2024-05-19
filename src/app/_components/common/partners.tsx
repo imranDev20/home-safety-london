@@ -60,15 +60,6 @@ const SPONSER_PARTNER = [
 ];
 
 export default function Partners() {
-  // const isDesktop = useMediaQuery({
-  //   query: "(min-width: 900px)",
-  // });
-
-  // const isTabletOrMobile = useMediaQuery({
-  //   query: "(minWidth: 601,max-width: 899px)",
-  // });
-  // const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
-
   const [slidesToShow, setSlidesToShow] = useState(7);
 
   useEffect(() => {
@@ -90,7 +81,7 @@ export default function Partners() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
   return (
-    <Container sx={{ py: 8 }}>
+    <Container sx={{ my: 15 }}>
       <Box
         sx={{
           textAlign: "center",

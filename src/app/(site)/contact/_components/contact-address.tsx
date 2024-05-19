@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Box,
@@ -7,21 +8,34 @@ import {
   Grid,
   Sheet,
   Typography,
+  useTheme,
 } from "@mui/joy";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
-import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
-import ChatIcon from "@mui/icons-material/Chat";
 import { WatchLater } from "@mui/icons-material";
+import { ADDRESS } from "@/shared/constants";
 
 export default function ContactAddress() {
+  const theme = useTheme();
+
   return (
-    <Sheet variant="soft">
+    <Sheet
+      variant="soft"
+      sx={{
+        backgroundColor: "white",
+      }}
+    >
       <Container sx={{ py: 10 }}>
         <Grid container spacing={3}>
           <Grid xs={12} sm={6} md={4}>
-            <Card variant="plain" sx={{ height: "100%" }}>
+            <Card
+              variant="plain"
+              sx={{
+                height: "100%",
+                p: 3,
+                backgroundColor: theme.palette.background.level3,
+              }}
+            >
               <CardContent>
                 <Box
                   sx={{
@@ -38,7 +52,7 @@ export default function ContactAddress() {
 
                   <Box>
                     <Typography
-                      level="title-lg"
+                      level="h4"
                       sx={{
                         mb: 2,
                       }}
@@ -50,9 +64,9 @@ export default function ContactAddress() {
                       sx={{
                         mb: 0.5,
                       }}
+                      level="body-lg"
                     >
-                      Unit 46D, Micro Business Park, 46-50 Greatorex Street,
-                      London E1 5NP
+                      {ADDRESS}
                     </Typography>
                   </Box>
                 </Box>
@@ -60,7 +74,14 @@ export default function ContactAddress() {
             </Card>
           </Grid>
           <Grid xs={12} sm={6} md={4}>
-            <Card variant="plain" sx={{ height: "100%" }}>
+            <Card
+              variant="plain"
+              sx={{
+                height: "100%",
+                p: 3,
+                backgroundColor: theme.palette.background.level3,
+              }}
+            >
               <CardContent>
                 <Box
                   sx={{
@@ -77,7 +98,7 @@ export default function ContactAddress() {
 
                   <Box>
                     <Typography
-                      level="title-lg"
+                      level="h4"
                       sx={{
                         mb: 2,
                       }}
@@ -86,13 +107,14 @@ export default function ContactAddress() {
                     </Typography>
                     <Typography
                       color="neutral"
+                      level="body-lg"
                       sx={{
                         mb: 0.5,
                       }}
                     >
                       Mon-Fri 08:00 AM - 05:00 PM
                     </Typography>
-                    <Typography color="neutral">
+                    <Typography color="neutral" level="body-lg">
                       Sat-Sun: Emergency only
                     </Typography>
                   </Box>
@@ -102,7 +124,14 @@ export default function ContactAddress() {
           </Grid>
 
           <Grid xs={12} sm={6} md={4}>
-            <Card variant="plain" sx={{ height: "100%" }}>
+            <Card
+              variant="plain"
+              sx={{
+                height: "100%",
+                p: 3,
+                backgroundColor: theme.palette.background.level3,
+              }}
+            >
               <CardContent>
                 <Box
                   sx={{
@@ -119,7 +148,7 @@ export default function ContactAddress() {
 
                   <Box>
                     <Typography
-                      level="title-lg"
+                      level="h4"
                       sx={{
                         mb: 2,
                       }}
@@ -128,13 +157,14 @@ export default function ContactAddress() {
                     </Typography>
                     <Typography
                       color="neutral"
+                      level="body-lg"
                       sx={{
                         mb: 0.5,
                       }}
                     >
                       07480 062995
                     </Typography>
-                    <Typography color="neutral">
+                    <Typography color="neutral" level="body-lg">
                       info@londonhomesafety.co.uk
                     </Typography>
                   </Box>

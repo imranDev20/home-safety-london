@@ -2,7 +2,7 @@ import dbConnect from "@/app/api/_lib/dbConnect";
 
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   return NextResponse.json({ name: "user" });
 }
 

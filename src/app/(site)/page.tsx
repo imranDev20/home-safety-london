@@ -8,19 +8,20 @@ import SubServices from "./_components/sub-services";
 import Partners from "../_components/common/partners";
 import ContactUsForm from "../_components/common/contact-us-form";
 import Testimonial from "./_components/testimonial";
+import Contact from "./_components/contact";
 
 export default function Home() {
   return (
     <main>
       <Hero />
-      <SubServices />
-      <About />
       <Services />
+      <About />
+      <SubServices />
       <LondonMap />
       <Testimonial />
       <Partners />
       <Faq />
-      <ContactUsForm />
+      <Contact />
     </main>
   );
 }

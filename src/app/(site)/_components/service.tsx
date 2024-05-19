@@ -1,40 +1,68 @@
-import { Box, Button, Card, Sheet, Typography } from "@mui/joy";
+import { customSlugify } from "@/shared/functions";
+import {
+  Box,
+  Card,
+  Link as JoyLink,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/joy";
+import Link from "next/link";
 import React from "react";
 
 interface ServiceProps {
   service: {
     id: number;
-    ServiceName: string;
+    serviceName: string;
     serviceDetail: string;
+    Icon: any;
   };
 }
 
 export default function Service({ service }: ServiceProps) {
+  const theme = useTheme();
   return (
-    <Card variant="plain">
-      <Box sx={{ textAlign: "center" }}>
-        <Typography
-          level="h3"
-          sx={{
-            mb: 2,
-          }}
-        >
-          {service.ServiceName}
-        </Typography>
-        <Typography sx={{ textAlign: "center", mb: 3 }} color="neutral">
-          {service.serviceDetail}
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "flex-end",
-          }}
-        >
-          <Button variant="solid">Find Out More</Button>
-        </Box>
-      </Box>
-    </Card>
+    <JoyLink
+      component={Link}
+      href={`/services/${customSlugify(service.serviceName)}`}
+      underline="none"
+    >
+      <Card
+        variant="plain"
+        sx={{
+          p: 4,
+          borderRadius: "xl",
+          transition: "350ms all ease",
+          ":hover": {
+            backgroundColor: theme.palette.primary[500],
+            ".MuiTypography-root": {
+              color: "white",
+            },
+            ".MuiSvgIcon-root": {
+              color: "white",
+            },
+          },
+        }}
+      >
+        <Stack direction="row" spacing={3}>
+          <service.Icon
+            sx={{
+              fontSize: 70,
+            }}
+          />
+          <Stack>
+            <Typography
+              level="h3"
+              sx={{
+                mb: 2,
+              }}
+            >
+              {service.serviceName}
+            </Typography>
+            <Typography color="neutral">{service.serviceDetail}</Typography>
+          </Stack>
+        </Stack>
+      </Card>
+    </JoyLink>
   );
 }

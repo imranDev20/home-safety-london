@@ -1,14 +1,19 @@
-"use client";
-import { ErrorMessage } from "@hookform/error-message";
+import {
+  ErrorMessage,
+  FieldValuesFromFieldErrors,
+} from "@hookform/error-message";
 import FormHelperText from "@mui/joy/FormHelperText";
-import { FieldErrors } from "react-hook-form";
+import { FieldErrors, FieldValues, FieldName } from "react-hook-form";
 
-type ErrorProps = {
-  errors: FieldErrors;
-  name: string;
+type ErrorProps<T extends FieldValues> = {
+  errors: FieldErrors<T>;
+  name: FieldName<FieldValuesFromFieldErrors<FieldErrors<T>>>;
 };
 
-export default function HookFormError({ errors, name }: ErrorProps) {
+export default function HookFormError<T extends FieldValues>({
+  errors,
+  name,
+}: ErrorProps<T>) {
   return (
     <ErrorMessage
       errors={errors}

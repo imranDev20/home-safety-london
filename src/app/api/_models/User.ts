@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 interface IUser {
   name: string;
   email: string;
+  phone: string;
   role: "customer" | "admin" | "staff";
-  isPasswordCreated: boolean;
   password: string;
   addresses: mongoose.Types.ObjectId[];
   orders: mongoose.Types.ObjectId[];
@@ -23,10 +23,13 @@ const userSchema = new mongoose.Schema<IUser>(
       required: true,
       unique: true,
     },
+    phone: {
+      type: String,
+    },
     role: {
       type: String,
       required: true,
-      enum: ["customer", "admin"],
+      enum: ["customer", "admin", "staff"],
       default: "customer",
     },
     password: {
@@ -59,6 +62,6 @@ const userSchema = new mongoose.Schema<IUser>(
   }
 );
 
-const User = mongoose.models.User || mongoose.model("User", userSchema);
+const User = mongoose.models.User || mongoose.model<IUser>("User", userSchema);
 
 export default User;

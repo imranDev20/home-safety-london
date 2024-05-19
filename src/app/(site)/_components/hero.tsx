@@ -1,18 +1,20 @@
 "use client";
 import React from "react";
-import { Box, Button, Container, Grid, Stack } from "@mui/joy";
+import { Box, Button, Container, Grid, Stack, useTheme } from "@mui/joy";
 import Typography from "@mui/joy/Typography";
 import { Phone } from "@mui/icons-material";
 import Image from "next/image";
-import BackgroundImage from "@/images/hero-image.jpeg";
-import { theme } from "@/shared/theme";
+import BackgroundImage from "@/images/hero-image-new.jpeg";
 import BookNow from "@/app/_components/common/book-now";
+import { hexToRgba } from "@/shared/functions";
 
 export default function Hero() {
+  const theme = useTheme();
   return (
     <Box
       sx={{
         position: "relative",
+        mt: -9.5,
       }}
     >
       <Image
@@ -28,7 +30,7 @@ export default function Hero() {
         sx={{
           height: "100%",
           position: "relative",
-          pt: 20,
+          pt: 25,
           pb: 20,
           "&::before": {
             content: '""',
@@ -37,7 +39,8 @@ export default function Hero() {
             height: "100%",
             top: 0,
             left: 0,
-            backgroundColor: "rgba(17, 38, 49, .9)",
+            backgroundColor: hexToRgba("#062C64", 0.9),
+            mixBlendMode: "multiply",
           },
         }}
       >
@@ -84,8 +87,8 @@ export default function Hero() {
 
                     <Typography
                       sx={{
-                        color: "#d9d9d9",
                         fontSize: { xs: 15, sm: 16, md: 20 },
+                        color: "white",
                       }}
                     >
                       Welcome to Home Safety London, where we&apos;re dedicated
@@ -107,23 +110,11 @@ export default function Hero() {
                         size="lg"
                         startDecorator={<Phone />}
                         variant="solid"
-                      >
-                        Services
-                      </Button>
-                      <Button
-                        size="lg"
-                        startDecorator={<Phone />}
-                        variant="plain"
+                        component="a"
                         color="secondary"
-                        sx={{
-                          mt: 5,
-                          ":hover": {
-                            backgroundColor:
-                              theme.colorSchemes.light.palette.secondary[100],
-                          },
-                        }}
+                        href="tel:07480062995"
                       >
-                        075-7916-4993
+                        07480 062995
                       </Button>
                     </Stack>
                   </Box>

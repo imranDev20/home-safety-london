@@ -7,7 +7,6 @@ import {
   ShoppingCart,
   Support,
 } from "@mui/icons-material";
-import PersonIcon from '@mui/icons-material/Person';
 
 import {
   EicrIcon,
@@ -17,7 +16,6 @@ import {
   GasSafteyIcon,
   PatIcon,
 } from "@/app/_components/common/icons";
-
 import ElectricImage from "@/images/electric.jpg";
 
 export const ADMIN_OPTIONS = [
@@ -52,11 +50,6 @@ export const ADMIN_OPTIONS = [
     Icon: Support,
   },
   {
-    route: "/admin/profile",
-    label: "Profile",
-    Icon: PersonIcon,
-  },
-  {
     route: "/admin/settings",
     label: "Settings",
     Icon: Settings,
@@ -67,18 +60,22 @@ export const SITE_OPTIONS = [
   {
     route: "/",
     label: "Home",
+    isShowInHeader: true,
   },
   {
-    route: "/about-us",
+    route: "/about",
     label: "About us",
+    isShowInHeader: true,
   },
   {
     route: "/services",
     label: "Services",
+    isShowInHeader: true,
   },
   {
     route: "/contact",
     label: "Contact",
+    isShowInHeader: true,
   },
   {
     route: "/terms-and-conditions",
@@ -424,3 +421,8 @@ const MODIFIED_SERVICES = SERVICES.map((service) =>
 );
 
 export const SUB_SERVICES = MODIFIED_SERVICES.flatMap((service) => service);
+
+// Keep these here. Move the rest to a separate file.
+export const FIXED_HEIGHT: number = 285;
+export const BUSINESS_NAME: string = "London Home Safety Limited";
+export const ADDRESS: string = "43 Felton Road, Barking, London IG11 7YA";

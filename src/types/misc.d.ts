@@ -1,5 +1,6 @@
 import { SvgIconComponent } from "@mui/icons-material";
 import { Dayjs } from "dayjs";
+import { Dispatch, SetStateAction } from "react";
 
 export type Faq = {
   id: number;
@@ -24,8 +25,14 @@ export type Service = {
   }[];
 };
 
+// These are confirmed to be in use
 export type Pagination = {
   currentPage: number;
   totalPages: number;
   totalCount: number;
+};
+
+export type ComponentUseStateProps = {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 };

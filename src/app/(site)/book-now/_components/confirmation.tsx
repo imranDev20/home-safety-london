@@ -1,4 +1,3 @@
-import { PreOrder } from "@/app/api/_models/PreOrder";
 import { getPreOrderById } from "@/services/pre-order.services";
 import {
   createQueryString,
@@ -27,7 +26,7 @@ export default function Confirmation() {
     data: preOrderData,
     isLoading: isPreOrderDataLoading,
     refetch: refetchPreOrder,
-  } = useQuery<PreOrder>({
+  } = useQuery({
     queryKey: ["pre-order"],
     queryFn: async () => {
       const preOrderId = getPreOrderIdFromLocalStorage();

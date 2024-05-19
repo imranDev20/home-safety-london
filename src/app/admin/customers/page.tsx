@@ -1,28 +1,84 @@
 "use client";
-import { Home, KeyboardArrowRight } from "@mui/icons-material";
+import { Download, Home, KeyboardArrowRight } from "@mui/icons-material";
 import {
   Breadcrumbs,
   Button,
   FormControl,
   FormLabel,
   Grid,
-  Input,
   Link as JoyLink,
-  Option,
-  Select,
   Stack,
   Typography,
   useTheme,
 } from "@mui/joy";
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
-import SearchIcon from "@mui/icons-material/Search";
-import { CATEGORIES, ORDER_STATUS } from "@/shared/constants";
-import { snakeCaseToNormalText } from "@/shared/functions";
 import CustomersTable from "./_components/customers-table";
+import { useState } from "react";
+import FormDrawer from "@/app/_components/common/form-drawer";
+import CreateCustomerForm from "./_components/create-customer-form";
+import { useQuery } from "@tanstack/react-query";
+import { exportUsers } from "@/services/user.services";
+import SearchField from "./_components/search-field";
 
 function Customers() {
   const theme = useTheme();
+  const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
+    useState<boolean>(false);
+
+  const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
+    useQuery({
+      queryKey: ["export-users"],
+      queryFn: async () => {
+        const response = await exportUsers();
+        return response.data;
+      },
+      enabled: false,
+    });
+
+  // Export is set to track progress and show loading bar
+  const handleExportUsers = async () => {
+    try {
+      const response = await refetchExportUsers();
+      const data = response.data;
+
+      if (response.status === "success") {
+        // const progressUpdates = data.progressUpdates;
+        const excelData = data.excelData;
+
+        // Update progress
+        // for (const { progress } of progressUpdates) {
+        //   setProgress(progress);
+        // }
+
+        // Download Excel file
+        const byteArray = new Uint8Array(
+          atob(excelData)
+            .split("")
+            .map((char) => char.charCodeAt(0))
+        );
+        const blob = new Blob([byteArray], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.setAttribute("download", "users.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } else {
+        console.error("Error exporting users:", data.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    // finally {
+    //   setIsDownloading(false);
+    //   setProgress(null);
+    // }
+  };
 
   return (
     <>
@@ -55,14 +111,48 @@ function Customers() {
           Customers
         </JoyLink>
       </Breadcrumbs>
-
-      <Stack justifyContent="space-between" direction="row" alignItems="center">
+      <Stack
+        spacing={2}
+        mt={2}
+        justifyContent="space-between"
+        alignItems={{
+          xs: "flex-start",
+          md: "center",
+        }}
+        direction={{
+          xs: "column",
+          sm: "row",
+        }}
+      >
         <Typography component="h1" level="h2">
           Customers List
         </Typography>
-        <Button size="sm" startDecorator={<AddIcon />}>
-          Add New Customer
-        </Button>
+
+        <Stack
+          spacing={2}
+          direction={{
+            xs: "column",
+            sm: "row",
+          }}
+        >
+          <Button
+            size="sm"
+            variant="outlined"
+            startDecorator={<Download />}
+            onClick={handleExportUsers}
+            loading={isExportUsersLoading}
+            loadingPosition="start"
+          >
+            Download Excel
+          </Button>
+          <Button
+            size="sm"
+            startDecorator={<AddIcon />}
+            onClick={() => setOpenCreateCustomerDrawer(true)}
+          >
+            Add New Customer
+          </Button>
+        </Stack>
       </Stack>
 
       <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>
@@ -74,99 +164,20 @@ function Customers() {
             >
               Search for customers
             </FormLabel>
-            <Input
-              placeholder="Search for customer, email, phone, status...."
-              startDecorator={<SearchIcon />}
-            />
-          </FormControl>
-        </Grid>
-
-        <Grid xs={12} sm={6} md={2}>
-          <FormControl size="sm">
-            <FormLabel
-              id="select-field-demo-label"
-              htmlFor="select-field-demo-button"
-            >
-              Status
-            </FormLabel>
-            <Select
-              placeholder="Filter by status"
-              slotProps={{
-                button: {
-                  id: "select-field-demo-button",
-                  sx: {
-                    textTransform: "capitalize",
-                  },
-                },
-              }}
-            >
-              {ORDER_STATUS.map((order) => (
-                <Option
-                  key={order}
-                  value={order}
-                  sx={{
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {snakeCaseToNormalText(order)}
-                </Option>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-
-        <Grid xs={12} sm={6} md={2}>
-          <FormControl size="sm">
-            <FormLabel
-              id="select-field-demo-label"
-              htmlFor="select-field-demo-button"
-            >
-              Categories
-            </FormLabel>
-            <Select
-              slotProps={{
-                button: {
-                  id: "select-field-demo-button",
-                },
-              }}
-              placeholder="Filter by category"
-            >
-              {CATEGORIES.map((category) => (
-                <Option key={category.name} value={category.name}>
-                  {category.name}
-                </Option>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-
-        <Grid xs={12} sm={6} md={2}>
-          <FormControl size="sm">
-            <FormLabel
-              id="select-field-demo-label"
-              htmlFor="select-field-demo-button"
-            >
-              Assignee
-            </FormLabel>
-            <Select
-              placeholder="Filter by assignee"
-              slotProps={{
-                button: {
-                  id: "select-field-demo-button",
-                },
-              }}
-            >
-              <Option value="dog">Dog</Option>
-              <Option value="cat">Cat</Option>
-              <Option value="fish">Fish</Option>
-              <Option value="bird">Bird</Option>
-            </Select>
+            <SearchField />
           </FormControl>
         </Grid>
       </Grid>
-
-      {/* import customers table */}
       <CustomersTable />
+
+      <FormDrawer
+        open={openCreateCustomerDrawer}
+        setOpen={setOpenCreateCustomerDrawer}
+      >
+        <CreateCustomerForm
+          setOpenCreateCustomerDrawer={setOpenCreateCustomerDrawer}
+        />
+      </FormDrawer>
     </>
   );
 }
