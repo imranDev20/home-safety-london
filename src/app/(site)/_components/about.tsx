@@ -104,6 +104,7 @@ export default function About() {
                     display: "flex",
                     alignItems: "center",
                   }}
+                  key={cat.text}
                   level="body-lg"
                 >
                   <DotIcon />

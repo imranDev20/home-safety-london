@@ -12,7 +12,13 @@ import React from "react";
 
 const BookNow = () => {
   return (
-    <Card variant="solid" color="primary">
+    <Card
+      variant="solid"
+      color="primary"
+      sx={{
+        borderRadius: "lg",
+      }}
+    >
       <CardContent>
         <Typography
           level="h2"
