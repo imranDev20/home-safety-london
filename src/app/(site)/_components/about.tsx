@@ -1,32 +1,68 @@
 import React from "react";
-import { Box, Button, Container, Grid, Stack, Typography } from "@mui/joy";
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  Stack,
+  Typography,
+  Link as JoyLink,
+  Divider,
+} from "@mui/joy";
 import { useTheme } from "@mui/joy/styles";
-import Image from "next/image";
-import electric from "../../../images/home-about-image.jpeg";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import PhoneIcon from "@mui/icons-material/Phone";
+import { hexToRgba } from "@/shared/functions";
+import Link from "next/link";
 
 const categories = [
-  { text: "Landlords" },
-  { text: "Homeowners" },
-  { text: "Homebuyers" },
-  { text: "Home sellers" },
-  { text: "Estate Agents" },
+  { text: "Ullamcorper dignissim cras tincidunt." },
+  { text: "Ullamcorper dignissim cras tincidunt." },
+  { text: "Ullamcorper dignissim cras tincidunt." },
+  { text: "Ullamcorper dignissim cras tincidunt." },
+  { text: "Ullamcorper dignissim cras tincidunt." },
 ];
+
+function DotIcon() {
+  const theme = useTheme();
+  return (
+    <Box
+      sx={{
+        backgroundColor: hexToRgba(theme.palette.secondary[500], 0.3),
+        width: "16px",
+        height: "16px",
+        p: "2px",
+        borderRadius: "50%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+      component="span"
+    >
+      <Box
+        component="span"
+        sx={{
+          backgroundColor: theme.palette.secondary[500],
+          width: "7px",
+          height: "7px",
+          p: "2px",
+          borderRadius: "50%",
+        }}
+      ></Box>
+    </Box>
+  );
+}
 
 export default function About() {
   const theme = useTheme();
 
   return (
-    <Container sx={{ my: 20 }}>
+    <Container sx={{ my: 15 }}>
       <Grid container spacing={4}>
-        <Grid xs={12} md={6}></Grid>
-        <Grid xs={12} md={6}>
+        <Grid xs={12} md={7}></Grid>
+        <Grid xs={12} md={5}>
           <Box>
             <Typography
               sx={{
-                color: theme.colorSchemes.light.palette.secondary[500],
-                fontWeight: 600,
+                fontWeight: 400,
                 textTransform: "uppercase",
                 letterSpacing: 2,
                 mb: 1,
@@ -39,56 +75,85 @@ export default function About() {
               sx={{
                 mb: 2,
               }}
-              fontSize={38}
+              fontSize={36}
             >
               Reliable & Professional Maintenance Work
             </Typography>
-            <Typography color="neutral">
-              London Property Inspections have 15 years experience in providing
-              the property compliance certificates to:
+            <Typography
+              color="neutral"
+              sx={{
+                lineHeight: 1.8,
+                my: 3,
+              }}
+            >
+              Mauris ac risus sed quam semper auctor. Nam tempus volutpat ipsum,
+              non viverra odio mollis mollis. Integer lacus ligula, imperdiet
+              vel massa in, maximus suscipit turpis. Mauris ac risus sed quam
+              semper auctor. Nam tempus volutpat ipsum, non viverra
             </Typography>
 
-            <Box sx={{ my: 3 }}>
-              {categories.map((category, index) => (
+            <Stack
+              spacing={2}
+              sx={{
+                my: 3,
+              }}
+            >
+              {categories.map((cat) => (
                 <Typography
-                  key={index}
-                  sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                  level="body-lg"
                 >
-                  <CheckCircleIcon color="primary" sx={{ mr: 2 }} />
-                  <Typography component="span" color="neutral">
+                  <DotIcon />
+                  <Typography
+                    sx={{
+                      ml: 1,
+                    }}
+                  >
                     {" "}
-                    {category.text}
+                    Enim eu turpis egestas pretium aenean.
                   </Typography>
                 </Typography>
               ))}
-            </Box>
+            </Stack>
 
-            <Typography color="neutral">
-              We provide services to residential and commercial properties which
-              includes EICR, Fire Safety Certificate, Fire Risk Assessment, PAT
-              Testing, Emergency Lighting Certificate, Gas Safety Certificate,
-              EPC and any kind of plumbing work, gas repairs, electrical repairs
-              from rewiring the buildings to houses in London and M25 area.
-            </Typography>
+            <Divider
+              sx={{
+                my: 4,
+              }}
+            />
+
             <Stack
               direction="row"
-              spacing={2}
+              spacing={4}
               sx={{
                 mt: 3,
               }}
             >
-              <Button variant="solid" size="lg">
+              <Button variant="solid" size="lg" component={Link} href="/about">
                 More About Us
               </Button>
 
-              <Button
-                startDecorator={<PhoneIcon />}
-                variant="plain"
-                color="secondary"
-                size="lg"
-              >
-                +123-456-7890
-              </Button>
+              <Box>
+                <Typography
+                  sx={{
+                    fontSize: 14,
+                  }}
+                >
+                  Call Us Anytime
+                </Typography>
+                <JoyLink
+                  fontWeight={600}
+                  sx={{
+                    fontSize: 20,
+                    color: theme.palette.text.primary,
+                  }}
+                >
+                  +123-456-7890
+                </JoyLink>
+              </Box>
             </Stack>
           </Box>
         </Grid>

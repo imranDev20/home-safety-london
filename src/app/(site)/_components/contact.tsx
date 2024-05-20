@@ -1,4 +1,5 @@
 import ContactUsForm from "@/app/_components/common/contact-us-form";
+import { Phone } from "@mui/icons-material";
 import {
   Box,
   Container,
@@ -22,7 +23,23 @@ const Contact = () => {
         backgroundColor: theme.palette.background.level2,
       }}
     >
-      <Container maxWidth="xl">
+      <Container
+        maxWidth="xl"
+        sx={{
+          py: 15,
+        }}
+      >
+        <Typography
+          level="h1"
+          component="h2"
+          fontSize={42}
+          sx={{
+            mb: 10,
+            textAlign: "center",
+          }}
+        >
+          We Offer Plumbing Work Since 1967
+        </Typography>
         <Grid container>
           <Grid md={3}></Grid>
           <Grid md={4}>
@@ -61,17 +78,23 @@ const Contact = () => {
                 <Typography
                   component="span"
                   fontWeight={600}
+                  color="primary"
                   sx={{
-                    color: theme.palette.primary[500],
                     mr: 2,
+                    display: "flex",
                   }}
                 >
+                  <Phone
+                    sx={{
+                      mr: 1,
+                    }}
+                  />
                   Need Help?
                 </Typography>
                 <JoyLink
                   component="span"
                   fontWeight={600}
-                  underline="always"
+                  underline="hover"
                   sx={{
                     color: theme.palette.text.primary,
                   }}

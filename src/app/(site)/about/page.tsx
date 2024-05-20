@@ -15,7 +15,6 @@ const About = () => {
       <AboutCta />
       <Partners />
       <Advantage />
-
       <Achivment />
     </>
   );

@@ -26,6 +26,11 @@ import EicrOutlinedTwoSvg from "@/images/icons/eicr-outlined-2.svg";
 import BoilerOutlinedSvg from "@/images/icons/boiler-outlined.svg";
 import PatOutlinedSvg from "@/images/icons/pat-outlined.svg";
 import FireRiskOutlinedSvg from "@/images/icons/fire-risk-outlined.svg";
+import FireAlarmOutlinedSvg from "@/images/icons/fire-alarm-outlined.svg";
+import FuseBoxOutlinedSvg from "@/images/icons/fuse-box.svg";
+import ScrewDriverOutlinedSvg from "@/images/icons/screw-driver-outlined.svg";
+import FireAlarmOutlined2Svg from "@/images/icons/fire-alarm-outlined-2.svg";
+import EvChargerOutlinedSvg from "@/images/icons/ev-charger-outlined.svg";
 
 export const GasSafteyIcon = createSvgIcon(<GasSafteySvg />, "Gas");
 export const PatIcon = createSvgIcon(<PatSvg />, "Pat");
@@ -86,12 +91,34 @@ export const BoilerOutlinedIcon = createSvgIcon(
   "BoilerOutlined"
 );
 
-export const PatOutlinedIcon = createSvgIcon(
-  <PatOutlinedSvg />,
-  "BoilerOutlined"
-);
+export const PatOutlinedIcon = createSvgIcon(<PatOutlinedSvg />, "PatOutlined");
 
 export const FireRiskOutlinedIcon = createSvgIcon(
   <FireRiskOutlinedSvg />,
-  "BoilerOutlined"
+  "FireRiskOutlined"
+);
+
+export const FireAlarmOutlinedIcon = createSvgIcon(
+  <FireAlarmOutlinedSvg />,
+  "FireAlarmOutlined"
+);
+
+export const FuseBoxOutlinedIcon = createSvgIcon(
+  <FuseBoxOutlinedSvg />,
+  "FuseBoxOutlined"
+);
+
+export const ScrewDriverOutlinedIcon = createSvgIcon(
+  <ScrewDriverOutlinedSvg />,
+  "ScrewDriverOutlined"
+);
+
+export const FireAlarmOutlined2Icon = createSvgIcon(
+  <FireAlarmOutlined2Svg />,
+  "FireAlarmOutlined2"
+);
+
+export const EvChargerOutlinedIcon = createSvgIcon(
+  <EvChargerOutlinedSvg />,
+  "EvChargerOutlined"
 );

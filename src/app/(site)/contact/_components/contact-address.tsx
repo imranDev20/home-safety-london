@@ -34,6 +34,7 @@ export default function ContactAddress() {
                 height: "100%",
                 p: 3,
                 backgroundColor: theme.palette.background.level3,
+                borderRadius: "xl",
               }}
             >
               <CardContent>
@@ -80,6 +81,7 @@ export default function ContactAddress() {
                 height: "100%",
                 p: 3,
                 backgroundColor: theme.palette.background.level3,
+                borderRadius: "xl",
               }}
             >
               <CardContent>
@@ -130,6 +132,7 @@ export default function ContactAddress() {
                 height: "100%",
                 p: 3,
                 backgroundColor: theme.palette.background.level3,
+                borderRadius: "xl",
               }}
             >
               <CardContent>

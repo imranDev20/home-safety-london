@@ -41,7 +41,6 @@ export default function Advantage() {
       variant="soft"
       sx={{
         py: 10,
-        my: 5,
       }}
     >
       <Container component="section">

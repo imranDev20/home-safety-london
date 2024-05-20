@@ -1,20 +1,17 @@
 import {
-  BoilerIcon,
   BoilerOutlinedIcon,
-  EicrIcon,
-  EicrOutlinedIcon,
   EicrOutlinedTwoIcon,
   ElectricalRepairIcon,
   EpcOutlinedIcon,
-  FireAlarmCertificateIcon,
+  EvChargerOutlinedIcon,
   FireAlarmInstallIcon,
-  FireRiskIcon,
+  FireAlarmOutlined2Icon,
+  FireAlarmOutlinedIcon,
   FireRiskOutlinedIcon,
-  FuseBoxIcon,
+  FuseBoxOutlinedIcon,
   GasOutlinedIcon,
-  GasSafteyIcon,
-  PatIcon,
   PatOutlinedIcon,
+  ScrewDriverOutlinedIcon,
 } from "@/app/_components/common/icons";
 import { useTheme } from "@mui/joy/styles";
 
@@ -26,8 +23,12 @@ import {
   Grid,
   Sheet,
   Typography,
+  Link as JoyLink,
 } from "@mui/joy";
 import Link from "next/link";
+import { hexToRgba } from "@/shared/functions";
+import Image from "next/image";
+import backgroundImage from "@/images/about-bg.jpeg";
 
 const FIRST_ROW = [
   {
@@ -69,31 +70,31 @@ const FIRST_ROW = [
   {
     id: 2,
     name: "Fire Alarm Certificate",
-    Icon: FireAlarmCertificateIcon,
+    Icon: FireAlarmOutlinedIcon,
     route: "/fire-services/fire-alarm-certificate",
   },
   {
     id: 3,
     name: "Fuse Box Installation",
-    Icon: FuseBoxIcon,
+    Icon: FuseBoxOutlinedIcon,
     route: "/electrical-services/fuse-box-installation",
   },
   {
     id: 4,
     name: "Electrical Repairs",
-    Icon: ElectricalRepairIcon,
+    Icon: ScrewDriverOutlinedIcon,
     route: "/electrical-services/electrical-repairs",
   },
   {
     id: 6,
     name: "Fire Alarm Installation",
-    Icon: FireAlarmInstallIcon,
+    Icon: FireAlarmOutlined2Icon,
     route: "/fire-services/fire-alarm-installation",
   },
   {
     id: 7,
     name: "EV Charger Installation",
-    Icon: FireAlarmInstallIcon,
+    Icon: EvChargerOutlinedIcon,
     route: "/electrical-services/ev-charger-installation",
   },
 ];
@@ -105,7 +106,7 @@ export default function SubServices() {
     <Sheet
       variant="solid"
       sx={{
-        py: 10,
+        py: 15,
         backgroundColor: theme.palette.background.level2,
       }}
     >
@@ -115,7 +116,7 @@ export default function SubServices() {
           component="h2"
           fontSize={40}
           sx={{
-            mb: 5,
+            mb: 10,
             textAlign: "center",
           }}
         >
@@ -123,17 +124,50 @@ export default function SubServices() {
         </Typography>
         <Grid container spacing={5}>
           {FIRST_ROW.map((item) => (
-            <Grid xs={12} md={3} key={item.id}>
+            <Grid xs={12} md={4} key={item.id}>
               <Card
                 variant="plain"
                 component={Link}
                 href={`/services${item.route}`}
                 sx={{
                   textDecoration: "none",
-                  transition: ".3s ease",
+                  transition: ".3s ease-in-out",
                   borderRadius: "lg",
+                  backgroundColor: "white",
+                  overflow: "hidden",
+                  position: "relative",
+                  p: 0,
+
+                  ".MuiCardContent-root": {
+                    backgroundColor: "white",
+                    transition: "500ms all",
+                  },
+                  ":hover": {
+                    ".MuiCardContent-root": {
+                      backgroundColor: hexToRgba(
+                        theme.palette.primary[500],
+                        0.7
+                      ),
+                    },
+                    ".MuiSvgIcon-root": {
+                      color: "white",
+                      fontSize: 100,
+                    },
+                  },
                 }}
               >
+                <Image
+                  src={backgroundImage}
+                  alt="Background"
+                  sizes="100vw"
+                  fill
+                  loading="lazy"
+                  placeholder="blur"
+                  style={{
+                    objectFit: "cover",
+                    transition: "100ms all ease-in-out",
+                  }}
+                />
                 <CardContent>
                   <Box
                     sx={{
@@ -141,29 +175,46 @@ export default function SubServices() {
                       flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
-                      height: 150,
+                      height: 250,
                     }}
                   >
                     <item.Icon
-                      color="primary"
                       sx={{
                         fontSize: 65,
-                        mb: 2,
-                        // color: theme.palette.text.primary,
+                        color: theme.palette.text.primary,
+                        transition: "150ms ease",
                       }}
                     />
                   </Box>
                 </CardContent>
               </Card>
-              <Typography
-                level="title-lg"
+
+              <JoyLink
+                underline="none"
+                component={Link}
+                href={`/services/${item.route}`}
                 sx={{
-                  textAlign: "center",
-                  mt: 2,
+                  color: theme.palette.text.primary,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  ":hover": {
+                    color: theme.palette.primary[500],
+                    transition: "0.3s ease",
+                  },
                 }}
               >
-                {item.name}
-              </Typography>
+                <Typography
+                  sx={{
+                    textAlign: "center",
+                    mt: 2,
+                    fontWeight: 600,
+                    fontSize: 26,
+                  }}
+                >
+                  {item.name}
+                </Typography>
+              </JoyLink>
             </Grid>
           ))}
         </Grid>

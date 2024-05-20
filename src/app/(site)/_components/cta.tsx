@@ -6,11 +6,11 @@ import { hexToRgba, toTitleCase } from "@/shared/functions";
 import Image from "next/image";
 import backgroundImage from "@/images/about-bg.jpeg";
 
-export default function AboutCta() {
+export default function Cta() {
   const theme = useTheme();
 
   return (
-    <Box component="section" sx={{ position: "relative" }}>
+    <Box component="section" sx={{ position: "relative", my: 10 }}>
       <Image
         src={backgroundImage}
         alt="Background"
