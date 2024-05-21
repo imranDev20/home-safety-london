@@ -200,7 +200,7 @@ export default function CustomersTable() {
             </tr>
           </thead>
           <tbody>
-            {stableSort(usersData?.users, getComparator(order, "id")).map(
+            {/* {stableSort(usersData?.users, getComparator(order, "id")).map(
               (row) => (
                 <tr
                   key={row._id}
@@ -265,7 +265,7 @@ export default function CustomersTable() {
                   </td>
                 </tr>
               )
-            )}
+            )} */}
           </tbody>
         </Table>
       </Sheet>

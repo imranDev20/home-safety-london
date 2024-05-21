@@ -33,6 +33,7 @@ export default function Service({ service }: ServiceProps) {
           p: 4,
           borderRadius: "xl",
           transition: "350ms all ease",
+          backgroundColor: "white",
           ":hover": {
             backgroundColor: theme.palette.primary[500],
             ".MuiTypography-root": {

@@ -4,6 +4,7 @@ import TopLoader from "../_components/common/top-loader";
 import AdminNavigation from "./_components/admin-navigation";
 import QueryProvider from "../_components/query-provider";
 import { SnackbarProvider } from "../_components/snackbar-provider";
+import { Suspense } from "react";
 
 const outfit = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,9 @@ export default function AdminLayout({
           <ThemeRegistry options={{ key: "joy" }}>
             <SnackbarProvider>
               <TopLoader />
-              <AdminNavigation>{children}</AdminNavigation>
+              <AdminNavigation>
+                <Suspense>{children}</Suspense>
+              </AdminNavigation>
             </SnackbarProvider>
           </ThemeRegistry>
         </QueryProvider>

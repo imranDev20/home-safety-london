@@ -11,7 +11,6 @@ import {
   useTheme,
   Link as JoyLink,
 } from "@mui/joy";
-import React from "react";
 
 const Contact = () => {
   const theme = useTheme();
@@ -61,8 +60,14 @@ const Contact = () => {
                 {[0, 1, 2, 3, 4, 5].map((item) => (
                   <>
                     <Stack justifyContent="space-between" direction="row">
-                      <Typography>Monday:</Typography>
-                      <Typography>Monday:</Typography>
+                      <Typography
+                        sx={{
+                          fontWeight: 500,
+                        }}
+                      >
+                        Monday:
+                      </Typography>
+                      <Typography>8:00 AM - 6:00 PM</Typography>
                     </Stack>
                     <Divider />
                   </>

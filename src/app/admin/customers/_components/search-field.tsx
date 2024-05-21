@@ -19,7 +19,7 @@ const SearchField = () => {
     router.push(pathname + "?" + createQueryString("search", term));
   };
 
-  const handleKeyPress = (event) => {
+  const handleKeyPress = (event: any) => {
     // Check if the key pressed is the Enter key
     if (event.key === "Enter") {
       console.log("Enter key pressed!");

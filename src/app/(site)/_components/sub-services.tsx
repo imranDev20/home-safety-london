@@ -24,6 +24,8 @@ import {
   Sheet,
   Typography,
   Link as JoyLink,
+  Button,
+  Stack,
 } from "@mui/joy";
 import Link from "next/link";
 import { hexToRgba } from "@/shared/functions";
@@ -218,6 +220,48 @@ export default function SubServices() {
             </Grid>
           ))}
         </Grid>
+
+        <Stack
+          direction="row"
+          justifyContent="center"
+          spacing={3}
+          sx={{
+            mt: 10,
+          }}
+        >
+          <Button
+            variant="solid"
+            href="/book-now/"
+            component={Link}
+            size="lg"
+            sx={{
+              backgroundColor: theme.palette.secondary[500],
+              color: "white",
+              ":hover": {
+                backgroundColor: theme.palette.text.primary,
+              },
+            }}
+          >
+            Book Now
+          </Button>
+
+          <Button
+            variant="solid"
+            href="/services/"
+            component={Link}
+            size="lg"
+            sx={{
+              backgroundColor: theme.palette.primary[500],
+              color: "white",
+              ":hover": {
+                backgroundColor: theme.palette.secondary[500],
+                color: theme.palette.text.primary,
+              },
+            }}
+          >
+            Browse all Services
+          </Button>
+        </Stack>
       </Container>
     </Sheet>
   );

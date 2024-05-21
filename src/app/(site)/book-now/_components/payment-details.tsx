@@ -12,9 +12,9 @@ import {
   getPreOrderIdFromLocalStorage,
 } from "@/shared/functions";
 import { getPreOrderById } from "@/services/pre-order.services";
-import { PreOrder } from "@/app/api/_models/PreOrder";
 import { useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
+import { PreOrderPersonalPayload } from "@/types/pre-order";
 
 export default function PaymentDetails() {
   const [status, setStatus] = useState<string>();
@@ -29,7 +29,7 @@ export default function PaymentDetails() {
     data: preOrderData,
     isLoading: isPreOrderDataLoading,
     refetch: refetchPreOrder,
-  } = useQuery<PreOrder>({
+  } = useQuery<PreOrderPersonalPayload>({
     queryKey: ["pre-order"],
     queryFn: async () => {
       const preOrderId = getPreOrderIdFromLocalStorage();

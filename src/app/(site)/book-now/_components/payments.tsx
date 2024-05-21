@@ -21,9 +21,9 @@ import {
   Typography,
 } from "@mui/joy";
 import axios from "axios";
-import { PreOrder } from "@/app/api/_models/PreOrder";
 import { useQuery } from "@tanstack/react-query";
 import { getPreOrderById } from "@/services/pre-order.services";
+import { PreOrderPersonalPayload } from "@/types/pre-order";
 
 export default function Payments() {
   const [stripePromise, setStripePromise] = useState<any>();
@@ -38,7 +38,7 @@ export default function Payments() {
     data: preOrderData,
     isLoading: isPreOrderDataLoading,
     refetch: refetchPreOrder,
-  } = useQuery<PreOrder>({
+  } = useQuery<PreOrderPersonalPayload>({
     queryKey: ["pre-order"],
     queryFn: async () => {
       const preOrderId = getPreOrderIdFromLocalStorage();

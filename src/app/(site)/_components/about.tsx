@@ -12,6 +12,10 @@ import {
 import { useTheme } from "@mui/joy/styles";
 import { hexToRgba } from "@/shared/functions";
 import Link from "next/link";
+import { PHONE_NO } from "@/shared/constants";
+import { PhoneOutlined } from "@mui/icons-material";
+import Image from "next/image";
+import BackgroundImage from "@/images/hero-image-new.jpeg";
 
 const categories = [
   { text: "Ullamcorper dignissim cras tincidunt." },
@@ -56,8 +60,78 @@ export default function About() {
 
   return (
     <Container sx={{ my: 15 }}>
-      <Grid container spacing={4}>
-        <Grid xs={12} md={7}></Grid>
+      <Grid container spacing={10}>
+        <Grid
+          xs={12}
+          md={7}
+          sx={{
+            position: "relative",
+          }}
+        >
+          <Stack
+            spacing={3}
+            direction="row"
+            sx={{
+              position: "sticky",
+              top: 70,
+            }}
+          >
+            <Box
+              sx={{
+                position: "relative",
+                py: 3,
+              }}
+            >
+              <Image
+                src={BackgroundImage}
+                objectFit="cover"
+                alt="serviceImage"
+                style={{ width: "100%", height: "100%", borderRadius: 15 }}
+              />
+            </Box>
+
+            <Stack spacing={3}>
+              <Box
+                sx={{
+                  position: "relative",
+                }}
+              >
+                <Image
+                  src={BackgroundImage}
+                  objectFit="cover"
+                  alt="serviceImage"
+                  style={{ width: "100%", height: "100%", borderRadius: 15 }}
+                />
+              </Box>
+
+              <Box
+                sx={{
+                  position: "relative",
+                }}
+              >
+                <Image
+                  src={BackgroundImage}
+                  objectFit="cover"
+                  alt="serviceImage"
+                  style={{ width: "100%", height: "100%", borderRadius: 15 }}
+                />
+              </Box>
+            </Stack>
+
+            <Box
+              sx={{
+                backgroundColor: "white",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                p: 5,
+              }}
+            >
+              TrustPilot
+            </Box>
+          </Stack>
+        </Grid>
         <Grid xs={12} md={5}>
           <Box>
             <Typography
@@ -137,24 +211,33 @@ export default function About() {
                 More About Us
               </Button>
 
-              <Box>
-                <Typography
+              <Stack direction="row" alignItems="center">
+                <PhoneOutlined
+                  fontSize="xl3"
                   sx={{
-                    fontSize: 14,
+                    mr: 1,
                   }}
-                >
-                  Call Us Anytime
-                </Typography>
-                <JoyLink
-                  fontWeight={600}
-                  sx={{
-                    fontSize: 20,
-                    color: theme.palette.text.primary,
-                  }}
-                >
-                  +123-456-7890
-                </JoyLink>
-              </Box>
+                />
+                <Box>
+                  <Typography
+                    sx={{
+                      fontSize: 14,
+                    }}
+                  >
+                    Call Us Anytime
+                  </Typography>
+                  <JoyLink
+                    fontWeight={600}
+                    sx={{
+                      fontSize: 20,
+                      color: theme.palette.text.primary,
+                    }}
+                    href={`tel:${PHONE_NO}`}
+                  >
+                    {PHONE_NO}
+                  </JoyLink>
+                </Box>
+              </Stack>
             </Stack>
           </Box>
         </Grid>

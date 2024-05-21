@@ -100,7 +100,7 @@ export default function Confirmation() {
           </tr>
         </thead>
         <tbody>
-          {preOrderData?.order_items.map((item) => (
+          {preOrderData?.order_items.map((item: any) => (
             <tr key={item.name}>
               <td>{item.title}</td>
               <td>
