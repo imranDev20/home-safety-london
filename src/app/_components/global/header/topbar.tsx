@@ -133,9 +133,10 @@ const Topbar = () => {
               }}
             />
             <X
-              fontSize="xl"
+              fontSize="inherit"
               sx={{
                 color: theme.palette.secondary[500],
+                fontSize: 20,
               }}
             />
           </Stack>

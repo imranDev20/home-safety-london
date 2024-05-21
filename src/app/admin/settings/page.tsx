@@ -13,7 +13,14 @@ const Settings = () => {
           px: 0,
           fontSize: 13,
         }}
-        separator={<KeyboardArrowRight fontSize="md" />}
+        separator={
+          <KeyboardArrowRight
+            fontSize="inherit"
+            sx={{
+              fontSize: 20,
+            }}
+          />
+        }
       >
         <JoyLink
           component={Link}
