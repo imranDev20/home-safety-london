@@ -1,4 +1,5 @@
 import ContactUsForm from "@/app/_components/common/contact-us-form";
+import { Phone } from "@mui/icons-material";
 import {
   Box,
   Container,
@@ -10,7 +11,6 @@ import {
   useTheme,
   Link as JoyLink,
 } from "@mui/joy";
-import React from "react";
 
 const Contact = () => {
   const theme = useTheme();
@@ -22,7 +22,23 @@ const Contact = () => {
         backgroundColor: theme.palette.background.level2,
       }}
     >
-      <Container maxWidth="xl">
+      <Container
+        maxWidth="xl"
+        sx={{
+          py: 15,
+        }}
+      >
+        <Typography
+          level="h1"
+          component="h2"
+          fontSize={42}
+          sx={{
+            mb: 10,
+            textAlign: "center",
+          }}
+        >
+          We Offer Plumbing Work Since 1967
+        </Typography>
         <Grid container>
           <Grid md={3}></Grid>
           <Grid md={4}>
@@ -44,8 +60,14 @@ const Contact = () => {
                 {[0, 1, 2, 3, 4, 5].map((item) => (
                   <>
                     <Stack justifyContent="space-between" direction="row">
-                      <Typography>Monday:</Typography>
-                      <Typography>Monday:</Typography>
+                      <Typography
+                        sx={{
+                          fontWeight: 500,
+                        }}
+                      >
+                        Monday:
+                      </Typography>
+                      <Typography>8:00 AM - 6:00 PM</Typography>
                     </Stack>
                     <Divider />
                   </>
@@ -61,17 +83,23 @@ const Contact = () => {
                 <Typography
                   component="span"
                   fontWeight={600}
+                  color="primary"
                   sx={{
-                    color: theme.palette.primary[500],
                     mr: 2,
+                    display: "flex",
                   }}
                 >
+                  <Phone
+                    sx={{
+                      mr: 1,
+                    }}
+                  />
                   Need Help?
                 </Typography>
                 <JoyLink
                   component="span"
                   fontWeight={600}
-                  underline="always"
+                  underline="hover"
                   sx={{
                     color: theme.palette.text.primary,
                   }}

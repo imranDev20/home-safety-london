@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Box, Container, Typography } from "@mui/joy";
+import { Box, Container, Divider, Typography } from "@mui/joy";
 import { CarouselProvider, Slider, Slide } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import Image from "next/image";
@@ -14,7 +14,6 @@ import CityGuilds from "@/images/partner-logos/city-guilds.svg";
 import ElmhurstEnergy from "@/images/partner-logos/elmhurst-energy.jpeg";
 import EalRecognised from "@/images/partner-logos/eal.png";
 import PartP from "@/images/partner-logos/part-p.png";
-import { useMediaQuery } from "react-responsive";
 
 const SPONSER_PARTNER = [
   {
@@ -59,7 +58,7 @@ const SPONSER_PARTNER = [
   },
 ];
 
-export default function Partners() {
+export default function Partners({ isHome }: { isHome?: boolean }) {
   const [slidesToShow, setSlidesToShow] = useState(7);
 
   useEffect(() => {
@@ -74,22 +73,43 @@ export default function Partners() {
         setSlidesToShow(7);
       }
     }
-
     window.addEventListener("resize", handleResize);
     handleResize();
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   return (
-    <Container sx={{ my: 15 }}>
+    <Container sx={{ my: isHome ? 3 : 15 }}>
       <Box
         sx={{
           textAlign: "center",
         }}
       >
-        <Typography component="h2" level="h2" sx={{ mb: 3 }}>
-          Certified and Trusted Professional Engineers
-        </Typography>
+        {isHome && (
+          <Divider sx={{ mb: 3 }}>
+            <Typography component="h2" level="h2">
+              <Typography component="span" color="primary">
+                Certified
+              </Typography>{" "}
+              and{" "}
+              <Typography component="span" color="primary">
+                Trusted
+              </Typography>{" "}
+              Professional Engineers
+            </Typography>
+          </Divider>
+        )}
+
+        {!isHome && (
+          <Typography
+            level="h2"
+            sx={{
+              my: 3,
+            }}
+          >
+            Certified and Trusted Professional Engineers
+          </Typography>
+        )}
       </Box>
       <CarouselProvider
         naturalSlideWidth={50}

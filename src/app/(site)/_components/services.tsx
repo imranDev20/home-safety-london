@@ -57,7 +57,7 @@ export default function Services() {
       <Container
         maxWidth="lg"
         sx={{
-          py: 10,
+          py: 15,
         }}
       >
         <Typography

@@ -1,16 +1,16 @@
 "use client";
-import { Box, Button, Typography } from "@mui/joy";
+import { Box, Button, Stack, Typography } from "@mui/joy";
 import { useTheme } from "@mui/joy/styles";
 import Link from "next/link";
 import { hexToRgba, toTitleCase } from "@/shared/functions";
 import Image from "next/image";
 import backgroundImage from "@/images/about-bg.jpeg";
 
-export default function AboutCta() {
+export default function Cta() {
   const theme = useTheme();
 
   return (
-    <Box component="section" sx={{ position: "relative" }}>
+    <Box component="section" sx={{ position: "relative", my: 10 }}>
       <Image
         src={backgroundImage}
         alt="Background"
@@ -24,8 +24,7 @@ export default function AboutCta() {
         sx={{
           height: "100%",
           position: "relative",
-          pt: 10,
-          pb: 10,
+          py: 15,
           "&::before": {
             content: '""',
             position: "absolute",
@@ -33,7 +32,7 @@ export default function AboutCta() {
             height: "100%",
             top: 0,
             left: 0,
-            backgroundColor: hexToRgba(theme.palette.primary[600], 0.9),
+            backgroundColor: hexToRgba(theme.palette.primary[600], 0.8),
           },
         }}
       >
@@ -50,10 +49,12 @@ export default function AboutCta() {
           <Typography
             level="h2"
             component="h2"
-            fontWeight={800}
-            sx={{ fontSize: 56, color: "white", mb: 3 }}
+            fontWeight={700}
+            sx={{ fontSize: 58, color: "white", mb: 3 }}
           >
-            {toTitleCase("How can we help you?")}
+            {toTitleCase(
+              "Simply Click To Get A To Z Repair & Maintenance Work"
+            )}
           </Typography>
           <Typography
             level="body-lg"
@@ -66,18 +67,48 @@ export default function AboutCta() {
             skilled and experienced in their respective fields. We value
             customer feedback to ensure the best hassle-free experience for you.
           </Typography>
-          <Button
-            variant="solid"
-            color="secondary"
-            href="/book-now/"
-            component={Link}
-            size="lg"
+
+          <Stack
+            direction="row"
+            justifyContent="center"
+            spacing={3}
             sx={{
-              mt: 3,
+              mt: 5,
             }}
           >
-            Book Now
-          </Button>
+            <Button
+              variant="solid"
+              href="/book-now/"
+              component={Link}
+              size="lg"
+              sx={{
+                backgroundColor: theme.palette.text.primary,
+                ":hover": {
+                  backgroundColor: theme.palette.secondary[500],
+                  color: theme.palette.text.primary,
+                },
+              }}
+            >
+              Book Now
+            </Button>
+
+            <Button
+              variant="solid"
+              href="/book-now/"
+              component={Link}
+              size="lg"
+              sx={{
+                backgroundColor: "white",
+                color: theme.palette.text.primary,
+                ":hover": {
+                  backgroundColor: theme.palette.secondary[500],
+                  color: theme.palette.text.primary,
+                },
+              }}
+            >
+              Call Now
+            </Button>
+          </Stack>
         </Box>
       </Box>
     </Box>

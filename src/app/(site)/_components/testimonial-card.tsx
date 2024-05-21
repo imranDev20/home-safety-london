@@ -34,6 +34,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ slide }) => {
         variant="plain"
         sx={{
           width: "100%",
+          borderRadius: "xl",
           backgroundColor: theme.palette.background.level3,
         }}
       >

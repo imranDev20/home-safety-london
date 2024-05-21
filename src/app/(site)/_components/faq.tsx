@@ -54,79 +54,87 @@ export default function Faq() {
   ];
 
   return (
-    <Sheet variant="soft">
-      <Box sx={{ py: 10 }}>
-        <Typography
-          component="h2"
-          level="h2"
-          sx={{
-            textAlign: "center",
-            mb: 5,
-          }}
+    <Box sx={{ mt: 20, mb: 15 }}>
+      <Container>
+        <Grid
+          container
+          spacing={5}
+          sx={{ display: "flex", justifyContent: "center" }}
         >
-          Answers to Frequently Asked Questions (FAQs)
-        </Typography>
-        <Container>
-          <Grid
-            container
-            spacing={3}
-            sx={{ display: "flex", justifyContent: "center" }}
-          >
-            <Grid xs={12} md={6} sx={{ height: "100%" }}>
-              <Image
-                src={enginnerNote}
-                alt="faqNote"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: 5,
-                  overflow: "hidden",
-                  objectFit: "cover",
-                }}
-              />
-            </Grid>
-            <Grid xs={12} md={6}>
-              <AccordionGroup
-                variant="outlined"
-                transition="0.2s"
-                size="lg"
-                sx={{
-                  border: "none",
-                  [`& .${accordionSummaryClasses.button}`]: {
-                    bgcolor: "transparent",
-                    py: 1.2,
-                  },
-                  [`& .${accordionSummaryClasses.button}:active`]: {
-                    bgcolor: "transparent!important",
-                  },
-                }}
-              >
-                {accordionData.map((item, index) => (
-                  <Accordion
-                    defaultExpanded={index === 0}
-                    key={item.title}
+          <Grid xs={12} md={6} sx={{ height: "100%" }}>
+            <Image
+              src={enginnerNote}
+              alt="faqNote"
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: 5,
+                overflow: "hidden",
+                objectFit: "cover",
+              }}
+            />
+          </Grid>
+          <Grid xs={12} md={6}>
+            <Typography
+              sx={{
+                fontWeight: 400,
+                textTransform: "uppercase",
+                letterSpacing: 2,
+                mb: 1,
+              }}
+            >
+              FAQ
+            </Typography>
+            <Typography
+              component="h2"
+              sx={{
+                mb: 2,
+              }}
+              fontSize={36}
+            >
+              Answers to Frequently Asked Questions (FAQs)
+            </Typography>
+
+            <AccordionGroup
+              variant="outlined"
+              transition="0.2s"
+              size="lg"
+              sx={{
+                border: "none",
+                [`& .${accordionSummaryClasses.button}`]: {
+                  bgcolor: "transparent",
+                  py: 1.2,
+                },
+                [`& .${accordionSummaryClasses.button}:active`]: {
+                  bgcolor: "transparent!important",
+                },
+              }}
+            >
+              {accordionData.map((item, index) => (
+                <Accordion
+                  defaultExpanded={index === 0}
+                  key={item.title}
+                  sx={{
+                    mb: 1,
+                    color: theme.vars.palette.primary,
+                  }}
+                >
+                  <AccordionSummary
                     sx={{
-                      mb: 1,
-                      color: theme.vars.palette.primary,
+                      fontWeight: 600,
                     }}
                   >
-                    <AccordionSummary
-                      sx={{
-                        fontWeight: 600,
-                      }}
-                    >
-                      {item.title}
-                    </AccordionSummary>
-                    <AccordionDetails color="neutral">
-                      {item.content}
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
-              </AccordionGroup>
-            </Grid>
+                    {item.title}
+                  </AccordionSummary>
+                  <AccordionDetails color="neutral">
+                    {item.content}
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </AccordionGroup>
           </Grid>
-        </Container>
-      </Box>
-    </Sheet>
+        </Grid>
+      </Container>
+    </Box>
   );
 }

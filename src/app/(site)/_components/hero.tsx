@@ -7,6 +7,7 @@ import Image from "next/image";
 import BackgroundImage from "@/images/hero-image-new.jpeg";
 import BookNow from "@/app/_components/common/book-now";
 import { hexToRgba } from "@/shared/functions";
+import { PHONE_NO } from "@/shared/constants";
 
 export default function Hero() {
   const theme = useTheme();
@@ -114,7 +115,7 @@ export default function Hero() {
                         color="secondary"
                         href="tel:07480062995"
                       >
-                        07480 062995
+                        {PHONE_NO}
                       </Button>
                     </Stack>
                   </Box>

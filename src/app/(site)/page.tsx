@@ -6,9 +6,9 @@ import Services from "@/app/(site)/_components/services";
 import About from "./_components/about";
 import SubServices from "./_components/sub-services";
 import Partners from "../_components/common/partners";
-import ContactUsForm from "../_components/common/contact-us-form";
 import Testimonial from "./_components/testimonial";
 import Contact from "./_components/contact";
+import Cta from "./_components/cta";
 
 export default function Home() {
   return (
@@ -17,9 +17,10 @@ export default function Home() {
       <Services />
       <About />
       <SubServices />
-      <LondonMap />
+      {/* <LondonMap /> */}
       <Testimonial />
-      <Partners />
+      <Partners isHome />
+      <Cta />
       <Faq />
       <Contact />
     </main>

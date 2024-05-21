@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { ColorPaletteProp } from "@mui/joy/styles";
+import { ColorPaletteProp, useTheme } from "@mui/joy/styles";
 import Box from "@mui/joy/Box";
 import List from "@mui/joy/List";
 import ListSubheader from "@mui/joy/ListSubheader";
@@ -21,7 +21,7 @@ import { SITE_OPTIONS } from "@/shared/constants";
 import servicesData from "@/assets/services-data.json";
 
 export default function Footer() {
-  const [color, setColor] = React.useState<ColorPaletteProp>("success");
+  const theme = useTheme();
 
   const today = new Date();
   const year = today.getFullYear();
@@ -32,7 +32,7 @@ export default function Footer() {
         variant="solid"
         invertedColors
         sx={{
-          bgcolor: "rgba(17, 38, 49, 1)",
+          backgroundColor: theme.palette.primary[600],
           py: 7,
         }}
       >
