@@ -165,7 +165,14 @@ export default function MyNavbar({
                     md: 0,
                   },
                 }}
-                endDecorator={<East fontSize="md" />}
+                endDecorator={
+                  <East
+                    fontSize="inherit"
+                    sx={{
+                      fontSize: 20,
+                    }}
+                  />
+                }
               >
                 Book Now
               </Button>

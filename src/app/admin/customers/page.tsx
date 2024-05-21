@@ -36,7 +36,6 @@ function Customers() {
       enabled: false,
     });
 
-  // Export is set to track progress and show loading bar
   const handleExportUsers = async () => {
     try {
       const response = await refetchExportUsers();
@@ -87,7 +86,14 @@ function Customers() {
           px: 0,
           fontSize: 13,
         }}
-        separator={<KeyboardArrowRight fontSize="md" />}
+        separator={
+          <KeyboardArrowRight
+            fontSize="inherit"
+            sx={{
+              fontSize: 20,
+            }}
+          />
+        }
       >
         <JoyLink
           component={Link}
