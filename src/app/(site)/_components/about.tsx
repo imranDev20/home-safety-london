@@ -213,9 +213,9 @@ export default function About() {
 
               <Stack direction="row" alignItems="center">
                 <PhoneOutlined
-                  fontSize="xl3"
                   sx={{
                     mr: 1,
+                    fontSize: 40,
                   }}
                 />
                 <Box>
