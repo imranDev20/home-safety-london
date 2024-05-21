@@ -1,4 +1,4 @@
-import { Inter, Outfit } from "next/font/google";
+import { Inter } from "next/font/google";
 import ThemeRegistry from "../_components/theme-registry";
 import TopLoader from "../_components/common/top-loader";
 import AdminNavigation from "./_components/admin-navigation";
@@ -20,9 +20,9 @@ export default function AdminLayout({
           <ThemeRegistry options={{ key: "joy" }}>
             <SnackbarProvider>
               <TopLoader />
-              <AdminNavigation>
-                <Suspense>{children}</Suspense>
-              </AdminNavigation>
+              <Suspense>
+                <AdminNavigation>{children}</AdminNavigation>
+              </Suspense>
             </SnackbarProvider>
           </ThemeRegistry>
         </QueryProvider>
