@@ -1,8 +1,12 @@
-import SibApiV3Sdk from "@sendinblue/client";
+import {
+  TransactionalEmailsApi,
+  SendSmtpEmail,
+  TransactionalEmailsApiApiKeys,
+} from "@sendinblue/client";
 
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+const apiInstance = new TransactionalEmailsApi();
 apiInstance.setApiKey(
-  SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
+  TransactionalEmailsApiApiKeys.apiKey,
   process.env.BREVO_API_KEY as string
 );
 
@@ -19,7 +23,7 @@ export async function sendEmail({
   subject,
   html,
 }: EmailOptions): Promise<void> {
-  const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+  const sendSmtpEmail = new SendSmtpEmail();
 
   sendSmtpEmail.subject = subject;
   sendSmtpEmail.htmlContent = html;
@@ -28,7 +32,11 @@ export async function sendEmail({
 
   try {
     const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log(`Email sent to ${to}: ${response.body.messageId}`);
+    if (response.body && (response.body as any).messageId) {
+      console.log(`Email sent to ${to}: ${(response.body as any).messageId}`);
+    } else {
+      console.log(`Email sent to ${to}, but no messageId received`);
+    }
   } catch (error) {
     console.error(`Error sending email to ${to}:`, error);
     throw new Error(
