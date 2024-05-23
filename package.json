@@ -16,6 +16,7 @@
     "@mui/icons-material": "^5.15.9",
     "@mui/joy": "^5.0.0-beta.27",
     "@mui/material": "npm:@mui/joy@latest",
+    "@sendinblue/client": "^3.3.1",
     "@stripe/react-stripe-js": "^2.6.2",
     "@svgr/webpack": "^8.1.0",
     "@tanstack/react-query": "^5.29.0",
@@ -56,7 +57,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",
-    "@types/node": "^20",
+    "@types/node": "^20.12.12",
     "@types/nodemailer": "^6.4.15",
     "@types/react": "^18",
     "@types/react-dom": "^18",
