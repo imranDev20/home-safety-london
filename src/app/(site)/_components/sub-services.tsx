@@ -1,10 +1,8 @@
 import {
   BoilerOutlinedIcon,
   EicrOutlinedTwoIcon,
-  ElectricalRepairIcon,
   EpcOutlinedIcon,
   EvChargerOutlinedIcon,
-  FireAlarmInstallIcon,
   FireAlarmOutlined2Icon,
   FireAlarmOutlinedIcon,
   FireRiskOutlinedIcon,

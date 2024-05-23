@@ -59,7 +59,7 @@ export async function POST(req: Request) {
 
     // Send email to customer
     await sendEmail({
-      from: '"London Home Safety Limited" <no-reply@londonhomesafetylimited.com>',
+      from: '"London Home Safety Limited" <info@londonhomesafety.co.uk>',
       to: email,
       subject: customerEmailSubject,
       html: customerNotificationEmailHtml(name, subject, message),
