@@ -49,21 +49,21 @@ export async function POST(req: Request) {
     }
 
     // Send email to admin
-    const adminEmailSubject = `${name} wants to contact you`;
-    await sendEmail({
-      from: email,
-      to: process.env.ADMIN_EMAIL as string,
-      subject: adminEmailSubject,
-      html: adminNotificationEmailHtml(name, email, subject, message),
-    });
+    // const adminEmailSubject = `${name} wants to contact you`;
+    // await sendEmail({
+    //   from: "London Home Safety <info@londonhomesafety.co.uk>",
+    //   to: process.env.ADMIN_EMAIL as string,
+    //   subject: adminEmailSubject,
+    //   html: adminNotificationEmailHtml(name, email, subject, message),
+    // });
 
     // Send email to customer
-    await sendEmail({
-      from: '"London Home Safety Limited" <info@londonhomesafety.co.uk>',
-      to: email,
-      subject: customerEmailSubject,
-      html: customerNotificationEmailHtml(name, subject, message),
-    });
+    // await sendEmail({
+    //   from: "London Home Safety <info@londonhomesafety.co.uk>",
+    //   to: email,
+    //   subject: customerEmailSubject,
+    //   html: customerNotificationEmailHtml(name, subject, message),
+    // });
 
     // Return a success response
     return NextResponse.json(

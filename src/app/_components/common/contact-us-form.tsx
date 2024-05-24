@@ -50,7 +50,7 @@ type ContactFormInput = {
 };
 
 export default function ContactUsForm() {
-  const reCaptchaToken = useRecaptchaToken();
+  const [reCaptchaToken, regenerateToken] = useRecaptchaToken();
   const { enqueueSnackbar } = useSnackbar();
   const theme = useTheme();
 
@@ -86,7 +86,7 @@ export default function ContactUsForm() {
       const payload = {
         ...data,
         phone: formatPhoneNumber(data.phone),
-        reCaptchaToken,
+        reCaptchaToken: reCaptchaToken,
       };
 
       const response = await submitContactUsFormMutate(payload);
@@ -94,8 +94,10 @@ export default function ContactUsForm() {
       if (response.success) {
         reset();
         enqueueSnackbar(response.message, "success");
+        regenerateToken();
       }
     } catch (error: any) {
+      regenerateToken();
       enqueueSnackbar(error.message, "error");
     }
   };

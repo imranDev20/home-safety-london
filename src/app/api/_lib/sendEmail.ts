@@ -1,42 +1,35 @@
-import {
-  TransactionalEmailsApi,
-  SendSmtpEmail,
-  TransactionalEmailsApiApiKeys,
-} from "@sendinblue/client";
+import nodemailer from "nodemailer";
 
-const apiInstance = new TransactionalEmailsApi();
-apiInstance.setApiKey(
-  TransactionalEmailsApiApiKeys.apiKey,
-  process.env.BREVO_API_KEY as string
-);
+const transporter = nodemailer.createTransport({
+  host: "smtp-relay.brevo.com",
+  port: parseInt(process.env.BREVO_SMTP_PORT as string),
+  secure: false,
 
-interface EmailOptions {
-  from: string;
-  to: string;
-  subject: string;
-  html: string;
-}
+  auth: {
+    user: process.env.BREVO_SMTP_USERNAME,
+    pass: process.env.BREVO_SMTP_PASSWORD,
+  },
+});
 
 export async function sendEmail({
   from,
   to,
   subject,
   html,
-}: EmailOptions): Promise<void> {
-  const sendSmtpEmail = new SendSmtpEmail();
-
-  sendSmtpEmail.subject = subject;
-  sendSmtpEmail.htmlContent = html;
-  sendSmtpEmail.sender = { email: from };
-  sendSmtpEmail.to = [{ email: to }];
-
+}: {
+  from: string;
+  to: string;
+  subject: string;
+  html: string;
+}) {
   try {
-    const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    if (response.body && (response.body as any).messageId) {
-      console.log(`Email sent to ${to}: ${(response.body as any).messageId}`);
-    } else {
-      console.log(`Email sent to ${to}, but no messageId received`);
-    }
+    await transporter.sendMail({
+      from,
+      to,
+      subject,
+      html,
+    });
+    console.log(`Email sent to ${to}`);
   } catch (error) {
     console.error(`Error sending email to ${to}:`, error);
     throw new Error(
