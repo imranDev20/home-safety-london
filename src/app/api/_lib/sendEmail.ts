@@ -1,35 +1,60 @@
-import nodemailer from "nodemailer";
+import Mailjet from "node-mailjet";
 
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: parseInt(process.env.BREVO_SMTP_PORT as string),
-  secure: false,
+const mailjet = Mailjet.apiConnect(
+  process.env.MAILJET_API_KEY as string,
+  process.env.MAILJET_API_SECRET as string
+);
 
-  auth: {
-    user: process.env.BREVO_SMTP_USERNAME,
-    pass: process.env.BREVO_SMTP_PASSWORD,
-  },
-});
-
-export async function sendEmail({
-  from,
-  to,
-  subject,
-  html,
-}: {
-  from: string;
+interface EmailOptions {
+  fromName: string;
+  fromEmail: string;
   to: string;
   subject: string;
   html: string;
-}) {
+}
+
+interface MailjetResponse {
+  body: {
+    Messages: Array<{
+      To: Array<{
+        Email: string;
+        MessageID: string;
+      }>;
+    }>;
+  };
+}
+
+export async function sendEmail({
+  fromName,
+  fromEmail,
+  to,
+  subject,
+  html,
+}: EmailOptions): Promise<void> {
   try {
-    await transporter.sendMail({
-      from,
-      to,
-      subject,
-      html,
-    });
-    console.log(`Email sent to ${to}`);
+    const request: MailjetResponse = await mailjet
+      .post("send", { version: "v3.1" })
+      .request({
+        Messages: [
+          {
+            From: {
+              Email: fromEmail,
+              Name: fromName,
+            },
+            To: [
+              {
+                Email: to,
+              },
+            ],
+            Subject: subject,
+            HTMLPart: html,
+          },
+        ],
+      });
+
+    console.log(
+      `Email sent to ${to}: ${request.body.Messages[0].To[0].MessageID}`
+    );
   } catch (error) {
     console.error(`Error sending email to ${to}:`, error);
     throw new Error(

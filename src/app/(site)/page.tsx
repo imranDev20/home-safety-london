@@ -3,7 +3,7 @@ import Faq from "@/app/(site)/_components/faq";
 import Hero from "@/app/(site)/_components/hero";
 import LondonMap from "@/app/(site)/_components/london-map";
 import Services from "@/app/(site)/_components/services";
-import About from "./_components/about";
+import AboutUsHome from "./_components/about-us-home";
 import SubServices from "./_components/sub-services";
 import Partners from "../_components/common/partners";
 import Testimonial from "./_components/testimonial";
@@ -15,9 +15,8 @@ export default function Home() {
     <main>
       <Hero />
       <Services />
-      <About />
+      <AboutUsHome />
       <SubServices />
-      {/* <LondonMap /> */}
       <Testimonial />
       <Partners isHome />
       <Cta />

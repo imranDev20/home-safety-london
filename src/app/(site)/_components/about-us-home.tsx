@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Box,
@@ -50,12 +51,12 @@ function DotIcon() {
           p: "2px",
           borderRadius: "50%",
         }}
-      ></Box>
+      />
     </Box>
   );
 }
 
-export default function About() {
+export default function AboutUsHome() {
   const theme = useTheme();
 
   return (
