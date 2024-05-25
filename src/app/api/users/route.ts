@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
     const skip = (page - 1) * limit;
 
     const searchTerm = req.nextUrl.searchParams.get("q") || "";
+    const role = req.nextUrl.searchParams.get("role") || "";
 
     // If a search term is provided, add it to the query
     if (searchTerm) {
@@ -23,7 +24,7 @@ export async function GET(req: NextRequest) {
       ];
 
       // Fetch users from the database with pagination, sorting, and search
-      const users = await User.find(query)
+      const users = await User.find(query, { password: 0 })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -46,7 +47,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Fetch users from the database with pagination and sort by creation date in descending order
-    const users = await User.find({})
+    const users = await User.find({}, { password: 0 })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)

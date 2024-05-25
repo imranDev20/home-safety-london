@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
 
-interface IUser {
+export interface IUser extends Document {
+  _id: Types.ObjectId; // Add the _id property
   name: string;
   email: string;
   phone: string;
@@ -34,7 +35,8 @@ const userSchema = new mongoose.Schema<IUser>(
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters long"],
     },
     orders: [
       {

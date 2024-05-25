@@ -12,6 +12,7 @@ import {
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUser } from "@/services/user.services";
+import { useRouter } from "next/navigation";
 
 interface FormValues {
   name: string;

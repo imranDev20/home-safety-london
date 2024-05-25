@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "../_lib/dbConnect";
 import User from "../_models/User";
 import bcrypt from "bcrypt";
+import { generateToken } from "../_lib/generateToken";
 
 export async function POST(req: NextRequest) {
   try {
@@ -39,6 +40,9 @@ export async function POST(req: NextRequest) {
     });
     await newUser.save();
 
+    // Generate JWT
+    const token = generateToken(newUser);
+
     return NextResponse.json({
       success: true,
       message: "User registered successfully",
@@ -47,6 +51,7 @@ export async function POST(req: NextRequest) {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
+        token, // Include the JWT in the response
       },
     });
   } catch (error: any) {
