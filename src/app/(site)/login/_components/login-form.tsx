@@ -70,7 +70,13 @@ export default function LoginForm() {
       if (response?.success) {
         reset();
         enqueueSnackbar(response?.message, "success");
-        router.replace("/");
+
+        if (response.data.user.role === "admin") {
+          router.replace("/admin");
+        } else {
+          router.replace("/");
+        }
+
         setToken(response?.data?.token);
       } else {
         throw new Error(response?.message);

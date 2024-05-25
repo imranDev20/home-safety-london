@@ -89,50 +89,29 @@ export default function Payments() {
     fetchClientSecret();
   }, [preOrderData]);
 
+  if (!stripePromise || !clientSecret) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          height: "50vh",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress
+          thickness={4}
+          sx={{ "--CircularProgress-size": "100px" }}
+        >
+          Loading
+        </CircularProgress>
+      </Box>
+    );
+  }
+
   return (
     <>
-      <Box sx={{ minWidth: 240, mt: 4 }}>
-        <Box
-          sx={{
-            mb: 2,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Typography level="h4" textColor="text.secondary" fontWeight="xl">
-            Choose a Payment Method
-          </Typography>
-        </Box>
-        <RadioGroup
-          aria-labelledby="example-payment-channel-label"
-          overlay
-          name="example-payment-channel"
-          defaultValue="Paypal"
-        >
-          <List
-            component="div"
-            variant="outlined"
-            orientation={"vertical"}
-            sx={{
-              borderRadius: "sm",
-              boxShadow: "sm",
-            }}
-          >
-            {["Credit Card", "Bank Transfer", "Cash to Engineer"].map(
-              (value, index) => (
-                <React.Fragment key={value}>
-                  {index !== 0 && <ListDivider />}
-                  <ListItem>
-                    <Radio id={value} value={value} label={value} />
-                  </ListItem>
-                </React.Fragment>
-              )
-            )}
-          </List>
-        </RadioGroup>
-      </Box>
-      {/* {stripePromise && clientSecret && (
+      {stripePromise && clientSecret && (
         <Elements
           stripe={stripePromise}
           options={{
@@ -148,7 +127,7 @@ export default function Payments() {
           {activeStep === 4 ? <PaymentDetails /> : null}
           {activeStep === 5 ? <Outcome /> : null}
         </Elements>
-      )} */}
+      )}
     </>
   );
 }

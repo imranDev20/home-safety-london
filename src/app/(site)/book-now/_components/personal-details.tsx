@@ -4,7 +4,6 @@ import { PersonalFormInput } from "@/types/form";
 import {
   Box,
   Button,
-  Chip,
   CircularProgress,
   Divider,
   FormControl,
@@ -200,7 +199,7 @@ export default function PersonalDetails() {
 
       const response = await preOrderMutate(payload);
 
-      if (response?.status === "success") {
+      if (response?.success) {
         router.push(pathname + "?" + createQueryString("active_step", "3"));
         window.scrollTo(0, 300);
         enqueueSnackbar(response.message, "success");
@@ -341,7 +340,7 @@ export default function PersonalDetails() {
               }}
               render={({ field }) => (
                 <FormControl error={!!errors.house} size="lg">
-                  <FormLabel>House No and Street Name</FormLabel>
+                  <FormLabel>House / Street</FormLabel>
                   <Input size="lg" {...field} fullWidth variant="outlined" />
                   <HookFormError name="house" errors={errors} />
                 </FormControl>

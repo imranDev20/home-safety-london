@@ -3,6 +3,7 @@ import {
   createQueryString,
   getPreOrderIdFromLocalStorage,
   snakeCaseToNormalText,
+  toSnakeCase,
 } from "@/shared/functions";
 import {
   Box,
@@ -12,10 +13,11 @@ import {
   Table,
   Typography,
 } from "@mui/joy";
+import { List, ListDivider, ListItem, Radio, RadioGroup } from "@mui/joy";
 
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import Payments from "./payments";
 
 export default function Confirmation() {
@@ -43,7 +45,7 @@ export default function Confirmation() {
     }
   }, [refetchPreOrder]);
 
-  if (isPreOrderDataLoading) {
+  if (!preOrderData) {
     return (
       <Box
         sx={{
@@ -310,6 +312,59 @@ export default function Confirmation() {
           </Typography>
         </Grid>
       </Grid>
+
+      <Box sx={{ minWidth: 240, mt: 5 }}>
+        <Box
+          sx={{
+            mb: 2,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography level="h4" textColor="text.secondary" fontWeight="xl">
+            Choose a Payment Method
+          </Typography>
+        </Box>
+        <RadioGroup
+          overlay
+          defaultValue="credit_card"
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start",
+          }}
+        >
+          <List
+            component="div"
+            variant="outlined"
+            orientation={"horizontal"}
+            sx={{
+              borderRadius: "sm",
+              boxShadow: "sm",
+            }}
+          >
+            {["Credit Card", "Bank Transfer", "Cash to Engineer"].map(
+              (value, index) => (
+                <React.Fragment key={value}>
+                  {index !== 0 && <ListDivider />}
+                  <ListItem
+                    sx={{
+                      py: 3,
+                    }}
+                  >
+                    <Radio
+                      id={value}
+                      value={toSnakeCase(value)}
+                      label={value}
+                    />
+                  </ListItem>
+                </React.Fragment>
+              )
+            )}
+          </List>
+        </RadioGroup>
+      </Box>
 
       <Payments />
 

@@ -17,7 +17,6 @@ import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { PreOrderPersonalPayload } from "@/types/pre-order";
 
 export default function PaymentDetails() {
-  const [status, setStatus] = useState<string>();
   const [loading, setLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
