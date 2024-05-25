@@ -5,16 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import React from "react";
 
-const CustomerInfo = () => {
+const CustomerInfo = ({ userDetails }: { userDetails: any }) => {
   const { customer_id } = useParams();
-
-  const { data: userDetails, isLoading: isUserDetailsLoading } = useQuery({
-    queryKey: ["user-details"],
-    queryFn: async () => {
-      const response = await getUserDetails(customer_id as string);
-      return response.data;
-    },
-  });
 
   return (
     <>

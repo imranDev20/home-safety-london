@@ -1,15 +1,30 @@
-import React from "react";
+"use client";
+import { Grid } from "@mui/joy";
 import CustomerDetailsHeader from "./_components/customer-details-header";
-import { Box, Grid, Sheet, Stack, Typography } from "@mui/joy";
+import CustomerStats from "./_components/customer-stats";
 import CustomerInfo from "./_components/customer-info";
 import CustomerOrders from "./_components/customer-orders";
-import CustomerStats from "./_components/customer-stats";
+import { getUserDetails } from "@/services/user.services";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 
 const SingleCustomer = () => {
+  const { customer_id } = useParams();
+  const { data: userDetails, isLoading: isUserDetailsLoading } = useQuery({
+    queryKey: ["user-details"],
+    queryFn: async () => {
+      const response = await getUserDetails(customer_id as string);
+      return response.data;
+    },
+  });
+
+  if (isUserDetailsLoading) {
+    return "Loading...";
+  }
+
   return (
     <>
-      <CustomerDetailsHeader />
-
+      <CustomerDetailsHeader userDetails={userDetails} />
       <CustomerStats />
       <Grid
         container
@@ -19,7 +34,7 @@ const SingleCustomer = () => {
         }}
       >
         <Grid xs={12} md={4}>
-          <CustomerInfo />
+          <CustomerInfo userDetails={userDetails} />
         </Grid>
         <Grid xs={12} md={8}>
           <CustomerOrders />

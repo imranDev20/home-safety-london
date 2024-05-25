@@ -1,18 +1,39 @@
 import { Card, CardContent, Divider, Grid, Stack, Typography } from "@mui/joy";
 import React from "react";
 
-const CustomerStats = () => {
+function CustomerStatBlock({
+  title,
+  count,
+  additional,
+}: {
+  title: string;
+  count: number;
+  additional: string;
+}) {
+  return (
+    <Grid xs={12} md={7}>
+      <Typography level="title-md" mb={1}>
+        {title}
+      </Typography>
+      <Typography level="h3" color="primary">
+        {count}
+      </Typography>
+      <Typography level="body-sm" color="neutral">
+        {additional}
+      </Typography>
+    </Grid>
+  );
+}
+
+export default function CustomerStats() {
   return (
     <Grid spacing={2} my={3} container columns={31}>
-      <Grid xs={12} md={7}>
-        <Typography level="title-md" mb={1}>
-          Total Spent
-        </Typography>
-        <Typography level="h2">$10440.2k</Typography>
-        <Typography level="body-sm" color="neutral">
-          New cost last 365 days
-        </Typography>
-      </Grid>
+      <CustomerStatBlock
+        title="Total Spent"
+        count={10440.2}
+        additional="New cost last 365 days"
+      />
+
       <Grid
         xs={12}
         md={1}
@@ -24,15 +45,11 @@ const CustomerStats = () => {
         <Divider orientation="vertical" />
       </Grid>
 
-      <Grid xs={12} md={7}>
-        <Typography level="title-md" mb={1}>
-          Total Orders
-        </Typography>
-        <Typography level="h2">127</Typography>
-        <Typography level="body-sm" color="neutral">
-          New cost last 365 days
-        </Typography>
-      </Grid>
+      <CustomerStatBlock
+        title="Total Orders"
+        count={127}
+        additional="New cost last 365 days"
+      />
 
       <Grid
         xs={12}
@@ -50,15 +67,11 @@ const CustomerStats = () => {
         />
       </Grid>
 
-      <Grid xs={12} md={7}>
-        <Typography level="title-md" mb={1}>
-          Completed
-        </Typography>
-        <Typography level="h2">100</Typography>
-        <Typography level="body-sm" color="neutral">
-          New cost last 365 days
-        </Typography>
-      </Grid>
+      <CustomerStatBlock
+        title="Completed"
+        count={100}
+        additional="New cost last 365 days"
+      />
 
       <Grid
         xs={12}
@@ -70,18 +83,11 @@ const CustomerStats = () => {
       >
         <Divider orientation="vertical" />
       </Grid>
-
-      <Grid xs={12} md={7}>
-        <Typography level="title-md" mb={1}>
-          Cancelled
-        </Typography>
-        <Typography level="h2">12</Typography>
-        <Typography level="body-sm" color="neutral">
-          New cost last 365 days
-        </Typography>
-      </Grid>
+      <CustomerStatBlock
+        title="Cancelled"
+        count={12}
+        additional="New cost last 365 days"
+      />
     </Grid>
   );
-};
-
-export default CustomerStats;
+}

@@ -29,17 +29,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import React from "react";
 
-const CustomerDetailsHeader = () => {
+const CustomerDetailsHeader = ({ userDetails }: { userDetails: any }) => {
   const theme = useTheme();
-  const { customer_id } = useParams();
-
-  const { data: userDetails, isLoading: isUserDetailsLoading } = useQuery({
-    queryKey: ["user-details"],
-    queryFn: async () => {
-      const response = await getUserDetails(customer_id as string);
-      return response.data;
-    },
-  });
 
   return (
     <>
@@ -116,7 +107,7 @@ const CustomerDetailsHeader = () => {
           <Button
             variant="outlined"
             size="sm"
-            color="neutral"
+            color="primary"
             startDecorator={<Call />}
             component="a"
             href={`tel:${userDetails?.phone}`}
@@ -126,7 +117,7 @@ const CustomerDetailsHeader = () => {
           <Button
             variant="outlined"
             size="sm"
-            color="neutral"
+            color="primary"
             component="a"
             startDecorator={<Message />}
             href={`mailto:${userDetails?.email}`}
@@ -138,7 +129,7 @@ const CustomerDetailsHeader = () => {
             <MenuButton
               slots={{ root: IconButton }}
               slotProps={{
-                root: { variant: "outlined", color: "neutral", size: "sm" },
+                root: { variant: "outlined", color: "primary", size: "sm" },
               }}
             >
               <MoreVertRounded />
