@@ -85,7 +85,7 @@ export default function RegisterForm() {
       if (response?.success) {
         reset();
         enqueueSnackbar(response?.message, "success");
-        router.push("/");
+        router.replace("/");
         setToken(response?.data?.token);
       } else {
         throw new Error(response?.message);

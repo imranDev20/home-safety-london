@@ -10,9 +10,9 @@ export const registerAccount = async (user: User) => {
   }
 };
 
-export const loginAccount = async (userId?: string) => {
+export const loginAccount = async (user: string) => {
   try {
-    const response = await http.get(`/login`);
+    const response = await http.post(`/login`, user);
     return response.data;
   } catch (error: any) {
     throw error.response?.data || error.message;
