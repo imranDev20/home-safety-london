@@ -9,11 +9,41 @@ import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import { Fragment } from "react";
 
 import { ComponentUseStateProps } from "@/types/misc";
+import { useMutation } from "@tanstack/react-query";
+import { logoutAccount } from "@/services/account.services";
+import { useSnackbar } from "@/app/_components/snackbar-provider";
+import { removeToken } from "@/shared/functions";
 
 const LogoutAlertDialog: React.FC<ComponentUseStateProps> = ({
   open,
   setOpen,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const {
+    mutateAsync: logoutAccountMutate,
+    isPending: isLogoutAccountLoading,
+  } = useMutation({
+    mutationFn: async () => {
+      const response = await logoutAccount();
+      console.log(response);
+      return response;
+    },
+    onSuccess: (response) => {
+      enqueueSnackbar(response?.message, "success");
+      removeToken();
+      setOpen(false);
+    },
+
+    onError: (error) => {
+      enqueueSnackbar(error?.message, "error");
+    },
+  });
+
+  const handleLogoutAccount = async () => {
+    await logoutAccountMutate();
+  };
+
   return (
     <Fragment>
       <Modal open={open} onClose={() => setOpen(false)}>
@@ -38,7 +68,8 @@ const LogoutAlertDialog: React.FC<ComponentUseStateProps> = ({
             <Button
               variant="solid"
               color="danger"
-              onClick={() => setOpen(false)}
+              loading={isLogoutAccountLoading}
+              onClick={handleLogoutAccount}
             >
               Confirm Logout
             </Button>

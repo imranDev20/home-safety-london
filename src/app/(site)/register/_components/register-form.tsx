@@ -67,32 +67,28 @@ export default function RegisterForm() {
       const response = await registerAccount(userData);
       return response;
     },
-    onSuccess: (data) => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      reset();
+      enqueueSnackbar(response?.message, "success");
+      router.replace("/");
+      setToken(response?.data?.token);
+    },
+    onError: (error) => {
+      console.log(error);
+      enqueueSnackbar(error?.message, "error");
     },
   });
 
   const onRegisterFormSubmit: SubmitHandler<RegisterFormInput> = async (
     data
   ) => {
-    try {
-      const payload = {
-        name: data.name,
-        password: data.password,
-        email: data.email,
-      };
-      const response = await registerUserMutate(payload);
-      if (response?.success) {
-        reset();
-        enqueueSnackbar(response?.message, "success");
-        router.replace("/");
-        setToken(response?.data?.token);
-      } else {
-        throw new Error(response?.message);
-      }
-    } catch (error: any) {
-      enqueueSnackbar(error?.message, "error");
-    }
+    const payload = {
+      name: data.name,
+      password: data.password,
+      email: data.email,
+    };
+    await registerUserMutate(payload);
   };
 
   return (

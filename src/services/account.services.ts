@@ -21,7 +21,7 @@ export const loginAccount = async (user: string) => {
 
 export const logoutAccount = async (userId?: string) => {
   try {
-    const response = await http.get(`/logout`);
+    const response = await http.post(`/logout`);
     return response.data;
   } catch (error: any) {
     throw error.response?.data || error.message;

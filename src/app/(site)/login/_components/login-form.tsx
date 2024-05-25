@@ -54,8 +54,16 @@ export default function LoginForm() {
         const response = await loginAccount(userData);
         return response;
       },
-      onSuccess: (data) => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries({ queryKey: ["users"] });
+        setToken(response?.data?.token);
+        if (response?.data?.user?.role === "admin") {
+          router.replace("/admin");
+        } else {
+          router.replace("/");
+        }
+        reset();
+        enqueueSnackbar(response?.message, "success");
       },
     });
 
@@ -66,21 +74,7 @@ export default function LoginForm() {
         email: data.email,
       };
 
-      const response = await loginUserMutate(payload);
-      if (response?.success) {
-        reset();
-        enqueueSnackbar(response?.message, "success");
-
-        if (response.data.user.role === "admin") {
-          router.replace("/admin");
-        } else {
-          router.replace("/");
-        }
-
-        setToken(response?.data?.token);
-      } else {
-        throw new Error(response?.message);
-      }
+      await loginUserMutate(payload);
     } catch (error: any) {
       enqueueSnackbar(error?.message, "error");
     }

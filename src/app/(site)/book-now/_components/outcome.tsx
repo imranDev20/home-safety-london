@@ -33,15 +33,13 @@ export default function Outcome() {
 
     const fetchIntent = async () => {
       try {
-        const response = await stripe.retrievePaymentIntent(
-          clientSecret as string
-        );
+        const response = await stripe.retrievePaymentIntent(clientSecret!);
 
         const { paymentIntent } = response;
 
         setInfo({
-          email: response.paymentIntent?.receipt_email as string,
-          id: response.paymentIntent?.id as string,
+          email: response.paymentIntent?.receipt_email!,
+          id: response.paymentIntent?.id!,
         });
 
         if (!paymentIntent) {

@@ -5,7 +5,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 
-import { Alert, Box, Button } from "@mui/joy";
+import { Box, Button } from "@mui/joy";
 import { useRouter, usePathname } from "next/navigation";
 import {
   createQueryString,

@@ -77,27 +77,26 @@ export default function ContactUsForm() {
       const response = await submitContactUsForm(contactFormData);
       return response;
     },
+    onSuccess: (response) => {
+      reset();
+      enqueueSnackbar(response.message, "success");
+      regenerateToken();
+    },
+
+    onError: (error) => {
+      regenerateToken();
+      enqueueSnackbar(error.message, "error");
+    },
   });
 
   const onContactFormSubmit: SubmitHandler<ContactFormInput> = async (data) => {
-    try {
-      const payload = {
-        ...data,
-        phone: formatPhoneNumber(data.phone),
-        reCaptchaToken: reCaptchaToken,
-      };
+    const payload = {
+      ...data,
+      phone: formatPhoneNumber(data.phone),
+      reCaptchaToken: reCaptchaToken,
+    };
 
-      const response = await submitContactUsFormMutate(payload);
-
-      if (response.success) {
-        reset();
-        enqueueSnackbar(response.message, "success");
-        regenerateToken();
-      }
-    } catch (error: any) {
-      regenerateToken();
-      enqueueSnackbar(error.message, "error");
-    }
+    await submitContactUsFormMutate(payload);
   };
 
   return (
