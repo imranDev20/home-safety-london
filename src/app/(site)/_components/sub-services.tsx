@@ -12,6 +12,7 @@ import {
   ScrewDriverOutlinedIcon,
 } from "@/app/_components/common/icons";
 import { useTheme } from "@mui/joy/styles";
+import ElectricImage from "@/images/electric.jpg";
 
 import {
   Box,
@@ -30,72 +31,115 @@ import { hexToRgba } from "@/shared/functions";
 import Image from "next/image";
 import backgroundImage from "@/images/about-bg.jpeg";
 
-const FIRST_ROW = [
+export const DETAILED_SERVICES = [
   {
     id: 1,
     name: "Energy Certificate (EPC)",
     Icon: EpcOutlinedIcon,
+    image: ElectricImage,
     route: "/electrical-services/epc",
+    description:
+      "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
   },
   {
     id: 2,
     name: "EICR",
     Icon: EicrOutlinedTwoIcon,
+    image: ElectricImage,
+
     route: "/electrical-services/eicr",
+    description:
+      "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
   },
   {
     id: 3,
     name: "Gas Certificate & Repair",
     Icon: GasOutlinedIcon,
+    image: ElectricImage,
+
     route: "/gas-services/gas-certificate-repair",
+    description:
+      "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
   },
   {
     id: 4,
     name: "Boiler Service & Repair",
     Icon: BoilerOutlinedIcon,
+    image: ElectricImage,
+
     route: "/gas-services/boiler-certificate-repair",
+    description:
+      "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
   },
   {
     id: 7,
     name: "PAT Testing",
     Icon: PatOutlinedIcon,
+    image: ElectricImage,
+
     route: "/electrical-services/pat",
+    description:
+      "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
   },
   {
     id: 1,
     name: "Fire Risk Assessment",
     Icon: FireRiskOutlinedIcon,
+    image: ElectricImage,
+
     route: "/fire-services/fire-risk-assessment",
+    description:
+      "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
   },
   {
     id: 2,
     name: "Fire Alarm Certificate",
     Icon: FireAlarmOutlinedIcon,
+    image: ElectricImage,
+
     route: "/fire-services/fire-alarm-certificate",
+    description:
+      "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
   },
   {
     id: 3,
     name: "Fuse Box Installation",
     Icon: FuseBoxOutlinedIcon,
+    image: ElectricImage,
+
     route: "/electrical-services/fuse-box-installation",
+    description:
+      "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
   },
   {
     id: 4,
     name: "Electrical Repairs",
     Icon: ScrewDriverOutlinedIcon,
+    image: ElectricImage,
+
     route: "/electrical-services/electrical-repairs",
+    description:
+      "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
   },
   {
     id: 6,
     name: "Fire Alarm Installation",
     Icon: FireAlarmOutlined2Icon,
+    image: ElectricImage,
+
     route: "/fire-services/fire-alarm-installation",
+    description:
+      "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
   },
   {
     id: 7,
     name: "EV Charger Installation",
     Icon: EvChargerOutlinedIcon,
+    image: ElectricImage,
+
     route: "/electrical-services/ev-charger-installation",
+    description:
+      "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
   },
 ];
 
@@ -123,7 +167,7 @@ export default function SubServices() {
           Complete Solution Under One Roof
         </Typography>
         <Grid container spacing={5}>
-          {FIRST_ROW.map((item) => (
+          {DETAILED_SERVICES.map((item) => (
             <Grid xs={12} md={4} key={item.id}>
               <Card
                 variant="plain"

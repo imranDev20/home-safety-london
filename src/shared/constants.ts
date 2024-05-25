@@ -9,12 +9,13 @@ import {
 } from "@mui/icons-material";
 
 import {
-  EicrIcon,
+  EicrOutlinedTwoIcon,
   EpcIcon,
-  FireIcon,
+  FireAlarmOutlinedIcon,
   FireRiskIcon,
-  GasSafteyIcon,
-  PatIcon,
+  FireRiskOutlinedIcon,
+  GasOutlinedIcon,
+  PatOutlinedIcon,
 } from "@/app/_components/common/icons";
 import ElectricImage from "@/images/electric.jpg";
 
@@ -176,7 +177,7 @@ export const SERVICES = [
         id: 1,
         route: "/eicr",
         title: "EICR Certificate",
-        Icon: EicrIcon,
+        Icon: EicrOutlinedTwoIcon,
         image: ElectricImage,
         description:
           "An electrical installation condition report previously known as (periodic electrical inspection) is an inspection on the condition of an existing electrical installation, to identify if any part of the installation does not meet current British standards.",
@@ -203,7 +204,7 @@ export const SERVICES = [
         route: "/pat",
         title: "Portable Appliance Testing",
         accronym: "PAT",
-        Icon: PatIcon,
+        Icon: PatOutlinedIcon,
         image: ElectricImage,
         description:
           "PAT stands for portable appliance testing, a procedure in which electrical portable appliances are tested/inspected by a certified electrician registered with a body e.g. NICEIC or NAPIT.",
@@ -234,7 +235,7 @@ export const SERVICES = [
         id: 1,
         route: "/gas-certificate",
         title: "Gas Certificate",
-        Icon: GasSafteyIcon,
+        Icon: GasOutlinedIcon,
         image: ElectricImage,
         description:
           "Gas Safety certificate is a document which affirms that inspection of all gas appliances is carried out in the property to make sure gas pipework, flues and each gas appliance are working properly, there is no danger and are checked during gas safety check by a gas safe registered engineer.",
@@ -266,7 +267,7 @@ export const SERVICES = [
         id: 1,
         route: "/fire-alarm-certificate",
         title: "Fire Alarm Certificate",
-        Icon: FireIcon,
+        Icon: FireAlarmOutlinedIcon,
         image: ElectricImage,
         description:
           "Fire alarm certificate is a document/report issued by a qualified electrician after inspection and testing of the property’s alarms in accordance with regulation BS5839. These rules and regulations are part of the fire detection and fire alarm systems for building, they cover design commissioning and maintenance.",
@@ -289,7 +290,7 @@ export const SERVICES = [
         id: 2,
         route: "/fire-risk-assessment",
         title: "Fire Risk Assessment",
-        Icon: FireRiskIcon,
+        Icon: FireRiskOutlinedIcon,
         image: ElectricImage,
         description:
           "A fire risk assessment is a systematic evaluation of a building or premises to identify potential fire hazards and assess the level of risk they pose. The purpose of a fire risk assessment is to make sure the safety of occupant and to implement appropriate fire safety measures to prevent fires and protect lives and property. We provide fire safety risk assessment service to landlords, homeowners, employers for residential homes, flats, HMO properties, offices and businesses respectively.",

@@ -1,5 +1,6 @@
+"use client";
 import { Container, Grid, Sheet, Typography, useTheme } from "@mui/joy";
-import Service from "./service";
+import ServiceCategoryCard from "./service-category-card";
 import {
   EicrOutlinedIcon,
   FireAlarmBellOutlinedIcon,
@@ -44,7 +45,7 @@ const SERVICES_PRICE = [
   },
 ];
 
-export default function Services() {
+export default function ServiceCategories() {
   const theme = useTheme();
 
   return (
@@ -81,7 +82,7 @@ export default function Services() {
         >
           {SERVICES_PRICE.map((service) => (
             <Grid xs={12} sm={6} md={service.column} key={service.id}>
-              {service.id && <Service service={service} />}
+              {service.id && <ServiceCategoryCard service={service} />}
             </Grid>
           ))}
         </Grid>

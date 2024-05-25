@@ -19,7 +19,7 @@ interface ServiceProps {
   };
 }
 
-export default function Service({ service }: ServiceProps) {
+export default function ServiceCategoryCard({ service }: ServiceProps) {
   const theme = useTheme();
   return (
     <JoyLink

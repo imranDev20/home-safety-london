@@ -200,17 +200,23 @@ export default function CustomersTable() {
             </tr>
           </thead>
           <tbody>
-            {/* {stableSort(usersData?.users, getComparator(order, "id")).map(
+            {stableSort(usersData?.users, getComparator(order, "id")).map(
               (row) => (
-                <tr
+                <Box
+                  component="tr"
                   key={row._id}
                   onClick={() => router.push(`/admin/customers/${row._id}`)}
-                  style={{
+                  sx={{
                     cursor: "pointer",
                   }}
                 >
                   <td
-                    style={{ textAlign: "center", width: 120 }}
+                    style={{
+                      textAlign: "center",
+                      width: 120,
+                      paddingBottom: "12px",
+                      paddingTop: "12px",
+                    }}
                     onClick={(event) => event.stopPropagation()}
                   >
                     <Checkbox
@@ -263,9 +269,9 @@ export default function CustomersTable() {
                   >
                     <RowMenu />
                   </td>
-                </tr>
+                </Box>
               )
-            )} */}
+            )}
           </tbody>
         </Table>
       </Sheet>
