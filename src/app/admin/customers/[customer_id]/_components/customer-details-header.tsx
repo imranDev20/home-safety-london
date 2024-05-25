@@ -24,9 +24,7 @@ import {
   MenuItem,
   ListItemDecorator,
 } from "@mui/joy";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import React from "react";
 
 const CustomerDetailsHeader = ({ userDetails }: { userDetails: any }) => {
@@ -51,7 +49,7 @@ const CustomerDetailsHeader = ({ userDetails }: { userDetails: any }) => {
         <JoyLink
           component={Link}
           color="neutral"
-          href="/admin/"
+          href="/admin/customers"
           sx={{
             color: theme.palette.text.primary,
             textDecoration: "none",
@@ -95,7 +93,12 @@ const CustomerDetailsHeader = ({ userDetails }: { userDetails: any }) => {
         mt={2}
       >
         <Stack direction="row" alignItems="center" spacing={2}>
-          <IconButton variant="outlined" size="sm">
+          <IconButton
+            variant="outlined"
+            size="sm"
+            component={Link}
+            href={`/admin/customers`}
+          >
             <KeyboardArrowLeft />
           </IconButton>
           <Typography component="h1" level="h2">

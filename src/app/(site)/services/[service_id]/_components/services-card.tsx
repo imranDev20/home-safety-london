@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Container, Grid, Typography } from "@mui/joy";
-import ServiceCard from "./service-card";
+import ServiceCard from "../[sub_service_id]/_components/service-card";
 
 const SERVICES = [
   {

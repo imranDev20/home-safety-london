@@ -143,8 +143,8 @@ const DataTable = <T extends object>({
               style={{
                 textAlign: "center",
                 width: 120,
-                paddingBottom: "12px",
-                paddingTop: "12px",
+                paddingBottom: "10px",
+                paddingTop: "10px",
               }}
               onClick={(event) => event.stopPropagation()}
             >

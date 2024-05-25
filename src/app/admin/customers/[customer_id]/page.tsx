@@ -10,7 +10,12 @@ import { useParams } from "next/navigation";
 
 const SingleCustomer = () => {
   const { customer_id } = useParams();
-  const { data: userDetails, isLoading: isUserDetailsLoading } = useQuery({
+
+  const {
+    data: userDetails,
+    isLoading: isUserDetailsLoading,
+    isPending: isUserDetailsPending,
+  } = useQuery({
     queryKey: ["user-details"],
     queryFn: async () => {
       const response = await getUserDetails(customer_id as string);
@@ -18,7 +23,7 @@ const SingleCustomer = () => {
     },
   });
 
-  if (isUserDetailsLoading) {
+  if (isUserDetailsLoading || isUserDetailsPending) {
     return "Loading...";
   }
 

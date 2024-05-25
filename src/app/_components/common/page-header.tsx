@@ -1,8 +1,9 @@
 "use client";
-import { Box, Breadcrumbs, Link, Typography } from "@mui/joy";
+import { Box, Breadcrumbs, Link as JoyLink, Typography } from "@mui/joy";
 import Image from "next/image";
 import { PageHeaderProps } from "@/types/props";
 import { hexToRgba } from "@/shared/functions";
+import Link from "next/link";
 
 const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
   return (
@@ -54,21 +55,27 @@ const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
           }}
         >
           <Breadcrumbs sx={{ position: "relative", zIndex: 1, color: "white" }}>
-            <Link
+            <JoyLink
               href="/"
-              component={Link}
+              component={JoyLink}
               underline="hover"
               sx={{
                 color: "white",
               }}
             >
               Home
-            </Link>
+            </JoyLink>
 
             {secondary ? (
-              <Link href={`/${secondary.toLowerCase()}`} component={Link}>
+              <JoyLink
+                href={`/${secondary.toLowerCase()}`}
+                component={Link}
+                sx={{
+                  color: "white",
+                }}
+              >
                 {secondary}
-              </Link>
+              </JoyLink>
             ) : null}
 
             <Typography color="secondary">{title}</Typography>
