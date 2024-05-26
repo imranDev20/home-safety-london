@@ -1,4 +1,4 @@
-import { getPreOrderById } from "@/services/pre-order.services";
+import { getPreOrderById, updatePreOrder } from "@/services/pre-order.services";
 import {
   getPreOrderIdFromLocalStorage,
   snakeCaseToNormalText,
@@ -6,12 +6,12 @@ import {
 } from "@/shared/functions";
 import { Box, Button, CircularProgress, Grid, Typography } from "@mui/joy";
 import { List, ListDivider, ListItem, Radio, RadioGroup } from "@mui/joy";
-
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import Payments from "./payments";
 import useBreakpoints from "@/app/_components/hooks/use-breakpoints";
 import { useSearchParams } from "next/navigation";
+import { useSnackbar } from "@/app/_components/snackbar-provider";
 
 type PaymentMethods = "credit_card" | "bank_transfer" | "cash_to_engineer";
 
@@ -19,11 +19,11 @@ export default function Confirmation() {
   const [paymentMethod, setPaymentMethod] =
     useState<PaymentMethods>("credit_card");
 
+  const queryClient = useQueryClient();
   const searchParams = useSearchParams();
-
   const activeStep = parseInt(searchParams.get("active_step") as string) || 1;
-
   const { isXs, isSm } = useBreakpoints();
+  const { enqueueSnackbar } = useSnackbar();
 
   const {
     data: preOrderData,
@@ -39,6 +39,26 @@ export default function Confirmation() {
     enabled: false,
   });
 
+  const {
+    mutateAsync: preOrderMutate,
+    isPending: isPreOrderMutatePending,
+    // variables: preOrderMutateVariables,
+  } = useMutation({
+    mutationFn: async (preOrder: any) => {
+      const preOrderId = getPreOrderIdFromLocalStorage();
+      const response = await updatePreOrder(preOrderId || undefined, preOrder);
+      return response;
+    },
+    onSuccess: (response) => {
+      console.log(response);
+      queryClient.invalidateQueries({ queryKey: ["pre-order"] });
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.data || error?.message, "error");
+      setPaymentMethod(preOrderData?.payment_method);
+    },
+  });
+
   useEffect(() => {
     const preOrderId = getPreOrderIdFromLocalStorage();
     if (preOrderId) {
@@ -47,6 +67,38 @@ export default function Confirmation() {
   }, [refetchPreOrder]);
 
   if (!preOrderData) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          height: "50vh",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress
+          thickness={4}
+          sx={{ "--CircularProgress-size": "100px" }}
+        >
+          Loading
+        </CircularProgress>
+      </Box>
+    );
+  }
+
+  const handlePreOrderPaymentMethod = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setPaymentMethod(event.target.value as PaymentMethods);
+    const payload = {
+      ...preOrderData,
+      payment_method: paymentMethod,
+    };
+
+    await preOrderMutate(payload);
+  };
+
+  if (isPreOrderDataLoading) {
     return (
       <Box
         sx={{
@@ -261,9 +313,7 @@ export default function Confirmation() {
             <RadioGroup
               overlay
               value={paymentMethod}
-              onChange={(e) =>
-                setPaymentMethod(e.target.value as PaymentMethods)
-              }
+              onChange={handlePreOrderPaymentMethod}
               sx={{
                 display: "flex",
                 justifyContent: "center",
@@ -294,6 +344,7 @@ export default function Confirmation() {
                           id={value}
                           value={toSnakeCase(value)}
                           label={value}
+                          disabled={isPreOrderMutatePending}
                         />
                       </ListItem>
                     </React.Fragment>
@@ -315,9 +366,11 @@ export default function Confirmation() {
             mt: 5,
           }}
         >
-          {(paymentMethod === "cash_to_engineer" ||
-            paymentMethod == "bank_transfer") && (
-            <Button size="lg">Proceed to Order</Button>
+          {(paymentMethod === "bank_transfer" ||
+            paymentMethod === "cash_to_engineer") && (
+            <Button disabled={isPreOrderMutatePending} size="lg">
+              Proceed to Order
+            </Button>
           )}
         </Box>
       ) : null}

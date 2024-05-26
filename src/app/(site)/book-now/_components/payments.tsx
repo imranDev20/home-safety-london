@@ -91,8 +91,6 @@ export default function Payments() {
     );
   }
 
-  console.log("first");
-
   return (
     <>
       {stripePromise && clientSecret && (

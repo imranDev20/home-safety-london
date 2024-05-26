@@ -28,12 +28,7 @@ export async function PUT(
     );
 
     return NextResponse.json(
-      formatResponse(true, data, "Order progress updated"),
-      {
-        headers: {
-          "Set-Cookie": `order_id=${orderId}; sameSite=strict; httpOnly=true; maxAge=60*1*1`,
-        },
-      }
+      formatResponse(true, data, "Order progress updated")
     );
   } catch (error: any) {
     return NextResponse.json(formatResponse(false, error.message), {
@@ -50,7 +45,6 @@ export async function GET(
   try {
     await dbConnect();
     const id = params.pre_order_id;
-
     const preOrder = await PreOrder.findById(id);
 
     return NextResponse.json({
@@ -60,6 +54,9 @@ export async function GET(
     });
   } catch (error: any) {
     console.log(error);
-    return NextResponse.json({ message: error.message }, { status: 500 });
+
+    return NextResponse.json(formatResponse(false, error.message), {
+      status: 500,
+    });
   }
 }

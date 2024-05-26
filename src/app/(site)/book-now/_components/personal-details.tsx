@@ -211,12 +211,6 @@ export default function PersonalDetails() {
     }
   };
 
-  useEffect(() => {
-    // if (!order.isServiceStepComplete) {
-    //   router.push(pathname + "?" + createQueryString("active_step", "1"));
-    // }
-  }, [pathname, router]);
-
   if (isPreOrderDataLoading) {
     return (
       <Box

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
 
-interface IOrderItem {
+export interface IOrderItem {
   name: string;
   price: number;
   quantity: string | number;
