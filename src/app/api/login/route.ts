@@ -42,19 +42,25 @@ export async function POST(req: NextRequest) {
       expiresIn: "1d",
     });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       message: "Login successful",
       data: {
-        token,
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
       },
     });
+
+    response.cookies.set("accessToken", token, {
+      httpOnly: true, // Set the httpOnly flag to true
+      maxAge: 60 * 60 * 24, // 1 day in seconds
+      sameSite: "strict",
+      path: "/", // Set the path for the cookie
+    });
+
+    return response;
   } catch (error: any) {
     console.log(error);
     return NextResponse.json(

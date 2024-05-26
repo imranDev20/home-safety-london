@@ -12,13 +12,14 @@ import { ComponentUseStateProps } from "@/types/misc";
 import { useMutation } from "@tanstack/react-query";
 import { logoutAccount } from "@/services/account.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
-import { removeToken } from "@/shared/functions";
+import { useRouter } from "next/navigation";
 
 const LogoutAlertDialog: React.FC<ComponentUseStateProps> = ({
   open,
   setOpen,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const {
     mutateAsync: logoutAccountMutate,
@@ -26,13 +27,12 @@ const LogoutAlertDialog: React.FC<ComponentUseStateProps> = ({
   } = useMutation({
     mutationFn: async () => {
       const response = await logoutAccount();
-      console.log(response);
       return response;
     },
     onSuccess: (response) => {
       enqueueSnackbar(response?.message, "success");
-      removeToken();
       setOpen(false);
+      router.replace("/login");
     },
 
     onError: (error) => {

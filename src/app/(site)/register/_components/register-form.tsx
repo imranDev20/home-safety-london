@@ -22,7 +22,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { registerAccount } from "@/services/account.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { useRouter } from "next/navigation";
-import { setToken } from "@/shared/functions";
 import { User } from "@/types/user";
 
 interface RegisterFormInput {
@@ -72,7 +71,6 @@ export default function RegisterForm() {
       reset();
       enqueueSnackbar(response?.message, "success");
       router.replace("/");
-      setToken(response?.data?.token);
     },
     onError: (error) => {
       console.log(error);

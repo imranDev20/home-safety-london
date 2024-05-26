@@ -22,7 +22,6 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginAccount } from "@/services/account.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
-import { setToken } from "@/shared/functions";
 import { useRouter } from "next/navigation";
 
 interface LoginFormInput {
@@ -56,8 +55,7 @@ export default function LoginForm() {
       },
       onSuccess: (response) => {
         queryClient.invalidateQueries({ queryKey: ["users"] });
-        setToken(response?.data?.token);
-        if (response?.data?.user?.role === "admin") {
+        if (response?.data?.role === "admin") {
           router.replace("/admin");
         } else {
           router.replace("/");

@@ -1,6 +1,7 @@
 import slugify from "react-slugify";
 import dayjs from "dayjs";
 import { Pagination } from "@/types/misc";
+import Cookies from "js-cookie";
 
 export function snakeCaseToNormalText(snakeCaseString: string) {
   return snakeCaseString?.replace(/_/g, " ")?.toLowerCase();
@@ -72,15 +73,15 @@ export function calculateTotal(numbers: number[]): number {
 }
 
 export const setToken = (token: string) => {
-  localStorage.setItem("accessToken", token);
+  Cookies.set("accessToken", token, { expires: 7 }); // Set the cookie to expire in 7 days
 };
 
 export const getToken = () => {
-  return localStorage.getItem("accessToken");
+  return Cookies.get("accessToken");
 };
 
 export const removeToken = () => {
-  localStorage.removeItem("accessToken");
+  Cookies.remove("accessToken");
 };
 
 export const setPreOrderIdToLocalStorage = (preOrderId: string) => {
