@@ -17,7 +17,7 @@ import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { PreOrderPersonalPayload } from "@/types/pre-order";
 
 export default function PaymentDetails() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -75,7 +75,7 @@ export default function PaymentDetails() {
       router.push(
         pathname +
           "?" +
-          createQueryString("active_step", "5") +
+          createQueryString("active_step", "4") +
           "&" +
           createQueryString("payment_intent", response.paymentIntent.id) +
           "&" +
@@ -123,7 +123,7 @@ export default function PaymentDetails() {
     <Box
       component="form"
       sx={{
-        mt: 3,
+        mt: 5,
       }}
       onSubmit={handleSubmit}
     >
@@ -150,7 +150,13 @@ export default function PaymentDetails() {
           justifyContent: "flex-end",
         }}
       >
-        <Button variant="solid" type="submit" loading={loading} sx={{ mt: 4 }}>
+        <Button
+          variant="solid"
+          type="submit"
+          loading={loading}
+          sx={{ mt: 5 }}
+          size="lg"
+        >
           Proceed to Order
         </Button>
       </Box>

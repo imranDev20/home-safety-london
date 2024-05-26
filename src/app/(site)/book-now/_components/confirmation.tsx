@@ -1,28 +1,24 @@
 import { getPreOrderById } from "@/services/pre-order.services";
 import {
-  createQueryString,
   getPreOrderIdFromLocalStorage,
   snakeCaseToNormalText,
   toSnakeCase,
 } from "@/shared/functions";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Grid,
-  Table,
-  Typography,
-} from "@mui/joy";
+import { Box, Button, CircularProgress, Grid, Typography } from "@mui/joy";
 import { List, ListDivider, ListItem, Radio, RadioGroup } from "@mui/joy";
 
 import { useQuery } from "@tanstack/react-query";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Payments from "./payments";
+import useBreakpoints from "@/app/_components/hooks/use-breakpoints";
+
+type PaymentMethods = "credit_card" | "bank_transfer" | "cash_to_engineer";
 
 export default function Confirmation() {
-  const router = useRouter();
-  const pathname = usePathname();
+  const [paymentMethod, setPaymentMethod] =
+    useState<PaymentMethods>("credit_card");
+
+  const { isXs, isSm } = useBreakpoints();
 
   const {
     data: preOrderData,
@@ -67,17 +63,6 @@ export default function Confirmation() {
 
   return (
     <>
-      <Typography
-        component="h3"
-        level="h3"
-        fontWeight="xl"
-        sx={{
-          mb: 3,
-        }}
-      >
-        Confirmation & Payment
-      </Typography>
-
       <Grid container spacing={3}>
         <Grid xs={6}>
           <Typography
@@ -268,7 +253,8 @@ export default function Confirmation() {
         </Box>
         <RadioGroup
           overlay
-          defaultValue="credit_card"
+          value={paymentMethod}
+          onChange={(e) => setPaymentMethod(e.target.value as PaymentMethods)}
           sx={{
             display: "flex",
             justifyContent: "center",
@@ -278,10 +264,11 @@ export default function Confirmation() {
           <List
             component="div"
             variant="outlined"
-            orientation={"horizontal"}
+            orientation={isXs && !isSm ? "vertical" : "horizontal"}
             sx={{
               borderRadius: "sm",
               boxShadow: "sm",
+              width: "100%",
             }}
           >
             {["Credit Card", "Bank Transfer", "Cash to Engineer"].map(
@@ -291,6 +278,7 @@ export default function Confirmation() {
                   <ListItem
                     sx={{
                       py: 3,
+                      flex: 1,
                     }}
                   >
                     <Radio
@@ -306,7 +294,20 @@ export default function Confirmation() {
         </RadioGroup>
       </Box>
 
-      <Payments />
+      {paymentMethod === "credit_card" && <Payments />}
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          mt: 5,
+        }}
+      >
+        {(paymentMethod === "cash_to_engineer" ||
+          paymentMethod == "bank_transfer") && (
+          <Button size="lg">Proceed to Order</Button>
+        )}
+      </Box>
     </>
   );
 }

@@ -11,6 +11,11 @@ interface EmailOptions {
   to: string;
   subject: string;
   html: string;
+  attachments?: Array<{
+    ContentType: string;
+    Filename: string;
+    Base64Content: string;
+  }>;
 }
 
 interface MailjetResponse {
@@ -30,6 +35,7 @@ export async function sendEmail({
   to,
   subject,
   html,
+  attachments,
 }: EmailOptions): Promise<void> {
   try {
     const request: MailjetResponse = await mailjet
@@ -48,6 +54,7 @@ export async function sendEmail({
             ],
             Subject: subject,
             HTMLPart: html,
+            Attachments: attachments,
           },
         ],
       });

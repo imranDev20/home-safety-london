@@ -14,8 +14,6 @@ import { PreOrderPersonalPayload } from "@/types/pre-order";
 export default function Payments() {
   const [stripePromise, setStripePromise] = useState<any>();
   const [clientSecret, setClientSecret] = useState("");
-  const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const activeStep = parseInt(searchParams.get("active_step") as string) || 1;
@@ -80,20 +78,20 @@ export default function Payments() {
       <Box
         sx={{
           display: "flex",
-          height: "50vh",
+          mt: 5,
           justifyContent: "center",
           alignItems: "center",
         }}
       >
         <CircularProgress
           thickness={4}
-          sx={{ "--CircularProgress-size": "100px" }}
-        >
-          Loading
-        </CircularProgress>
+          sx={{ "--CircularProgress-size": "40px" }}
+        />
       </Box>
     );
   }
+
+  console.log("first");
 
   return (
     <>
@@ -103,7 +101,6 @@ export default function Payments() {
           options={{
             clientSecret,
             loader: "always",
-
             appearance: {
               theme: "stripe",
               labels: "above",
