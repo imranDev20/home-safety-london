@@ -2,6 +2,7 @@
 import Box from "@mui/joy/Box";
 import {
   Avatar,
+  CircularProgress,
   Dropdown,
   ListDivider,
   Menu,
@@ -52,20 +53,25 @@ export default function NavbarDropdown() {
   return (
     <>
       <Dropdown>
-        <MenuButton
-          variant="plain"
-          sx={{
-            maxWidth: "40px",
-            maxHeight: "40px",
-            borderRadius: "9999999px",
-          }}
-        >
-          <Avatar
-            src="https://i.pravatar.cc/40?img=2"
-            srcSet="https://i.pravatar.cc/80?img=2"
-            sx={{ maxWidth: "40px", maxHeight: "40px" }}
-          />
-        </MenuButton>
+        {isLogoutAccountLoading ? (
+          <CircularProgress thickness={4} size="md" />
+        ) : (
+          <MenuButton
+            variant="plain"
+            sx={{
+              maxWidth: "40px",
+              maxHeight: "40px",
+              borderRadius: "9999999px",
+            }}
+          >
+            <Avatar
+              src="https://i.pravatar.cc/40?img=2"
+              srcSet="https://i.pravatar.cc/80?img=2"
+              sx={{ maxWidth: "40px", maxHeight: "40px" }}
+            />
+          </MenuButton>
+        )}
+
         <Menu
           placement="bottom-end"
           size="sm"

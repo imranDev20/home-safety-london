@@ -4,22 +4,8 @@ import { Elements } from "@stripe/react-stripe-js";
 import React, { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-  createQueryString,
-  getPreOrderIdFromLocalStorage,
-} from "@/shared/functions";
-import dayjs from "dayjs";
-import {
-  Box,
-  CircularProgress,
-  List,
-  ListDivider,
-  ListItem,
-  Radio,
-  RadioGroup,
-  Switch,
-  Typography,
-} from "@mui/joy";
+import { getPreOrderIdFromLocalStorage } from "@/shared/functions";
+import { Box, CircularProgress } from "@mui/joy";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { getPreOrderById } from "@/services/pre-order.services";
@@ -120,12 +106,12 @@ export default function Payments() {
 
             appearance: {
               theme: "stripe",
-              labels: "floating",
+              labels: "above",
             },
           }}
         >
-          {activeStep === 4 ? <PaymentDetails /> : null}
-          {activeStep === 5 ? <Outcome /> : null}
+          {activeStep === 3 ? <PaymentDetails /> : null}
+          {activeStep === 4 ? <Outcome /> : null}
         </Elements>
       )}
     </>

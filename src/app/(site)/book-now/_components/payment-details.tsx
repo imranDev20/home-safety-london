@@ -120,7 +120,13 @@ export default function PaymentDetails() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <Box
+      component="form"
+      sx={{
+        mt: 3,
+      }}
+      onSubmit={handleSubmit}
+    >
       <PaymentElement
         options={{
           defaultValues: {
@@ -138,23 +144,17 @@ export default function PaymentDetails() {
           },
         }}
       />
-
       <Box
         sx={{
           display: "flex",
           justifyContent: "flex-end",
         }}
       >
-        <Button
-          variant="outlined"
-          type="submit"
-          loading={loading}
-          sx={{ mt: 4 }}
-        >
-          Pay
+        <Button variant="solid" type="submit" loading={loading} sx={{ mt: 4 }}>
+          Proceed to Order
         </Button>
       </Box>
-    </form>
+    </Box>
   );
 }
 

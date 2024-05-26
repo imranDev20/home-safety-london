@@ -77,68 +77,8 @@ export default function Confirmation() {
       >
         Confirmation & Payment
       </Typography>
-      <Typography
-        component="h3"
-        level="title-lg"
-        sx={{
-          mb: 1,
-        }}
-      >
-        Selected Services
-      </Typography>
 
-      <Table variant="outlined" color="neutral">
-        <thead>
-          <tr>
-            <th style={{ width: "55%" }}>Service Name</th>
-            <th>Quantity</th>
-            <th
-              style={{
-                textAlign: "right",
-              }}
-            >
-              Price
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {preOrderData?.order_items.map((item: any) => (
-            <tr key={item.name}>
-              <td>{item.title}</td>
-              <td>
-                {item.quantity} x {item.unit}
-              </td>
-              <td
-                style={{
-                  textAlign: "right",
-                }}
-              >
-                £{item.price}
-              </td>
-            </tr>
-          ))}
-
-          <tr>
-            <td></td>
-            <td></td>
-            <td
-              style={{
-                textAlign: "right",
-              }}
-            >
-              Total: £
-            </td>
-          </tr>
-        </tbody>
-      </Table>
-
-      <Grid
-        container
-        spacing={3}
-        sx={{
-          mt: 3,
-        }}
-      >
+      <Grid container spacing={3}>
         <Grid xs={6}>
           <Typography
             component="h3"
@@ -367,25 +307,6 @@ export default function Confirmation() {
       </Box>
 
       <Payments />
-
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
-      >
-        <Button
-          variant="solid"
-          sx={{
-            mt: 2,
-          }}
-          onClick={() =>
-            router.push(pathname + "?" + createQueryString("active_step", "4"))
-          }
-        >
-          Next: Payment Details
-        </Button>
-      </Box>
     </>
   );
 }
