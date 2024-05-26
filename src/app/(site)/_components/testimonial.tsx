@@ -92,24 +92,26 @@ export default function Testimonial() {
             </Box>
           </Grid>
           <Grid xs={12} md={8}>
-            <CarouselProvider
-              naturalSlideWidth={400}
-              naturalSlideHeight={200}
-              isIntrinsicHeight={true}
-              totalSlides={testimonialData?.pagination?.totalCount as number}
-              visibleSlides={slidesToShow}
-              infinite
-              isPlaying
-              interval={5000}
-            >
-              <Slider>
-                {testimonialData?.data.map((slide, index) => (
-                  <Slide index={index} key={index}>
-                    <TestimonialCard slide={slide} />
-                  </Slide>
-                ))}
-              </Slider>
-            </CarouselProvider>
+            {/* {testimonialData?.data && (
+              <CarouselProvider
+                naturalSlideWidth={400}
+                naturalSlideHeight={200}
+                isIntrinsicHeight={true}
+                totalSlides={testimonialData?.pagination?.totalCount as number}
+                visibleSlides={slidesToShow}
+                infinite
+                isPlaying
+                interval={5000}
+              >
+                <Slider>
+                  {testimonialData?.data?.map((slide, index) => (
+                    <Slide index={index} key={index}>
+                      <TestimonialCard slide={slide} />
+                    </Slide>
+                  ))}
+                </Slider>
+              </CarouselProvider>
+            )} */}
           </Grid>
         </Grid>
 

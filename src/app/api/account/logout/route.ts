@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import dbConnect from "@/app/api/_lib/dbConnect";
-import BlacklistedToken from "../_models/BlacklistedToken";
+import BlacklistedToken from "../../_models/BlacklistedToken";
 
 export async function POST(req: NextRequest) {
   try {

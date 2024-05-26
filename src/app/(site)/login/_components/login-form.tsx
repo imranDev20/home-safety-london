@@ -54,7 +54,8 @@ export default function LoginForm() {
         return response;
       },
       onSuccess: (response) => {
-        queryClient.invalidateQueries({ queryKey: ["users"] });
+        queryClient.invalidateQueries({ queryKey: ["users", "current_user"] });
+        queryClient.resetQueries();
         if (response?.data?.role === "admin") {
           router.replace("/admin");
         } else {

@@ -15,24 +15,55 @@ import {
   LogoutRounded,
   SettingsRounded,
 } from "@mui/icons-material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { logoutAccount } from "@/services/account.services";
+import { useSnackbar } from "../../snackbar-provider";
+import { useRouter } from "next/navigation";
 
 export default function NavbarDropdown() {
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const {
+    mutateAsync: logoutAccountMutate,
+    isPending: isLogoutAccountLoading,
+  } = useMutation({
+    mutationFn: async () => {
+      const response = await logoutAccount();
+      return response;
+    },
+    onSuccess: (response) => {
+      enqueueSnackbar(response?.message, "success");
+      queryClient.invalidateQueries({ queryKey: ["current_user"] });
+      queryClient.resetQueries();
+      router.replace("/login");
+    },
+
+    onError: (error) => {
+      enqueueSnackbar(error?.message, "error");
+    },
+  });
+
+  const handleLogoutAccount = async () => {
+    await logoutAccountMutate();
+  };
+
   return (
     <>
       <Dropdown>
         <MenuButton
           variant="plain"
-          size="sm"
           sx={{
-            maxWidth: "32px",
-            maxHeight: "32px",
+            maxWidth: "40px",
+            maxHeight: "40px",
             borderRadius: "9999999px",
           }}
         >
           <Avatar
             src="https://i.pravatar.cc/40?img=2"
             srcSet="https://i.pravatar.cc/80?img=2"
-            sx={{ maxWidth: "32px", maxHeight: "32px" }}
+            sx={{ maxWidth: "40px", maxHeight: "40px" }}
           />
         </MenuButton>
         <Menu
@@ -78,7 +109,7 @@ export default function NavbarDropdown() {
           </MenuItem>
           <ListDivider />
 
-          <MenuItem>
+          <MenuItem onClick={handleLogoutAccount}>
             <LogoutRounded />
             Log out
           </MenuItem>

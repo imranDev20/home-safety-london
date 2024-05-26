@@ -16,7 +16,20 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  if (req.nextUrl.pathname.includes("/admin") && !accessToken) {
+  const restrictedPaths = ["/admin", "/account"];
+  const isRestrictedPaths = restrictedPaths.some((path) =>
+    req.nextUrl.pathname.includes(path)
+  );
+
+  if (isRestrictedPaths && !accessToken) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  if (
+    (req.nextUrl.pathname.includes("/admin") ||
+      req.nextUrl.pathname.includes("/account")) &&
+    !accessToken
+  ) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
@@ -25,5 +38,5 @@ export async function middleware(req: NextRequest) {
 
 // Specify the paths where the middleware should run
 export const config = {
-  matcher: ["/admin/:path*", "/login", "/register"],
+  matcher: ["/admin/:path*", "/login", "/register", "/account/:path*"],
 };

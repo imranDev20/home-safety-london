@@ -1,6 +1,6 @@
 import dbConnect from "@/app/api/_lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
-import User from "../_models/User";
+import User from "../../_models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 

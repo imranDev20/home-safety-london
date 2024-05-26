@@ -7,9 +7,8 @@ import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import { Fragment } from "react";
-
 import { ComponentUseStateProps } from "@/types/misc";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logoutAccount } from "@/services/account.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { useRouter } from "next/navigation";
@@ -20,6 +19,7 @@ const LogoutAlertDialog: React.FC<ComponentUseStateProps> = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const {
     mutateAsync: logoutAccountMutate,
@@ -31,6 +31,7 @@ const LogoutAlertDialog: React.FC<ComponentUseStateProps> = ({
     },
     onSuccess: (response) => {
       enqueueSnackbar(response?.message, "success");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
       setOpen(false);
       router.replace("/login");
     },

@@ -5,6 +5,7 @@ import ListItem from "@mui/joy/ListItem";
 import ListItemButton from "@mui/joy/ListItemButton";
 import {
   Button,
+  CircularProgress,
   Container,
   IconButton,
   ListItemDecorator,
@@ -21,6 +22,7 @@ import { usePathname } from "next/navigation";
 import useRovingIndex from "../../hooks/use-roving-index";
 import ServicesMenu from "./services-menu";
 import NavbarDropdown from "./navbar-dropdown";
+import { useCurrentUser } from "../../hooks/use-current-user";
 
 const NAV_ITEMS = [
   { label: "Home", path: "/", icon: <HomeRounded /> },
@@ -29,7 +31,7 @@ const NAV_ITEMS = [
   { label: "Contact", path: "/contact" },
 ];
 
-export default function MyNavbar({
+export default function Navbar({
   setOpenMobileDrawer,
   isInverted,
 }: {
@@ -41,6 +43,8 @@ export default function MyNavbar({
   const theme = useTheme();
   const pathname = usePathname();
   const isLoggedIn = false;
+
+  const { userData, isLoading: isCurrentUserLoading } = useCurrentUser();
 
   return (
     <Box component="header" sx={{ zIndex: 10, position: "relative" }}>
@@ -134,7 +138,9 @@ export default function MyNavbar({
                 },
               }}
             >
-              {isLoggedIn ? (
+              {isCurrentUserLoading ? (
+                <CircularProgress thickness={4} size="md" />
+              ) : userData ? (
                 <NavbarDropdown />
               ) : (
                 <Button

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "../_lib/dbConnect";
-import User from "../_models/User";
+import dbConnect from "../../_lib/dbConnect";
+import User from "../../_models/User";
 import bcrypt from "bcrypt";
-import { generateToken } from "../_lib/generateToken";
+import { generateToken } from "../../_lib/generateToken";
 
 export async function POST(req: NextRequest) {
   try {

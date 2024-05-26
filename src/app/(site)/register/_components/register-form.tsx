@@ -67,7 +67,7 @@ export default function RegisterForm() {
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["users", "current_user"] });
       reset();
       enqueueSnackbar(response?.message, "success");
       router.replace("/");
