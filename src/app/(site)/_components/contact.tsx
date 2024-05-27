@@ -1,4 +1,6 @@
+"use client";
 import ContactUsForm from "@/app/_components/common/contact-us-form";
+import { PHONE_NO } from "@/shared/constants";
 import { Phone } from "@mui/icons-material";
 import {
   Box,
@@ -18,6 +20,7 @@ const Contact = () => {
   return (
     <Sheet
       variant="soft"
+      id="contact"
       sx={{
         backgroundColor: theme.palette.background.level2,
       }}
@@ -104,7 +107,7 @@ const Contact = () => {
                     color: theme.palette.text.primary,
                   }}
                 >
-                  (+1) 444 234-8789
+                  {PHONE_NO}
                 </JoyLink>
               </Box>
             </Sheet>
@@ -115,6 +118,7 @@ const Contact = () => {
                 p: 5,
                 backgroundColor: theme.palette.primary[500],
               }}
+              id="contact-us-form"
             >
               <Typography
                 level="h1"

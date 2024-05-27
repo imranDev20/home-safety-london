@@ -6,6 +6,7 @@ import {
   Divider,
   Stack,
   Typography,
+  Link as JoyLink,
 } from "@mui/joy";
 import Link from "next/link";
 import React from "react";
@@ -68,7 +69,14 @@ const BookNow = () => {
             Commercial Property
           </Button>
 
-          <Button startDecorator={<Textsms />} size="lg" color="secondary">
+          <Button
+            startDecorator={<Textsms />}
+            size="lg"
+            color="secondary"
+            component={JoyLink}
+            href="#contact-us-form"
+            underline="none"
+          >
             Request a Quote
           </Button>
         </Stack>

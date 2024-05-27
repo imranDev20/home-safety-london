@@ -1,3 +1,4 @@
+"use client";
 import {
   BoilerOutlinedIcon,
   EicrOutlinedTwoIcon,
@@ -143,7 +144,7 @@ export const DETAILED_SERVICES = [
   },
 ];
 
-export default function SubServices() {
+export default function Services() {
   const theme = useTheme();
 
   return (

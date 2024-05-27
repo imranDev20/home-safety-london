@@ -79,7 +79,7 @@ export default function Partners({ isHome }: { isHome?: boolean }) {
   }, []);
 
   return (
-    <Container sx={{ my: isHome ? 3 : 15 }}>
+    <Container sx={{ my: isHome ? 3 : 15 }} id="partners">
       <Box
         sx={{
           textAlign: "center",

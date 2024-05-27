@@ -54,6 +54,7 @@ export default function ServiceCategories() {
       sx={{
         backgroundColor: theme.palette.background.level2,
       }}
+      id="categories"
     >
       <Container
         maxWidth="lg"

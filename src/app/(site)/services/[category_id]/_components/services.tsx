@@ -11,7 +11,6 @@ import {
   useTheme,
   Link as JoyLink,
   Box,
-  Stack,
 } from "@mui/joy";
 import Image from "next/image";
 import BackgroundImage from "@/images/hero-image-new.jpeg";
@@ -78,13 +77,16 @@ export default function Services() {
                   </AspectRatio>
                 </CardOverflow>
 
-                <CardContent>
+                <CardContent
+                  sx={{
+                    p: 2,
+                  }}
+                >
                   <Typography
                     level="h3"
                     component="h3"
                     sx={{
                       color: "white",
-                      mt: 2,
                       mb: 2,
                     }}
                   >
@@ -114,7 +116,7 @@ export default function Services() {
                       sx={{
                         fontSize: 40,
                         textAlign: "center",
-                        fontWeight: 600,
+                        fontWeight: 800,
                         position: "relative",
                       }}
                       color="secondary"

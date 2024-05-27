@@ -1,14 +1,10 @@
 "use client";
 import Box from "@mui/joy/Box";
-import List from "@mui/joy/List";
-import ListItem from "@mui/joy/ListItem";
-import ListItemButton from "@mui/joy/ListItemButton";
 import {
   Button,
   CircularProgress,
   Container,
   IconButton,
-  ListItemDecorator,
   Stack,
   Typography,
   useTheme,
@@ -19,16 +15,25 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
 import { usePathname } from "next/navigation";
-import useRovingIndex from "../../hooks/use-roving-index";
-import ServicesMenu from "./services-menu";
 import NavbarDropdown from "./navbar-dropdown";
 import { useCurrentUser } from "../../hooks/use-current-user";
+import { hexToRgba } from "@/shared/functions";
 
 const NAV_ITEMS = [
   { label: "Home", path: "/", icon: <HomeRounded /> },
   { label: "About", path: "/about" },
   { label: "Services", path: "/services" },
   { label: "Contact", path: "/contact" },
+];
+
+const NAV_CATEGORIES = [
+  {
+    label: "Electrical Services",
+    path: "/services/electrical-services",
+  },
+  { label: "Gas Services", path: "/services/gas-services" },
+  { label: "Fire Services", path: "/services/fire-services" },
+  { label: "Health Services", path: "/services/health-services" },
 ];
 
 export default function Navbar({
@@ -38,11 +43,8 @@ export default function Navbar({
   setOpenMobileDrawer: Dispatch<SetStateAction<boolean>>;
   isInverted?: boolean;
 }) {
-  const { targets, getTargetProps, setActiveIndex, focusNext, focusPrevious } =
-    useRovingIndex();
   const theme = useTheme();
   const pathname = usePathname();
-  const isLoggedIn = false;
 
   const { userData, isLoading: isCurrentUserLoading } = useCurrentUser();
 
@@ -52,7 +54,7 @@ export default function Navbar({
         <Box
           sx={{
             display: "flex",
-            py: 2,
+
             alignItems: "center",
             justifyContent: "space-between",
           }}
@@ -66,68 +68,168 @@ export default function Navbar({
             LHS
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <List
-              role="menubar"
-              orientation="horizontal"
+            <Stack
+              direction="row"
+              spacing={2}
+              alignItems="center"
               sx={{
-                "--List-radius": "8px",
-                "--List-padding": "4px",
-                "--List-gap": "8px",
-                "--ListItem-gap": "0px",
-                justifyContent: "flex-end",
-                mr: 6,
-                display: { xs: "none", md: "flex" },
+                mr: 10,
+                py: 0,
               }}
             >
-              {NAV_ITEMS.map(({ label, path, icon }, index) => (
-                <ListItem key={path} role="none">
-                  {path === "/services" ? (
-                    <ServicesMenu
-                      isInverted={isInverted}
-                      onMouseEnter={() => {
-                        setActiveIndex(index);
-                        targets[index].focus();
-                      }}
-                      focusNext={focusNext}
-                      focusPrevious={focusPrevious}
-                      {...getTargetProps(index)}
-                    />
-                  ) : (
-                    <ListItemButton
-                      variant="plain"
-                      role="menuitem"
-                      sx={{
-                        textDecoration: "none",
-                        fontWeight: 600,
-                        color: isInverted
+              {NAV_ITEMS.map((item) => (
+                <Box
+                  key={item.path}
+                  sx={{
+                    position: "relative",
+                    py: 2,
+                    ":hover": {
+                      ".subMenu": {
+                        display: "block",
+                      },
+                    },
+                  }}
+                >
+                  <Button
+                    key={item.label}
+                    component={Link}
+                    variant="plain"
+                    href={item.path}
+                    sx={{
+                      color:
+                        item.path === pathname && isInverted
+                          ? theme.palette.secondary[500]
+                          : item.path === pathname
+                          ? theme.palette.primary[500]
+                          : isInverted
                           ? "white"
                           : theme.palette.text.primary,
-                        ...(isInverted
-                          ? {
-                              "--variant-plainActiveBg": "transparent",
-                              "--variant-plainHoverBg": "transparent",
+                      backgroundColor:
+                        isInverted && item.path === pathname
+                          ? hexToRgba(theme.palette.secondary[500], 0.2)
+                          : item.path === pathname
+                          ? hexToRgba(theme.palette.primary[500], 0.1)
+                          : "transparent",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                      fontSize: "md",
 
-                              "--variant-plainHoverColor":
-                                theme.palette.secondary[500],
-
-                              "--variant-plainActiveColor":
-                                theme.palette.secondary[500],
-                            }
-                          : {}),
+                      ":hover": {
+                        color: isInverted
+                          ? theme.palette.secondary[500]
+                          : theme.palette.primary[500],
+                        backgroundColor: isInverted
+                          ? hexToRgba(theme.palette.secondary[500], 0.2)
+                          : hexToRgba(theme.palette.primary[500], 0.1),
+                      },
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                  {item.path === "/services" && (
+                    <Stack
+                      spacing={0}
+                      className="subMenu"
+                      sx={{
+                        display: "none",
+                        position: "absolute",
+                        backgroundColor: "white",
+                        boxShadow: "lg",
+                        minWidth: 190,
+                        py: 1,
+                        borderRadius: "lg",
+                        left: "50%",
+                        top: "100%",
+                        transform: "translateX(-50%)",
                       }}
-                      {...getTargetProps(index)}
-                      href={path}
-                      selected={pathname === path}
-                      component={Link}
                     >
-                      {icon && <ListItemDecorator>{icon}</ListItemDecorator>}
-                      {label}
-                    </ListItemButton>
-                  )}
-                </ListItem>
-              ))}
-            </List>
+                      {NAV_CATEGORIES.map((dropdownItem) => (
+                        <Box
+                          key={dropdownItem.label}
+                          sx={{
+                            position: "relative",
+                            px: 1,
+                            ":hover": {
+                              "& .secondSubMenu": {
+                                display: "block",
+                              },
+                            },
+                          }}
+                        >
+                          <Button
+                            variant="plain"
+                            component={Link}
+                            fullWidth
+                            href={dropdownItem.path}
+                            sx={{
+                              fontWeight: 600,
+                              p: 1,
+                              px: 2,
+                              fontSize: "md",
+                              borderRadius: "sm",
+                              cursor: "pointer",
+                              color: theme.palette.text.primary,
+                              ":hover": {
+                                backgroundColor:
+                                  theme.palette.background.level2,
+                                color: theme.palette.primary[500],
+                              },
+                            }}
+                          >
+                            {dropdownItem.label}
+                          </Button>
 
+                          <Stack
+                            spacing={0}
+                            className="secondSubMenu"
+                            sx={{
+                              display: "none",
+                              position: "absolute",
+                              backgroundColor: "white",
+                              boxShadow: "lg",
+                              minWidth: 190,
+                              p: 1,
+                              borderRadius: "lg",
+                              right: 0,
+                              left: "100%",
+                              top: 0,
+                              // transform: "translateX(-50%)",
+                            }}
+                          >
+                            {NAV_CATEGORIES.map((dropdownItem) => (
+                              <Box key={dropdownItem.label}>
+                                <Button
+                                  variant="plain"
+                                  component={Link}
+                                  fullWidth
+                                  href={dropdownItem.path}
+                                  sx={{
+                                    fontWeight: 600,
+                                    p: 1,
+                                    px: 2,
+                                    fontSize: "md",
+                                    borderRadius: "sm",
+                                    cursor: "pointer",
+                                    color: theme.palette.text.primary,
+                                    ":hover": {
+                                      backgroundColor:
+                                        theme.palette.background.level2,
+                                      color: theme.palette.primary[500],
+                                    },
+                                  }}
+                                >
+                                  {dropdownItem.label}
+                                </Button>
+                              </Box>
+                            ))}
+                          </Stack>
+                        </Box>
+                      ))}
+                    </Stack>
+                  )}
+                </Box>
+              ))}
+            </Stack>
             <Stack
               spacing={3}
               direction="row"
@@ -170,6 +272,10 @@ export default function Navbar({
                     xs: 3,
                     md: 0,
                   },
+                  ":hover": {
+                    backgroundColor: theme.palette.accent1[500],
+                    color: "white",
+                  },
                 }}
                 endDecorator={
                   <East
@@ -196,4 +302,65 @@ export default function Navbar({
       </Container>
     </Box>
   );
+}
+
+{
+  /* <List
+              role="menubar"
+              orientation="horizontal"
+              sx={{
+                "--List-radius": "8px",
+                "--List-padding": "4px",
+                "--List-gap": "8px",
+                "--ListItem-gap": "0px",
+                justifyContent: "flex-end",
+                mr: 6,
+                display: { xs: "none", md: "flex" },
+              }}
+            >
+              {NAV_ITEMS.map(({ label, path, icon }, index) => (
+                <ListItem key={path} role="none">
+                  {path === "/services" ? (
+                    <ServicesMenu
+                      isInverted={isInverted}
+                      onMouseEnter={() => {
+                        setActiveIndex(index);
+                        targets[index].focus();
+                      }}
+                      focusNext={focusNext}
+                      focusPrevious={focusPrevious}
+                      {...getTargetProps(index)}
+                    />
+                  ) : (
+                    <ListItemButton
+                      variant="plain"
+                      role="menuitem"
+                      sx={{
+                        textDecoration: "none",
+                        fontWeight: 600,
+                        color: isInverted
+                          ? "white"
+                          : theme.palette.text.primary,
+                        ...(isInverted
+                          ? {
+                              "--variant-plainActiveBg": "transparent",
+                              "--variant-plainHoverBg": "transparent",
+
+                              "--variant-plainHoverColor":
+                                theme.palette.secondary[500],
+                            }
+                          : {}),
+                      }}
+                      {...getTargetProps(index)}
+                      href={path}
+                      selected={pathname === path}
+                      component={Link}
+                    >
+                      {icon && <ListItemDecorator>{icon}</ListItemDecorator>}
+                      {label}
+                    </ListItemButton>
+                  )}
+                </ListItem>
+              ))}
+            </List> */
 }

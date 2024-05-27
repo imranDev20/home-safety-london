@@ -1,11 +1,15 @@
-"use client";
 import { Box, Breadcrumbs, Link as JoyLink, Typography } from "@mui/joy";
 import Image from "next/image";
 import { PageHeaderProps } from "@/types/props";
 import { hexToRgba } from "@/shared/functions";
 import Link from "next/link";
 
-const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
+const PageHeader = ({
+  backgroundImage,
+  title,
+  secondary,
+  tertiary,
+}: PageHeaderProps) => {
   return (
     <Box component="section" sx={{ position: "relative", mt: -9.5 }}>
       <Image
@@ -75,6 +79,18 @@ const PageHeader = ({ backgroundImage, title, secondary }: PageHeaderProps) => {
                 }}
               >
                 {secondary}
+              </JoyLink>
+            ) : null}
+
+            {tertiary ? (
+              <JoyLink
+                href={`/${tertiary.toLowerCase()}`}
+                component={Link}
+                sx={{
+                  color: "white",
+                }}
+              >
+                {tertiary}
               </JoyLink>
             ) : null}
 

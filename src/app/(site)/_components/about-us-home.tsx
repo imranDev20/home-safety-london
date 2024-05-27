@@ -60,7 +60,7 @@ export default function AboutUsHome() {
   const theme = useTheme();
 
   return (
-    <Container sx={{ my: 15 }}>
+    <Container sx={{ my: 15 }} id="about">
       <Grid container spacing={10}>
         <Grid
           xs={12}

@@ -1,6 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose";
-import PreOrder, { IPreOrder, IOrderItem } from "./PreOrder"; // Adjust the import path as necessary
-import User from "./User"; // Adjust the import path as necessary
+import PreOrder, { IPreOrder, IOrderItem } from "./PreOrder";
 
 interface IOrderStatus {
   status: string;

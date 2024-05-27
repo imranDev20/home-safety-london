@@ -3,7 +3,7 @@ import React from "react";
 import { Box, Container, Grid, Typography } from "@mui/joy";
 import Service from "./service";
 import { SUB_SERVICES } from "@/shared/constants";
-import { DETAILED_SERVICES } from "../../_components/sub-services";
+import { DETAILED_SERVICES } from "../../_components/services";
 
 export default function ServicesItem() {
   return (

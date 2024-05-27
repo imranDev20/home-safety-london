@@ -6,7 +6,7 @@ import { hexToRgba, toTitleCase } from "@/shared/functions";
 import Image from "next/image";
 import backgroundImage from "@/images/about-bg.jpeg";
 
-export default function Cta() {
+export default function CallToAction() {
   const theme = useTheme();
 
   return (

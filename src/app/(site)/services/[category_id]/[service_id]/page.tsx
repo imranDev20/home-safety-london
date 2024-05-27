@@ -13,8 +13,9 @@ export default function SingleSubService() {
       {/* <ServiceHero /> */}
       <PageHeader
         backgroundImage={BackgroundImage}
-        title="Electrical Services"
+        title="EICR"
         secondary="Services"
+        tertiary="Electrical Services"
       />
       <ServicePrice />
       <ServiceAbout />
