@@ -61,7 +61,14 @@ export default function AboutUsHome() {
 
   return (
     <Container sx={{ my: 15 }} id="about">
-      <Grid container spacing={10}>
+      <Grid
+        container
+        spacing={{
+          xs: 0,
+          md: 5,
+          lg: 10,
+        }}
+      >
         <Grid
           xs={12}
           md={7}
@@ -85,9 +92,13 @@ export default function AboutUsHome() {
             >
               <Image
                 src={BackgroundImage}
-                objectFit="cover"
                 alt="serviceImage"
-                style={{ width: "100%", height: "100%", borderRadius: 15 }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: 15,
+                  objectFit: "cover",
+                }}
               />
             </Box>
 
@@ -99,9 +110,13 @@ export default function AboutUsHome() {
               >
                 <Image
                   src={BackgroundImage}
-                  objectFit="cover"
                   alt="serviceImage"
-                  style={{ width: "100%", height: "100%", borderRadius: 15 }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 15,
+                    objectFit: "cover",
+                  }}
                 />
               </Box>
 

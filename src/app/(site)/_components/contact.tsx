@@ -13,6 +13,8 @@ import {
   useTheme,
   Link as JoyLink,
 } from "@mui/joy";
+import Image from "next/image";
+import ContactUsImage from "@/images/home/home-contact-image.jpeg";
 
 const Contact = () => {
   const theme = useTheme();
@@ -42,9 +44,28 @@ const Contact = () => {
         >
           We Offer Plumbing Work Since 1967
         </Typography>
-        <Grid container>
-          <Grid md={3}></Grid>
-          <Grid md={4}>
+        <Grid
+          container
+          sx={{
+            borderRadius: "lg",
+            overflow: "hidden",
+          }}
+        >
+          <Grid xs={12} lg={3}>
+            <Box
+              sx={{
+                position: "relative",
+                height: "100%",
+              }}
+            >
+              <Image
+                src={ContactUsImage}
+                alt="serviceImage"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            </Box>
+          </Grid>
+          <Grid xs={12} md={6} lg={4}>
             <Sheet
               variant="plain"
               sx={{
@@ -57,7 +78,7 @@ const Contact = () => {
               <Stack
                 spacing={2}
                 sx={{
-                  mt: 4,
+                  mt: 3,
                 }}
               >
                 {[0, 1, 2, 3, 4, 5].map((item) => (
@@ -79,7 +100,7 @@ const Contact = () => {
 
               <Box
                 sx={{
-                  mt: 4,
+                  mt: 3,
                   display: "flex",
                 }}
               >
@@ -112,11 +133,12 @@ const Contact = () => {
               </Box>
             </Sheet>
           </Grid>
-          <Grid md={5}>
+          <Grid xs={12} md={6} lg={5}>
             <Box
               sx={{
                 p: 5,
                 backgroundColor: theme.palette.primary[500],
+                height: "100%",
               }}
               id="contact-us-form"
             >

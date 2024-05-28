@@ -31,7 +31,18 @@ export async function PUT(
       formatResponse(true, data, "Order progress updated")
     );
   } catch (error: any) {
-    return NextResponse.json(formatResponse(false, error.message), {
+    console.log(error);
+
+    if (error.code === "ETIMEOUT") {
+      return NextResponse.json(
+        formatResponse(false, null, "Couldn't connect to databsae"),
+        {
+          status: 500,
+        }
+      );
+    }
+
+    return NextResponse.json(formatResponse(false, null, error.message), {
       status: 500,
     });
   }
@@ -54,8 +65,7 @@ export async function GET(
     });
   } catch (error: any) {
     console.log(error);
-
-    return NextResponse.json(formatResponse(false, error.message), {
+    return NextResponse.json(formatResponse(false, null, error.message), {
       status: 500,
     });
   }

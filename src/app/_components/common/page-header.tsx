@@ -11,7 +11,7 @@ const PageHeader = ({
   tertiary,
 }: PageHeaderProps) => {
   return (
-    <Box component="section" sx={{ position: "relative", mt: -9.5 }}>
+    <Box component="section" sx={{ position: "relative", mt: -8.5 }}>
       <Image
         src={backgroundImage}
         alt="Background"

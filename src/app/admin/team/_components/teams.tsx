@@ -1,24 +1,7 @@
 import React from "react";
-import AspectRatio from "@mui/joy/AspectRatio";
-import Button from "@mui/joy/Button";
-import Card from "@mui/joy/Card";
-import CardActions from "@mui/joy/CardActions";
-import CardContent from "@mui/joy/CardContent";
-import CardOverflow from "@mui/joy/CardOverflow";
-import Typography from "@mui/joy/Typography";
-import {
-  Box,
-  ButtonGroup,
-  Container,
-  Grid,
-  IconButton,
-  Stack,
-  SvgIcon,
-  useTheme,
-} from "@mui/joy";
-import Image from "next/image";
-import engineer from "../../../../images/engineer-note.jpg";
-import Team from "./team";
+import { Box, Grid, Stack } from "@mui/joy";
+import TeamCard from "./team-card";
+import { FIXED_HEIGHT } from "@/shared/constants";
 
 const TEAMS = [
   {
@@ -88,16 +71,25 @@ const TEAMS = [
 
 export default function Teams() {
   return (
-    <>
+    <Box
+      sx={{
+        width: "100%",
+        borderRadius: "sm",
+        flexShrink: 1,
+        overflow: "auto",
+        minHeight: `calc(100vh - ${FIXED_HEIGHT}px)`,
+        height: `calc(100vh - ${FIXED_HEIGHT}px)`,
+      }}
+    >
       <Stack>
         <Grid container spacing={3}>
           {TEAMS.map((team) => (
-            <Grid xs={12} sm={6} md={4} key={team.id}>
-              <Team team={team} />
+            <Grid xs={12} md={6} key={team.id}>
+              <TeamCard team={team} />
             </Grid>
           ))}
         </Grid>
       </Stack>
-    </>
+    </Box>
   );
 }

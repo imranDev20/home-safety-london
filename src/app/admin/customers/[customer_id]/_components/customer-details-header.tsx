@@ -8,6 +8,7 @@ import {
   KeyboardArrowRight,
   Message,
   MoreVertRounded,
+  West,
 } from "@mui/icons-material";
 import Edit from "@mui/icons-material/Edit";
 import {
@@ -94,12 +95,12 @@ const CustomerDetailsHeader = ({ userDetails }: { userDetails: any }) => {
       >
         <Stack direction="row" alignItems="center" spacing={2}>
           <IconButton
-            variant="outlined"
+            variant="plain"
             size="sm"
             component={Link}
             href={`/admin/customers`}
           >
-            <KeyboardArrowLeft />
+            <West />
           </IconButton>
           <Typography component="h1" level="h2">
             {userDetails?.name || "Loading..."}
@@ -110,7 +111,7 @@ const CustomerDetailsHeader = ({ userDetails }: { userDetails: any }) => {
           <Button
             variant="outlined"
             size="sm"
-            color="primary"
+            color="neutral"
             startDecorator={<Call />}
             component="a"
             href={`tel:${userDetails?.phone}`}
@@ -120,7 +121,7 @@ const CustomerDetailsHeader = ({ userDetails }: { userDetails: any }) => {
           <Button
             variant="outlined"
             size="sm"
-            color="primary"
+            color="neutral"
             component="a"
             startDecorator={<Message />}
             href={`mailto:${userDetails?.email}`}
@@ -132,7 +133,7 @@ const CustomerDetailsHeader = ({ userDetails }: { userDetails: any }) => {
             <MenuButton
               slots={{ root: IconButton }}
               slotProps={{
-                root: { variant: "outlined", color: "primary", size: "sm" },
+                root: { variant: "plain", color: "neutral", size: "sm" },
               }}
             >
               <MoreVertRounded />

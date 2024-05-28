@@ -11,39 +11,28 @@ function CustomerStatBlock({
   additional: string;
 }) {
   return (
-    <Grid xs={12} md={7}>
-      <Typography level="title-md" mb={1}>
-        {title}
-      </Typography>
-      <Typography level="h3" color="primary">
-        {count}
-      </Typography>
-      <Typography level="body-sm" color="neutral">
-        {additional}
-      </Typography>
+    <Grid xs={3} md={3}>
+      <Card>
+        <Typography level="title-md">{title}</Typography>
+        <Typography level="h3" color="primary">
+          {count}
+        </Typography>
+        <Typography level="body-sm" color="neutral">
+          {additional}
+        </Typography>
+      </Card>
     </Grid>
   );
 }
 
 export default function CustomerStats() {
   return (
-    <Grid spacing={2} my={3} container columns={31}>
+    <Grid spacing={2} my={3} container>
       <CustomerStatBlock
         title="Total Spent"
         count={10440.2}
         additional="New cost last 365 days"
       />
-
-      <Grid
-        xs={12}
-        md={1}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Divider orientation="vertical" />
-      </Grid>
 
       <CustomerStatBlock
         title="Total Orders"
@@ -51,38 +40,12 @@ export default function CustomerStats() {
         additional="New cost last 365 days"
       />
 
-      <Grid
-        xs={12}
-        md={1}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Divider
-          orientation="vertical"
-          sx={{
-            height: "100%",
-          }}
-        />
-      </Grid>
-
       <CustomerStatBlock
         title="Completed"
         count={100}
         additional="New cost last 365 days"
       />
 
-      <Grid
-        xs={12}
-        md={1}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Divider orientation="vertical" />
-      </Grid>
       <CustomerStatBlock
         title="Cancelled"
         count={12}

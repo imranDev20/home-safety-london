@@ -20,6 +20,7 @@ interface TableProps<T extends object> {
   data: T[];
   onRowClick?: (row: T) => void;
   onSelectionChange?: (selected: T[]) => void;
+  isAction?: boolean;
 }
 
 function RowMenu() {
@@ -44,6 +45,7 @@ const DataTable = <T extends object>({
   data,
   onRowClick,
   onSelectionChange,
+  isAction,
 }: TableProps<T>) => {
   const [selected, setSelected] = useState<T[]>([]);
 
@@ -126,7 +128,9 @@ const DataTable = <T extends object>({
               {column.label}
             </th>
           ))}
-          <th style={{ width: 50, padding: "12px 6px" }}>ACTION</th>
+          {isAction && (
+            <th style={{ width: 50, padding: "12px 6px" }}>ACTION</th>
+          )}
         </tr>
       </thead>
       <tbody>
@@ -167,12 +171,15 @@ const DataTable = <T extends object>({
                   : row[column.key]}
               </td>
             ))}
-            <td
-              style={{ textAlign: "center", width: 120 }}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <RowMenu />
-            </td>
+
+            {isAction && (
+              <td
+                style={{ textAlign: "center", width: 120 }}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <RowMenu />
+              </td>
+            )}
           </Box>
         ))}
       </tbody>

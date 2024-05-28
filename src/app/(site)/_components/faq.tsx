@@ -59,7 +59,11 @@ export default function Faq() {
       <Container>
         <Grid
           container
-          spacing={10}
+          spacing={{
+            xs: 0,
+            md: 5,
+            lg: 10,
+          }}
           sx={{ display: "flex", justifyContent: "center" }}
         >
           <Grid xs={12} md={6} sx={{ height: "100%" }}>

@@ -54,7 +54,10 @@ export default function Navbar({
         <Box
           sx={{
             display: "flex",
-
+            py: {
+              xs: 2,
+              md: 0,
+            },
             alignItems: "center",
             justifyContent: "space-between",
           }}
@@ -75,6 +78,10 @@ export default function Navbar({
               sx={{
                 mr: 10,
                 py: 0,
+                display: {
+                  xs: "none",
+                  md: "flex",
+                },
               }}
             >
               {NAV_ITEMS.map((item) => (

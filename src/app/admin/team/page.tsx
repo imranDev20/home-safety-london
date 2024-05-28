@@ -1,10 +1,11 @@
 "use client";
-import { Home, KeyboardArrowRight } from "@mui/icons-material";
+import { Download, Home, KeyboardArrowRight } from "@mui/icons-material";
 import {
   Box,
   Breadcrumbs,
   Button,
   FormControl,
+  FormLabel,
   Grid,
   Input,
   Link as JoyLink,
@@ -16,6 +17,7 @@ import Link from "next/link";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import Teams from "./_components/teams";
+import SearchField from "../customers/_components/search-field";
 
 const Team = () => {
   const theme = useTheme();
@@ -59,53 +61,58 @@ const Team = () => {
         </JoyLink>
       </Breadcrumbs>
 
-      <Typography component="h1" level="h2">
-        Team
-      </Typography>
-
       <Stack
-        sx={{
-          my: 3,
+        spacing={2}
+        mt={2}
+        justifyContent="space-between"
+        alignItems={{
+          xs: "flex-start",
+          md: "center",
+        }}
+        direction={{
+          xs: "column",
+          sm: "row",
         }}
       >
-        <Grid
-          container
-          spacing={3}
-          sx={{
-            display: "flex",
-            justifyContent: { xs: "center", sm: "space-between" },
-            alignItems: "center",
+        <Typography component="h1" level="h2">
+          Employee List
+        </Typography>
+
+        <Stack
+          spacing={2}
+          direction={{
+            xs: "column",
+            sm: "row",
           }}
         >
-          <Grid xs={12} sm={6} md={5}>
-            <Box>
-              <FormControl size="sm">
-                <Input
-                  fullWidth
-                  placeholder="Search for name or designation"
-                  startDecorator={<SearchIcon />}
-                />
-              </FormControl>
-            </Box>
-          </Grid>
-          <Grid
-            xs={12}
-            sm={5}
-            md={4}
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              justifyContent: { xs: "center", sm: "end" },
-            }}
+          <Button
+            size="sm"
+            variant="outlined"
+            startDecorator={<Download />}
+            loadingPosition="start"
           >
-            <Box>
-              <Button variant="solid" fullWidth startDecorator={<AddIcon />}>
-                Add New Member
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
+            Download Excel
+          </Button>
+          <Button size="sm" startDecorator={<AddIcon />}>
+            Add New Customer
+          </Button>
+        </Stack>
       </Stack>
+
+      <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>
+        <Grid xs={12} sm={6} md={6}>
+          <FormControl size="sm">
+            <FormLabel
+              id="select-field-demo-label"
+              htmlFor="select-field-demo-button"
+            >
+              Search for customers
+            </FormLabel>
+            <SearchField />
+          </FormControl>
+        </Grid>
+      </Grid>
+
       {/* import team page component */}
       <Teams />
     </>

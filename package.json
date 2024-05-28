@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -19,7 +19,6 @@
     "@stripe/react-stripe-js": "^2.6.2",
     "@svgr/webpack": "^8.1.0",
     "@tanstack/react-query": "^5.29.0",
-    "@types/react-transition-group": "^4.4.10",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "dayjs": "^1.11.10",
@@ -43,7 +42,6 @@
     "react-hook-form": "^7.51.0",
     "react-intersection-observer": "^9.10.2",
     "react-phone-number-input": "^3.4.0",
-    "react-responsive": "^10.0.0",
     "react-scroll-trigger": "^0.6.14",
     "react-slugify": "^3.0.3",
     "react-transition-group": "^4.4.5",
@@ -58,6 +56,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/react-transition-group": "^4.4.10",
     "@types/js-cookie": "^3.0.6",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.12.12",

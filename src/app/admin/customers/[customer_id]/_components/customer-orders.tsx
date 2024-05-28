@@ -84,44 +84,16 @@ const CustomerOrders = () => {
         Orders
       </Typography>
       <Stack direction="row" spacing={1}>
-        <Button
-          size="sm"
-          variant="soft"
-          color="primary"
-          sx={{
-            backgroundColor: theme.palette.primary[50],
-          }}
-        >
+        <Button size="sm" variant="outlined" color="primary">
           All Orders
         </Button>
-        <Button
-          size="sm"
-          variant="soft"
-          color="primary"
-          sx={{
-            backgroundColor: theme.palette.primary[50],
-          }}
-        >
+        <Button size="sm" variant="outlined" color="neutral">
           Processing
         </Button>
-        <Button
-          size="sm"
-          variant="soft"
-          color="primary"
-          sx={{
-            backgroundColor: theme.palette.primary[50],
-          }}
-        >
+        <Button size="sm" variant="outlined" color="neutral">
           Completed
         </Button>
-        <Button
-          size="sm"
-          variant="soft"
-          color="primary"
-          sx={{
-            backgroundColor: theme.palette.primary[50],
-          }}
-        >
+        <Button size="sm" variant="outlined" color="neutral">
           Cancelled
         </Button>
       </Stack>

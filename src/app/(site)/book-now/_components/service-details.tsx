@@ -527,8 +527,6 @@ export default function ServiceDetails() {
 
       const response = await preOrderMutate(payload);
 
-      console.log(response);
-
       if (response?.success) {
         router.push(pathname + "?" + createQueryString("active_step", "2"));
         window.scrollTo(0, 300);
