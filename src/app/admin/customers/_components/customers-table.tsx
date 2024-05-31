@@ -94,9 +94,12 @@ export default function CustomersTable() {
     isFetching: isGetUserDataFetching,
     refetch: refetchGetUsers,
   } = useQuery<CustomersResponse>({
-    queryKey: ["users"],
+    queryKey: ["users", "customers"],
     queryFn: async () => {
-      const { data, message, pagination } = await getUsers(searchTerm);
+      const { data, message, pagination } = await getUsers(
+        searchTerm,
+        "customer"
+      );
 
       const users = data?.map((user: any) => ({
         _id: user._id,

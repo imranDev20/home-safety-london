@@ -2,33 +2,13 @@ import React from "react";
 import AspectRatio from "@mui/joy/AspectRatio";
 import Button from "@mui/joy/Button";
 import Card from "@mui/joy/Card";
-import CardActions from "@mui/joy/CardActions";
 import CardContent from "@mui/joy/CardContent";
-import CardOverflow from "@mui/joy/CardOverflow";
 import Typography from "@mui/joy/Typography";
-import {
-  Box,
-  ButtonGroup,
-  Divider,
-  Dropdown,
-  IconButton,
-  ListItemDecorator,
-  Menu,
-  MenuButton,
-  MenuItem,
-  Sheet,
-  Stack,
-  useTheme,
-} from "@mui/joy";
-import Image from "next/image";
-import engineer from "../../../../images/engineer-note.jpg";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import Edit from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, Sheet } from "@mui/joy";
 import { Email, Phone } from "@mui/icons-material";
 
-export default function TeamCard({ team }: any) {
-  const theme = useTheme();
+export default function EngineerCard({ engineer }: any) {
+  console.log(engineer);
   return (
     <>
       <Card
@@ -53,10 +33,10 @@ export default function TeamCard({ team }: any) {
         </AspectRatio>
         <CardContent>
           <Typography fontSize="xl" fontWeight="lg">
-            Alex Morrison
+            {engineer.name}
           </Typography>
           <Typography level="body-sm" fontWeight="lg" textColor="text.tertiary">
-            Electrician
+            {engineer.specialty}
           </Typography>
           <Sheet
             sx={{
@@ -73,13 +53,17 @@ export default function TeamCard({ team }: any) {
               <Typography level="body-xs" fontWeight="lg">
                 Ongoing
               </Typography>
-              <Typography fontWeight="lg">980</Typography>
+              <Typography fontWeight="lg">
+                {engineer?.ongoing_projects ?? 0}
+              </Typography>
             </div>
             <div>
               <Typography level="body-xs" fontWeight="lg">
                 Completed
               </Typography>
-              <Typography fontWeight="lg">8.9</Typography>
+              <Typography fontWeight="lg">
+                {engineer?.completed_projects ?? 0}
+              </Typography>
             </div>
           </Sheet>
           <Box sx={{ display: "flex", gap: 1.5, "& > button": { flex: 1 } }}>
@@ -87,10 +71,24 @@ export default function TeamCard({ team }: any) {
               variant="outlined"
               color="neutral"
               startDecorator={<Phone />}
+              sx={{
+                flex: 1,
+              }}
+              component="a"
+              href={`tel:${engineer.phone}`}
             >
               Call
             </Button>
-            <Button variant="solid" color="primary" startDecorator={<Email />}>
+            <Button
+              component="a"
+              href={`mailto:${engineer.email}`}
+              variant="solid"
+              color="primary"
+              startDecorator={<Email />}
+              sx={{
+                flex: 1,
+              }}
+            >
               Email
             </Button>
           </Box>

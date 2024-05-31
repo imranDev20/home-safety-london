@@ -87,13 +87,13 @@ export default function Services() {
                     component="h3"
                     sx={{
                       color: "white",
-                      mb: 2,
+                      mb: 1,
                     }}
                   >
                     Gas Safety Certificate
                   </Typography>
 
-                  <Box
+                  {/* <Box
                     sx={{
                       display: "flex",
                     }}
@@ -123,7 +123,7 @@ export default function Services() {
                     >
                       £180
                     </Typography>
-                  </Box>
+                  </Box> */}
 
                   <Typography
                     level="body-md"
@@ -136,9 +136,50 @@ export default function Services() {
                     installation service in London? Look no further than the
                     EICR Cert! With years of experience
                   </Typography>
-                  <Button color="secondary" variant="solid" sx={{ mt: 2 }}>
-                    Find Out More
-                  </Button>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mt: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: 13,
+                          textAlign: "center",
+                          mr: 2,
+                          color: "white",
+                        }}
+                        color="secondary"
+                      >
+                        Starts
+                        <br />
+                        From
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontSize: 30,
+                          textAlign: "center",
+                          fontWeight: 600,
+                          position: "relative",
+                        }}
+                        color="secondary"
+                      >
+                        £180
+                      </Typography>
+                    </Box>
+                    <Button color="secondary" variant="solid">
+                      Find Out More
+                    </Button>
+                  </Box>
                 </CardContent>
               </Card>
             </JoyLink>

@@ -131,7 +131,7 @@ function Customers() {
         }}
       >
         <Typography component="h1" level="h2">
-          Customers List
+          Customer List
         </Typography>
 
         <Stack

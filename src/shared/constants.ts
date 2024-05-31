@@ -1,6 +1,7 @@
 import {
   Dashboard,
   Diversity2,
+  Engineering,
   Group,
   Notifications,
   Settings,
@@ -36,9 +37,9 @@ export const ADMIN_OPTIONS = [
     Icon: Group,
   },
   {
-    route: "/admin/team",
-    label: "Team",
-    Icon: Diversity2,
+    route: "/admin/engineers",
+    label: "Engineers",
+    Icon: Engineering,
   },
   {
     route: "/admin/notifications",

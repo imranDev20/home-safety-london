@@ -4,6 +4,10 @@ import { formatResponse } from "@/shared/functions";
 import PreOrder from "../_models/PreOrder";
 import Order from "../_models/Order";
 
+interface OrderQuery {
+  order_status?: string;
+}
+
 async function generateInvoiceId() {
   // Get the most recent order document from the database
   const mostRecentOrder = await Order.findOne().sort({ createdAt: -1 }).exec();
@@ -69,6 +73,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    console.log(preOrder);
+
     // Generate a unique invoice_id
     const invoiceId = await generateInvoiceId();
 
@@ -96,7 +102,44 @@ export async function POST(req: NextRequest) {
       )
     );
   } catch (error: any) {
-    return NextResponse.json(formatResponse(false, error.message), {
+    return NextResponse.json(formatResponse(false, null, error.message), {
+      status: 500,
+    });
+  }
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    await dbConnect();
+
+    const { searchParams } = new URL(req.url);
+    const orderStatus = searchParams.get("order_status");
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = parseInt(searchParams.get("limit") || "10", 10);
+
+    const query: OrderQuery = {};
+    if (orderStatus) {
+      query.order_status = orderStatus;
+    }
+
+    const orders = await Order.find(query)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .exec();
+
+    const totalCount = await Order.countDocuments(query);
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return NextResponse.json(
+      formatResponse(true, orders, "Orders fetched successfully", {
+        currentPage: page,
+        totalPages,
+        totalCount,
+      })
+    );
+  } catch (error: any) {
+    return NextResponse.json(formatResponse(false, null, error.message), {
       status: 500,
     });
   }

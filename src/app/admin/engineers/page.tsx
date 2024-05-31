@@ -1,12 +1,11 @@
 "use client";
-import { Add, Download, Home, KeyboardArrowRight } from "@mui/icons-material";
+import { Download, Home, KeyboardArrowRight } from "@mui/icons-material";
 import {
   Breadcrumbs,
   Button,
   FormControl,
   FormLabel,
   Grid,
-  Input,
   Link as JoyLink,
   Option,
   Select,
@@ -15,71 +14,18 @@ import {
   useTheme,
 } from "@mui/joy";
 import Link from "next/link";
-import SearchIcon from "@mui/icons-material/Search";
-import { CATEGORIES, ORDER_STATUS } from "@/shared/constants";
-import { snakeCaseToNormalText } from "@/shared/functions";
-import OrderTable from "./_components/order-table";
+import AddIcon from "@mui/icons-material/Add";
+import EngineerCards from "./_components/engineer-cards";
+import SearchField from "../customers/_components/search-field";
+import FormDrawer from "@/app/_components/common/form-drawer";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { exportUsers } from "@/services/user.services";
+import CreateEngineerForm from "./_components/create-engineer-form";
+import { snakeCaseToNormalText } from "@/shared/functions";
 
-const Orders = () => {
+export default function EngineersPage() {
   const theme = useTheme();
-  const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
+  const [openCreateEngineerDrawer, setOpenCreateEngineerDrawer] =
     useState<boolean>(false);
-
-  const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
-    useQuery({
-      queryKey: ["export-users"],
-      queryFn: async () => {
-        const response = await exportUsers();
-        return response.data;
-      },
-      enabled: false,
-    });
-
-  const handleExportUsers = async () => {
-    try {
-      const response = await refetchExportUsers();
-      const data = response.data;
-
-      if (response.status === "success") {
-        // const progressUpdates = data.progressUpdates;
-        const excelData = data.excelData;
-
-        // Update progress
-        // for (const { progress } of progressUpdates) {
-        //   setProgress(progress);
-        // }
-
-        // Download Excel file
-        const byteArray = new Uint8Array(
-          atob(excelData)
-            .split("")
-            .map((char) => char.charCodeAt(0))
-        );
-        const blob = new Blob([byteArray], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        const downloadUrl = window.URL.createObjectURL(blob);
-
-        const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.setAttribute("download", "users.xlsx");
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      } else {
-        console.error("Error exporting users:", data.error);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-    // finally {
-    //   setIsDownloading(false);
-    //   setProgress(null);
-    // }
-  };
 
   return (
     <>
@@ -111,14 +57,15 @@ const Orders = () => {
         <JoyLink
           component={Link}
           color="neutral"
-          href="/admin/customers"
+          href="/admin/engineers"
           sx={{
             textDecoration: "none",
           }}
         >
-          Customers
+          Engineers
         </JoyLink>
       </Breadcrumbs>
+
       <Stack
         spacing={2}
         mt={2}
@@ -133,7 +80,7 @@ const Orders = () => {
         }}
       >
         <Typography component="h1" level="h2">
-          Order List
+          Engineer List
         </Typography>
 
         <Stack
@@ -147,45 +94,40 @@ const Orders = () => {
             size="sm"
             variant="outlined"
             startDecorator={<Download />}
-            onClick={handleExportUsers}
-            loading={isExportUsersLoading}
             loadingPosition="start"
           >
             Download Excel
           </Button>
           <Button
             size="sm"
-            startDecorator={<Add />}
-            onClick={() => setOpenCreateCustomerDrawer(true)}
+            startDecorator={<AddIcon />}
+            onClick={() => setOpenCreateEngineerDrawer(true)}
           >
-            Add New Order
+            Add New Engineer
           </Button>
         </Stack>
       </Stack>
 
       <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>
-        <Grid xs={12} sm={6} md={6}>
+        <Grid xs={12} md={6}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
               htmlFor="select-field-demo-button"
             >
-              Search for orders
+              Search for customers
             </FormLabel>
-            <Input
-              placeholder="Type in here…"
-              startDecorator={<SearchIcon />}
-            />
+            <SearchField />
           </FormControl>
         </Grid>
 
-        <Grid xs={12} sm={6} md={2}>
+        <Grid xs={12} md={2}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
               htmlFor="select-field-demo-button"
             >
-              Status
+              Filter
             </FormLabel>
             <Select
               placeholder="Filter by status"
@@ -198,7 +140,82 @@ const Orders = () => {
                 },
               }}
             >
-              {ORDER_STATUS.map((order) => (
+              {["Electrician", "Fire Safety Expert"].map((specialty) => (
+                <Option
+                  key={specialty}
+                  value={specialty}
+                  sx={{
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {specialty}
+                </Option>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+
+        <Grid xs={12} md={2}>
+          <FormControl size="sm">
+            <FormLabel
+              id="select-field-demo-label"
+              htmlFor="select-field-demo-button"
+            >
+              Sort
+            </FormLabel>
+            <Select
+              placeholder="Filter by status"
+              slotProps={{
+                button: {
+                  id: "select-field-demo-button",
+                  sx: {
+                    textTransform: "capitalize",
+                  },
+                },
+              }}
+            >
+              {[
+                "Name",
+                "Specialty",
+                "Ongoing Projects",
+                "Completed Projects",
+                "Email",
+                "Phone",
+              ].map((sortValue) => (
+                <Option
+                  key={sortValue}
+                  value={sortValue}
+                  sx={{
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {sortValue}
+                </Option>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+
+        <Grid xs={12} md={2}>
+          <FormControl size="sm">
+            <FormLabel
+              id="select-field-demo-label"
+              htmlFor="select-field-demo-button"
+            >
+              Order
+            </FormLabel>
+            <Select
+              placeholder="Filter by status"
+              slotProps={{
+                button: {
+                  id: "select-field-demo-button",
+                  sx: {
+                    textTransform: "capitalize",
+                  },
+                },
+              }}
+            >
+              {["Ascending", "Descending"].map((order) => (
                 <Option
                   key={order}
                   value={order}
@@ -206,65 +223,25 @@ const Orders = () => {
                     textTransform: "capitalize",
                   }}
                 >
-                  {snakeCaseToNormalText(order)}
+                  {order}
                 </Option>
               ))}
-            </Select>
-          </FormControl>
-        </Grid>
-
-        <Grid xs={12} sm={6} md={2}>
-          <FormControl size="sm">
-            <FormLabel
-              id="select-field-demo-label"
-              htmlFor="select-field-demo-button"
-            >
-              Categories
-            </FormLabel>
-            <Select
-              slotProps={{
-                button: {
-                  id: "select-field-demo-button",
-                },
-              }}
-              placeholder="Filter by category"
-            >
-              {CATEGORIES.map((category) => (
-                <Option key={category.name} value={category.name}>
-                  {category.name}
-                </Option>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-
-        <Grid xs={12} sm={6} md={2}>
-          <FormControl size="sm">
-            <FormLabel
-              id="select-field-demo-label"
-              htmlFor="select-field-demo-button"
-            >
-              Assignee
-            </FormLabel>
-            <Select
-              placeholder="Filter by assignee"
-              slotProps={{
-                button: {
-                  id: "select-field-demo-button",
-                },
-              }}
-            >
-              <Option value="dog">Dog</Option>
-              <Option value="cat">Cat</Option>
-              <Option value="fish">Fish</Option>
-              <Option value="bird">Bird</Option>
             </Select>
           </FormControl>
         </Grid>
       </Grid>
-      <OrderTable />
+
+      {/* import team page component */}
+      <EngineerCards />
+
+      <FormDrawer
+        open={openCreateEngineerDrawer}
+        setOpen={setOpenCreateEngineerDrawer}
+      >
+        <CreateEngineerForm
+          setOpenCreateEngineerDrawer={setOpenCreateEngineerDrawer}
+        />
+      </FormDrawer>
     </>
   );
-};
-
-export default Orders;
+}
