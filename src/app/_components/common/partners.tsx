@@ -14,6 +14,7 @@ import CityGuilds from "@/images/partner-logos/city-guilds.svg";
 import ElmhurstEnergy from "@/images/partner-logos/elmhurst-energy.jpeg";
 import EalRecognised from "@/images/partner-logos/eal.png";
 import PartP from "@/images/partner-logos/part-p.png";
+import useBreakpoints from "../hooks/use-breakpoints";
 
 const SPONSER_PARTNER = [
   {
@@ -59,7 +60,8 @@ const SPONSER_PARTNER = [
 ];
 
 export default function Partners({ isHome }: { isHome?: boolean }) {
-  const [slidesToShow, setSlidesToShow] = useState(7);
+  const [slidesToShow, setSlidesToShow] = useState<number>(7);
+  const { isXs, isSm } = useBreakpoints();
 
   useEffect(() => {
     function handleResize() {
@@ -79,26 +81,26 @@ export default function Partners({ isHome }: { isHome?: boolean }) {
   }, []);
 
   return (
-    <Container sx={{ my: isHome ? 3 : 15 }}>
+    <Container sx={{ my: isHome ? 3 : 15 }} id="partners">
       <Box
         sx={{
           textAlign: "center",
         }}
       >
-        {isHome && (
+        {/* {isHome && (!isXs || !isSm) && (
           <Divider sx={{ mb: 3 }}>
             <Typography component="h2" level="h2">
               <Typography component="span" color="primary">
                 Certified
               </Typography>{" "}
-              and{" "}
+              &{" "}
               <Typography component="span" color="primary">
                 Trusted
               </Typography>{" "}
               Professional Engineers
             </Typography>
           </Divider>
-        )}
+        )} */}
 
         {!isHome && (
           <Typography

@@ -4,6 +4,7 @@ import {
   createQueryString,
   getPreOrderIdFromLocalStorage,
   isObjectEmpty,
+  removePreOrderIdFromLocalStorage,
   setPreOrderIdToLocalStorage,
   toSnakeCase,
 } from "@/shared/functions";
@@ -22,13 +23,8 @@ import {
   useTheme,
   Grid,
   CircularProgress,
-  Snackbar,
 } from "@mui/joy";
-import {
-  CorporateFare,
-  Home,
-  PlaylistAddCheckCircleRounded,
-} from "@mui/icons-material";
+import { CorporateFare, Home } from "@mui/icons-material";
 import HookFormError from "@/app/_components/common/hook-form-error";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPreOrderById, updatePreOrder } from "@/services/pre-order.services";
@@ -427,13 +423,28 @@ export default function ServiceDetails() {
       const response = await getPreOrderById(preOrderId as string);
       return response.data;
     },
+
     enabled: false,
   });
 
   useEffect(() => {
+    // checking if the pre order exist for the saved id
     const preOrderId = getPreOrderIdFromLocalStorage();
     if (preOrderId) {
-      refetchPreOrder();
+      const getPreOrderDetails = async () => {
+        try {
+          const response = await refetchPreOrder();
+
+          if (!response.data) {
+            throw new Error("Pre order doesn't exist");
+          }
+        } catch (error) {
+          // deleting the saved id if pre order doesn't exist
+          removePreOrderIdFromLocalStorage();
+        }
+      };
+
+      getPreOrderDetails();
     }
   }, [refetchPreOrder]);
 
@@ -516,11 +527,9 @@ export default function ServiceDetails() {
 
       const response = await preOrderMutate(payload);
 
-      if (response?.status === "success") {
+      if (response?.success) {
         router.push(pathname + "?" + createQueryString("active_step", "2"));
         window.scrollTo(0, 300);
-
-        console.log(response);
 
         setPreOrderIdToLocalStorage(response.data._id);
         enqueueSnackbar(response.message, "success");
@@ -528,6 +537,7 @@ export default function ServiceDetails() {
         throw new Error(response.message);
       }
     } catch (error: any) {
+      console.log(error);
       enqueueSnackbar(error.message, "error");
     }
   };

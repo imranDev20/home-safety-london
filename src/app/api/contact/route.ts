@@ -51,7 +51,8 @@ export async function POST(req: Request) {
     // Send email to admin
     const adminEmailSubject = `${name} wants to contact you`;
     await sendEmail({
-      from: email,
+      fromEmail: "info@londonhomesafety.co.uk",
+      fromName: "London Home Safety",
       to: process.env.ADMIN_EMAIL as string,
       subject: adminEmailSubject,
       html: adminNotificationEmailHtml(name, email, subject, message),
@@ -59,7 +60,8 @@ export async function POST(req: Request) {
 
     // Send email to customer
     await sendEmail({
-      from: '"London Home Safety Limited" <info@londonhomesafety.co.uk>',
+      fromName: "London Home Safety",
+      fromEmail: "info@londonhomesafety.co.uk",
       to: email,
       subject: customerEmailSubject,
       html: customerNotificationEmailHtml(name, subject, message),

@@ -1,18 +1,12 @@
 "use client";
-import { ORDER_STATUS } from "@/shared/constants";
-import { snakeCaseToNormalText } from "@/shared/functions";
 import {
-  AspectRatio,
-  BookmarkAdd,
   Download,
-  Edit,
   EditNote,
   Home,
   KeyboardArrowRight,
   MoreHoriz,
 } from "@mui/icons-material";
 import {
-  Box,
   Breadcrumbs,
   Button,
   Card,
@@ -24,8 +18,6 @@ import {
   List,
   ListItem,
   ListItemContent,
-  Option,
-  Select,
   Stack,
   Typography,
   useTheme,

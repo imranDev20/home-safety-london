@@ -11,11 +11,15 @@ import { PHONE_NO } from "@/shared/constants";
 
 export default function Hero() {
   const theme = useTheme();
+
   return (
     <Box
       sx={{
         position: "relative",
-        mt: -9.5,
+        mt: {
+          xs: -9.5,
+          md: -8.5,
+        },
       }}
     >
       <Image

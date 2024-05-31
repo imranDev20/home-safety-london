@@ -1,6 +1,14 @@
 "use client";
 import React from "react";
-import { Box, Card, Container, Grid, Sheet, Typography } from "@mui/joy";
+import {
+  Box,
+  Card,
+  Container,
+  Grid,
+  Sheet,
+  Typography,
+  useTheme,
+} from "@mui/joy";
 import {
   BookingIcon,
   EngineersIcon,
@@ -36,11 +44,14 @@ const ADVANTAGES = [
 ];
 
 export default function Advantage() {
+  const theme = useTheme();
+
   return (
     <Sheet
-      variant="soft"
+      variant="plain"
       sx={{
         py: 10,
+        backgroundColor: theme.palette.background.level2,
       }}
     >
       <Container component="section">
@@ -53,13 +64,18 @@ export default function Advantage() {
           <Typography component="h2" level="h2" sx={{ mb: 2 }}>
             Reasons You Should Call Us
           </Typography>
-          <Typography color="neutral">
+          <Typography
+            color="neutral"
+            sx={{
+              mb: 5,
+            }}
+          >
             Electrician is your single source for a complete range of high
             quality eletrical <br /> services, including design/build,
             engineering and maintenance
           </Typography>
         </Box>
-        <Grid container spacing={3}>
+        <Grid container spacing={4}>
           {ADVANTAGES.map((advan) => (
             <Grid xs={12} sm={6} md={3} key={advan.id}>
               <Card
@@ -69,6 +85,8 @@ export default function Advantage() {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
+                  background: "white",
+                  borderRadius: "xl",
                 }}
               >
                 <advan.Icon

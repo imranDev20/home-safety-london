@@ -15,6 +15,7 @@ export type PageHeaderProps = {
   backgroundImage: StaticImageData;
   title: string;
   secondary?: string;
+  tertiary?: string;
 };
 
 export type ParagraphProps = TypographyProps & {

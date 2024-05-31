@@ -1,10 +1,5 @@
 "use client";
-import {
-  Download,
-  Home,
-  KeyboardArrowRight,
-  LocationOn,
-} from "@mui/icons-material";
+import { Add, Download, Home, KeyboardArrowRight } from "@mui/icons-material";
 import {
   Breadcrumbs,
   Button,
@@ -24,9 +19,67 @@ import SearchIcon from "@mui/icons-material/Search";
 import { CATEGORIES, ORDER_STATUS } from "@/shared/constants";
 import { snakeCaseToNormalText } from "@/shared/functions";
 import OrderTable from "./_components/order-table";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { exportUsers } from "@/services/user.services";
 
 const Orders = () => {
   const theme = useTheme();
+  const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
+    useState<boolean>(false);
+
+  const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
+    useQuery({
+      queryKey: ["export-users"],
+      queryFn: async () => {
+        const response = await exportUsers();
+        return response.data;
+      },
+      enabled: false,
+    });
+
+  const handleExportUsers = async () => {
+    try {
+      const response = await refetchExportUsers();
+      const data = response.data;
+
+      if (response.status === "success") {
+        // const progressUpdates = data.progressUpdates;
+        const excelData = data.excelData;
+
+        // Update progress
+        // for (const { progress } of progressUpdates) {
+        //   setProgress(progress);
+        // }
+
+        // Download Excel file
+        const byteArray = new Uint8Array(
+          atob(excelData)
+            .split("")
+            .map((char) => char.charCodeAt(0))
+        );
+        const blob = new Blob([byteArray], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.setAttribute("download", "users.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } else {
+        console.error("Error exporting users:", data.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    // finally {
+    //   setIsDownloading(false);
+    //   setProgress(null);
+    // }
+  };
 
   return (
     <>
@@ -35,7 +88,14 @@ const Orders = () => {
           px: 0,
           fontSize: 13,
         }}
-        separator={<KeyboardArrowRight />}
+        separator={
+          <KeyboardArrowRight
+            fontSize="inherit"
+            sx={{
+              fontSize: 20,
+            }}
+          />
+        }
       >
         <JoyLink
           component={Link}
@@ -51,22 +111,56 @@ const Orders = () => {
         <JoyLink
           component={Link}
           color="neutral"
-          href="/admin/orders"
+          href="/admin/customers"
           sx={{
             textDecoration: "none",
           }}
         >
-          Orders
+          Customers
         </JoyLink>
       </Breadcrumbs>
-
-      <Stack justifyContent="space-between" direction="row" alignItems="center">
+      <Stack
+        spacing={2}
+        mt={2}
+        justifyContent="space-between"
+        alignItems={{
+          xs: "flex-start",
+          md: "center",
+        }}
+        direction={{
+          xs: "column",
+          sm: "row",
+        }}
+      >
         <Typography component="h1" level="h2">
-          Orders
+          Order List
         </Typography>
-        <Button size="sm" startDecorator={<Download />}>
-          Download Excel Sheet
-        </Button>
+
+        <Stack
+          spacing={2}
+          direction={{
+            xs: "column",
+            sm: "row",
+          }}
+        >
+          <Button
+            size="sm"
+            variant="outlined"
+            startDecorator={<Download />}
+            onClick={handleExportUsers}
+            loading={isExportUsersLoading}
+            loadingPosition="start"
+          >
+            Download Excel
+          </Button>
+          <Button
+            size="sm"
+            startDecorator={<Add />}
+            onClick={() => setOpenCreateCustomerDrawer(true)}
+          >
+            Add New Order
+          </Button>
+        </Stack>
       </Stack>
 
       <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>

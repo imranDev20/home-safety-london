@@ -18,6 +18,11 @@ import Link from "next/link";
 import { BUSINESS_NAME } from "@/shared/constants";
 import { GoogleIcon } from "@/app/_components/common/icons";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { registerAccount } from "@/services/account.services";
+import { useSnackbar } from "@/app/_components/snackbar-provider";
+import { useRouter } from "next/navigation";
+import { User } from "@/types/user";
 
 interface RegisterFormInput {
   email: string;
@@ -26,14 +31,24 @@ interface RegisterFormInput {
   confirmPassword: string;
 }
 
+interface RegisterResponse {
+  success: boolean;
+  message: string;
+  data: { name: string; token: string; email: string; role: string };
+}
+
 export default function RegisterForm() {
   const [visibilityToggle, setVisibilityToggle] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const {
     formState: { errors },
     handleSubmit,
     control,
     watch,
+    reset,
   } = useForm<RegisterFormInput>({
     defaultValues: {
       name: "",
@@ -43,12 +58,35 @@ export default function RegisterForm() {
     },
   });
 
+  const {
+    mutateAsync: registerUserMutate,
+    isPending: isRegisterUserMutateLoading,
+  } = useMutation({
+    mutationFn: async (userData: any) => {
+      const response = await registerAccount(userData);
+      return response;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["users", "current_user"] });
+      reset();
+      enqueueSnackbar(response?.message, "success");
+      router.replace("/");
+    },
+    onError: (error) => {
+      console.log(error);
+      enqueueSnackbar(error?.message, "error");
+    },
+  });
+
   const onRegisterFormSubmit: SubmitHandler<RegisterFormInput> = async (
     data
   ) => {
-    try {
-      console.log(data);
-    } catch (error) {}
+    const payload = {
+      name: data.name,
+      password: data.password,
+      email: data.email,
+    };
+    await registerUserMutate(payload);
   };
 
   return (
@@ -194,7 +232,11 @@ export default function RegisterForm() {
             />
 
             <Stack gap={4} sx={{ mt: 2 }}>
-              <Button type="submit" fullWidth>
+              <Button
+                type="submit"
+                fullWidth
+                loading={isRegisterUserMutateLoading}
+              >
                 Register
               </Button>
             </Stack>

@@ -1,3 +1,5 @@
+import { ADDRESS, WEBSITE_URL } from "@/shared/constants";
+
 export const customerEmailSubject = "Your request to contact us was successful";
 
 export const customerNotificationEmailHtml = (
@@ -26,7 +28,7 @@ export const customerNotificationEmailHtml = (
   </p>
 </div>
 <div style="background-color: #f1f1f1; padding: 10px; text-align: center; font-size: 12px; color: #666;">
-  <p>London Home Safety Limited, 123 Business Road, Business City, BC 12345</p>
-  <p><a href="https://www.londonhomesafetylimited.co.uk" style="color: #267ECE;">www.yourcompany.com</a></p>
+  <p>London Home Safety Limited, ${ADDRESS}</p>
+  <p><a href="https://${WEBSITE_URL}" style="color: #267ECE;">${WEBSITE_URL}</a></p>
 </div>
 </div>`;

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
 
-interface IOrderItem {
+export interface IOrderItem {
   name: string;
   price: number;
   quantity: string | number;
@@ -36,6 +36,7 @@ export interface IPreOrder {
   inspection_time: string;
   order_notes: string;
   is_personal_details_complete: boolean;
+  payment_method: "bank_transfer" | "credit_card" | "cash_to_engineer";
 }
 
 const orderItemSchema = new Schema<IOrderItem>({
@@ -163,13 +164,13 @@ const preOrderSchema = new Schema<IPreOrder>(
     is_personal_details_complete: {
       type: Boolean,
     },
+    payment_method: {
+      type: String,
+      enum: ["bank_transfer", "credit_card", "cash_to_engineer"],
+    },
   },
   { timestamps: true }
 );
-
-preOrderSchema.pre("findOneAndReplace", function (next) {
-  next();
-});
 
 const PreOrder =
   mongoose.models.PreOrder || mongoose.model("PreOrder", preOrderSchema);

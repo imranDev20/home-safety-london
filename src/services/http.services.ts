@@ -3,26 +3,8 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 const http = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}`,
   timeout: 10000,
+  withCredentials: true, // Include credentials (cookies) with each request
 });
-
-// Add a request interceptor to add the token to every request
-http.interceptors.request.use(
-  (config) => {
-    // Retrieve the token from wherever it's stored (e.g., localStorage, Vuex store, etc.)
-    const token = localStorage.getItem("accessToken");
-
-    // If a token exists, add it to the request headers
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    return config;
-  },
-  (error: AxiosError) => {
-    // Handle any request errors
-    return Promise.reject(error);
-  }
-);
 
 // Add a response interceptor to handle errors globally
 http.interceptors.response.use(

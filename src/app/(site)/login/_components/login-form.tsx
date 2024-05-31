@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
+  Checkbox,
   Divider,
   FormControl,
   FormLabel,
@@ -18,30 +19,64 @@ import Link from "next/link";
 import { BUSINESS_NAME } from "@/shared/constants";
 import { GoogleIcon } from "@/app/_components/common/icons";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { loginAccount } from "@/services/account.services";
+import { useSnackbar } from "@/app/_components/snackbar-provider";
+import { useRouter } from "next/navigation";
 
-interface RegisterFormInput {
+interface LoginFormInput {
   email: string;
   password: string;
 }
 
 export default function LoginForm() {
   const [visibilityToggle, setVisibilityToggle] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const {
     formState: { errors },
     handleSubmit,
     control,
-  } = useForm<RegisterFormInput>({
+    reset,
+  } = useForm<LoginFormInput>({
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onLoginFormSubmit: SubmitHandler<RegisterFormInput> = async (data) => {
+  const { mutateAsync: loginUserMutate, isPending: isLoginUserMutateLoading } =
+    useMutation({
+      mutationFn: async (userData: any) => {
+        const response = await loginAccount(userData);
+        return response;
+      },
+      onSuccess: (response) => {
+        queryClient.invalidateQueries({ queryKey: ["users", "current_user"] });
+        queryClient.resetQueries();
+        if (response?.data?.role === "admin") {
+          router.replace("/admin");
+        } else {
+          router.replace("/");
+        }
+        reset();
+        enqueueSnackbar(response?.message, "success");
+      },
+    });
+
+  const onLoginFormSubmit: SubmitHandler<LoginFormInput> = async (data) => {
     try {
-      console.log(data);
-    } catch (error) {}
+      const payload = {
+        password: data.password,
+        email: data.email,
+      };
+
+      await loginUserMutate(payload);
+    } catch (error: any) {
+      enqueueSnackbar(error?.message, "error");
+    }
   };
 
   return (
@@ -135,8 +170,24 @@ export default function LoginForm() {
               )}
             />
 
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                my: 2,
+              }}
+            >
+              <Checkbox size="sm" label="Remember me" name="persistent" />
+              <JoyLink level="title-sm">Forgot your password?</JoyLink>
+            </Box>
+
             <Stack gap={4} sx={{ mt: 2 }}>
-              <Button type="submit" fullWidth>
+              <Button
+                type="submit"
+                fullWidth
+                loading={isLoginUserMutateLoading}
+              >
                 Login
               </Button>
             </Stack>

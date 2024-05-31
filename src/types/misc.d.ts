@@ -32,6 +32,8 @@ export type Pagination = {
   totalCount: number;
 };
 
+export type Role = "customer" | "engineer" | "admin";
+
 export type ComponentUseStateProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;

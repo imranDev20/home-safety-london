@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import {
   Box,
@@ -58,7 +59,11 @@ export default function Faq() {
       <Container>
         <Grid
           container
-          spacing={5}
+          spacing={{
+            xs: 0,
+            md: 5,
+            lg: 10,
+          }}
           sx={{ display: "flex", justifyContent: "center" }}
         >
           <Grid xs={12} md={6} sx={{ height: "100%" }}>
@@ -108,6 +113,10 @@ export default function Faq() {
                 [`& .${accordionSummaryClasses.button}:active`]: {
                   bgcolor: "transparent!important",
                 },
+
+                [`& .${accordionSummaryClasses.button}:hover`]: {
+                  bgcolor: "transparent!important",
+                },
               }}
             >
               {accordionData.map((item, index) => (
@@ -117,17 +126,31 @@ export default function Faq() {
                   sx={{
                     mb: 1,
                     color: theme.vars.palette.primary,
+                    py: 1,
                   }}
                 >
                   <AccordionSummary
                     sx={{
                       fontWeight: 600,
+                      fontSize: "lg",
+                      px: 0,
                     }}
                   >
                     {item.title}
                   </AccordionSummary>
-                  <AccordionDetails color="neutral">
-                    {item.content}
+                  <AccordionDetails
+                    color="neutral"
+                    slotProps={{
+                      content: {
+                        sx: {
+                          px: 0,
+                        },
+                      },
+                    }}
+                  >
+                    <Typography color="neutral" level="body-lg">
+                      {item.content}
+                    </Typography>
                   </AccordionDetails>
                 </Accordion>
               ))}

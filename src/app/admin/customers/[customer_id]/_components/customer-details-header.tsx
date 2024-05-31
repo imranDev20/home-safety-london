@@ -8,6 +8,7 @@ import {
   KeyboardArrowRight,
   Message,
   MoreVertRounded,
+  West,
 } from "@mui/icons-material";
 import Edit from "@mui/icons-material/Edit";
 import {
@@ -24,22 +25,11 @@ import {
   MenuItem,
   ListItemDecorator,
 } from "@mui/joy";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import React from "react";
 
-const CustomerDetailsHeader = () => {
+const CustomerDetailsHeader = ({ userDetails }: { userDetails: any }) => {
   const theme = useTheme();
-  const { customer_id } = useParams();
-
-  const { data: userDetails, isLoading: isUserDetailsLoading } = useQuery({
-    queryKey: ["user-details"],
-    queryFn: async () => {
-      const response = await getUserDetails(customer_id as string);
-      return response.data;
-    },
-  });
 
   return (
     <>
@@ -60,7 +50,7 @@ const CustomerDetailsHeader = () => {
         <JoyLink
           component={Link}
           color="neutral"
-          href="/admin/"
+          href="/admin/customers"
           sx={{
             color: theme.palette.text.primary,
             textDecoration: "none",
@@ -104,8 +94,13 @@ const CustomerDetailsHeader = () => {
         mt={2}
       >
         <Stack direction="row" alignItems="center" spacing={2}>
-          <IconButton variant="outlined" size="sm">
-            <KeyboardArrowLeft />
+          <IconButton
+            variant="plain"
+            size="sm"
+            component={Link}
+            href={`/admin/customers`}
+          >
+            <West />
           </IconButton>
           <Typography component="h1" level="h2">
             {userDetails?.name || "Loading..."}
@@ -138,7 +133,7 @@ const CustomerDetailsHeader = () => {
             <MenuButton
               slots={{ root: IconButton }}
               slotProps={{
-                root: { variant: "outlined", color: "neutral", size: "sm" },
+                root: { variant: "plain", color: "neutral", size: "sm" },
               }}
             >
               <MoreVertRounded />

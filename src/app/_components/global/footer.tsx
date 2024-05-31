@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { ColorPaletteProp, useTheme } from "@mui/joy/styles";
+import { useTheme } from "@mui/joy/styles";
 import Box from "@mui/joy/Box";
 import List from "@mui/joy/List";
 import ListSubheader from "@mui/joy/ListSubheader";
@@ -47,7 +47,7 @@ export default function Footer() {
               justifyContent: "space-between",
             }}
           >
-            <Grid xs={12} sm={6} md={4}>
+            <Grid xs={12} md={6} lg={4}>
               <Box>
                 <Typography component="h3" level="h3" sx={{ mb: 2 }}>
                   London Home Safety
@@ -60,7 +60,7 @@ export default function Footer() {
                 </Typography>
               </Box>
             </Grid>
-            <Grid xs={12} sm={6} md={2}>
+            <Grid xs={12} md={6} lg={2}>
               <List>
                 <ListItem nested>
                   <ListSubheader
@@ -83,7 +83,7 @@ export default function Footer() {
                 </ListItem>
               </List>
             </Grid>
-            <Grid xs={12} sm={6} md={2}>
+            <Grid xs={12} md={6} lg={2}>
               <List>
                 <ListItem nested sx={{}}>
                   <ListSubheader
@@ -110,7 +110,7 @@ export default function Footer() {
                 </ListItem>
               </List>
             </Grid>
-            <Grid xs={12} sm={6} md={3}>
+            <Grid xs={12} md={6} lg={4}>
               <List>
                 <ListItem nested sx={{}}>
                   <ListSubheader

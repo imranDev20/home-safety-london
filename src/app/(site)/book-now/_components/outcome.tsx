@@ -1,7 +1,7 @@
 import Lottie from "lottie-react";
 import successAnimation from "@/assets/success-animation.json";
 import errorAnimation from "@/assets/error-animation-2.json";
-import { Box, Button, CircularProgress, Typography } from "@mui/joy";
+import { Box, Button, Typography } from "@mui/joy";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { createQueryString } from "@/shared/functions";
@@ -33,15 +33,13 @@ export default function Outcome() {
 
     const fetchIntent = async () => {
       try {
-        const response = await stripe.retrievePaymentIntent(
-          clientSecret as string
-        );
+        const response = await stripe.retrievePaymentIntent(clientSecret!);
 
         const { paymentIntent } = response;
 
         setInfo({
-          email: response.paymentIntent?.receipt_email as string,
-          id: response.paymentIntent?.id as string,
+          email: response.paymentIntent?.receipt_email!,
+          id: response.paymentIntent?.id!,
         });
 
         if (!paymentIntent) {
@@ -125,6 +123,7 @@ export default function Outcome() {
               color: "text.secondary",
               textAlign: "center",
               mt: 1,
+              maxWidth: 500,
             }}
           >
             Thank you for your order. An email containing your receipt has been

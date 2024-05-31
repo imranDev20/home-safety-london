@@ -5,7 +5,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 
-import { Alert, Box, Button } from "@mui/joy";
+import { Box, Button } from "@mui/joy";
 import { useRouter, usePathname } from "next/navigation";
 import {
   createQueryString,
@@ -17,8 +17,7 @@ import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { PreOrderPersonalPayload } from "@/types/pre-order";
 
 export default function PaymentDetails() {
-  const [status, setStatus] = useState<string>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -76,7 +75,7 @@ export default function PaymentDetails() {
       router.push(
         pathname +
           "?" +
-          createQueryString("active_step", "5") +
+          createQueryString("active_step", "4") +
           "&" +
           createQueryString("payment_intent", response.paymentIntent.id) +
           "&" +
@@ -121,7 +120,13 @@ export default function PaymentDetails() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <Box
+      component="form"
+      sx={{
+        mt: 5,
+      }}
+      onSubmit={handleSubmit}
+    >
       <PaymentElement
         options={{
           defaultValues: {
@@ -139,7 +144,6 @@ export default function PaymentDetails() {
           },
         }}
       />
-
       <Box
         sx={{
           display: "flex",
@@ -147,15 +151,16 @@ export default function PaymentDetails() {
         }}
       >
         <Button
-          variant="outlined"
+          variant="solid"
           type="submit"
           loading={loading}
-          sx={{ mt: 4 }}
+          sx={{ mt: 5 }}
+          size="lg"
         >
-          Pay
+          Proceed to Order
         </Button>
       </Box>
-    </form>
+    </Box>
   );
 }
 

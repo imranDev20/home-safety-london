@@ -1,42 +1,67 @@
-import {
-  TransactionalEmailsApi,
-  SendSmtpEmail,
-  TransactionalEmailsApiApiKeys,
-} from "@sendinblue/client";
+import Mailjet from "node-mailjet";
 
-const apiInstance = new TransactionalEmailsApi();
-apiInstance.setApiKey(
-  TransactionalEmailsApiApiKeys.apiKey,
-  process.env.BREVO_API_KEY as string
+const mailjet = Mailjet.apiConnect(
+  process.env.MAILJET_API_KEY as string,
+  process.env.MAILJET_API_SECRET as string
 );
 
 interface EmailOptions {
-  from: string;
+  fromName: string;
+  fromEmail: string;
   to: string;
   subject: string;
   html: string;
+  attachments?: Array<{
+    ContentType: string;
+    Filename: string;
+    Base64Content: string;
+  }>;
+}
+
+interface MailjetResponse {
+  body: {
+    Messages: Array<{
+      To: Array<{
+        Email: string;
+        MessageID: string;
+      }>;
+    }>;
+  };
 }
 
 export async function sendEmail({
-  from,
+  fromName,
+  fromEmail,
   to,
   subject,
   html,
+  attachments,
 }: EmailOptions): Promise<void> {
-  const sendSmtpEmail = new SendSmtpEmail();
-
-  sendSmtpEmail.subject = subject;
-  sendSmtpEmail.htmlContent = html;
-  sendSmtpEmail.sender = { email: from };
-  sendSmtpEmail.to = [{ email: to }];
-
   try {
-    const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    if (response.body && (response.body as any).messageId) {
-      console.log(`Email sent to ${to}: ${(response.body as any).messageId}`);
-    } else {
-      console.log(`Email sent to ${to}, but no messageId received`);
-    }
+    const request: MailjetResponse = await mailjet
+      .post("send", { version: "v3.1" })
+      .request({
+        Messages: [
+          {
+            From: {
+              Email: fromEmail,
+              Name: fromName,
+            },
+            To: [
+              {
+                Email: to,
+              },
+            ],
+            Subject: subject,
+            HTMLPart: html,
+            Attachments: attachments,
+          },
+        ],
+      });
+
+    console.log(
+      `Email sent to ${to}: ${request.body.Messages[0].To[0].MessageID}`
+    );
   } catch (error) {
     console.error(`Error sending email to ${to}:`, error);
     throw new Error(
