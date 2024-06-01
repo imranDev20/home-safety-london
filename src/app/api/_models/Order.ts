@@ -1,8 +1,18 @@
 import mongoose, { Schema, Types } from "mongoose";
 import PreOrder, { IPreOrder, IOrderItem } from "./PreOrder";
+import { ORDER_STATUS } from "@/shared/constants";
 
 interface IOrderStatus {
-  status: string;
+  status:
+    | "pending_payment"
+    | "payment_completed"
+    | "awaiting_confirmation"
+    | "order_confirmed"
+    | "engineer_en_route"
+    | "work_in_progress"
+    | "work_completed"
+    | "completed"
+    | "cancelled";
   timestamp: Date;
 }
 
@@ -15,6 +25,7 @@ interface IOrder extends IPreOrder {
   remaining_amount: number;
   paid_amount: number;
   invoice_id: string;
+  invoice_path: string; // Field for storing the invoice file path or URL
   order_items: IOrderItemWithEngineers[];
 }
 
@@ -22,6 +33,8 @@ const orderStatusSchema = new Schema<IOrderStatus>({
   status: {
     type: String,
     required: true,
+    enum: ORDER_STATUS,
+    default: "awaiting_confirmation",
   },
   timestamp: {
     type: Date,
@@ -78,6 +91,10 @@ const orderSchema = new Schema<IOrder>(
       type: String,
       required: true,
       unique: true,
+    },
+    invoice_path: {
+      type: String,
+      required: true,
     },
     order_items: {
       type: [orderItemSchema],

@@ -90,15 +90,15 @@ export const SITE_OPTIONS = [
 ];
 
 export const ORDER_STATUS = [
-  "pending",
-  "processing",
-  "scheduled",
-  "in_progress",
+  "pending_payment",
+  "payment_completed",
+  "awaiting_confirmation",
+  "order_confirmed",
+  "engineer_en_route",
+  "work_in_progress",
+  "work_completed",
   "completed",
   "cancelled",
-  "on_hold",
-  "payment_pending",
-  "payment_received",
 ];
 
 export const CATEGORIES = [

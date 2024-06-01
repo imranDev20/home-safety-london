@@ -1,64 +1,115 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Sheet,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/joy";
+import { Button, Sheet, Stack, Typography, useTheme } from "@mui/joy";
 import React from "react";
 import DataTable from "../../_components/data-table";
 import { useQuery } from "@tanstack/react-query";
 import { CustomersResponse } from "../../_components/customers-table";
-import { getUsers } from "@/services/user.services";
 import dayjs from "dayjs";
 import { User } from "@/types/user";
-import { customSlugify } from "@/shared/functions";
+import { customSlugify, snakeCaseToNormalText } from "@/shared/functions";
 import { useRouter } from "next/navigation";
+import { getOrders } from "@/services/orders.services";
+
+interface IOrderStatus {
+  status: string;
+  timestamp: string; // Using string here to match your example
+  _id: string;
+}
+
+function getMostRecentStatus(statuses: IOrderStatus[]): string | null {
+  if (statuses.length === 0) {
+    return null;
+  }
+
+  const sortedStatuses = statuses.sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
+
+  return sortedStatuses[0].status;
+}
 
 const columns = [
   {
-    label: "CUSTOMER",
-    key: "name",
+    label: "Invoice ID",
+    key: "invoice_id",
     width: 180,
     render: (value: string, row: User) => (
-      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-        <Avatar size="sm" variant="outlined">
-          {row.name?.charAt(0)}
-        </Avatar>
-        <Typography level="body-xs">{value}</Typography>
-      </Box>
+      <Typography level="body-sm">{value}</Typography>
     ),
   },
-  { label: "JOINED", key: "createdAt", width: 90 },
+  {
+    label: "Order Status",
+    key: "order_status",
+    width: 90,
+    render: (value: string, row: any) => {
+      const status = getMostRecentStatus(row?.order_status);
+      return (
+        <Typography
+          level="body-sm"
+          sx={{
+            textTransform: "capitalize",
+          }}
+        >
+          {snakeCaseToNormalText(status as string)}
+        </Typography>
+      );
+    },
+  },
+  {
+    label: "Order Placed",
+    key: "createdAt",
+    width: 90,
+    render: (value: string, row: User) => (
+      <Typography level="body-sm">
+        {dayjs(value).format("DD/MM/YYYY")}
+      </Typography>
+    ),
+  },
+  {
+    label: "Invoice",
+    key: "invoice_path",
+    width: 90,
+    render: (value: string, row: User) => (
+      <Button
+        component="a"
+        href={value}
+        size="sm"
+        target="_blank"
+        sx={{
+          fontSize: 12,
+        }}
+      >
+        Download
+      </Button>
+    ),
+  },
 ];
 
-const CustomerOrders = () => {
+export default function CustomerOrders() {
   const router = useRouter();
   const theme = useTheme();
 
   const {
-    data: usersData,
+    data: ordersData,
     isLoading: isGetUsersDataLoading,
     isFetching: isGetUserDataFetching,
     refetch: refetchGetUsers,
-  } = useQuery<CustomersResponse>({
-    queryKey: ["users"],
+  } = useQuery<any>({
+    queryKey: ["orders"],
     queryFn: async () => {
-      const { data, message, pagination } = await getUsers();
+      const { data, message, pagination } = await getOrders();
 
-      const users = data?.map((user: any) => ({
-        _id: user._id,
-        createdAt: dayjs(user.createdAt).format("MMM DD, YYYY"),
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        // address: user.
+      const orders = data?.map((order: any) => ({
+        _id: order._id,
+        createdAt: dayjs(order.createdAt).format("MMM DD, YYYY"),
+        order_status: order.order_status,
+        invoice_id: order.invoice_id,
+        email: order.email,
+        phone: order.phone,
+        invoice_path: order.invoice_path,
       }));
 
       return {
-        users,
+        orders,
         message,
         pagination,
       };
@@ -105,15 +156,15 @@ const CustomerOrders = () => {
           mt: 3,
         }}
       >
-        <DataTable
-          columns={columns}
-          data={usersData?.users as User[]}
-          onRowClick={handleRowClick}
-          onSelectionChange={handleSelectionChange}
-        />
+        {ordersData?.orders && (
+          <DataTable
+            columns={columns}
+            data={ordersData.orders}
+            onRowClick={handleRowClick}
+            onSelectionChange={handleSelectionChange}
+          />
+        )}
       </Sheet>
     </>
   );
-};
-
-export default CustomerOrders;
+}

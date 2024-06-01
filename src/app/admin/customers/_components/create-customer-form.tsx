@@ -93,7 +93,7 @@ const CreateCustomerForm = ({
           mb: 3,
         }}
       >
-        Create a customer
+        Create a Customer
       </DialogTitle>
       <Stack spacing={2}>
         <FormControl required>
