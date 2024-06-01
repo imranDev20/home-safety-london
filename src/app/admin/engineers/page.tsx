@@ -22,20 +22,18 @@ import { useState } from "react";
 import CreateEngineerForm from "./_components/create-engineer-form";
 import DebounceInput from "../../_components/common/debounce-input";
 import { usePathname, useRouter } from "next/navigation";
-import { createQueryString } from "@/shared/functions";
+import { createQueryString, toSnakeCase } from "@/shared/functions";
 
 export default function EngineersPage() {
   const theme = useTheme();
   const [openCreateEngineerDrawer, setOpenCreateEngineerDrawer] =
     useState<boolean>(false);
 
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const router = useRouter();
   const pathname = usePathname();
 
   const handleDebounce = (value: string) => {
     console.log(value);
-    setDebouncedSearch(value);
 
     if (value !== "") {
       router.push(`${pathname}?${createQueryString("q", value)}`);
@@ -203,7 +201,7 @@ export default function EngineersPage() {
               ].map((sortValue) => (
                 <Option
                   key={sortValue}
-                  value={sortValue}
+                  value={toSnakeCase(sortValue)}
                   sx={{
                     textTransform: "capitalize",
                   }}

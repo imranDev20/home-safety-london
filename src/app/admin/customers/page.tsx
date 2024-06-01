@@ -7,6 +7,8 @@ import {
   FormLabel,
   Grid,
   Link as JoyLink,
+  Option,
+  Select,
   Stack,
   Typography,
   useTheme,
@@ -21,15 +23,17 @@ import { useQuery } from "@tanstack/react-query";
 import { exportUsers } from "@/services/user.services";
 import DebounceInput from "../../_components/common/debounce-input";
 import { usePathname, useRouter } from "next/navigation";
-import { createQueryString } from "@/shared/functions";
+import { toSnakeCase } from "@/shared/functions";
+import dayjs from "dayjs";
+import { useCreateQueryString } from "@/app/_components/hooks/use-create-query-string";
 
 export default function Customers() {
   const theme = useTheme();
   const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
     useState<boolean>(false);
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const router = useRouter();
   const pathname = usePathname();
+  const createQueryString = useCreateQueryString();
 
   // Mutate function to export users
   const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
@@ -69,7 +73,10 @@ export default function Customers() {
 
         const link = document.createElement("a");
         link.href = downloadUrl;
-        link.setAttribute("download", "users.xlsx");
+        link.setAttribute(
+          "download",
+          `Customers - ${dayjs().format("YYYY-MM-DD@hh:mm:ss")}.xlsx`
+        );
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -86,9 +93,6 @@ export default function Customers() {
   };
 
   const handleDebounce = (value: string) => {
-    console.log(value);
-    setDebouncedSearch(value);
-
     if (value !== "") {
       router.push(`${pathname}?${createQueryString("q", value)}`);
     } else {
@@ -179,7 +183,7 @@ export default function Customers() {
       </Stack>
 
       <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>
-        <Grid xs={12} sm={6} md={6}>
+        <Grid xs={12} md={6}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
@@ -188,10 +192,72 @@ export default function Customers() {
               Search for customers
             </FormLabel>
             <DebounceInput
-              placeholder="Type in here…"
+              placeholder="Type in customer email, name or phone number..."
               debounceTimeout={1000}
               handleDebounce={handleDebounce}
             />
+          </FormControl>
+        </Grid>
+        <Grid xs={12} md={3}>
+          <FormControl size="sm">
+            <FormLabel
+              id="select-field-demo-label"
+              htmlFor="select-field-demo-button"
+            >
+              Sort
+            </FormLabel>
+            <Select
+              placeholder="Sort customers by..."
+              slotProps={{
+                button: {
+                  id: "select-field-demo-button",
+                },
+              }}
+              defaultValue="createdAt"
+              onChange={(e, value) =>
+                router.push(
+                  `${pathname}?${createQueryString("sort_by", value as string)}`
+                )
+              }
+            >
+              <Option value="createdAt">Date Created</Option>
+
+              {["Name", "Email", "Phone"].map((sortVal) => (
+                <Option value={toSnakeCase(sortVal)} key={sortVal}>
+                  {sortVal}
+                </Option>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid xs={12} md={3}>
+          <FormControl size="sm">
+            <FormLabel
+              id="select-field-demo-label"
+              htmlFor="select-field-demo-button"
+            >
+              Order
+            </FormLabel>
+            <Select
+              placeholder="Order customers by..."
+              slotProps={{
+                button: {
+                  id: "select-field-demo-button",
+                },
+              }}
+              defaultValue="desc"
+              onChange={(e, value) =>
+                router.push(
+                  `${pathname}?${createQueryString(
+                    "sort_order",
+                    value as string
+                  )}`
+                )
+              }
+            >
+              <Option value="asc">Ascending</Option>
+              <Option value="desc">Descending</Option>
+            </Select>
           </FormControl>
         </Grid>
       </Grid>

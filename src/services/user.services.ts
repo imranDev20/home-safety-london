@@ -4,12 +4,21 @@ import { buildUrl } from "@/shared/functions";
 
 const USERS_PATH = "/users";
 
-export const getUsers = async (q?: string, role?: Role) => {
+export const getUsers = async (
+  q?: string,
+  role?: Role,
+  sort_by?: string,
+  sort_order?: string
+) => {
   try {
     const url = buildUrl(USERS_PATH, {
       q,
       role,
+      sort_by,
+      sort_order,
     });
+
+    console.log(url);
 
     const response = await http.get(url);
     return response.data;

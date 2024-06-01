@@ -6,13 +6,14 @@ import { formatResponse } from "@/shared/functions";
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
-
     const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
     const limit = 10;
     const skip = (page - 1) * limit;
 
     const searchTerm = req.nextUrl.searchParams.get("q") || "";
     const role = req.nextUrl.searchParams.get("role") || "";
+    const sortBy = req.nextUrl.searchParams.get("sort_by") || "createdAt";
+    const sortOrder = req.nextUrl.searchParams.get("sort_order") || "desc";
 
     // Prepare the query object
     const query: any = {};
@@ -31,9 +32,14 @@ export async function GET(req: NextRequest) {
       query.role = role;
     }
 
+    const sortObject: any = {};
+    sortObject[sortBy] = sortOrder === "asc" ? 1 : -1;
+
+    console.log(sortObject);
+
     // Fetch users from the database with pagination, sorting, and optional search and role filtering
     const users = await User.find(query)
-      .sort({ createdAt: -1 })
+      .sort(sortObject)
       .skip(skip)
       .limit(limit)
       .exec();

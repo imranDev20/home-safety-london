@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
@@ -25,45 +25,6 @@ export type CustomersResponse = {
   pagination: Pagination;
 };
 
-// function descendingComparator<T>(a: T, b: T, orderBy: keyof T): number {
-//   if (b[orderBy] < a[orderBy]) {
-//     return -1;
-//   }
-//   if (b[orderBy] > a[orderBy]) {
-//     return 1;
-//   }
-//   return 0;
-// }
-
-// type Order = "asc" | "desc";
-
-// function getComparator<Key extends keyof any>(
-//   order: Order,
-//   orderBy: Key
-// ): (
-//   a: { [key in Key]: number | string },
-//   b: { [key in Key]: number | string }
-// ) => number {
-//   return order === "desc"
-//     ? (a, b) => descendingComparator(a, b, orderBy)
-//     : (a, b) => -descendingComparator(a, b, orderBy);
-// }
-
-// function stableSort<T>(
-//   array: readonly T[],
-//   comparator: (a: T, b: T) => number
-// ): T[] {
-//   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-//   stabilizedThis.sort((a, b) => {
-//     const order = comparator(a[0], b[0]);
-//     if (order !== 0) {
-//       return order;
-//     }
-//     return a[1] - b[1];
-//   });
-//   return stabilizedThis.map((el) => el[0]);
-// }
-
 const columns = [
   {
     label: "CUSTOMER",
@@ -88,6 +49,8 @@ export default function CustomersTable() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("q") || "";
+  const sortBy = searchParams.get("sort_by") || "";
+  const sortOrder = searchParams.get("sort_order") || "";
 
   const {
     data: usersData,
@@ -99,7 +62,9 @@ export default function CustomersTable() {
     queryFn: async () => {
       const { data, message, pagination } = await getUsers(
         searchTerm,
-        "customer"
+        "customer",
+        sortBy,
+        sortOrder
       );
 
       const users = data?.map((user: any) => ({
@@ -125,7 +90,7 @@ export default function CustomersTable() {
       await refetchGetUsers();
     };
     loadUsers();
-  }, [searchTerm, refetchGetUsers]);
+  }, [searchTerm, refetchGetUsers, sortBy, sortOrder]);
 
   const handleRowClick = (row: User) => {
     router.push(`/admin/customers/${customSlugify(row._id)}`);
