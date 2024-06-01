@@ -66,9 +66,12 @@ export default function RegisterForm() {
       const response = await registerAccount(userData);
       return response;
     },
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ["users", "current_user"] });
-      queryClient.resetQueries();
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries({
+        queryKey: ["users", "current_user"],
+      });
+      await queryClient.resetQueries();
+
       reset();
       enqueueSnackbar(response?.message, "success");
       router.replace("/");

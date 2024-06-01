@@ -1,60 +1,68 @@
-import { createQueryString, debounce } from "@/shared/functions";
+import { createQueryString } from "@/shared/functions";
 import { Search } from "@mui/icons-material";
 import { Input } from "@mui/joy";
 import { usePathname, useRouter } from "next/navigation";
-import React, { FormEvent, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const SearchField = () => {
-  const [term, setTerm] = useState<string>("");
-  const pathname = usePathname();
+  const [query, setQuery] = useState<string>("");
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
   const router = useRouter();
+  const pathname = usePathname();
 
-  const delayedSearch = debounce((searchTerm) => {
-    console.log("Searching for:", searchTerm);
-  }, 500);
-
-  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    router.push(pathname + "?" + createQueryString("search", term));
+  const debounce = (func: (...args: any[]) => void, delay: number) => {
+    return (...args: any[]) => {
+      if (typingTimeout) clearTimeout(typingTimeout);
+      const timeout = setTimeout(() => func(...args), delay);
+      setTypingTimeout(timeout);
+    };
   };
 
-  const handleKeyPress = (event: any) => {
-    // Check if the key pressed is the Enter key
+  const fetchResults = async (searchQuery: string) => {
+    try {
+      const queryString = searchQuery
+        ? pathname + "?" + createQueryString("q", searchQuery)
+        : pathname;
+
+      router.push(queryString, {
+        scroll: false,
+      });
+    } catch (error) {
+      console.error("Error fetching search results", error);
+    }
+  };
+
+  const handleSearch = debounce((searchQuery: string) => {
+    fetchResults(searchQuery);
+  }, 1000);
+
+  useEffect(() => {
+    if (query !== "") {
+      handleSearch(query);
+    } else {
+      handleSearch("");
+    }
+  }, [query]);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      console.log("Enter key pressed!");
-      handleSearch(event);
+      if (typingTimeout) clearTimeout(typingTimeout);
+      fetchResults(query);
     }
   };
 
   return (
-    <div onKeyDown={handleKeyPress}>
+    <>
       <Input
         placeholder="Search for customers with name, email or phone..."
         startDecorator={<Search />}
-        onChange={(e) => {
-          setTerm(e.target.value);
-          delayedSearch(e.target.value);
-
-          //   if (e.target.value === "") {
-          //     const query = { ...router.query };
-
-          //     delete query["search"];
-
-          //     router.push(
-          //       {
-          //         pathname: router.pathname,
-          //         query: { ...query },
-          //       },
-          //       undefined,
-          //       {
-          //         shallow: true,
-          //       }
-          //     );
-          //   }
-        }}
+        onChange={(e) => setQuery(e.target.value)}
+        value={query}
+        onKeyDown={handleKeyDown}
       />
-    </div>
+    </>
   );
 };
 

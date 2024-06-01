@@ -9,7 +9,7 @@ interface CurrentUser {
 
 export const useCurrentUser = () => {
   const { data: userData, ...rest } = useQuery<CurrentUser>({
-    queryKey: ["current_user"],
+    queryKey: ["current_user", "users"],
     queryFn: async () => {
       const response = await getCurrentAccount();
       return response.data;

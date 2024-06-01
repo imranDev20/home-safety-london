@@ -1,450 +1,187 @@
-import React, { ReactNode } from "react";
-import { ColorPaletteProp } from "@mui/joy/styles";
-import Avatar from "@mui/joy/Avatar";
+import React from "react";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
-import Divider from "@mui/joy/Divider";
-import Link from "@mui/joy/Link";
-import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
-import Checkbox from "@mui/joy/Checkbox";
+import { Avatar, Link as JoyLink } from "@mui/joy";
 import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
-import Menu from "@mui/joy/Menu";
-import MenuButton from "@mui/joy/MenuButton";
-import MenuItem from "@mui/joy/MenuItem";
-import Dropdown from "@mui/joy/Dropdown";
-
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import BlockIcon from "@mui/icons-material/Block";
-import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
+import { useOrdersData } from "@/app/_components/hooks/use-orders";
+import { hexToRgba, snakeCaseToNormalText } from "@/shared/functions";
+import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
+import {
+  AttachMoneyOutlined,
+  BuildOutlined,
+  CancelOutlined,
+  CheckCircleOutlined,
+  CheckOutlined,
+  DirectionsCarOutlined,
+  DoneAllOutlined,
+  HourglassEmptyOutlined,
+  HourglassFullOutlined,
+  KeyboardArrowLeft,
+} from "@mui/icons-material";
+import DataTable from "../../customers/_components/data-table";
 
-const rows = [
+interface IOrderStatus {
+  status: string;
+  timestamp: string;
+  _id: string;
+}
+
+function getMostRecentStatus(statuses: IOrderStatus[]): string | null {
+  if (statuses.length === 0) {
+    return null;
+  }
+
+  const sortedStatuses = statuses.sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
+
+  return sortedStatuses[0].status;
+}
+
+const columns = [
   {
-    id: "INV-1234",
-    date: "Feb 3, 2023",
-    status: "Refunded",
-    customer: {
-      initial: "O",
-      name: "Olivia Ryhe",
-      email: "olivia@email.com",
+    label: "Invoice ID",
+    key: "invoice_id",
+    width: 90,
+    render: (value: string, row: any) => (
+      <Typography level="body-sm">{value}</Typography>
+    ),
+  },
+  {
+    label: "Customer",
+    key: "customer_name",
+    width: 130,
+    render: (value: string, row: any) => {
+      const initial = row.customer_name?.charAt(0);
+      console.log(row);
+      // console.log(initial);
+      return (
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+          <Avatar size="sm">{initial}</Avatar>
+          <div>
+            <Typography level="body-xs">{row.customer_name}</Typography>
+            <Typography level="body-xs">{row.email}</Typography>
+          </div>
+        </Box>
+      );
     },
   },
   {
-    id: "INV-1233",
-    date: "Feb 3, 2023",
-    status: "Paid",
-    customer: {
-      initial: "S",
-      name: "Steve Hampton",
-      email: "steve.hamp@email.com",
+    label: "Status",
+    key: "order_status",
+    width: 110,
+    render: (value: string, row: any) => {
+      const status = getMostRecentStatus(row?.order_status);
+      return (
+        <Chip
+          variant="soft"
+          size="sm"
+          startDecorator={
+            {
+              pending_payment: <HourglassEmptyOutlined />,
+              payment_completed: <AttachMoneyOutlined />,
+              awaiting_confirmation: <HourglassFullOutlined />,
+              order_confirmed: <CheckCircleOutlined />,
+              engineer_en_route: <DirectionsCarOutlined />,
+              work_in_progress: <BuildOutlined />,
+              work_completed: <DoneAllOutlined />,
+              completed: <CheckOutlined />,
+              cancelled: <CancelOutlined />,
+            }[status as string]
+          }
+          sx={{
+            backgroundColor: {
+              pending_payment: hexToRgba("#FFC107", 0.2),
+              payment_completed: hexToRgba("#4CAF50", 0.2),
+              awaiting_confirmation: hexToRgba("#FF9800", 0.2),
+              order_confirmed: hexToRgba("#2196F3", 0.2),
+              engineer_en_route: hexToRgba("#9C27B0", 0.2),
+              work_in_progress: hexToRgba("#673AB7", 0.2),
+              work_completed: hexToRgba("#009688", 0.2),
+              completed: hexToRgba("#4CAF50", 0.2),
+              cancelled: hexToRgba("#F44336", 0.2),
+            }[status as string],
+            textTransform: "capitalize",
+          }}
+        >
+          {snakeCaseToNormalText(status as string)}
+        </Chip>
+      );
     },
   },
   {
-    id: "INV-1232",
-    date: "Feb 3, 2023",
-    status: "Refunded",
-    customer: {
-      initial: "C",
-      name: "Ciaran Murray",
-      email: "ciaran.murray@email.com",
+    label: "Payment Method",
+    key: "payment_method",
+    width: 100,
+    render: (value: string, row: any) => {
+      return (
+        <Typography
+          level="body-sm"
+          sx={{
+            textTransform: "capitalize",
+          }}
+        >
+          {snakeCaseToNormalText(value)}
+        </Typography>
+      );
     },
   },
   {
-    id: "INV-1231",
-    date: "Feb 3, 2023",
-    status: "Refunded",
-    customer: {
-      initial: "M",
-      name: "Maria Macdonald",
-      email: "maria.mc@email.com",
-    },
+    label: "Date",
+    key: "createdAt",
+    width: 90,
+    render: (value: string, row: any) => (
+      <Typography level="body-sm">
+        {dayjs(value).format("DD MMMM, YYYY")}
+      </Typography>
+    ),
   },
   {
-    id: "INV-1230",
-    date: "Feb 3, 2023",
-    status: "Cancelled",
-    customer: {
-      initial: "C",
-      name: "Charles Fulton",
-      email: "fulton@email.com",
-    },
-  },
-  {
-    id: "INV-1229",
-    date: "Feb 3, 2023",
-    status: "Cancelled",
-    customer: {
-      initial: "J",
-      name: "Jay Hooper",
-      email: "hooper@email.com",
-    },
-  },
-  {
-    id: "INV-1228",
-    date: "Feb 3, 2023",
-    status: "Refunded",
-    customer: {
-      initial: "K",
-      name: "Krystal Stevens",
-      email: "k.stevens@email.com",
-    },
-  },
-  {
-    id: "INV-1227",
-    date: "Feb 3, 2023",
-    status: "Paid",
-    customer: {
-      initial: "S",
-      name: "Sachin Flynn",
-      email: "s.flyn@email.com",
-    },
-  },
-  {
-    id: "INV-1226",
-    date: "Feb 3, 2023",
-    status: "Cancelled",
-    customer: {
-      initial: "B",
-      name: "Bradley Rosales",
-      email: "brad123@email.com",
-    },
-  },
-  {
-    id: "INV-1225",
-    date: "Feb 3, 2023",
-    status: "Paid",
-    customer: {
-      initial: "O",
-      name: "Olivia Ryhe",
-      email: "olivia@email.com",
-    },
-  },
-  {
-    id: "INV-1224",
-    date: "Feb 3, 2023",
-    status: "Cancelled",
-    customer: {
-      initial: "S",
-      name: "Steve Hampton",
-      email: "steve.hamp@email.com",
-    },
-  },
-  {
-    id: "INV-1223",
-    date: "Feb 3, 2023",
-    status: "Paid",
-    customer: {
-      initial: "C",
-      name: "Ciaran Murray",
-      email: "ciaran.murray@email.com",
-    },
+    label: "Invoice",
+    key: "invoice_path",
+    width: 60,
+    render: (value: string, row: any) => (
+      <JoyLink
+        component="a"
+        href={value}
+        target="_blank"
+        underline="hover"
+        sx={{
+          fontSize: 13,
+          fontWeight: 500,
+        }}
+      >
+        Download
+      </JoyLink>
+    ),
   },
 ];
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-type Order = "asc" | "desc";
-
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort<T>(
-  array: readonly T[],
-  comparator: (a: T, b: T) => number
-) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
-function RowMenu() {
-  return (
-    <Dropdown>
-      <MenuButton
-        slots={{ root: IconButton }}
-        slotProps={{ root: { variant: "plain", color: "neutral", size: "sm" } }}
-      >
-        <MoreHorizRoundedIcon />
-      </MenuButton>
-      <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
-        <MenuItem>Rename</MenuItem>
-        <MenuItem>Move</MenuItem>
-        <Divider />
-        <MenuItem color="danger">Delete</MenuItem>
-      </Menu>
-    </Dropdown>
-  );
-}
-
 export default function OrderTable() {
-  const [order, setOrder] = React.useState<Order>("desc");
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const { ordersData } = useOrdersData();
+  const router = useRouter();
+
+  console.log(ordersData);
+
+  const handleRowClick = (order: any) => {
+    router.push(`/admin/orders/${order._id}`);
+  };
 
   return (
     <React.Fragment>
       <Sheet>
-        <Table
-          aria-labelledby="tableTitle"
-          variant="outlined"
-          stickyHeader
-          hoverRow
-          sx={{
-            "--TableCell-headBackground":
-              "var(--joy-palette-background-level1)",
-            "--Table-headerUnderlineThickness": "1px",
-            "--TableRow-hoverBackground":
-              "var(--joy-palette-background-level1)",
-            "--TableCell-paddingY": "4px",
-            "--TableCell-paddingX": "8px",
-          }}
-        >
-          <thead>
-            <tr>
-              <th
-                style={{
-                  width: 48,
-                  textAlign: "center",
-                  padding: "12px 6px",
-                }}
-              >
-                <Checkbox
-                  size="sm"
-                  indeterminate={
-                    selected.length > 0 && selected.length !== rows.length
-                  }
-                  checked={selected.length === rows.length}
-                  onChange={(event) => {
-                    setSelected(
-                      event.target.checked ? rows.map((row) => row.id) : []
-                    );
-                  }}
-                  color={
-                    selected.length > 0 || selected.length === rows.length
-                      ? "primary"
-                      : undefined
-                  }
-                  sx={{ verticalAlign: "text-bottom" }}
-                />
-              </th>
-              <th style={{ width: 100, padding: "12px 6px" }}>
-                <Link
-                  underline="none"
-                  color="primary"
-                  component="button"
-                  onClick={() => setOrder(order === "asc" ? "desc" : "asc")}
-                  fontWeight="lg"
-                  endDecorator={<ArrowDropDownIcon />}
-                  sx={{
-                    "& svg": {
-                      transition: "0.2s",
-                      transform:
-                        order === "desc" ? "rotate(0deg)" : "rotate(180deg)",
-                    },
-                  }}
-                >
-                  ORDER ID
-                </Link>
-              </th>
-              <th style={{ width: 200, padding: "12px 6px" }}>CUSTOMER</th>
-              <th style={{ width: 100, padding: "12px 6px" }}>PRODUCT</th>
-              <th style={{ width: 100, padding: "12px 6px" }}>ORDER DATE</th>
-              <th style={{ width: 100, padding: "12px 6px" }}>AMOUNT</th>
-              <th style={{ width: 100, padding: "12px 6px" }}>
-                PAYMENT METHOD
-              </th>
-              <th style={{ width: 100, padding: "12px 6px" }}>
-                DELIVERY STATUS
-              </th>
-              <th style={{ width: 100, padding: "12px 6px" }}>ACTION</th>
-            </tr>
-          </thead>
-          <tbody>
-            {stableSort(rows, getComparator(order, "id")).map((row) => (
-              <tr key={row.id}>
-                <td style={{ textAlign: "center", width: 120 }}>
-                  <Checkbox
-                    size="sm"
-                    checked={selected.includes(row.id)}
-                    color={selected.includes(row.id) ? "primary" : undefined}
-                    onChange={(event) => {
-                      setSelected((ids) =>
-                        event.target.checked
-                          ? ids.concat(row.id)
-                          : ids.filter((itemId) => itemId !== row.id)
-                      );
-                    }}
-                    slotProps={{ checkbox: { sx: { textAlign: "left" } } }}
-                    sx={{ verticalAlign: "text-bottom" }}
-                  />
-                </td>
-                <td>
-                  <Typography level="body-xs">{row.id}</Typography>
-                </td>
-                <td>
-                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Avatar size="sm">{row.customer.initial}</Avatar>
-                    <div>
-                      <Typography level="body-xs">
-                        {row.customer.name}
-                      </Typography>
-                      <Typography level="body-xs">
-                        {row.customer.email}
-                      </Typography>
-                    </div>
-                  </Box>
-                </td>
-                <td>
-                  <Typography level="body-xs">Product</Typography>
-                </td>
-                <td>
-                  <Typography level="body-xs">{row.date}</Typography>
-                </td>
-                <td>
-                  <Typography level="body-xs">$123,0</Typography>
-                </td>
-                <td>
-                  <Typography level="body-xs">Mastercard</Typography>
-                </td>
-                <td>
-                  <Chip
-                    variant="soft"
-                    size="sm"
-                    startDecorator={
-                      {
-                        Paid: <CheckRoundedIcon />,
-                        Refunded: <AutorenewRoundedIcon />,
-                        Cancelled: <BlockIcon />,
-                      }[row.status]
-                    }
-                    color={
-                      {
-                        Paid: "success",
-                        Refunded: "neutral",
-                        Cancelled: "danger",
-                      }[row.status] as ColorPaletteProp
-                    }
-                  >
-                    {row.status}
-                  </Chip>
-                </td>
-                <td>
-                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Link level="body-xs" component="button">
-                      Download
-                    </Link>
-                    <RowMenu />
-                  </Box>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <DataTable
+          data={ordersData}
+          columns={columns}
+          onRowClick={handleRowClick}
+        />
       </Sheet>
 
-      {/* {stableSort(rows, getComparator(order, "id")).map((row) => (
-          <Sheet
-            key={row.id}
-            sx={{
-              width: "100%",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                p: 2,
-                mb: 2,
-              }}
-            >
-              <Box sx={{ marginBottom: "16px" }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    mb: 1,
-                  }}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Avatar size="sm" sx={{ mr: 1 }}>
-                      {row.customer.initial}
-                    </Avatar>
-                    <Typography level="h4" component="h4">
-                      {row.customer.name}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography level="body-xs">
-                      <Chip
-                        variant="soft"
-                        size="sm"
-                        startDecorator={
-                          {
-                            Paid: <CheckRoundedIcon />,
-                            Refunded: <AutorenewRoundedIcon />,
-                            Cancelled: <BlockIcon />,
-                          }[row.status]
-                        }
-                        color={
-                          {
-                            Paid: "success",
-                            Refunded: "neutral",
-                            Cancelled: "danger",
-                          }[row.status] as ColorPaletteProp
-                        }
-                      >
-                        {row.status}
-                      </Chip>
-                    </Typography>
-                  </Box>
-                </Box>
-
-                <Typography level="body-xs">{row.customer.email}</Typography>
-                <Typography level="body-xs">
-                  {row.date} . {row.id}
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Link level="body-xs" component="button">
-                  Download
-                </Link>
-                <RowMenu />
-              </Box>
-            </Box>
-          </Sheet>
-        ))} */}
-
-      {/* order details pagination */}
       <Box
         className="Pagination-laptopUp"
         sx={{
@@ -461,7 +198,7 @@ export default function OrderTable() {
           size="sm"
           variant="outlined"
           color="neutral"
-          startDecorator={<KeyboardArrowLeftIcon />}
+          startDecorator={<KeyboardArrowLeft />}
         >
           Previous
         </Button>

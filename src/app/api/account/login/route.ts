@@ -2,7 +2,7 @@ import dbConnect from "@/app/api/_lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 import User from "../../_models/User";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { generateToken } from "../../_lib/generateToken";
 
 export async function POST(req: NextRequest) {
   try {
@@ -38,9 +38,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
-      expiresIn: "1d",
-    });
+    const token = generateToken(user);
 
     const response = NextResponse.json({
       success: true,

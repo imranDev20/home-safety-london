@@ -20,11 +20,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logoutAccount } from "@/services/account.services";
 import { useSnackbar } from "../../snackbar-provider";
 import { useRouter } from "next/navigation";
+import { useCurrentUser } from "../../hooks/use-current-user";
 
 export default function NavbarDropdown() {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  const { userData } = useCurrentUser();
 
   const {
     mutateAsync: logoutAccountMutate,
@@ -96,10 +99,10 @@ export default function NavbarDropdown() {
               />
               <Box sx={{ ml: 1.5 }}>
                 <Typography level="title-sm" textColor="text.primary">
-                  Rick Sanchez
+                  {userData?.name}
                 </Typography>
                 <Typography level="body-xs" textColor="text.tertiary">
-                  rick@email.com
+                  {userData?.email}
                 </Typography>
               </Box>
             </Box>

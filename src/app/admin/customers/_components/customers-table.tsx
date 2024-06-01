@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
@@ -17,6 +17,7 @@ import { Pagination } from "@/types/misc";
 import { User } from "@/types/user";
 import DataTable from "./data-table";
 import { customSlugify } from "@/shared/functions";
+import { CircularProgress } from "@mui/joy";
 
 export type CustomersResponse = {
   users: Partial<User>[];
@@ -86,7 +87,7 @@ const columns = [
 export default function CustomersTable() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const searchTerm = searchParams.get("search") || "";
+  const searchTerm = searchParams.get("q") || "";
 
   const {
     data: usersData,
@@ -116,8 +117,15 @@ export default function CustomersTable() {
         pagination,
       };
     },
-    refetchOnMount: false,
+    refetchOnMount: true,
   });
+
+  // useEffect(() => {
+  //   const loadUsers = async () => {
+  //     await refetchGetUsers();
+  //   };
+  //   loadUsers();
+  // }, [searchTerm, refetchGetUsers]);
 
   const handleRowClick = (row: User) => {
     router.push(`/admin/customers/${customSlugify(row._id)}`);
@@ -127,12 +135,30 @@ export default function CustomersTable() {
     console.log("Selection changed:", selected);
   };
 
-  // useEffect(() => {
-  //   refetchGetUsers();
-  // }, [searchTerm, refetchGetUsers]);
-
   if (isGetUsersDataLoading || isGetUserDataFetching) {
-    return "loading...";
+    return (
+      <Sheet
+        variant="outlined"
+        sx={{
+          width: "100%",
+          borderRadius: "sm",
+          flexShrink: 1,
+          overflow: "auto",
+          minHeight: `calc(100vh - ${FIXED_HEIGHT}px)`,
+          height: `calc(100vh - ${FIXED_HEIGHT}px)`,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress
+          thickness={3}
+          sx={{
+            "--CircularProgress-size": "60px",
+          }}
+        />
+      </Sheet>
+    );
   }
 
   return (
@@ -148,12 +174,16 @@ export default function CustomersTable() {
           height: `calc(100vh - ${FIXED_HEIGHT}px)`,
         }}
       >
-        <DataTable<User>
-          columns={columns}
-          data={usersData?.users as User[]}
-          onRowClick={handleRowClick}
-          onSelectionChange={handleSelectionChange}
-        />
+        {usersData?.users ? (
+          <DataTable<User>
+            columns={columns}
+            data={usersData?.users as User[]}
+            onRowClick={handleRowClick}
+            onSelectionChange={handleSelectionChange}
+          />
+        ) : (
+          "No results found"
+        )}
       </Sheet>
 
       <Box

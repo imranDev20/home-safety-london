@@ -8,6 +8,7 @@ import { Pagination } from "@/types/misc";
 import { getUsers } from "@/services/user.services";
 import dayjs from "dayjs";
 import { useSearchParams } from "next/navigation";
+import { useEngineersData } from "@/app/_components/hooks/use-engineers";
 
 export type CustomersResponse = {
   users: Partial<User>[];
@@ -20,47 +21,12 @@ export default function EngineerCards() {
   const searchTerm = searchParams.get("search") || "";
 
   const {
-    data: engineersData,
-    isLoading: isGetEngineersDataLoading,
-    isFetching: isGetEngineersDataFetching,
-    refetch: refetchGetUsers,
-  } = useQuery<CustomersResponse>({
-    queryKey: ["users"],
-    queryFn: async () => {
-      const { data, message, pagination } = await getUsers(
-        undefined,
-        "engineer"
-      );
+    engineersData,
+    isGetEngineersDataFetching,
+    isGetEngineersDataLoading,
+  } = useEngineersData();
 
-      console.log(data);
-
-      const users = data?.map((user: any) => ({
-        _id: user._id,
-        createdAt: dayjs(user.createdAt).format("MMM DD, YYYY"),
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        completed_projects:
-          user.orders_received.filter(
-            (order: any) => order.status === "completed"
-          )?.length ?? 0,
-        ongoing_projects:
-          user.orders_received.filter(
-            (order: any) => order.status === "in_progress"
-          )?.length ?? 0,
-      }));
-
-      return {
-        users,
-        message,
-        pagination,
-      };
-    },
-    refetchOnMount: false,
-  });
-
-  console.log(engineersData?.users);
+  console.log(engineersData);
 
   if (isGetEngineersDataFetching || isGetEngineersDataLoading) {
     return "Loading...";
@@ -88,7 +54,7 @@ export default function EngineerCards() {
     >
       <Stack>
         <Grid container spacing={3}>
-          {engineersData?.users.map((engineer) => (
+          {engineersData?.map((engineer) => (
             <Grid xs={12} md={6} key={engineer._id}>
               <EngineerCard engineer={engineer} />
             </Grid>

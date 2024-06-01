@@ -48,6 +48,8 @@ export default function Navbar({
 
   const { userData, isLoading: isCurrentUserLoading } = useCurrentUser();
 
+  console.log(userData);
+
   return (
     <Box component="header" sx={{ zIndex: 10, position: "relative" }}>
       <Container sx={{ zIndex: 100000, position: "relative" }}>

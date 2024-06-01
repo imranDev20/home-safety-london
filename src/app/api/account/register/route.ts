@@ -7,7 +7,6 @@ import { generateToken } from "../../_lib/generateToken";
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
-
     const { name, email, password, role } = await req.json();
 
     // Validate input
@@ -43,7 +42,7 @@ export async function POST(req: NextRequest) {
     // Generate JWT
     const token = generateToken(newUser);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       message: "User registered successfully",
       data: {
@@ -51,9 +50,17 @@ export async function POST(req: NextRequest) {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
-        token, // Include the JWT in the response
       },
     });
+
+    response.cookies.set("accessToken", token, {
+      httpOnly: true, // Set the httpOnly flag to true
+      maxAge: 60 * 60 * 24, // 1 day in seconds
+      sameSite: "strict",
+      path: "/", // Set the path for the cookie
+    });
+
+    return response;
   } catch (error: any) {
     console.log(error);
     return NextResponse.json(

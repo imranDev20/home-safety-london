@@ -1,14 +1,15 @@
-import { Testimonial } from "@/types/testimonial";
 import http from "./http.services";
 import { Role } from "@/types/misc";
+import { buildUrl } from "@/shared/functions";
 
 const USERS_PATH = "/users";
 
-export const getUsers = async (search?: string, role?: Role) => {
+export const getUsers = async (q?: string, role?: Role) => {
   try {
-    const url = `${USERS_PATH}${search || role ? "?q=" : ""}${
-      search && search !== "" ? search : ""
-    }${role ? "&role=" + role : ""}`;
+    const url = buildUrl(USERS_PATH, {
+      q,
+      role,
+    });
 
     const response = await http.get(url);
     return response.data;

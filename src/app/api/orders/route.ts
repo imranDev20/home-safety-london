@@ -73,8 +73,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log(preOrder);
-
     // Generate a unique invoice_id
     const invoiceId = await generateInvoiceId();
 

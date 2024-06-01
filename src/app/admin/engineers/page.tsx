@@ -20,7 +20,6 @@ import SearchField from "../customers/_components/search-field";
 import FormDrawer from "@/app/_components/common/form-drawer";
 import { useState } from "react";
 import CreateEngineerForm from "./_components/create-engineer-form";
-import { snakeCaseToNormalText } from "@/shared/functions";
 
 export default function EngineersPage() {
   const theme = useTheme();
@@ -54,16 +53,14 @@ export default function EngineersPage() {
         >
           <Home />
         </JoyLink>
-        <JoyLink
-          component={Link}
-          color="neutral"
-          href="/admin/engineers"
+        <Typography
+          color="primary"
           sx={{
             textDecoration: "none",
           }}
         >
           Engineers
-        </JoyLink>
+        </Typography>
       </Breadcrumbs>
 
       <Stack
@@ -231,7 +228,6 @@ export default function EngineersPage() {
         </Grid>
       </Grid>
 
-      {/* import team page component */}
       <EngineerCards />
 
       <FormDrawer

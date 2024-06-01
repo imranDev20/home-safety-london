@@ -22,6 +22,7 @@ import OrderTable from "./_components/order-table";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { exportUsers } from "@/services/user.services";
+import Assignee from "./_components/assignee";
 
 const Orders = () => {
   const theme = useTheme();
@@ -47,11 +48,6 @@ const Orders = () => {
         // const progressUpdates = data.progressUpdates;
         const excelData = data.excelData;
 
-        // Update progress
-        // for (const { progress } of progressUpdates) {
-        //   setProgress(progress);
-        // }
-
         // Download Excel file
         const byteArray = new Uint8Array(
           atob(excelData)
@@ -65,7 +61,7 @@ const Orders = () => {
 
         const link = document.createElement("a");
         link.href = downloadUrl;
-        link.setAttribute("download", "users.xlsx");
+        link.setAttribute("download", "orders.xlsx");
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -173,7 +169,7 @@ const Orders = () => {
               Search for orders
             </FormLabel>
             <Input
-              placeholder="Type in here…"
+              placeholder="Type invoice id, customer name, email or phone no"
               startDecorator={<SearchIcon />}
             />
           </FormControl>
@@ -239,27 +235,7 @@ const Orders = () => {
         </Grid>
 
         <Grid xs={12} sm={6} md={2}>
-          <FormControl size="sm">
-            <FormLabel
-              id="select-field-demo-label"
-              htmlFor="select-field-demo-button"
-            >
-              Assignee
-            </FormLabel>
-            <Select
-              placeholder="Filter by assignee"
-              slotProps={{
-                button: {
-                  id: "select-field-demo-button",
-                },
-              }}
-            >
-              <Option value="dog">Dog</Option>
-              <Option value="cat">Cat</Option>
-              <Option value="fish">Fish</Option>
-              <Option value="bird">Bird</Option>
-            </Select>
-          </FormControl>
+          <Assignee />
         </Grid>
       </Grid>
       <OrderTable />

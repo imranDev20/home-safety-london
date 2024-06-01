@@ -119,18 +119,6 @@ export const formatResponse = (
   };
 };
 
-export const debounce = (func: (...args: any[]) => void, delay: number) => {
-  let timer: ReturnType<typeof setTimeout>;
-
-  return (...args: any[]) => {
-    clearTimeout(timer);
-
-    timer = setTimeout(() => {
-      func(...args);
-    }, delay);
-  };
-};
-
 export function hexToRgba(hex: string, opacity: number): string {
   // Remove the hash symbol if present
   hex = hex.replace(/^#/, "");
@@ -143,3 +131,35 @@ export function hexToRgba(hex: string, opacity: number): string {
   // Return the RGBA color string
   return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
+
+export function buildUrl(
+  basePath: string,
+  queries: { [key: string]: string | undefined }
+) {
+  // Initialize an array to hold query parameters
+  const params = [];
+
+  // Iterate over the entries of the queries object
+  for (const [key, value] of Object.entries(queries)) {
+    // Add the parameter if value is provided and not an empty string
+    if (value && value.trim() !== "") {
+      params.push(
+        `${encodeURIComponent(key)}=${encodeURIComponent(value.trim())}`
+      );
+    }
+  }
+
+  // Construct the full URL with query parameters if any exist
+  const url = params.length > 0 ? `${basePath}?${params.join("&")}` : basePath;
+
+  return url;
+}
+
+export const debounce = (func: (...args: any[]) => void, delay: number) => {
+  let timeout: NodeJS.Timeout;
+
+  return (...args: any[]) => {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+};

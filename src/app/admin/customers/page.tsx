@@ -1,11 +1,17 @@
 "use client";
-import { Download, Home, KeyboardArrowRight } from "@mui/icons-material";
+import {
+  Download,
+  Home,
+  KeyboardArrowRight,
+  Search,
+} from "@mui/icons-material";
 import {
   Breadcrumbs,
   Button,
   FormControl,
   FormLabel,
   Grid,
+  Input,
   Link as JoyLink,
   Stack,
   Typography,
@@ -14,11 +20,12 @@ import {
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import CustomersTable from "./_components/customers-table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormDrawer from "@/app/_components/common/form-drawer";
 import CreateCustomerForm from "./_components/create-customer-form";
 import { useQuery } from "@tanstack/react-query";
 import { exportUsers } from "@/services/user.services";
+import { createQueryString, debounce } from "@/shared/functions";
 import SearchField from "./_components/search-field";
 
 function Customers() {
@@ -26,6 +33,7 @@ function Customers() {
   const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
     useState<boolean>(false);
 
+  // Mutate function to export users
   const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
     useQuery({
       queryKey: ["export-users"],

@@ -2,7 +2,6 @@ import { Button, Sheet, Stack, Typography, useTheme } from "@mui/joy";
 import React from "react";
 import DataTable from "../../_components/data-table";
 import { useQuery } from "@tanstack/react-query";
-import { CustomersResponse } from "../../_components/customers-table";
 import dayjs from "dayjs";
 import { User } from "@/types/user";
 import { customSlugify, snakeCaseToNormalText } from "@/shared/functions";
@@ -11,7 +10,7 @@ import { getOrders } from "@/services/orders.services";
 
 interface IOrderStatus {
   status: string;
-  timestamp: string; // Using string here to match your example
+  timestamp: string;
   _id: string;
 }
 

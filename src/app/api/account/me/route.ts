@@ -21,10 +21,11 @@ export async function GET(req: NextRequest) {
     const decodedToken = verifyJWT(token);
 
     // Extract user ID from the decoded token
-    const userId = (decodedToken as any).userId;
+    const userId = (decodedToken as any)._id;
 
     // Find the user based on the user ID
     const user = await User.findById(userId);
+    console.log(user);
 
     if (!user) {
       return NextResponse.json(
