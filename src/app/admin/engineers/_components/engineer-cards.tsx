@@ -26,8 +26,6 @@ export default function EngineerCards() {
     isGetEngineersDataLoading,
   } = useEngineersData();
 
-  console.log(engineersData);
-
   if (isGetEngineersDataFetching || isGetEngineersDataLoading) {
     return "Loading...";
   }

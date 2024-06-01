@@ -117,15 +117,15 @@ export default function CustomersTable() {
         pagination,
       };
     },
-    refetchOnMount: true,
+    refetchOnMount: false,
   });
 
-  // useEffect(() => {
-  //   const loadUsers = async () => {
-  //     await refetchGetUsers();
-  //   };
-  //   loadUsers();
-  // }, [searchTerm, refetchGetUsers]);
+  useEffect(() => {
+    const loadUsers = async () => {
+      await refetchGetUsers();
+    };
+    loadUsers();
+  }, [searchTerm, refetchGetUsers]);
 
   const handleRowClick = (row: User) => {
     router.push(`/admin/customers/${customSlugify(row._id)}`);

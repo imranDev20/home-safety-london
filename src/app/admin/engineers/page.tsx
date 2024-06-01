@@ -16,15 +16,33 @@ import {
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import EngineerCards from "./_components/engineer-cards";
-import SearchField from "../customers/_components/search-field";
+import SearchField from "../../_components/common/debounce-input";
 import FormDrawer from "@/app/_components/common/form-drawer";
 import { useState } from "react";
 import CreateEngineerForm from "./_components/create-engineer-form";
+import DebounceInput from "../../_components/common/debounce-input";
+import { usePathname, useRouter } from "next/navigation";
+import { createQueryString } from "@/shared/functions";
 
 export default function EngineersPage() {
   const theme = useTheme();
   const [openCreateEngineerDrawer, setOpenCreateEngineerDrawer] =
     useState<boolean>(false);
+
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleDebounce = (value: string) => {
+    console.log(value);
+    setDebouncedSearch(value);
+
+    if (value !== "") {
+      router.push(`${pathname}?${createQueryString("q", value)}`);
+    } else {
+      router.push(`${pathname}`);
+    }
+  };
 
   return (
     <>
@@ -114,7 +132,11 @@ export default function EngineersPage() {
             >
               Search for customers
             </FormLabel>
-            <SearchField />
+            <DebounceInput
+              placeholder="Type in here…"
+              debounceTimeout={1000}
+              handleDebounce={handleDebounce}
+            />
           </FormControl>
         </Grid>
 

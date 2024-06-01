@@ -1,17 +1,11 @@
 "use client";
-import {
-  Download,
-  Home,
-  KeyboardArrowRight,
-  Search,
-} from "@mui/icons-material";
+import { Download, Home, KeyboardArrowRight } from "@mui/icons-material";
 import {
   Breadcrumbs,
   Button,
   FormControl,
   FormLabel,
   Grid,
-  Input,
   Link as JoyLink,
   Stack,
   Typography,
@@ -20,18 +14,22 @@ import {
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import CustomersTable from "./_components/customers-table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import FormDrawer from "@/app/_components/common/form-drawer";
 import CreateCustomerForm from "./_components/create-customer-form";
 import { useQuery } from "@tanstack/react-query";
 import { exportUsers } from "@/services/user.services";
-import { createQueryString, debounce } from "@/shared/functions";
-import SearchField from "./_components/search-field";
+import DebounceInput from "../../_components/common/debounce-input";
+import { usePathname, useRouter } from "next/navigation";
+import { createQueryString } from "@/shared/functions";
 
-function Customers() {
+export default function Customers() {
   const theme = useTheme();
   const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
     useState<boolean>(false);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
 
   // Mutate function to export users
   const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
@@ -85,6 +83,17 @@ function Customers() {
     //   setIsDownloading(false);
     //   setProgress(null);
     // }
+  };
+
+  const handleDebounce = (value: string) => {
+    console.log(value);
+    setDebouncedSearch(value);
+
+    if (value !== "") {
+      router.push(`${pathname}?${createQueryString("q", value)}`);
+    } else {
+      router.push(`${pathname}`);
+    }
   };
 
   return (
@@ -178,7 +187,11 @@ function Customers() {
             >
               Search for customers
             </FormLabel>
-            <SearchField />
+            <DebounceInput
+              placeholder="Type in here…"
+              debounceTimeout={1000}
+              handleDebounce={handleDebounce}
+            />
           </FormControl>
         </Grid>
       </Grid>
@@ -195,5 +208,3 @@ function Customers() {
     </>
   );
 }
-
-export default Customers;

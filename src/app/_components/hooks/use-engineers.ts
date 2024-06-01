@@ -82,7 +82,7 @@ export const useEngineersData = (
       };
     },
     enabled: enabled ?? true,
-    refetchOnMount: true,
+    refetchOnMount: false,
   });
 
   return {
