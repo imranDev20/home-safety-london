@@ -25,7 +25,6 @@ export async function GET(req: NextRequest) {
 
     // Find the user based on the user ID
     const user = await User.findById(userId);
-    console.log(user);
 
     if (!user) {
       return NextResponse.json(

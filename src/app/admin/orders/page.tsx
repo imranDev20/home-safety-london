@@ -17,15 +17,22 @@ import {
 import Link from "next/link";
 import SearchIcon from "@mui/icons-material/Search";
 import { CATEGORIES, ORDER_STATUS } from "@/shared/constants";
-import { snakeCaseToNormalText } from "@/shared/functions";
+import { snakeCaseToNormalText, toSnakeCase } from "@/shared/functions";
 import OrderTable from "./_components/order-table";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { exportUsers } from "@/services/user.services";
 import Assignee from "./_components/assignee";
+import { usePathname, useRouter } from "next/navigation";
+import { useCreateQueryString } from "@/app/_components/hooks/use-create-query-string";
+import DebounceInput from "@/app/_components/common/debounce-input";
 
 const Orders = () => {
   const theme = useTheme();
+  const router = useRouter();
+  const pathname = usePathname();
+  const createQueryString = useCreateQueryString();
+
   const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
     useState<boolean>(false);
 
@@ -77,6 +84,14 @@ const Orders = () => {
     // }
   };
 
+  const handleDebounce = (value: string) => {
+    if (value !== "") {
+      router.push(`${pathname}?${createQueryString("q", value)}`);
+    } else {
+      router.push(`${pathname}`);
+    }
+  };
+
   return (
     <>
       <Breadcrumbs
@@ -104,16 +119,14 @@ const Orders = () => {
         >
           <Home />
         </JoyLink>
-        <JoyLink
-          component={Link}
-          color="neutral"
-          href="/admin/customers"
+        <Typography
+          color="primary"
           sx={{
-            textDecoration: "none",
+            fontWeight: 500,
           }}
         >
-          Customers
-        </JoyLink>
+          Orders
+        </Typography>
       </Breadcrumbs>
       <Stack
         spacing={2}
@@ -160,7 +173,7 @@ const Orders = () => {
       </Stack>
 
       <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>
-        <Grid xs={12} sm={6} md={6}>
+        <Grid xs={12} md={4}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
@@ -168,14 +181,15 @@ const Orders = () => {
             >
               Search for orders
             </FormLabel>
-            <Input
-              placeholder="Type invoice id, customer name, email or phone no"
-              startDecorator={<SearchIcon />}
+            <DebounceInput
+              placeholder="Type in invoice ID, Email, Name or Phone No..."
+              debounceTimeout={1000}
+              handleDebounce={handleDebounce}
             />
           </FormControl>
         </Grid>
 
-        <Grid xs={12} sm={6} md={2}>
+        <Grid xs={12} md={2}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
@@ -209,33 +223,72 @@ const Orders = () => {
           </FormControl>
         </Grid>
 
-        <Grid xs={12} sm={6} md={2}>
+        <Grid xs={12} md={2}>
+          <Assignee />
+        </Grid>
+
+        <Grid xs={12} md={2}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
               htmlFor="select-field-demo-button"
             >
-              Categories
+              Sort
             </FormLabel>
             <Select
+              placeholder="Sort customers by..."
               slotProps={{
                 button: {
                   id: "select-field-demo-button",
                 },
               }}
-              placeholder="Filter by category"
+              defaultValue="createdAt"
+              onChange={(e, value) =>
+                router.push(
+                  `${pathname}?${createQueryString("sort_by", value as string)}`
+                )
+              }
             >
-              {CATEGORIES.map((category) => (
-                <Option key={category.name} value={category.name}>
-                  {category.name}
+              <Option value="createdAt">Date Created</Option>
+
+              {["Name", "Email", "Phone"].map((sortVal) => (
+                <Option value={toSnakeCase(sortVal)} key={sortVal}>
+                  {sortVal}
                 </Option>
               ))}
             </Select>
           </FormControl>
         </Grid>
 
-        <Grid xs={12} sm={6} md={2}>
-          <Assignee />
+        <Grid xs={12} md={2}>
+          <FormControl size="sm">
+            <FormLabel
+              id="select-field-demo-label"
+              htmlFor="select-field-demo-button"
+            >
+              Order
+            </FormLabel>
+            <Select
+              placeholder="Order customers by..."
+              slotProps={{
+                button: {
+                  id: "select-field-demo-button",
+                },
+              }}
+              defaultValue="desc"
+              onChange={(e, value) =>
+                router.push(
+                  `${pathname}?${createQueryString(
+                    "sort_order",
+                    value as string
+                  )}`
+                )
+              }
+            >
+              <Option value="asc">Ascending</Option>
+              <Option value="desc">Descending</Option>
+            </Select>
+          </FormControl>
         </Grid>
       </Grid>
       <OrderTable />

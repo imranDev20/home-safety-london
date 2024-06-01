@@ -35,6 +35,7 @@ export const useOrdersData = (enabled?: boolean): UseOrdersDataResponse => {
     refetch: refetchGetOrders,
   } = useQuery<OrdersResponse>({
     queryKey: ["orders"],
+
     queryFn: async () => {
       const { data, message, pagination } = await getOrders();
 
@@ -57,7 +58,7 @@ export const useOrdersData = (enabled?: boolean): UseOrdersDataResponse => {
       };
     },
     enabled: enabled ?? true,
-    refetchOnMount: false,
+    refetchOnMount: true,
   });
 
   return {

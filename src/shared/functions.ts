@@ -67,10 +67,6 @@ export const getFutureTime = () => {
   }
 };
 
-export function calculateTotal(numbers: number[]): number {
-  return numbers.reduce((total, num) => total + num, 0);
-}
-
 export const setToken = (token: string) => {
   Cookies.set("accessToken", token, { expires: 7 }); // Set the cookie to expire in 7 days
 };
@@ -162,3 +158,21 @@ export const debounce = (func: (...args: any[]) => void, delay: number) => {
     timeout = setTimeout(() => func(...args), delay);
   };
 };
+
+export function calculateTotalCost(order: any) {
+  // Calculate the total cost of order items
+  const orderItemsTotal = order.order_items.reduce((total: any, item: any) => {
+    return total + item.price * item.quantity;
+  }, 0);
+
+  // Add parking cost
+  const parkingCost = order.parking_options.parking_cost || 0;
+
+  // Add congestion zone cost
+  const congestionCost = order.congestion_zone.zone_cost || 0;
+
+  // Calculate the final total cost
+  const totalCost = orderItemsTotal + parkingCost + congestionCost;
+
+  return totalCost;
+}

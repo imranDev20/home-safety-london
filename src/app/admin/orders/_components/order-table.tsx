@@ -3,7 +3,7 @@ import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
 import Sheet from "@mui/joy/Sheet";
-import { Avatar, Link as JoyLink } from "@mui/joy";
+import { Avatar, CircularProgress, Link as JoyLink } from "@mui/joy";
 import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -19,11 +19,13 @@ import {
   CheckOutlined,
   DirectionsCarOutlined,
   DoneAllOutlined,
+  HourglassBottomOutlined,
   HourglassEmptyOutlined,
   HourglassFullOutlined,
   KeyboardArrowLeft,
 } from "@mui/icons-material";
 import DataTable from "../../customers/_components/data-table";
+import { FIXED_HEIGHT } from "@/shared/constants";
 
 interface IOrderStatus {
   status: string;
@@ -85,7 +87,7 @@ const columns = [
             {
               pending_payment: <HourglassEmptyOutlined />,
               payment_completed: <AttachMoneyOutlined />,
-              awaiting_confirmation: <HourglassFullOutlined />,
+              awaiting_confirmation: <HourglassBottomOutlined />,
               order_confirmed: <CheckCircleOutlined />,
               engineer_en_route: <DirectionsCarOutlined />,
               work_in_progress: <BuildOutlined />,
@@ -163,18 +165,53 @@ const columns = [
 ];
 
 export default function OrderTable() {
-  const { ordersData } = useOrdersData();
+  const { ordersData, isGetOrdersDataFetching, isGetOrdersDataLoading } =
+    useOrdersData();
   const router = useRouter();
-
-  console.log(ordersData);
 
   const handleRowClick = (order: any) => {
     router.push(`/admin/orders/${order._id}`);
   };
 
+  if (isGetOrdersDataFetching || isGetOrdersDataLoading) {
+    return (
+      <Sheet
+        variant="outlined"
+        sx={{
+          width: "100%",
+          borderRadius: "sm",
+          flexShrink: 1,
+          overflow: "auto",
+          minHeight: `calc(100vh - ${FIXED_HEIGHT}px)`,
+          height: `calc(100vh - ${FIXED_HEIGHT}px)`,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress
+          thickness={3}
+          sx={{
+            "--CircularProgress-size": "60px",
+          }}
+        />
+      </Sheet>
+    );
+  }
+
   return (
     <React.Fragment>
-      <Sheet>
+      <Sheet
+        variant="outlined"
+        sx={{
+          width: "100%",
+          borderRadius: "sm",
+          flexShrink: 1,
+          overflow: "auto",
+          minHeight: `calc(100vh - ${FIXED_HEIGHT}px)`,
+          height: `calc(100vh - ${FIXED_HEIGHT}px)`,
+        }}
+      >
         <DataTable
           data={ordersData}
           columns={columns}

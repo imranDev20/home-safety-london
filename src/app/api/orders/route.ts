@@ -1,27 +1,29 @@
 import dbConnect from "@/app/api/_lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
-import { formatResponse } from "@/shared/functions";
-import PreOrder from "../_models/PreOrder";
+import { calculateTotalCost, formatResponse } from "@/shared/functions";
+import PreOrder, { IOrderItem, IPreOrder } from "../_models/PreOrder";
 import Order from "../_models/Order";
+import fs from "fs";
+import path from "path";
+import { sendEmail } from "../_lib/sendEmail";
+import { placedOrderEmailHtml } from "../_templates/order-placed-email";
+import puppeteer from "puppeteer";
+import { invoiceHtmlTemplate } from "../_templates/invoice-html";
 
 interface OrderQuery {
   order_status?: string;
 }
 
 async function generateInvoiceId() {
-  // Get the most recent order document from the database
   const mostRecentOrder = await Order.findOne().sort({ createdAt: -1 }).exec();
 
   let nextInvoiceId;
   if (mostRecentOrder) {
-    // Extract the numeric part and the alphabet part from the most recent invoice ID
     const numericPart = parseInt(mostRecentOrder.invoice_id.slice(3, -1), 10);
     const alphabetPart = mostRecentOrder.invoice_id.slice(-1);
 
-    // Increment the numeric part
     let nextNumericPart = numericPart + 1;
 
-    // If the numeric part reaches the maximum value (99999), reset it to 00001 and increment the alphabet part
     if (nextNumericPart > 99999) {
       nextNumericPart = 1;
       const nextAlphabetPart = String.fromCharCode(
@@ -39,23 +41,36 @@ async function generateInvoiceId() {
       }${alphabetPart}`;
     }
   } else {
-    // If there are no orders in the database, start with INV00001A
     nextInvoiceId = "INV00001A";
   }
 
   return nextInvoiceId;
 }
 
+async function generatePDFInvoice(htmlContent: string, invoicePdfPath: string) {
+  try {
+    // Launch a new browser instance
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    // Set the HTML content
+    await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+
+    // Generate the PDF
+    await page.pdf({ path: invoicePdfPath, format: "A4" });
+
+    // Close the browser instance
+    await browser.close();
+  } catch (error) {
+    console.error("Error generating PDF invoice:", error);
+    throw error;
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
-    const {
-      pre_order_id,
-      remaining_amount,
-      paid_amount,
-      order_status,
-      order_items,
-    } = await req.json();
+    const { pre_order_id } = await req.json();
 
     if (!pre_order_id) {
       return NextResponse.json(
@@ -64,7 +79,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Find the PreOrder by ID
     const preOrder = await PreOrder.findById(pre_order_id);
     if (!preOrder) {
       return NextResponse.json(
@@ -73,30 +87,51 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate a unique invoice_id
-    const invoiceId = await generateInvoiceId();
+    const { customer_name, email } = preOrder;
+    const totalCost = calculateTotalCost(preOrder);
 
-    // Create the new Order
-    const newOrder = new Order({
-      ...preOrder.toObject(), // Copy all fields from PreOrder
-      remaining_amount,
-      paid_amount,
-      order_status,
-      order_items,
-      invoice_id: invoiceId, // Set the generated invoice_id
+    const invoiceId = await generateInvoiceId();
+    const invoicePdfPath = path.join(
+      process.cwd(),
+      `public/invoices/invoice_${invoiceId}.pdf`
+    );
+    const invoiceHtml = invoiceHtmlTemplate(customer_name);
+    await generatePDFInvoice(invoiceHtml, invoicePdfPath);
+
+    const attachments = [
+      {
+        ContentType: "application/pdf",
+        Filename: `invoice_${invoiceId}.pdf`,
+        Base64Content: fs.readFileSync(invoicePdfPath).toString("base64"),
+      },
+    ];
+
+    const orderPlacedEmailSubject = `Order Confirmation: #${invoiceId}`;
+    await sendEmail({
+      fromEmail: "info@londonhomesafety.co.uk",
+      fromName: "London Home Safety",
+      to: email,
+      subject: orderPlacedEmailSubject,
+      html: placedOrderEmailHtml(customer_name, invoiceId),
+      attachments: attachments,
     });
 
-    // Save the new Order
-    await newOrder.save();
+    // const newOrder = new Order({
+    //   ...preOrder.toObject(),
+    //   remaining_amount: totalCost,
+    //   paid_amount: 0,
+    //   invoice_id: invoiceId,
+    //   invoice_path: invoicePath,
+    // });
 
-    // Delete the PreOrder document
-    await PreOrder.findByIdAndDelete(pre_order_id);
+    // await newOrder.save();
+    // await PreOrder.findByIdAndDelete(pre_order_id);
 
     return NextResponse.json(
       formatResponse(
         true,
-        newOrder,
-        "Order created successfully, and PreOrder deleted"
+        null,
+        "Order created successfully, PreOrder deleted, and invoice generated"
       )
     );
   } catch (error: any) {

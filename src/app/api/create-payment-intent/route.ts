@@ -6,15 +6,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2023-10-16",
 });
 
-function calculateTotal(numbers: number[]): number {
-  return numbers.reduce((total, num) => total + num, 0);
-}
-
 export async function POST(req: NextRequest) {
   try {
     const order = await req.json();
-
-    console.log(order);
 
     const paymentIntent = await stripe.paymentIntents.create({
       currency: "gbp",
