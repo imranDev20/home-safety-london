@@ -22,20 +22,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { registerAccount } from "@/services/account.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { useRouter } from "next/navigation";
-import { User } from "@/types/user";
-
-interface RegisterFormInput {
-  email: string;
-  name: string;
-  password: string;
-  confirmPassword: string;
-}
-
-interface RegisterResponse {
-  success: boolean;
-  message: string;
-  data: { name: string; token: string; email: string; role: string };
-}
+import { RegisterFormInput, RegisterPayload } from "@/types/account";
 
 export default function RegisterForm() {
   const [visibilityToggle, setVisibilityToggle] = useState<boolean>(false);
@@ -62,10 +49,7 @@ export default function RegisterForm() {
     mutateAsync: registerUserMutate,
     isPending: isRegisterUserMutateLoading,
   } = useMutation({
-    mutationFn: async (userData: any) => {
-      const response = await registerAccount(userData);
-      return response;
-    },
+    mutationFn: (userData: RegisterPayload) => registerAccount(userData),
     onSuccess: async (response) => {
       await queryClient.invalidateQueries({
         queryKey: ["users", "current_user"],
@@ -77,7 +61,6 @@ export default function RegisterForm() {
       router.replace("/");
     },
     onError: (error) => {
-      console.log(error);
       enqueueSnackbar(error?.message, "error");
     },
   });

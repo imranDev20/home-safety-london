@@ -1,13 +1,19 @@
 import { Pagination } from "./misc";
 import { IOrder } from "./orders";
 import { ITestimonial } from "./testimonial";
-import { ICustomer, IEngineer, IUser } from "./user";
+import { ICustomer, IEngineer, IUser, IUserBasicInfo } from "./user";
 
-export type GetArraySuccessResponse<T> = {
+export type SuccessResponseWithArray<T> = {
   data: T[];
   success: true;
-  message?: string;
+  message: string;
   pagination?: Pagination;
+};
+
+export type SuccessResponse<T> = {
+  data: T;
+  success: true;
+  message: string;
 };
 
 export type ErrorResponse = {
@@ -15,7 +21,8 @@ export type ErrorResponse = {
   message: string;
 };
 
-export type GetTestimonialsResponse = GetArraySuccessResponse<ITestimonial>;
-export type GetEngineersResponse = GetArraySuccessResponse<IEngineer>;
-export type GetCustomersResponse = GetArraySuccessResponse<ICustomer>;
-export type GetOrdersResponse = GetArraySuccessResponse<IOrder>;
+export type GetTestimonialsResponse = SuccessResponseWithArray<ITestimonial>;
+export type GetEngineersResponse = SuccessResponseWithArray<IEngineer>;
+export type GetCustomersResponse = SuccessResponseWithArray<ICustomer>;
+export type GetOrdersResponse = SuccessResponseWithArray<IOrder>;
+export type AuthUserResponse = SuccessResponse<IUserBasicInfo>;

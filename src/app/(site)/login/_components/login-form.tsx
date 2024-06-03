@@ -23,11 +23,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginAccount } from "@/services/account.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { useRouter } from "next/navigation";
-
-interface LoginFormInput {
-  email: string;
-  password: string;
-}
+import { LoginPayload } from "@/types/account";
 
 export default function LoginForm() {
   const [visibilityToggle, setVisibilityToggle] = useState<boolean>(false);
@@ -40,7 +36,7 @@ export default function LoginForm() {
     handleSubmit,
     control,
     reset,
-  } = useForm<LoginFormInput>({
+  } = useForm<LoginPayload>({
     defaultValues: {
       email: "",
       password: "",
@@ -49,14 +45,11 @@ export default function LoginForm() {
 
   const { mutateAsync: loginUserMutate, isPending: isLoginUserMutateLoading } =
     useMutation({
-      mutationFn: async (userData: any) => {
-        const response = await loginAccount(userData);
-        return response;
-      },
+      mutationFn: async (userData: LoginPayload) => loginAccount(userData),
       onSuccess: (response) => {
         queryClient.invalidateQueries({ queryKey: ["users", "current_user"] });
         queryClient.resetQueries();
-        if (response?.data?.role === "admin") {
+        if (response.data.role === "admin") {
           router.replace("/admin");
         } else {
           router.replace("/");
@@ -64,19 +57,17 @@ export default function LoginForm() {
         reset();
         enqueueSnackbar(response?.message, "success");
       },
+      onError: (error) => {
+        enqueueSnackbar(error?.message, "error");
+      },
     });
 
-  const onLoginFormSubmit: SubmitHandler<LoginFormInput> = async (data) => {
-    try {
-      const payload = {
-        password: data.password,
-        email: data.email,
-      };
-
-      await loginUserMutate(payload);
-    } catch (error: any) {
-      enqueueSnackbar(error?.message, "error");
-    }
+  const onLoginFormSubmit: SubmitHandler<LoginPayload> = async (data) => {
+    const payload = {
+      password: data.password,
+      email: data.email,
+    };
+    await loginUserMutate(payload);
   };
 
   return (

@@ -38,3 +38,6 @@ export interface ICustomer
   role: "customer";
   orders_placed: IOrder[];
 }
+
+export interface IUserBasicInfo
+  extends Pick<IUser, "_id" | "name" | "email" | "role"> {}
