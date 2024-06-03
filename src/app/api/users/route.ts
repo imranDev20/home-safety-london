@@ -35,8 +35,6 @@ export async function GET(req: NextRequest) {
     const sortObject: any = {};
     sortObject[sortBy] = sortOrder === "asc" ? 1 : -1;
 
-    console.log(sortObject);
-
     // Fetch users from the database with pagination, sorting, and optional search and role filtering
     const users = await User.find(query)
       .sort(sortObject)

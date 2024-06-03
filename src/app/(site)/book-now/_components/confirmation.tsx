@@ -12,6 +12,7 @@ import Payments from "./payments";
 import useBreakpoints from "@/app/_components/hooks/use-breakpoints";
 import { useSearchParams } from "next/navigation";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
+import { createOrder } from "@/services/orders.services";
 
 type PaymentMethods = "credit_card" | "bank_transfer" | "cash_to_engineer";
 
@@ -58,6 +59,18 @@ export default function Confirmation() {
       setPaymentMethod(preOrderData?.payment_method);
     },
   });
+
+  const { mutateAsync: orderMutate, isPending: isOrderMutateLoading } =
+    useMutation({
+      mutationFn: (preOrderid: string) => createOrder(preOrderid),
+      onSuccess: (response) => {
+        enqueueSnackbar(response?.message, "success");
+        queryClient.invalidateQueries({ queryKey: ["pre-order"] });
+      },
+      onError: (error: any) => {
+        enqueueSnackbar(error?.data || error?.message, "error");
+      },
+    });
 
   useEffect(() => {
     const preOrderId = getPreOrderIdFromLocalStorage();
@@ -368,7 +381,12 @@ export default function Confirmation() {
         >
           {(paymentMethod === "bank_transfer" ||
             paymentMethod === "cash_to_engineer") && (
-            <Button disabled={isPreOrderMutatePending} size="lg">
+            <Button
+              disabled={isPreOrderMutatePending}
+              loading={isOrderMutateLoading}
+              size="lg"
+              onClick={() => orderMutate(preOrderData._id)}
+            >
               Proceed to Order
             </Button>
           )}

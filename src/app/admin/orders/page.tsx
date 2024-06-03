@@ -15,8 +15,7 @@ import {
   useTheme,
 } from "@mui/joy";
 import Link from "next/link";
-import SearchIcon from "@mui/icons-material/Search";
-import { CATEGORIES, ORDER_STATUS } from "@/shared/constants";
+import { ORDER_STATUS } from "@/shared/constants";
 import { snakeCaseToNormalText, toSnakeCase } from "@/shared/functions";
 import OrderTable from "./_components/order-table";
 import { useState } from "react";
@@ -24,14 +23,14 @@ import { useQuery } from "@tanstack/react-query";
 import { exportUsers } from "@/services/user.services";
 import Assignee from "./_components/assignee";
 import { usePathname, useRouter } from "next/navigation";
-import { useCreateQueryString } from "@/app/_components/hooks/use-create-query-string";
+import { useQueryString } from "@/app/_components/hooks/use-query-string";
 import DebounceInput from "@/app/_components/common/debounce-input";
 
 const Orders = () => {
   const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
-  const createQueryString = useCreateQueryString();
+  const { createQueryString, removeQueryString } = useQueryString();
 
   const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
     useState<boolean>(false);
@@ -88,7 +87,7 @@ const Orders = () => {
     if (value !== "") {
       router.push(`${pathname}?${createQueryString("q", value)}`);
     } else {
-      router.push(`${pathname}`);
+      router.push(`${pathname}?${removeQueryString("q")}`);
     }
   };
 
@@ -207,6 +206,12 @@ const Orders = () => {
                   },
                 },
               }}
+              onChange={(_, value) =>
+                router.push(
+                  `${pathname}?${createQueryString("status", value as string)}`,
+                  { scroll: false }
+                )
+              }
             >
               {ORDER_STATUS.map((order) => (
                 <Option
@@ -245,7 +250,11 @@ const Orders = () => {
               defaultValue="createdAt"
               onChange={(e, value) =>
                 router.push(
-                  `${pathname}?${createQueryString("sort_by", value as string)}`
+                  `${pathname}?${createQueryString(
+                    "sort_by",
+                    value as string
+                  )}`,
+                  { scroll: false }
                 )
               }
             >
@@ -281,7 +290,8 @@ const Orders = () => {
                   `${pathname}?${createQueryString(
                     "sort_order",
                     value as string
-                  )}`
+                  )}`,
+                  { scroll: false }
                 )
               }
             >

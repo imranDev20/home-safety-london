@@ -25,7 +25,6 @@ interface IOrder extends IPreOrder {
   remaining_amount: number;
   paid_amount: number;
   invoice_id: string;
-  invoice_path: string; // Field for storing the invoice file path or URL
   order_items: IOrderItemWithEngineers[];
 }
 
@@ -92,10 +91,6 @@ const orderSchema = new Schema<IOrder>(
       required: true,
       unique: true,
     },
-    invoice_path: {
-      type: String,
-      required: true,
-    },
     order_items: {
       type: [orderItemSchema],
       required: true,
@@ -103,6 +98,17 @@ const orderSchema = new Schema<IOrder>(
   },
   { timestamps: true }
 );
+
+// Pre-save hook to set initial order status
+orderSchema.pre("save", function (next) {
+  if (this.isNew && this.order_status.length === 0) {
+    this.order_status.push({
+      status: "awaiting_confirmation",
+      timestamp: new Date(),
+    });
+  }
+  next();
+});
 
 const Order =
   mongoose.models.Order || mongoose.model<IOrder>("Order", orderSchema);

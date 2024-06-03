@@ -10,7 +10,7 @@ export default function CallToAction() {
   const theme = useTheme();
 
   return (
-    <Box component="section" sx={{ position: "relative", my: 10 }}>
+    <Box component="section" sx={{ position: "relative" }}>
       <Image
         src={backgroundImage}
         alt="Background"

@@ -424,9 +424,41 @@ const MODIFIED_SERVICES = SERVICES.map((service) =>
 
 export const SUB_SERVICES = MODIFIED_SERVICES.flatMap((service) => service);
 
+export const PARKING_OPTIONS = [
+  {
+    value: "free",
+    name: "Free Parking Available",
+    cost: 0,
+  },
+  {
+    value: "paid",
+    name: "Paid Parking Available",
+    cost: 5,
+  },
+  {
+    value: "unavailable",
+    name: "No Parking Available",
+    cost: 5,
+  },
+];
+
+export const CONGESTION_ZONE_OPTIONS = [
+  {
+    value: "congestion",
+    name: "Yes",
+    cost: 18,
+  },
+  {
+    value: "non_congestion",
+    name: "No",
+    cost: 0,
+  },
+];
+
 // Keep these here. Move the rest to a separate file.
 export const FIXED_HEIGHT: number = 285;
 export const BUSINESS_NAME: string = "London Home Safety Limited";
 export const ADDRESS: string = "43 Felton Road, Barking, London IG11 7YA";
 export const PHONE_NO: string = "020 8146 6698";
 export const WEBSITE_URL: string = "www.londonhomesafety.co.uk";
+export const EMAIL_ADDRESS: string = "info@londonhomesafety.co.uk";

@@ -9,6 +9,13 @@ import { sendEmail } from "../_lib/sendEmail";
 import { placedOrderEmailHtml } from "../_templates/order-placed-email";
 import fs from "fs";
 import path from "path";
+import {
+  ADDRESS,
+  CONGESTION_ZONE_OPTIONS,
+  EMAIL_ADDRESS,
+  PARKING_OPTIONS,
+  PHONE_NO,
+} from "@/shared/constants";
 
 interface OrderQuery {
   order_status?: string;
@@ -56,85 +63,104 @@ async function generateInvoicePdf(invoiceId: string, preOrder: IPreOrder) {
     .text("London Home Safety", 190, 20, { align: "right" })
     .setFont("helvetica", "normal");
   doc.setFontSize(11);
-  doc.text("43 Felton Road, Barking, IG11 7YA, London", 190, 30, {
+  doc.text(ADDRESS, 190, 30, {
     align: "right",
   });
-  doc.text(
-    "Email: info@londonhomesafety.co.uk | Phone: (123) 456-7890",
-    190,
-    35,
-    { align: "right" }
-  );
+  doc.text(`Email: ${EMAIL_ADDRESS}`, 190, 35, { align: "right" });
+  doc.text(`Phone: ${PHONE_NO}`, 190, 40, { align: "right" });
 
   // Add invoice title and details
   doc.setFontSize(32);
   doc.text("INVOICE", 20, 60);
   doc.setFontSize(11);
-  doc.text(`Invoice Number: ${invoiceId}`, 150, 80);
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 150, 85);
-  doc.text(
-    `Due Date: ${new Date(
-      Date.now() + 7 * 24 * 60 * 60 * 1000
-    ).toLocaleDateString()}`,
-    150,
-    90
-  );
+  doc
+    .setFont("helvetica", "bold")
+    .text(`Invoice Number:`, 168, 80, { align: "right" })
+    .setFont("helvetica", "normal");
+  doc.text(`${invoiceId}`, 190, 80, { align: "right" });
+  doc
+    .setFont("helvetica", "bold")
+    .text(`Date:`, 170, 85, { align: "right" })
+    .setFont("helvetica", "normal");
+  doc.text(`${new Date().toLocaleDateString()}`, 190, 85, { align: "right" });
 
   // Add billing and shipping address
-  doc.text("Billing Address:", 20, 80);
-  doc.text("John Doe", 20, 85);
-  doc.text("1234 Elm Street", 20, 90);
-  doc.text("Springfield, ST 12345", 20, 95);
+  doc
+    .setFont("helvetica", "bold")
+    .text("Billing Address:", 20, 80)
+    .setFont("helvetica", "normal");
+  doc.text(preOrder.customer_name, 20, 90);
+  doc.text(preOrder.address.house_street, 20, 95);
+  doc.text(`${preOrder.address.postcode}, ${preOrder.address.city}`, 20, 100);
 
   // Add table header
   doc.setFontSize(12);
-  doc.text("Item", 20, 120);
-  doc.text("Description", 60, 120);
+  doc.text("Service", 20, 120);
   doc.text("Quantity", 120, 120);
-  doc.text("Unit Price", 150, 120);
   doc.text("Total", 180, 120);
   doc.line(15, 125, 200, 125);
 
-  // Add table content
-  const items = [
-    {
-      item: "Product 1",
-      description: "Description for product 1",
-      quantity: 2,
-      unitPrice: 50,
-    },
-    {
-      item: "Product 2",
-      description: "Description for product 2",
-      quantity: 1,
-      unitPrice: 100,
-    },
-  ];
-
   let currentY = 132;
-  items.forEach((item) => {
-    doc.text(item.item, 20, currentY);
-    doc.text(item.description, 60, currentY);
-    doc.text(item.quantity.toString(), 120, currentY);
-    doc.text(item.unitPrice.toString(), 150, currentY);
-    doc.text((item.quantity * item.unitPrice).toString(), 180, currentY);
+  preOrder.order_items.forEach((item) => {
+    doc.text(item.title, 20, currentY);
+    doc.text(`${item.quantity} ${item.unit}`, 120, currentY);
+    doc.text(
+      `£${(parseInt(item.quantity as string) * item.price).toString()}`,
+      180,
+      currentY
+    );
     currentY += 10;
   });
 
   // Add total section
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.quantity * item.unitPrice,
+  const subtotal = preOrder.order_items.reduce(
+    (sum, item) => sum + parseInt(item.quantity as string) * item.price,
     0
   );
-  const tax = 0;
-  const total = subtotal + tax;
+  // use when tax is available
+  // const tax = 0;
+  // const total = subtotal + tax;
+
+  const parkingOption = PARKING_OPTIONS.find(
+    (opt) => opt.value === preOrder.parking_options.parking_type
+  )?.name;
+
+  const congestionOption = CONGESTION_ZONE_OPTIONS.find(
+    (opt) => opt.value === preOrder.congestion_zone.zone_type
+  )?.name;
+
+  const totalCost = calculateTotalCost(preOrder);
 
   doc.text("Subtotal:", 150, currentY + 10);
-  doc.text(subtotal.toString(), 180, currentY + 10);
-  // doc.text("Tax (10%):", 150, currentY + 20);
-  // doc.text(tax.toString(), 180, currentY + 20);
-  doc.text("Total:", 150, currentY + 20);
-  doc.text(total.toString(), 180, currentY + 20);
+  doc.text(`£${subtotal.toString()}`, 180, currentY + 10);
+  doc.text(`Parking Charge (${parkingOption}):`, 166, currentY + 20, {
+    align: "right",
+  });
+  doc.text(
+    `£${preOrder.parking_options.parking_cost.toString()}`,
+    180,
+    currentY + 20
+  );
+  doc.text(
+    `Congestion Zone Charge (${congestionOption}):`,
+    166,
+    currentY + 30,
+    {
+      align: "right",
+    }
+  );
+  doc.text(
+    `£${preOrder.congestion_zone.zone_cost.toString()}`,
+    180,
+    currentY + 30
+  );
+  doc
+    .setFont("Helvetica", "bold")
+    .text("Total (Incl. Tax):", 166, currentY + 40, { align: "right" });
+  doc
+    .setFont("Helvetica", "bold")
+    .text(`£${totalCost.toString()}`, 180, currentY + 40)
+    .setFont("Helvetica", "normal");
 
   // Add footer
   doc.setFontSize(10);
@@ -178,47 +204,48 @@ export async function POST(req: NextRequest) {
     const pdfBytes = await generateInvoicePdf(invoiceId, preOrder);
     const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
 
+    //needed this code to text and create the invoice
     // Define the path to save the PDF
-    const invoicesDir = path.join(process.cwd(), "public", "invoices");
-    if (!fs.existsSync(invoicesDir)) {
-      fs.mkdirSync(invoicesDir, { recursive: true });
-    }
-    const pdfPath = path.join(invoicesDir, `invoice_${invoiceId}.pdf`);
+    // const invoicesDir = path.join(process.cwd(), "public", "invoices");
+    // if (!fs.existsSync(invoicesDir)) {
+    //   fs.mkdirSync(invoicesDir, { recursive: true });
+    // }
+    // const pdfPath = path.join(invoicesDir, `invoice_${invoiceId}.pdf`);
 
-    // Save the PDF file to the public/invoices folder
-    fs.writeFileSync(pdfPath, Buffer.from(pdfBytes));
+    // // Save the PDF file to the public/invoices folder
+    // fs.writeFileSync(pdfPath, Buffer.from(pdfBytes));
+
+    const totalCost = calculateTotalCost(preOrder);
+
+    const newOrder = new Order({
+      ...preOrder.toObject(),
+      remaining_amount: totalCost,
+      paid_amount: 0,
+      invoice_id: invoiceId,
+    });
+
+    await newOrder.save();
+    await PreOrder.findByIdAndDelete(pre_order_id);
+
+    const attachments = [
+      {
+        ContentType: "application/pdf",
+        Filename: `invoice_${invoiceId}.pdf`,
+        Base64Content: pdfBase64,
+      },
+    ];
 
     const { customer_name, email } = preOrder;
-    // const totalCost = calculateTotalCost(preOrder);
 
-    // const attachments = [
-    //   {
-    //     ContentType: "application/pdf",
-    //     Filename: `invoice_${invoiceId}.pdf`,
-    //     Base64Content: pdfBase64,
-    //   },
-    // ];
-
-    // const orderPlacedEmailSubject = `Order Confirmation: #${invoiceId}`;
-    // await sendEmail({
-    //   fromEmail: "info@londonhomesafety.co.uk",
-    //   fromName: "London Home Safety",
-    //   to: email,
-    //   subject: orderPlacedEmailSubject,
-    //   html: placedOrderEmailHtml(customer_name, invoiceId),
-    //   attachments: attachments,
-    // });
-
-    // const newOrder = new Order({
-    //   ...preOrder.toObject(),
-    //   remaining_amount: totalCost,
-    //   paid_amount: 0,
-    //   invoice_id: invoiceId,
-    //
-    // });
-
-    // await newOrder.save();
-    // await PreOrder.findByIdAndDelete(pre_order_id);
+    const orderPlacedEmailSubject = `Order Confirmation: #${invoiceId}`;
+    await sendEmail({
+      fromEmail: "info@londonhomesafety.co.uk",
+      fromName: "London Home Safety",
+      to: email,
+      subject: orderPlacedEmailSubject,
+      html: placedOrderEmailHtml(customer_name, invoiceId),
+      attachments: attachments,
+    });
 
     return NextResponse.json(
       formatResponse(
@@ -238,20 +265,44 @@ export async function GET(req: NextRequest) {
   try {
     await dbConnect();
 
-    const { searchParams } = new URL(req.url);
-    const orderStatus = searchParams.get("order_status");
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = parseInt(searchParams.get("limit") || "10", 10);
+    const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
+    const limit = 10;
+    const skip = (page - 1) * limit;
 
-    const query: OrderQuery = {};
+    const searchTerm = req.nextUrl.searchParams.get("q") || "";
+    const assignedTo = req.nextUrl.searchParams.get("assigned_to") || "";
+    const orderStatus = req.nextUrl.searchParams.get("order_status") || "";
+    const sortBy = req.nextUrl.searchParams.get("sort_by") || "createdAt";
+    const sortOrder = req.nextUrl.searchParams.get("sort_order") || "desc";
+
+    // Prepare the query object
+    const query: any = {};
+
+    // If a search term is provided, add it to the query
+    if (searchTerm) {
+      query.$or = [
+        { name: { $regex: searchTerm, $options: "i" } },
+        { email: { $regex: searchTerm, $options: "i" } },
+        { phone: { $regex: searchTerm, $options: "i" } },
+      ];
+    }
+
+    // If a role is provided, add it to the query
+    if (assignedTo) {
+      query.role = assignedTo;
+    }
+
     if (orderStatus) {
       query.order_status = orderStatus;
     }
 
+    const sortObject: any = {};
+    sortObject[sortBy] = sortOrder === "asc" ? 1 : -1;
+
     const orders = await Order.find(query)
-      .skip((page - 1) * limit)
+      .sort(sortObject)
+      .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 })
       .exec();
 
     const totalCount = await Order.countDocuments(query);

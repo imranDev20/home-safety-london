@@ -9,7 +9,6 @@ interface IOrder {
   invoice_id: string;
   email: string;
   phone: string;
-  invoice_path: string;
   customer_name: string;
   payment_method: string;
 }
@@ -47,7 +46,6 @@ export const useOrdersData = (enabled?: boolean): UseOrdersDataResponse => {
         invoice_id: order.invoice_id,
         email: order.email,
         phone: order.phone,
-        invoice_path: order.invoice_path,
         payment_method: order.payment_method,
       }));
 

@@ -145,8 +145,8 @@ const columns = [
   },
   {
     label: "Invoice",
-    key: "invoice_path",
     width: 60,
+    key: "invoice",
     render: (value: string, row: any) => (
       <JoyLink
         component="a"

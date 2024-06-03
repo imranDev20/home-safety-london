@@ -65,8 +65,8 @@ const columns = [
   },
   {
     label: "Invoice",
-    key: "invoice_path",
     width: 90,
+    key: "invoice",
     render: (value: string, row: User) => (
       <Button
         component="a"
@@ -104,7 +104,6 @@ export default function CustomerOrders() {
         invoice_id: order.invoice_id,
         email: order.email,
         phone: order.phone,
-        invoice_path: order.invoice_path,
       }));
 
       return {

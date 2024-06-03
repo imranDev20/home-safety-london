@@ -11,6 +11,7 @@ import {
   useTheme,
   Link as JoyLink,
   Box,
+  Sheet,
 } from "@mui/joy";
 import Image from "next/image";
 import BackgroundImage from "@/images/hero-image-new.jpeg";
@@ -20,184 +21,133 @@ export default function Services() {
   const theme = useTheme();
 
   return (
-    <Container
-      maxWidth="lg"
+    <Sheet
       sx={{
-        my: 7,
-        mb: 10,
+        py: 10,
+        pb: 15,
+        backgroundColor: theme.palette.background.level2,
       }}
     >
-      <Typography
-        component="h2"
-        sx={{
-          mb: 5,
-          textAlign: "center",
-        }}
-        fontSize={36}
-      >
-        Reliable & Professional Maintenance Work
-      </Typography>
+      <Container maxWidth="lg">
+        <Typography
+          component="h2"
+          sx={{
+            mb: 5,
+            textAlign: "center",
+          }}
+          fontSize={36}
+        >
+          Reliable & Professional Maintenance Work
+        </Typography>
 
-      <Grid container spacing={3}>
-        {[0, 1, 2].map((item) => (
-          <Grid md={4} key={item}>
-            <JoyLink
-              component={Link}
-              underline="none"
-              href="/services/electrical-services/epc"
-            >
-              <Card
-                key={item}
-                variant="solid"
-                sx={{
-                  backgroundColor: theme.palette.accent1[500],
-                  transition: "0.3s ease all",
-                  borderRadius: "lg",
-                  ":hover": {
-                    backgroundColor: theme.palette.secondary[500],
-                    ".MuiTypography-root": {
-                      color: theme.palette.text.primary,
-                    },
-
-                    ".MuiButton-root": {
-                      backgroundColor: theme.palette.accent1[500],
-                      color: "white",
-                    },
-                  },
-                }}
+        <Grid container spacing={3}>
+          {[0, 1, 2].map((item) => (
+            <Grid md={4} key={item}>
+              <JoyLink
+                component={Link}
+                underline="none"
+                href="/services/electrical-services/epc"
               >
-                <CardOverflow>
-                  <AspectRatio ratio="2">
-                    <Image
-                      src={BackgroundImage}
-                      objectFit="cover"
-                      alt="serviceImage"
-                      style={{ width: "100%", height: "100%" }}
-                    />
-                  </AspectRatio>
-                </CardOverflow>
-
-                <CardContent
+                <Card
+                  key={item}
+                  variant="plain"
                   sx={{
-                    p: 2,
+                    transition: "0.3s ease all",
+                    borderRadius: "lg",
+                    backgroundColor: "white",
                   }}
                 >
-                  <Typography
-                    level="h3"
-                    component="h3"
-                    sx={{
-                      color: "white",
-                      mb: 1,
-                    }}
-                  >
-                    Gas Safety Certificate
-                  </Typography>
+                  <CardOverflow>
+                    <AspectRatio ratio="2">
+                      <Image
+                        src={BackgroundImage}
+                        objectFit="cover"
+                        alt="serviceImage"
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    </AspectRatio>
+                  </CardOverflow>
 
-                  {/* <Box
+                  <CardContent
                     sx={{
-                      display: "flex",
+                      p: 2,
                     }}
                   >
                     <Typography
+                      level="h3"
+                      component="h3"
                       sx={{
-                        fontSize: 14,
-                        textAlign: "center",
-                        mt: 1,
-                        mr: 1,
-                        color: "white",
+                        mb: 1,
+                        ":hover": {
+                          color: theme.palette.primary[500],
+                        },
                       }}
-                      color="secondary"
                     >
-                      Starts
-                      <br />
-                      From
+                      Gas Safety Certificate
                     </Typography>
+
                     <Typography
+                      level="body-md"
                       sx={{
-                        fontSize: 40,
-                        textAlign: "center",
-                        fontWeight: 800,
-                        position: "relative",
+                        my: 1,
+                        // textAlign: "justify",
                       }}
-                      color="secondary"
+                      color="neutral"
                     >
-                      £180
+                      Are you in need of a reliable and professional boiler
+                      installation service in London? Look no further than the
+                      EICR Cert! With years of experience
                     </Typography>
-                  </Box> */}
 
-                  <Typography
-                    level="body-md"
-                    sx={{
-                      my: 1,
-                      color: "white",
-                    }}
-                  >
-                    Are you in need of a reliable and professional boiler
-                    installation service in London? Look no further than the
-                    EICR Cert! With years of experience
-                  </Typography>
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      mt: 2,
-                    }}
-                  >
                     <Box
                       sx={{
                         display: "flex",
+                        justifyContent: "space-between",
                         alignItems: "center",
+                        mt: 2,
                       }}
                     >
-                      <Typography
+                      <Box
                         sx={{
-                          fontSize: 13,
-                          textAlign: "center",
-                          mr: 2,
-                          color: "white",
+                          display: "flex",
+                          alignItems: "center",
                         }}
-                        color="secondary"
                       >
-                        Starts
-                        <br />
-                        From
-                      </Typography>
-                      <Typography
-                        sx={{
-                          fontSize: 30,
-                          textAlign: "center",
-                          fontWeight: 600,
-                          position: "relative",
-                        }}
-                        color="secondary"
-                      >
-                        £180
-                      </Typography>
+                        <Typography
+                          sx={{
+                            fontSize: 13,
+                            textAlign: "center",
+                            mr: 2,
+                            fontWeight: 500,
+                          }}
+                        >
+                          Starts
+                          <br />
+                          From
+                        </Typography>
+                        <Typography
+                          sx={{
+                            fontSize: 30,
+                            textAlign: "center",
+                            fontWeight: 600,
+                            position: "relative",
+                          }}
+                          color="secondary"
+                        >
+                          £180
+                        </Typography>
+                      </Box>
+                      <Button color="secondary" variant="solid">
+                        Find Out More
+                      </Button>
                     </Box>
-                    <Button color="secondary" variant="solid">
-                      Find Out More
-                    </Button>
-                  </Box>
-                </CardContent>
-              </Card>
-            </JoyLink>
-          </Grid>
-        ))}
-      </Grid>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          mt: 7,
-        }}
-      >
-        <Button size="lg" sx={{ px: 6 }} component={Link} href="/book-now">
-          Book Now
-        </Button>
-      </Box>
-    </Container>
+                  </CardContent>
+                </Card>
+              </JoyLink>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </Sheet>
   );
 }

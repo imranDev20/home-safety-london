@@ -25,7 +25,7 @@ export interface IPreOrder {
     city: string;
   };
   parking_options: {
-    parking_type: string;
+    parking_type: "free" | "paid" | "unavailable";
     parking_cost: number;
   };
   congestion_zone: {

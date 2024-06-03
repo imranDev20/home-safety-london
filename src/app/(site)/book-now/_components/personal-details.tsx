@@ -36,36 +36,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPreOrderById, updatePreOrder } from "@/services/pre-order.services";
 import { PreOrderPersonalPayload } from "@/types/pre-order";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
-
-const parkingOptions = [
-  {
-    value: "free",
-    name: "Free Parking Available",
-    cost: 0,
-  },
-  {
-    value: "paid",
-    name: "Paid Parking Available",
-    cost: 5,
-  },
-  {
-    value: "unavailable",
-    name: "No Parking Available",
-    cost: 5,
-  },
-];
-const congestionZoneOptions = [
-  {
-    value: "congestion",
-    name: "Yes",
-    cost: 18,
-  },
-  {
-    value: "non_congestion",
-    name: "No",
-    cost: 0,
-  },
-];
+import { CONGESTION_ZONE_OPTIONS, PARKING_OPTIONS } from "@/shared/constants";
 
 const PhoneInputAdapter = React.forwardRef<InputProps, any>(
   function PhoneInputAdapter(props, ref) {
@@ -165,11 +136,11 @@ export default function PersonalDetails() {
     data
   ) => {
     try {
-      const selectedCongestionZone = congestionZoneOptions.find(
+      const selectedCongestionZone = CONGESTION_ZONE_OPTIONS.find(
         (option) => option.value === data.congestionZone
       );
 
-      const selectedParkingOption = parkingOptions.find(
+      const selectedParkingOption = PARKING_OPTIONS.find(
         (option) => option.value === data.parkingOptions
       );
 
@@ -422,7 +393,7 @@ export default function PersonalDetails() {
                     }}
                     {...field}
                   >
-                    {parkingOptions.map((option) => (
+                    {PARKING_OPTIONS.map((option) => (
                       <Sheet
                         key={option.value}
                         sx={{
@@ -515,7 +486,7 @@ export default function PersonalDetails() {
                     }}
                     {...field}
                   >
-                    {congestionZoneOptions.map((option) => (
+                    {CONGESTION_ZONE_OPTIONS.map((option) => (
                       <Sheet
                         key={option.value}
                         sx={{

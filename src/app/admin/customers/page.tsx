@@ -25,7 +25,7 @@ import DebounceInput from "../../_components/common/debounce-input";
 import { usePathname, useRouter } from "next/navigation";
 import { toSnakeCase } from "@/shared/functions";
 import dayjs from "dayjs";
-import { useCreateQueryString } from "@/app/_components/hooks/use-create-query-string";
+import { useQueryString } from "@/app/_components/hooks/use-query-string";
 
 export default function Customers() {
   const theme = useTheme();
@@ -33,7 +33,7 @@ export default function Customers() {
     useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
-  const createQueryString = useCreateQueryString();
+  const { createQueryString, removeQueryString } = useQueryString();
 
   // Mutate function to export users
   const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
@@ -96,7 +96,7 @@ export default function Customers() {
     if (value !== "") {
       router.push(`${pathname}?${createQueryString("q", value)}`);
     } else {
-      router.push(`${pathname}`);
+      router.push(`${pathname}?${removeQueryString("q")}`);
     }
   };
 
