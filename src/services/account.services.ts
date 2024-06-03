@@ -1,4 +1,3 @@
-import { User } from "@/types/user";
 import http from "./http.services";
 
 const ACCOUNT_PATH = "/account";

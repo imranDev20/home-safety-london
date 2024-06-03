@@ -7,6 +7,10 @@ interface CurrentUser {
   role: "admin" | "customer";
 }
 
+/**
+ * Custom React hook to fetch and manage the current user data.
+ */
+
 export const useCurrentUser = () => {
   const { data: userData, ...rest } = useQuery<CurrentUser>({
     queryKey: ["current_user", "users"],

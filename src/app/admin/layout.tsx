@@ -6,6 +6,7 @@ import QueryProvider from "../_components/query-provider";
 import { SnackbarProvider } from "../_components/snackbar-provider";
 import { Suspense } from "react";
 import { Metadata } from "next";
+import SnackbarHandler from "../_components/snackbar-handler";
 
 const outfit = Inter({ subsets: ["latin"] });
 
@@ -30,7 +31,10 @@ export default function AdminLayout({
             <SnackbarProvider>
               <TopLoader />
               <Suspense>
-                <AdminNavigation>{children}</AdminNavigation>
+                <AdminNavigation>
+                  <SnackbarHandler />
+                  {children}
+                </AdminNavigation>
               </Suspense>
             </SnackbarProvider>
           </ThemeRegistry>

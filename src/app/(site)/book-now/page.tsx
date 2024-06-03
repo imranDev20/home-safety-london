@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 import Box from "@mui/joy/Box";
 import {
   Card,
@@ -13,13 +12,10 @@ import {
 } from "@mui/joy";
 import PageHeader from "../../_components/common/page-header";
 import BackgroundImage from "@/images/about-bg.jpeg";
-import Paragraph from "../../_components/common/paragraph";
 import { useSearchParams } from "next/navigation";
 import ServiceDetails from "./_components/service-details";
 import PersonalDetails from "./_components/personal-details";
 import Confirmation from "./_components/confirmation";
-import Payments from "./_components/payments";
-import Heading from "@/app/_components/common/heading";
 import BookNowStepper from "./_components/book-now-stepper";
 
 export default function BookNowPage() {
