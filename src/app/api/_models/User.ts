@@ -1,23 +1,5 @@
-import { Role } from "@/types/misc";
-import mongoose, { Document, Types } from "mongoose";
-
-export interface IUser extends Document {
-  _id: Types.ObjectId;
-  name: string;
-  email: string;
-  phone: string;
-  role: Role;
-  password: string;
-  addresses: mongoose.Types.ObjectId[];
-  orders_placed?: mongoose.Types.ObjectId[];
-  orders_received?: mongoose.Types.ObjectId[];
-  preferences: {
-    mode: "light" | "dark";
-  };
-  skills?: string[];
-  specialty?: string;
-  experience?: number;
-}
+import { IUser } from "@/types/user";
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema<IUser>(
   {
@@ -56,14 +38,17 @@ const userSchema = new mongoose.Schema<IUser>(
           ref: "Order",
         },
       ],
-      default: null,
+      default: [],
     },
-    orders_received: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Order",
-      },
-    ],
+    orders_received: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Order",
+        },
+      ],
+      default: [],
+    },
     preferences: {
       mode: {
         type: String,

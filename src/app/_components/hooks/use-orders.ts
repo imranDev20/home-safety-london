@@ -1,66 +1,33 @@
 import { getOrders } from "@/services/orders.services";
+import { GetOrdersResponse } from "@/types/response";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
-interface IOrder {
-  _id: string;
-  createdAt: string;
-  order_status: string;
-  invoice_id: string;
-  email: string;
-  phone: string;
-  customer_name: string;
-  payment_method: string;
+interface OrderQueries {
+  q?: string;
+  order_status?: string;
+  assigned_to?: string;
+  sort_by?: string;
+  sort_order?: string;
 }
 
-interface OrdersResponse {
-  data: IOrder[];
-  message: string;
-  pagination: any;
-}
-
-interface UseOrdersDataResponse {
-  ordersData: IOrder[];
-  isGetOrdersDataLoading: boolean;
-  isGetOrdersDataFetching: boolean;
-  refetchGetOrders: () => Promise<any>;
-}
-
-export const useOrdersData = (enabled?: boolean): UseOrdersDataResponse => {
+export const useOrdersData = (enabled?: boolean, queries?: OrderQueries) => {
+  const { q, order_status, assigned_to, sort_by, sort_order } =
+    queries as OrderQueries;
   const {
     data,
     isLoading: isGetOrdersDataLoading,
     isFetching: isGetOrdersDataFetching,
     refetch: refetchGetOrders,
-  } = useQuery<OrdersResponse>({
+  } = useQuery<GetOrdersResponse>({
     queryKey: ["orders"],
-
-    queryFn: async () => {
-      const { data, message, pagination } = await getOrders();
-
-      const orders = data?.map((order: IOrder) => ({
-        _id: order._id,
-        createdAt: dayjs(order.createdAt).format("MMM DD, YYYY"),
-        order_status: order.order_status,
-        customer_name: order.customer_name,
-        invoice_id: order.invoice_id,
-        email: order.email,
-        phone: order.phone,
-        payment_method: order.payment_method,
-      }));
-
-      return {
-        data: orders,
-        message,
-        pagination,
-      };
-    },
+    queryFn: () => getOrders(q, order_status, assigned_to, sort_by, sort_order),
     enabled: enabled ?? true,
     refetchOnMount: true,
   });
 
   return {
-    ordersData: data?.data || [],
+    ordersData: data,
     isGetOrdersDataLoading,
     isGetOrdersDataFetching,
     refetchGetOrders,

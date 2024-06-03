@@ -56,8 +56,6 @@ export default function ContactUsForm() {
 
   const { isXs, isSm } = useBreakpoints();
 
-  console.log(reCaptchaToken);
-
   const {
     handleSubmit,
     formState: { errors },

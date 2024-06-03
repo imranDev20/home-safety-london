@@ -54,8 +54,9 @@ export default function Assignee() {
             },
           }}
         >
-          {engineersData.map((engineer) => (
-            <Option value={engineer._id} key={engineer._id}>
+          <Option value="">All Engineers</Option>
+          {engineersData?.data.map((engineer) => (
+            <Option value={engineer._id} key={engineer._id.toString()}>
               {engineer.name}
             </Option>
           ))}

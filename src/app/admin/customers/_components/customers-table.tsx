@@ -13,24 +13,18 @@ import { FIXED_HEIGHT } from "@/shared/constants";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "@/services/user.services";
 import dayjs from "dayjs";
-import { Pagination } from "@/types/misc";
-import { User } from "@/types/user";
 import DataTable from "./data-table";
 import { customSlugify } from "@/shared/functions";
 import { CircularProgress } from "@mui/joy";
-
-export type CustomersResponse = {
-  users: Partial<User>[];
-  message: string;
-  pagination: Pagination;
-};
+import { GetCustomersResponse } from "@/types/response";
+import { ICustomer } from "@/types/user";
 
 const columns = [
   {
     label: "CUSTOMER",
     key: "name",
     width: 180,
-    render: (value: string, row: User) => (
+    render: (value: string, row: ICustomer) => (
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
         <Avatar size="sm" variant="outlined">
           {row.name?.charAt(0)}
@@ -57,31 +51,10 @@ export default function CustomersTable() {
     isLoading: isGetUsersDataLoading,
     isFetching: isGetUserDataFetching,
     refetch: refetchGetUsers,
-  } = useQuery<CustomersResponse>({
+  } = useQuery<GetCustomersResponse>({
     queryKey: ["users", "customers"],
-    queryFn: async () => {
-      const { data, message, pagination } = await getUsers(
-        searchTerm,
-        "customer",
-        sortBy,
-        sortOrder
-      );
-
-      const users = data?.map((user: any) => ({
-        _id: user._id,
-        createdAt: dayjs(user.createdAt).format("MMM DD, YYYY"),
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        // address: user.
-      }));
-
-      return {
-        users,
-        message,
-        pagination,
-      };
-    },
+    queryFn: () =>
+      getUsers<"customer">(searchTerm, "customer", sortBy, sortOrder),
     refetchOnMount: false,
   });
 
@@ -92,11 +65,12 @@ export default function CustomersTable() {
     loadUsers();
   }, [searchTerm, refetchGetUsers, sortBy, sortOrder]);
 
-  const handleRowClick = (row: User) => {
-    router.push(`/admin/customers/${customSlugify(row._id)}`);
+  // Table functions
+  const handleRowClick = (row: ICustomer) => {
+    router.push(`/admin/customers/${customSlugify(row._id.toString())}`);
   };
 
-  const handleSelectionChange = (selected: User[]) => {
+  const handleSelectionChange = (selected: ICustomer[]) => {
     console.log("Selection changed:", selected);
   };
 
@@ -139,10 +113,10 @@ export default function CustomersTable() {
           height: `calc(100vh - ${FIXED_HEIGHT}px)`,
         }}
       >
-        {usersData?.users ? (
-          <DataTable<User>
+        {usersData?.data ? (
+          <DataTable
             columns={columns}
-            data={usersData?.users as User[]}
+            data={usersData?.data}
             onRowClick={handleRowClick}
             onSelectionChange={handleSelectionChange}
           />

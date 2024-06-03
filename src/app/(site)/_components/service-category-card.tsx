@@ -1,9 +1,9 @@
 import { customSlugify } from "@/shared/functions";
 import {
-  Box,
   Card,
   Link as JoyLink,
   Stack,
+  SvgIconProps,
   Typography,
   useTheme,
 } from "@mui/joy";
@@ -15,12 +15,13 @@ interface ServiceProps {
     id: number;
     serviceName: string;
     serviceDetail: string;
-    Icon: any;
+    Icon: React.ComponentType<SvgIconProps>;
   };
 }
 
 export default function ServiceCategoryCard({ service }: ServiceProps) {
   const theme = useTheme();
+
   return (
     <JoyLink
       component={Link}

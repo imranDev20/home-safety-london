@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
@@ -10,7 +10,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { useOrdersData } from "@/app/_components/hooks/use-orders";
 import { hexToRgba, snakeCaseToNormalText } from "@/shared/functions";
 import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   AttachMoneyOutlined,
   BuildOutlined,
@@ -21,11 +21,11 @@ import {
   DoneAllOutlined,
   HourglassBottomOutlined,
   HourglassEmptyOutlined,
-  HourglassFullOutlined,
   KeyboardArrowLeft,
 } from "@mui/icons-material";
 import DataTable from "../../customers/_components/data-table";
 import { FIXED_HEIGHT } from "@/shared/constants";
+import { IOrder } from "@/types/orders";
 
 interface IOrderStatus {
   status: string;
@@ -60,8 +60,7 @@ const columns = [
     width: 130,
     render: (value: string, row: any) => {
       const initial = row.customer_name?.charAt(0);
-      console.log(row);
-      // console.log(initial);
+
       return (
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           <Avatar size="sm">{initial}</Avatar>
@@ -165,12 +164,36 @@ const columns = [
 ];
 
 export default function OrderTable() {
-  const { ordersData, isGetOrdersDataFetching, isGetOrdersDataLoading } =
-    useOrdersData();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get("q") || "";
+  const orderStatus = searchParams.get("order_status") || "";
+  const assignedTo = searchParams.get("assigned_to") || "";
+  const sortBy = searchParams.get("sort_by") || "";
+  const sortOrder = searchParams.get("sort_order") || "";
 
-  const handleRowClick = (order: any) => {
-    router.push(`/admin/orders/${order._id}`);
+  const {
+    ordersData,
+    isGetOrdersDataFetching,
+    isGetOrdersDataLoading,
+    refetchGetOrders,
+  } = useOrdersData(true, {
+    q: searchTerm,
+    order_status: orderStatus,
+    assigned_to: assignedTo,
+    sort_by: sortBy,
+    sort_order: sortOrder,
+  });
+
+  useEffect(() => {
+    const loadOrders = async () => {
+      await refetchGetOrders();
+    };
+    loadOrders();
+  }, [searchTerm, orderStatus, refetchGetOrders, sortBy, sortOrder]);
+
+  const handleRowClick = (order: IOrder) => {
+    router.push(`/admin/orders/${order._id.toString()}`);
   };
 
   if (isGetOrdersDataFetching || isGetOrdersDataLoading) {
@@ -199,6 +222,10 @@ export default function OrderTable() {
     );
   }
 
+  if (!ordersData) {
+    return "No Orders Found";
+  }
+
   return (
     <React.Fragment>
       <Sheet
@@ -213,7 +240,7 @@ export default function OrderTable() {
         }}
       >
         <DataTable
-          data={ordersData}
+          data={ordersData?.data}
           columns={columns}
           onRowClick={handleRowClick}
         />

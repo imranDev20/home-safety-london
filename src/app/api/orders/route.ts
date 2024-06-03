@@ -281,7 +281,8 @@ export async function GET(req: NextRequest) {
     // If a search term is provided, add it to the query
     if (searchTerm) {
       query.$or = [
-        { name: { $regex: searchTerm, $options: "i" } },
+        { invoice_id: { $regex: searchTerm, $options: "i" } },
+        { customer_name: { $regex: searchTerm, $options: "i" } },
         { email: { $regex: searchTerm, $options: "i" } },
         { phone: { $regex: searchTerm, $options: "i" } },
       ];
@@ -289,16 +290,17 @@ export async function GET(req: NextRequest) {
 
     // If a role is provided, add it to the query
     if (assignedTo) {
-      query.role = assignedTo;
+      query["order_items.assigned_engineers"] = assignedTo;
     }
 
     if (orderStatus) {
-      query.order_status = orderStatus;
+      query["order_status.status"] = orderStatus;
     }
 
     const sortObject: any = {};
     sortObject[sortBy] = sortOrder === "asc" ? 1 : -1;
 
+    // Fetch users from the database with pagination, sorting, and optional search and role filtering
     const orders = await Order.find(query)
       .sort(sortObject)
       .skip(skip)

@@ -45,10 +45,7 @@ export default function Navbar({
 }) {
   const theme = useTheme();
   const pathname = usePathname();
-
   const { userData, isLoading: isCurrentUserLoading } = useCurrentUser();
-
-  console.log(userData);
 
   return (
     <Box component="header" sx={{ zIndex: 10, position: "relative" }}>

@@ -56,29 +56,23 @@ export default function TestimonialForm({
     mutateAsync: createTestimonialMutate,
     isPending: isCreateTestimonialLoading,
   } = useMutation({
-    mutationFn: async (testimonialData: Testimonial) => {
-      const response = await createTestimonial(testimonialData);
-      return response;
-    },
-    onSuccess: () => {
+    mutationFn: (testimonialData: Testimonial) =>
+      createTestimonial(testimonialData),
+
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["testimonials"] });
+
+      console.log(response);
+
+      reset();
+      setOpenModal(false);
+      enqueueSnackbar(response.message, "success");
     },
+    onError: (error) => enqueueSnackbar(error.message, "error"),
   });
 
   const onSubmit: SubmitHandler<TestimonialInput> = async (data) => {
-    try {
-      const response = await createTestimonialMutate(data);
-
-      if (response?.success) {
-        reset();
-        setOpenModal(false);
-        enqueueSnackbar(response.message, "success");
-      } else {
-        throw new Error(response.message);
-      }
-    } catch (error: any) {
-      enqueueSnackbar(error.message, "error");
-    }
+    createTestimonialMutate(data);
   };
 
   return (

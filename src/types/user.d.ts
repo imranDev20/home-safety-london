@@ -1,18 +1,40 @@
-export type User = {
-  _id: string;
+import { Types } from "mongoose";
+import { IOrder, IOrderItem } from "./orders";
+
+export type Role = "customer" | "engineer" | "admin";
+
+export interface IUser {
+  _id: Types.ObjectId;
   name: string;
   email: string;
   phone: string;
-  role: "customer" | "admin" | "staff";
+  role: Role;
   password: string;
-  addresses: {
-    city: string;
-    postcode: string;
-    house_street: string;
-  };
-  orders: mongoose.Types.ObjectId[];
+  addresses: Types.ObjectId[];
+  orders_placed: IOrder[];
+  orders_received: IOrder[];
   preferences: {
     mode: "light" | "dark";
   };
+  skills?: string[];
+  specialty?: string;
+  experience?: number;
   createdAt: string;
-};
+}
+
+export interface IEngineer extends Omit<IUser, "orders_placed"> {
+  role: "engineer";
+  orders_received: IOrder[];
+  skills: string[];
+  specialty: string;
+  experience: number;
+}
+
+export interface ICustomer
+  extends Omit<
+    IUser,
+    "orders_received" | "skills" | "specialty" | "experience"
+  > {
+  role: "customer";
+  orders_placed: IOrder[];
+}

@@ -6,7 +6,6 @@ import {
   FormControl,
   FormLabel,
   Grid,
-  Input,
   Link as JoyLink,
   Option,
   Select,
@@ -22,7 +21,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { exportUsers } from "@/services/user.services";
 import Assignee from "./_components/assignee";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQueryString } from "@/app/_components/hooks/use-query-string";
 import DebounceInput from "@/app/_components/common/debounce-input";
 
@@ -30,6 +29,8 @@ const Orders = () => {
   const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const orderStatus = searchParams.get("order_status") || "";
   const { createQueryString, removeQueryString } = useQueryString();
 
   const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
@@ -83,7 +84,7 @@ const Orders = () => {
     // }
   };
 
-  const handleDebounce = (value: string) => {
+  const handleDebounce = (value: string): void => {
     if (value !== "") {
       router.push(`${pathname}?${createQueryString("q", value)}`);
     } else {
@@ -206,13 +207,25 @@ const Orders = () => {
                   },
                 },
               }}
+              value={orderStatus || ""}
               onChange={(_, value) =>
                 router.push(
-                  `${pathname}?${createQueryString("status", value as string)}`,
+                  `${pathname}?${createQueryString(
+                    "order_status",
+                    value as string
+                  )}`,
                   { scroll: false }
                 )
               }
             >
+              <Option
+                value=""
+                sx={{
+                  textTransform: "capitalize",
+                }}
+              >
+                All Statuses
+              </Option>
               {ORDER_STATUS.map((order) => (
                 <Option
                   key={order}
@@ -241,7 +254,7 @@ const Orders = () => {
               Sort
             </FormLabel>
             <Select
-              placeholder="Sort customers by..."
+              placeholder="Sort orders by..."
               slotProps={{
                 button: {
                   id: "select-field-demo-button",
@@ -260,7 +273,7 @@ const Orders = () => {
             >
               <Option value="createdAt">Date Created</Option>
 
-              {["Name", "Email", "Phone"].map((sortVal) => (
+              {["Customer Name", "Email", "Phone"].map((sortVal) => (
                 <Option value={toSnakeCase(sortVal)} key={sortVal}>
                   {sortVal}
                 </Option>

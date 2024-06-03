@@ -6,23 +6,21 @@ import { formatResponse } from "@/shared/functions";
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
-    const userId = req.nextUrl.searchParams.get("userId");
+    const userId = req.nextUrl.searchParams.get("user_id");
     const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
     const limit = 10; // Number of testimonials per page
     const skip = (page - 1) * limit; // Number of testimonials to skip
-    let testimonials;
+
+    const query: any = {};
 
     if (userId) {
-      testimonials = await Testimonial.find({ user: userId })
-        .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-        .skip(skip)
-        .limit(limit);
-    } else {
-      testimonials = await Testimonial.find()
-        .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-        .skip(skip)
-        .limit(limit);
+      query.user_id = userId;
     }
+
+    const testimonials = await Testimonial.find(query)
+      .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+      .skip(skip)
+      .limit(limit);
 
     const totalCount = await Testimonial.countDocuments(
       userId ? { user: userId } : {}

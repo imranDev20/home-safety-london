@@ -2,19 +2,8 @@ import React from "react";
 import { Box, Grid, Stack } from "@mui/joy";
 import EngineerCard from "./engineer-card";
 import { FIXED_HEIGHT } from "@/shared/constants";
-import { useQuery } from "@tanstack/react-query";
-import { User } from "@/types/user";
-import { Pagination } from "@/types/misc";
-import { getUsers } from "@/services/user.services";
-import dayjs from "dayjs";
 import { useSearchParams } from "next/navigation";
 import { useEngineersData } from "@/app/_components/hooks/use-engineers";
-
-export type CustomersResponse = {
-  users: Partial<User>[];
-  message: string;
-  pagination: Pagination;
-};
 
 export default function EngineerCards() {
   const searchParams = useSearchParams();
@@ -52,8 +41,8 @@ export default function EngineerCards() {
     >
       <Stack>
         <Grid container spacing={3}>
-          {engineersData?.map((engineer) => (
-            <Grid xs={12} md={6} key={engineer._id}>
+          {engineersData?.data?.map((engineer) => (
+            <Grid xs={12} md={6} key={engineer.email}>
               <EngineerCard engineer={engineer} />
             </Grid>
           ))}

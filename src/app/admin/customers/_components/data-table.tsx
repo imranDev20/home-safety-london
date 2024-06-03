@@ -7,16 +7,16 @@ import MenuItem from "@mui/joy/MenuItem";
 import Dropdown from "@mui/joy/Dropdown";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 
-interface TableColumn {
+interface TableColumn<T> {
   label: string;
   key: string;
   width?: number | string;
   align?: "left" | "center" | "right";
-  render?: (value: any, row: any) => React.ReactNode;
+  render?: (value: any, row: T) => React.ReactNode;
 }
 
-interface TableProps<T extends object> {
-  columns: TableColumn[];
+interface TableProps<T> {
+  columns: TableColumn<T>[];
   data: T[];
   onRowClick?: (row: T) => void;
   onSelectionChange?: (selected: T[]) => void;

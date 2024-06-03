@@ -1,5 +1,5 @@
+import { IUser } from "@/types/user";
 import jwt from "jsonwebtoken";
-import { IUser } from "../_models/User";
 
 const secretKey = process.env.JWT_SECRET;
 

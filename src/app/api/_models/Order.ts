@@ -1,34 +1,10 @@
-import mongoose, { Schema, Types } from "mongoose";
-import PreOrder, { IPreOrder, IOrderItem } from "./PreOrder";
+import mongoose, { Schema } from "mongoose";
+import { IOrderItemWithEngineers, IOrder } from "@/types/orders";
 import { ORDER_STATUS } from "@/shared/constants";
+import { OrderStatus } from "@/types/orders";
+import PreOrder from "./PreOrder";
 
-interface IOrderStatus {
-  status:
-    | "pending_payment"
-    | "payment_completed"
-    | "awaiting_confirmation"
-    | "order_confirmed"
-    | "engineer_en_route"
-    | "work_in_progress"
-    | "work_completed"
-    | "completed"
-    | "cancelled";
-  timestamp: Date;
-}
-
-interface IOrderItemWithEngineers extends IOrderItem {
-  assigned_engineers: Types.ObjectId[];
-}
-
-interface IOrder extends IPreOrder {
-  order_status: IOrderStatus[];
-  remaining_amount: number;
-  paid_amount: number;
-  invoice_id: string;
-  order_items: IOrderItemWithEngineers[];
-}
-
-const orderStatusSchema = new Schema<IOrderStatus>({
+const orderStatusSchema = new Schema<OrderStatus>({
   status: {
     type: String,
     required: true,

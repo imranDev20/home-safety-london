@@ -1,43 +1,6 @@
+import { IOrderItem, IPreOrder } from "@/types/orders";
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
-
-export interface IOrderItem {
-  name: string;
-  price: number;
-  quantity: string | number;
-  unit: string;
-  title: string;
-}
-
-export interface IPreOrder {
-  current_step: string;
-  property_type: string;
-  resident_type: string;
-  bedrooms: string;
-  order_items: IOrderItem[];
-  is_service_details_complete: boolean;
-  customer_name: string;
-  email: string;
-  phone_no: string;
-  address: {
-    house_street: string;
-    postcode: string;
-    city: string;
-  };
-  parking_options: {
-    parking_type: "free" | "paid" | "unavailable";
-    parking_cost: number;
-  };
-  congestion_zone: {
-    zone_type: string;
-    zone_cost: number;
-  };
-  inspection_date: string;
-  inspection_time: string;
-  order_notes: string;
-  is_personal_details_complete: boolean;
-  payment_method: "bank_transfer" | "credit_card" | "cash_to_engineer";
-}
 
 const orderItemSchema = new Schema<IOrderItem>({
   name: {

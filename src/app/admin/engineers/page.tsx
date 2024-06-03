@@ -16,29 +16,28 @@ import {
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import EngineerCards from "./_components/engineer-cards";
-import SearchField from "../../_components/common/debounce-input";
 import FormDrawer from "@/app/_components/common/form-drawer";
 import { useState } from "react";
 import CreateEngineerForm from "./_components/create-engineer-form";
 import DebounceInput from "../../_components/common/debounce-input";
 import { usePathname, useRouter } from "next/navigation";
-import { createQueryString, toSnakeCase } from "@/shared/functions";
+import { toSnakeCase } from "@/shared/functions";
+import { useQueryString } from "@/app/_components/hooks/use-query-string";
 
 export default function EngineersPage() {
   const theme = useTheme();
   const [openCreateEngineerDrawer, setOpenCreateEngineerDrawer] =
     useState<boolean>(false);
+  const { createQueryString, removeQueryString } = useQueryString();
 
   const router = useRouter();
   const pathname = usePathname();
 
   const handleDebounce = (value: string) => {
-    console.log(value);
-
     if (value !== "") {
       router.push(`${pathname}?${createQueryString("q", value)}`);
     } else {
-      router.push(`${pathname}`);
+      router.push(`${pathname}?${removeQueryString("q")}}`);
     }
   };
 
@@ -147,7 +146,7 @@ export default function EngineersPage() {
               Filter
             </FormLabel>
             <Select
-              placeholder="Filter by status"
+              placeholder="Filter by specialty"
               slotProps={{
                 button: {
                   id: "select-field-demo-button",
@@ -222,6 +221,7 @@ export default function EngineersPage() {
               Order
             </FormLabel>
             <Select
+              defaultValue="desc"
               placeholder="Filter by status"
               slotProps={{
                 button: {
@@ -232,17 +232,22 @@ export default function EngineersPage() {
                 },
               }}
             >
-              {["Ascending", "Descending"].map((order) => (
-                <Option
-                  key={order}
-                  value={order}
-                  sx={{
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {order}
-                </Option>
-              ))}
+              <Option
+                value="asc"
+                sx={{
+                  textTransform: "capitalize",
+                }}
+              >
+                Ascending
+              </Option>
+              <Option
+                value="desc"
+                sx={{
+                  textTransform: "capitalize",
+                }}
+              >
+                Descending
+              </Option>
             </Select>
           </FormControl>
         </Grid>

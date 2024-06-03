@@ -1,17 +1,26 @@
 "use client";
 import "pure-react-carousel/dist/react-carousel.es.css";
-import React, { useEffect, useState } from "react";
-import { Box, Button, Container, Grid, Sheet, Typography } from "@mui/joy";
-import { useTheme } from "@mui/joy/styles";
-import { CarouselProvider, Slider, Slide } from "pure-react-carousel";
-import TestimonialForm from "./testimonial-form";
-import { useQuery } from "@tanstack/react-query";
-import { getTestimonials } from "@/services/testimonial.services";
-import { GetTestimonialsResponse } from "@/types/testimonial";
-import TestimonialCard from "./testimonial-card";
-import { Star } from "@mui/icons-material";
 
-export default function Testimonial() {
+import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { CarouselProvider, Slide, Slider } from "pure-react-carousel";
+import { Star } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Grid,
+  Sheet,
+  Typography,
+} from "@mui/joy";
+
+import TestimonialCard from "./testimonial-card";
+import TestimonialForm from "./testimonial-form";
+import { getTestimonials } from "@/services/testimonial.services";
+import { GetTestimonialsResponse } from "@/types/response";
+
+export default function Testimonials() {
   const [slidesToShow, setSlidesToShow] = useState<number>(3);
   const [openModal, setOpenModal] = React.useState<boolean>(false);
 
@@ -35,11 +44,16 @@ export default function Testimonial() {
   const { data: testimonialData, isLoading: isGetTestimonialsLoading } =
     useQuery<GetTestimonialsResponse>({
       queryKey: ["testimonials"],
-      queryFn: async () => {
-        const response = await getTestimonials();
-        return response;
-      },
+      queryFn: () => getTestimonials(),
     });
+
+  if (isGetTestimonialsLoading) {
+    return <CircularProgress />;
+  }
+
+  if (!testimonialData) {
+    return "Testimonials not found...";
+  }
 
   return (
     <Sheet
@@ -91,26 +105,24 @@ export default function Testimonial() {
             </Box>
           </Grid>
           <Grid xs={12} md={8}>
-            {testimonialData?.data && (
-              <CarouselProvider
-                naturalSlideWidth={400}
-                naturalSlideHeight={200}
-                isIntrinsicHeight={true}
-                totalSlides={testimonialData?.pagination?.totalCount as number}
-                visibleSlides={slidesToShow}
-                infinite
-                isPlaying
-                interval={5000}
-              >
-                <Slider>
-                  {testimonialData?.data?.map((slide, index) => (
-                    <Slide index={index} key={index}>
-                      <TestimonialCard slide={slide} />
-                    </Slide>
-                  ))}
-                </Slider>
-              </CarouselProvider>
-            )}
+            <CarouselProvider
+              naturalSlideWidth={400}
+              naturalSlideHeight={200}
+              isIntrinsicHeight={true}
+              totalSlides={testimonialData?.pagination?.totalCount as number}
+              visibleSlides={slidesToShow}
+              infinite
+              isPlaying
+              interval={5000}
+            >
+              <Slider>
+                {testimonialData?.data?.map((slide, index) => (
+                  <Slide index={index} key={index}>
+                    <TestimonialCard slide={slide} />
+                  </Slide>
+                ))}
+              </Slider>
+            </CarouselProvider>
           </Grid>
         </Grid>
 

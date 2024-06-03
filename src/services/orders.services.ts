@@ -1,14 +1,26 @@
+import { buildUrl } from "@/shared/functions";
 import http from "./http.services";
+import { GetOrdersResponse } from "@/types/response";
 
 const ORDERS_PATH = "/orders";
 
-export const getOrders = async () => {
-  try {
-    const response = await http.get(`${ORDERS_PATH}`);
-    return response.data;
-  } catch (error: any) {
-    throw error.message || error.response?.data;
-  }
+export const getOrders = async (
+  q?: string,
+  order_status?: string,
+  assigned_to?: string,
+  sort_by?: string,
+  sort_order?: string
+): Promise<GetOrdersResponse> => {
+  const url = buildUrl(ORDERS_PATH, {
+    q,
+    order_status,
+    assigned_to,
+    sort_by,
+    sort_order,
+  });
+
+  const response: GetOrdersResponse = await http.get(url);
+  return response;
 };
 
 export const createOrder = async (preOrderId: string) => {

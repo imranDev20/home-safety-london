@@ -1,3 +1,4 @@
+import { ErrorResponse } from "@/types/response";
 import axios, { AxiosError, AxiosResponse } from "axios";
 
 const http = axios.create({
@@ -10,13 +11,18 @@ const http = axios.create({
 http.interceptors.response.use(
   (response: AxiosResponse) => {
     // If the request was successful, return the response
-    return response;
+    return response.data;
   },
-  (error: AxiosError) => {
-    // Handle any response errors
-    if (error.response) {
+  (error: AxiosError<ErrorResponse>) => {
+    // log the error with the route
+    console.log(error, error.config?.url);
+
+    if (error.response?.data?.message) {
+      // error response sent from the server
+      console.error("Server error:", error.response.data.message);
+    } else if (error.response) {
       // The request was made and the server responded with a status code that falls out of the range of 2xx
-      console.error("Response error:", error.response.data);
+      console.error("Response error:", error.message);
     } else if (error.request) {
       // The request was made but no response was received
       console.error("Request error:", error.request);

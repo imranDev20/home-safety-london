@@ -1,76 +1,56 @@
+import { Role } from "@/types/user";
 import http from "./http.services";
-import { Role } from "@/types/misc";
 import { buildUrl } from "@/shared/functions";
+import { GetCustomersResponse, GetEngineersResponse } from "@/types/response";
 
-const USERS_PATH = "/users";
+const USERS_PATH: string = "/users";
 
-export const getUsers = async (
+// setting up different types based on the user role
+export const getUsers = async <T extends "engineer" | "customer">(
   q?: string,
-  role?: Role,
+  role?: T,
   sort_by?: string,
   sort_order?: string
-) => {
-  try {
-    const url = buildUrl(USERS_PATH, {
-      q,
-      role,
-      sort_by,
-      sort_order,
-    });
+): Promise<
+  T extends "engineer" ? GetEngineersResponse : GetCustomersResponse
+> => {
+  const url = buildUrl(USERS_PATH, {
+    q,
+    role,
+    sort_by,
+    sort_order,
+  });
 
-    console.log(url);
-
-    const response = await http.get(url);
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+  const response: T extends "engineer"
+    ? GetEngineersResponse
+    : GetCustomersResponse = await http.get(url);
+  return response;
 };
 
 export const getUserDetails = async (userId: string) => {
-  try {
-    const response = await http.get(`${USERS_PATH}/${userId}`);
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+  const response = await http.get(`${USERS_PATH}/${userId}`);
+  return response;
 };
 
 export const createUser = async (userData: any) => {
-  try {
-    const response = await http.post(USERS_PATH, userData);
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+  const response = await http.post(USERS_PATH, userData);
+  return response.data;
 };
 
 export const updateUser = async (
   preOrderId: string | undefined,
   updatedData: any
 ) => {
-  try {
-    const response = await http.patch(`/pre-order/${preOrderId}`, updatedData);
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+  const response = await http.patch(`/pre-order/${preOrderId}`, updatedData);
+  return response.data;
 };
 
 export const deleteUser = async (preOrderId: string) => {
-  try {
-    const response = await http.delete(`/pre-order/${preOrderId}`);
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+  const response = await http.delete(`/pre-order/${preOrderId}`);
+  return response.data;
 };
 
 export const exportUsers = async () => {
-  try {
-    const response = await http.get(`/users/export`);
-    return response;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+  const response = await http.get(`/users/export`);
+  return response;
 };
