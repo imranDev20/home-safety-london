@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction, useEffect } from "react";
-import { Box, Divider, Typography, Avatar, IconButton } from "@mui/material";
+import React, { Dispatch, SetStateAction } from "react";
+import { Box, Divider, Typography, Avatar, IconButton } from "@mui/joy";
 import { Logout } from "@mui/icons-material";
 import { useCurrentUser } from "@/app/_components/hooks/use-current-user";
 import Skeleton from "@mui/joy/Skeleton";

@@ -2,6 +2,7 @@ import slugify from "react-slugify";
 import dayjs from "dayjs";
 import { Pagination } from "@/types/misc";
 import Cookies from "js-cookie";
+import { OrderStatus, OrderStatusValues } from "@/types/orders";
 
 export function snakeCaseToNormalText(snakeCaseString: string) {
   return snakeCaseString?.replace(/_/g, " ")?.toLowerCase();
@@ -180,4 +181,14 @@ export function calculateTotalCost(order: any) {
   const totalCost = orderItemsTotal + parkingCost + congestionCost;
 
   return totalCost;
+}
+
+export function getMostRecentStatus(
+  statuses: OrderStatus[]
+): OrderStatusValues {
+  const sortedStatuses = statuses.sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
+
+  return sortedStatuses[0].status;
 }

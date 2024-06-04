@@ -1,6 +1,5 @@
 import {
   Dashboard,
-  Diversity2,
   Engineering,
   Group,
   Notifications,

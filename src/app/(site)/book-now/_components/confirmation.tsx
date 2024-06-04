@@ -65,7 +65,9 @@ export default function Confirmation() {
       mutationFn: (preOrderid: string) => createOrder(preOrderid),
       onSuccess: (response) => {
         enqueueSnackbar(response?.message, "success");
-        queryClient.invalidateQueries({ queryKey: ["pre-order"] });
+        queryClient.invalidateQueries({
+          queryKey: ["orders", "order-details"],
+        });
       },
       onError: (error) => {
         enqueueSnackbar(error?.message, "error");

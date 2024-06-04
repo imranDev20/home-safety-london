@@ -273,43 +273,51 @@ export async function GET(req: NextRequest) {
     const orderStatus = req.nextUrl.searchParams.get("order_status") || "";
     const sortBy = req.nextUrl.searchParams.get("sort_by") || "createdAt";
     const sortOrder = req.nextUrl.searchParams.get("sort_order") || "desc";
+    // const customerId = req.nextUrl.searchParams.get("customer_id") || "";
 
     // Prepare the query object
     const query: any = {};
 
-    // If a search term is provided, add it to the query
-    if (searchTerm) {
-      query.$or = [
-        { invoice_id: { $regex: searchTerm, $options: "i" } },
-        { customer_name: { $regex: searchTerm, $options: "i" } },
-        { email: { $regex: searchTerm, $options: "i" } },
-        { phone: { $regex: searchTerm, $options: "i" } },
-      ];
-    }
-
-    // If an assigned_to value is provided, add it to the query
-    if (assignedTo) {
-      const assignedToObjectId = new mongoose.Types.ObjectId(assignedTo);
-      query["order_items"] = {
-        $elemMatch: {
-          assigned_engineers: assignedToObjectId,
+    // Create an aggregation pipeline
+    const pipeline: any[] = [
+      {
+        $match: {
+          ...(searchTerm && {
+            $or: [
+              { invoice_id: { $regex: searchTerm, $options: "i" } },
+              { customer_name: { $regex: searchTerm, $options: "i" } },
+              { email: { $regex: searchTerm, $options: "i" } },
+              { phone: { $regex: searchTerm, $options: "i" } },
+            ],
+          }),
         },
-      };
-    }
+      },
+      {
+        $addFields: {
+          mostRecentStatus: {
+            $arrayElemAt: [{ $reverseArray: "$order_status" }, 0],
+          },
+        },
+      },
+      {
+        $match: {
+          ...(orderStatus ? { "mostRecentStatus.status": orderStatus } : {}),
+          ...(assignedTo
+            ? {
+                "order_items.assigned_engineers": new mongoose.Types.ObjectId(
+                  assignedTo
+                ),
+              }
+            : {}),
+        },
+      },
+      { $sort: { [sortBy]: sortOrder === "asc" ? 1 : -1 } },
+      { $skip: skip },
+      { $limit: limit },
+    ];
 
-    if (orderStatus) {
-      query["order_status.status"] = orderStatus;
-    }
-
-    const sortObject: any = {};
-    sortObject[sortBy] = sortOrder === "asc" ? 1 : -1;
-
-    // Fetch users from the database with pagination, sorting, and optional search and role filtering
-    const orders = await Order.find(query)
-      .sort(sortObject)
-      .skip(skip)
-      .limit(limit)
-      .exec();
+    // Fetch orders from the database using the aggregation pipeline
+    const orders = await Order.aggregate(pipeline).exec();
 
     const totalCount = await Order.countDocuments(query);
     const totalPages = Math.ceil(totalCount / limit);

@@ -10,7 +10,7 @@ export const updatePreOrder = async (
   preOrderId: string | undefined,
   updatedData: any
 ): Promise<UpdatePreOrderResponse> => {
-  const response: UpdatePreOrderResponse = await http.put(
+  const response: UpdatePreOrderResponse = await http.patch(
     `/pre-order/${preOrderId}`,
     updatedData
   );

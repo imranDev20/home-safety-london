@@ -18,9 +18,9 @@ import {
 import HookFormError from "@/app/_components/common/hook-form-error";
 import StarRating from "@/app/_components/common/star-rating";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Testimonial } from "@/types/testimonial";
 import { createTestimonial } from "@/services/testimonial.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
+import { ITestimonial } from "@/types/testimonial";
 
 type TestimonialInput = {
   name: string;
@@ -56,14 +56,12 @@ export default function TestimonialForm({
     mutateAsync: createTestimonialMutate,
     isPending: isCreateTestimonialLoading,
   } = useMutation({
-    mutationFn: (testimonialData: Testimonial) =>
+    mutationFn: (testimonialData: ITestimonial) =>
       createTestimonial(testimonialData),
 
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["testimonials"] });
-
       console.log(response);
-
       reset();
       setOpenModal(false);
       enqueueSnackbar(response.message, "success");

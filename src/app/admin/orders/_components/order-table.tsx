@@ -49,7 +49,7 @@ const columns = [
   {
     label: "Invoice ID",
     key: "invoice_id",
-    width: 90,
+    width: 80,
     render: (value: string, row: any) => (
       <Typography level="body-sm">{value}</Typography>
     ),
@@ -57,7 +57,7 @@ const columns = [
   {
     label: "Customer",
     key: "customer_name",
-    width: 130,
+    width: 160,
     render: (value: string, row: any) => {
       const initial = row.customer_name?.charAt(0);
 
@@ -90,8 +90,8 @@ const columns = [
               order_confirmed: <CheckCircleOutlined />,
               engineer_en_route: <DirectionsCarOutlined />,
               work_in_progress: <BuildOutlined />,
-              work_completed: <DoneAllOutlined />,
-              completed: <CheckOutlined />,
+              work_completed: <CheckOutlined />,
+              completed: <DoneAllOutlined />,
               cancelled: <CancelOutlined />,
             }[status as string]
           }
@@ -135,7 +135,7 @@ const columns = [
   {
     label: "Date",
     key: "createdAt",
-    width: 90,
+    width: 85,
     render: (value: string, row: any) => (
       <Typography level="body-sm">
         {dayjs(value).format("DD MMMM, YYYY")}

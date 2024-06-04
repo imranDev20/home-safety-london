@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   CardContent,
-  Divider,
   Stack,
   Typography,
   Link as JoyLink,
@@ -11,7 +10,7 @@ import {
 import Link from "next/link";
 import React from "react";
 
-const BookNow = () => {
+export default function BookNow() {
   return (
     <Card
       variant="solid"
@@ -83,6 +82,4 @@ const BookNow = () => {
       </CardContent>
     </Card>
   );
-};
-
-export default BookNow;
+}

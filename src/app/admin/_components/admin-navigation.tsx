@@ -1,8 +1,6 @@
 "use client";
 import {
-  Avatar,
   Box,
-  Divider,
   Drawer,
   IconButton,
   Input,
@@ -15,8 +13,8 @@ import {
   Typography,
 } from "@mui/joy";
 import Sheet from "@mui/joy/Sheet";
-import React, { ReactNode, Suspense, useState } from "react";
-import { Logout, Search } from "@mui/icons-material";
+import React, { ReactNode, useState } from "react";
+import { Search } from "@mui/icons-material";
 import { ADMIN_OPTIONS } from "@/shared/constants";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import Link from "next/link";
@@ -24,14 +22,9 @@ import { usePathname } from "next/navigation";
 import Menu from "@mui/icons-material/Menu";
 import { theme } from "@/shared/theme";
 import LogoutAlertDialog from "./logout-alert-dialog";
-import { useCurrentUser } from "@/app/_components/hooks/use-current-user";
 import UserProfileSection from "./user-profile-section";
 
-interface AdminNavigationProps {
-  children: ReactNode;
-}
-
-const NavigationList: React.FC = () => {
+function NavigationList() {
   const pathname = usePathname();
 
   return (
@@ -52,7 +45,11 @@ const NavigationList: React.FC = () => {
           href={option.route}
         >
           <ListItemButton
-            selected={pathname === option.route}
+            selected={
+              pathname === option.route ||
+              (option.route !== "/admin" &&
+                pathname.startsWith(`${option.route}/`))
+            }
             sx={{
               fontWeight: 500,
               borderRadius: theme.radius.sm,
@@ -78,9 +75,14 @@ const NavigationList: React.FC = () => {
       ))}
     </List>
   );
-};
+}
 
-const AdminNavigation: React.FC<AdminNavigationProps> = ({ children }) => {
+interface AdminNavigationProps {
+  children: ReactNode;
+}
+
+export default function AdminNavigation(props: AdminNavigationProps) {
+  const { children } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [openConfirmModal, setOpenConfirmModal] = useState<boolean>(false);
 
@@ -201,6 +203,4 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ children }) => {
       />
     </>
   );
-};
-
-export default AdminNavigation;
+}

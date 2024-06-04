@@ -1,5 +1,10 @@
 "use client";
-import { Download, Home, KeyboardArrowRight } from "@mui/icons-material";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+
+import { useState } from "react";
+
+import { Add, Download, Home, KeyboardArrowRight } from "@mui/icons-material";
 import {
   Breadcrumbs,
   Button,
@@ -13,18 +18,18 @@ import {
   Typography,
   useTheme,
 } from "@mui/joy";
-import Link from "next/link";
-import AddIcon from "@mui/icons-material/Add";
+
 import CustomersTable from "./_components/customers-table";
-import { useState } from "react";
 import FormDrawer from "@/app/_components/common/form-drawer";
 import CreateCustomerForm from "./_components/create-customer-form";
-import { useQuery } from "@tanstack/react-query";
-import { exportUsers } from "@/services/user.services";
 import DebounceInput from "../../_components/common/debounce-input";
-import { usePathname, useRouter } from "next/navigation";
-import { toSnakeCase } from "@/shared/functions";
+
+import { exportUsers } from "@/services/user.services";
+
+import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
+
+import { toSnakeCase } from "@/shared/functions";
 import { useQueryString } from "@/app/_components/hooks/use-query-string";
 
 export default function Customers() {
@@ -138,6 +143,7 @@ export default function Customers() {
           Customers
         </JoyLink>
       </Breadcrumbs>
+
       <Stack
         spacing={2}
         mt={2}
@@ -174,7 +180,7 @@ export default function Customers() {
           </Button>
           <Button
             size="sm"
-            startDecorator={<AddIcon />}
+            startDecorator={<Add />}
             onClick={() => setOpenCreateCustomerDrawer(true)}
           >
             Add New Customer

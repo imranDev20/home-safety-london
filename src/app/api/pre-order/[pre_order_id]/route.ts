@@ -3,9 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import PreOrder from "../../_models/PreOrder";
 import mongoose from "mongoose";
 import { formatResponse } from "@/shared/functions";
-import { IPreOrder } from "@/types/orders";
 
-export async function PUT(
+export async function PATCH(
   req: NextRequest,
   { params }: { params: { pre_order_id: string } },
   res: NextResponse
@@ -13,15 +12,13 @@ export async function PUT(
   try {
     await dbConnect();
     const preOrder = await req.json();
-    const orderId = params.pre_order_id;
-
-    console.log(preOrder);
+    const preOrderId = params.pre_order_id;
 
     const newObjectId =
-      orderId === "undefined" ? new mongoose.Types.ObjectId() : null;
+      preOrderId === "undefined" ? new mongoose.Types.ObjectId() : null;
 
     const updatedPreOrder = await PreOrder.findOneAndReplace(
-      { _id: orderId !== "undefined" ? orderId : newObjectId },
+      { _id: preOrderId !== "undefined" ? preOrderId : newObjectId },
       preOrder,
       {
         upsert: true,

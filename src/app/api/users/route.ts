@@ -32,8 +32,6 @@ export async function GET(req: NextRequest) {
       query.role = role;
     }
 
-    console.log(query);
-
     const sortObject: any = {};
     sortObject[sortBy] = sortOrder === "asc" ? 1 : -1;
 

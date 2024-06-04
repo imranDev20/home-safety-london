@@ -34,35 +34,10 @@ const preOrderSchema = new Schema<IPreOrder>(
     },
     resident_type: {
       type: String,
-      required: function () {
-        return this.property_type === "residential";
-      },
-      validate: {
-        validator: function (value: string): boolean {
-          if (this && "property_type" in this) {
-            return this.property_type !== "commercial" || !value;
-          }
-          return false;
-        },
-        message: (props) =>
-          `resident_type cannot be provided when property_type is commercial`,
-      },
+      enum: ["house", "hmo", "flat"],
     },
     bedrooms: {
       type: String,
-      required: function () {
-        return this.property_type === "residential";
-      },
-      validate: {
-        validator: function (value: string): boolean {
-          if (this && "property_type" in this) {
-            return this.property_type !== "commercial" || !value;
-          }
-          return false;
-        },
-        message: (props) =>
-          `bedrooms cannot be provided when property_type is commercial`,
-      },
     },
     order_items: {
       type: [orderItemSchema],

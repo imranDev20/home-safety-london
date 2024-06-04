@@ -1,4 +1,4 @@
-import mongoose, { Document, Types } from "mongoose";
+import { Types } from "mongoose";
 
 export type ParkingType = "free" | "paid" | "unavailable";
 export type ZoneType = "";
@@ -21,6 +21,11 @@ export type OrderStatus = {
   timestamp: Date;
 };
 
+export type OrderStatusValues = Pick<OrderStatus, "status">[keyof Pick<
+  OrderStatus,
+  "status"
+>];
+
 export interface IOrderItem {
   name: string;
   price: number;
@@ -35,8 +40,8 @@ export interface IOrderItemWithEngineers extends IOrderItem {
 
 export interface IPreOrder {
   _id: string;
-  property_type: string;
-  resident_type: string;
+  property_type: "residential" | "commercial";
+  resident_type: "house" | "hmo" | "flat";
   bedrooms: string;
   order_items: IOrderItem[];
   is_service_details_complete: boolean;

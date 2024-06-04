@@ -3,35 +3,21 @@ import React from "react";
 import DataTable from "../../_components/data-table";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { User } from "@/types/user";
-import { customSlugify, snakeCaseToNormalText } from "@/shared/functions";
+import { IUser } from "@/types/user";
+import {
+  customSlugify,
+  getMostRecentStatus,
+  snakeCaseToNormalText,
+} from "@/shared/functions";
 import { useRouter } from "next/navigation";
 import { getOrders } from "@/services/orders.services";
-
-interface IOrderStatus {
-  status: string;
-  timestamp: string;
-  _id: string;
-}
-
-function getMostRecentStatus(statuses: IOrderStatus[]): string | null {
-  if (statuses.length === 0) {
-    return null;
-  }
-
-  const sortedStatuses = statuses.sort(
-    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-  );
-
-  return sortedStatuses[0].status;
-}
 
 const columns = [
   {
     label: "Invoice ID",
     key: "invoice_id",
     width: 180,
-    render: (value: string, row: User) => (
+    render: (value: string, row: IUser) => (
       <Typography level="body-sm">{value}</Typography>
     ),
   },
@@ -57,7 +43,7 @@ const columns = [
     label: "Order Placed",
     key: "createdAt",
     width: 90,
-    render: (value: string, row: User) => (
+    render: (value: string, row: IUser) => (
       <Typography level="body-sm">
         {dayjs(value).format("DD/MM/YYYY")}
       </Typography>
@@ -67,7 +53,7 @@ const columns = [
     label: "Invoice",
     width: 90,
     key: "invoice",
-    render: (value: string, row: User) => (
+    render: (value: string, row: IUser) => (
       <Button
         component="a"
         href={value}
@@ -115,11 +101,11 @@ export default function CustomerOrders() {
     refetchOnMount: false,
   });
 
-  const handleRowClick = (row: User) => {
-    router.push(`/admin/customers/${customSlugify(row._id)}`);
+  const handleRowClick = (row: IUser) => {
+    router.push(`/admin/customers/${customSlugify(row._id.toString())}`);
   };
 
-  const handleSelectionChange = (selected: User[]) => {
+  const handleSelectionChange = (selected: IUser[]) => {
     console.log("Selection changed:", selected);
   };
 
