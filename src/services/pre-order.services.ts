@@ -1,24 +1,20 @@
+import { UpdatePreOrderResponse } from "@/types/response";
 import http from "./http.services";
 
 export const getPreOrderById = async (preOrderId: string) => {
-  try {
-    const response = await http.get(`/pre-order/${preOrderId}`);
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+  const response = await http.get(`/pre-order/${preOrderId}`);
+  return response;
 };
 
 export const updatePreOrder = async (
   preOrderId: string | undefined,
   updatedData: any
-) => {
-  try {
-    const response = await http.put(`/pre-order/${preOrderId}`, updatedData);
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+): Promise<UpdatePreOrderResponse> => {
+  const response: UpdatePreOrderResponse = await http.put(
+    `/pre-order/${preOrderId}`,
+    updatedData
+  );
+  return response;
 };
 
 export const deletePreOrder = async (preOrderId: string) => {

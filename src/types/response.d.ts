@@ -1,5 +1,5 @@
 import { Pagination } from "./misc";
-import { IOrder } from "./orders";
+import { IOrder, IPreOrder } from "./orders";
 import { ITestimonial } from "./testimonial";
 import { ICustomer, IEngineer, IUser, IUserBasicInfo } from "./user";
 
@@ -26,3 +26,5 @@ export type GetEngineersResponse = SuccessResponseWithArray<IEngineer>;
 export type GetCustomersResponse = SuccessResponseWithArray<ICustomer>;
 export type GetOrdersResponse = SuccessResponseWithArray<IOrder>;
 export type AuthUserResponse = SuccessResponse<IUserBasicInfo>;
+export type UpdatePreOrderResponse = SuccessResponse<IPreOrder>;
+export type CreateOrderResponse = SuccessResponse<IOrder>;

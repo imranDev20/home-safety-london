@@ -100,12 +100,17 @@ export function toSnakeCase(str: string) {
     .toLowerCase(); // Convert to lowercase
 }
 
-export const formatResponse = (
+export const formatResponse = <T>(
   success: boolean,
-  data: any[] | null = null,
+  data: T[] | T | null = null,
   message: string = "",
   pagination?: Pagination
-) => {
+): {
+  success: boolean;
+  data?: T[] | T;
+  message: string;
+  pagination?: Pagination;
+} => {
   return {
     success,
     ...(data ? { data } : {}),

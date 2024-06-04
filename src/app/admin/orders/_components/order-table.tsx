@@ -190,7 +190,14 @@ export default function OrderTable() {
       await refetchGetOrders();
     };
     loadOrders();
-  }, [searchTerm, orderStatus, refetchGetOrders, sortBy, sortOrder]);
+  }, [
+    searchTerm,
+    orderStatus,
+    refetchGetOrders,
+    sortBy,
+    sortOrder,
+    assignedTo,
+  ]);
 
   const handleRowClick = (order: IOrder) => {
     router.push(`/admin/orders/${order._id.toString()}`);

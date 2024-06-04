@@ -1,14 +1,10 @@
 import dbConnect from "@/app/api/_lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 import { calculateTotalCost, formatResponse } from "@/shared/functions";
-import PreOrder, { IOrderItem, IPreOrder } from "../_models/PreOrder";
 import Order from "../_models/Order";
 import { jsPDF } from "jspdf";
-import { Readable } from "stream";
 import { sendEmail } from "../_lib/sendEmail";
 import { placedOrderEmailHtml } from "../_templates/order-placed-email";
-import fs from "fs";
-import path from "path";
 import {
   ADDRESS,
   CONGESTION_ZONE_OPTIONS,
@@ -16,6 +12,9 @@ import {
   PARKING_OPTIONS,
   PHONE_NO,
 } from "@/shared/constants";
+import PreOrder from "../_models/PreOrder";
+import { IPreOrder } from "@/types/orders";
+import mongoose from "mongoose";
 
 interface OrderQuery {
   order_status?: string;
@@ -218,7 +217,7 @@ export async function POST(req: NextRequest) {
     const totalCost = calculateTotalCost(preOrder);
 
     const newOrder = new Order({
-      ...preOrder.toObject(),
+      ...({ ...preOrder.toObject() } as IPreOrder),
       remaining_amount: totalCost,
       paid_amount: 0,
       invoice_id: invoiceId,
@@ -250,7 +249,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       formatResponse(
         true,
-        null,
+        newOrder,
         "Order created successfully, PreOrder deleted, and invoice generated"
       )
     );
@@ -288,9 +287,14 @@ export async function GET(req: NextRequest) {
       ];
     }
 
-    // If a role is provided, add it to the query
+    // If an assigned_to value is provided, add it to the query
     if (assignedTo) {
-      query["order_items.assigned_engineers"] = assignedTo;
+      const assignedToObjectId = new mongoose.Types.ObjectId(assignedTo);
+      query["order_items"] = {
+        $elemMatch: {
+          assigned_engineers: assignedToObjectId,
+        },
+      };
     }
 
     if (orderStatus) {

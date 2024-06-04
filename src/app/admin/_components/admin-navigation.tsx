@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/joy";
 import Sheet from "@mui/joy/Sheet";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, Suspense, useState } from "react";
 import { Logout, Search } from "@mui/icons-material";
 import { ADMIN_OPTIONS } from "@/shared/constants";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
@@ -24,6 +24,8 @@ import { usePathname } from "next/navigation";
 import Menu from "@mui/icons-material/Menu";
 import { theme } from "@/shared/theme";
 import LogoutAlertDialog from "./logout-alert-dialog";
+import { useCurrentUser } from "@/app/_components/hooks/use-current-user";
+import UserProfileSection from "./user-profile-section";
 
 interface AdminNavigationProps {
   children: ReactNode;
@@ -137,40 +139,7 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ children }) => {
             sx={{ m: 2 }}
           />
           <NavigationList />
-          <Box>
-            <Divider
-              sx={{
-                my: 2,
-              }}
-            />
-            <Box
-              sx={{
-                display: "flex",
-                gap: 1,
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 1,
-                }}
-              >
-                <Avatar size="sm" />
-                <Box>
-                  <Typography level="title-sm">Kamal Ahmed</Typography>
-                  <Typography component="span" level="body-xs">
-                    kamal@gmail.com
-                  </Typography>
-                </Box>
-              </Box>
-
-              <IconButton variant="plain" size="sm">
-                <Logout />
-              </IconButton>
-            </Box>
-          </Box>
+          <UserProfileSection setOpenConfirmModal={setOpenConfirmModal} />
         </Drawer>
 
         <Box
@@ -212,47 +181,9 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ children }) => {
               <NavigationList />
             </Box>
 
-            <Box>
-              <Divider
-                sx={{
-                  my: 2,
-                }}
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 1,
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: 1,
-                  }}
-                >
-                  <Avatar size="sm" />
-                  <Box>
-                    <Typography level="title-sm">Kamal Ahmed</Typography>
-                    <Typography component="span" level="body-xs">
-                      kamal@gmail.com
-                    </Typography>
-                  </Box>
-                </Box>
-
-                <IconButton
-                  variant="plain"
-                  size="sm"
-                  onClick={() => setOpenConfirmModal(true)}
-                >
-                  <Logout />
-                </IconButton>
-              </Box>
-            </Box>
+            <UserProfileSection setOpenConfirmModal={setOpenConfirmModal} />
           </Sheet>
 
-          {/* Dashboard main items */}
           <Box
             sx={{
               flex: 1,

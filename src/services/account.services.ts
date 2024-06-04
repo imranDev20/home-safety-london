@@ -35,11 +35,7 @@ export const logoutAccount = async (userId?: string) => {
   }
 };
 
-export const getCurrentAccount = async () => {
-  try {
-    const response = await http.get(`${ACCOUNT_PATH}/me`);
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+export const getCurrentAccount = async (): Promise<AuthUserResponse> => {
+  const response: AuthUserResponse = await http.get(`${ACCOUNT_PATH}/me`);
+  return response;
 };

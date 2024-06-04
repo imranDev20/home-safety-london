@@ -1,7 +1,6 @@
 import { getOrders } from "@/services/orders.services";
 import { GetOrdersResponse } from "@/types/response";
 import { useQuery } from "@tanstack/react-query";
-import dayjs from "dayjs";
 
 interface OrderQueries {
   q?: string;

@@ -1,4 +1,4 @@
-import { Document, Types } from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
 
 export type ParkingType = "free" | "paid" | "unavailable";
 export type ZoneType = "";
@@ -6,6 +6,20 @@ export type PaymentMethod =
   | "bank_transfer"
   | "credit_card"
   | "cash_to_engineer";
+
+export type OrderStatus = {
+  status:
+    | "pending_payment"
+    | "payment_completed"
+    | "awaiting_confirmation"
+    | "order_confirmed"
+    | "engineer_en_route"
+    | "work_in_progress"
+    | "work_completed"
+    | "completed"
+    | "cancelled";
+  timestamp: Date;
+};
 
 export interface IOrderItem {
   name: string;
@@ -19,7 +33,8 @@ export interface IOrderItemWithEngineers extends IOrderItem {
   assigned_engineers: Types.ObjectId[];
 }
 
-export interface IPreOrder extends Document {
+export interface IPreOrder {
+  _id: string;
   property_type: string;
   resident_type: string;
   bedrooms: string;
@@ -46,6 +61,8 @@ export interface IPreOrder extends Document {
   order_notes: string;
   is_personal_details_complete: boolean;
   payment_method: PaymentMethod;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrder extends IPreOrder {
@@ -55,17 +72,3 @@ export interface IOrder extends IPreOrder {
   invoice_id: string;
   order_items: IOrderItemWithEngineers[];
 }
-
-export type OrderStatus = {
-  status:
-    | "pending_payment"
-    | "payment_completed"
-    | "awaiting_confirmation"
-    | "order_confirmed"
-    | "engineer_en_route"
-    | "work_in_progress"
-    | "work_completed"
-    | "completed"
-    | "cancelled";
-  timestamp: Date;
-};

@@ -67,8 +67,8 @@ export default function Confirmation() {
         enqueueSnackbar(response?.message, "success");
         queryClient.invalidateQueries({ queryKey: ["pre-order"] });
       },
-      onError: (error: any) => {
-        enqueueSnackbar(error?.data || error?.message, "error");
+      onError: (error) => {
+        enqueueSnackbar(error?.message, "error");
       },
     });
 
@@ -105,9 +105,8 @@ export default function Confirmation() {
     setPaymentMethod(event.target.value as PaymentMethods);
     const payload = {
       ...preOrderData,
-      payment_method: paymentMethod,
+      payment_method: event.target.value,
     };
-
     await preOrderMutate(payload);
   };
 

@@ -135,7 +135,7 @@ const preOrderSchema = new Schema<IPreOrder>(
   { timestamps: true }
 );
 
-const PreOrder =
+const PreOrder: mongoose.Model<IPreOrder> =
   mongoose.models.PreOrder || mongoose.model("PreOrder", preOrderSchema);
 
 export default PreOrder;

@@ -25,7 +25,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQueryString } from "@/app/_components/hooks/use-query-string";
 import DebounceInput from "@/app/_components/common/debounce-input";
 
-const Orders = () => {
+export default function Orders() {
   const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
@@ -317,6 +317,4 @@ const Orders = () => {
       <OrderTable />
     </>
   );
-};
-
-export default Orders;
+}

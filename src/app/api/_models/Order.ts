@@ -49,7 +49,7 @@ const orderItemSchema = new Schema<IOrderItemWithEngineers>({
 
 const orderSchema = new Schema<IOrder>(
   {
-    ...PreOrder.schema.obj, // Spread the PreOrder schema to inherit its fields
+    ...PreOrder.schema.paths, // spread the paths object instead of obj
     order_status: {
       type: [orderStatusSchema],
       required: true,
@@ -86,7 +86,7 @@ orderSchema.pre("save", function (next) {
   next();
 });
 
-const Order =
+const Order: mongoose.Model<IOrder> =
   mongoose.models.Order || mongoose.model<IOrder>("Order", orderSchema);
 
 export default Order;

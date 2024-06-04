@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import PreOrder from "../../_models/PreOrder";
 import mongoose from "mongoose";
 import { formatResponse } from "@/shared/functions";
+import { IPreOrder } from "@/types/orders";
 
 export async function PUT(
   req: NextRequest,
@@ -14,10 +15,12 @@ export async function PUT(
     const preOrder = await req.json();
     const orderId = params.pre_order_id;
 
+    console.log(preOrder);
+
     const newObjectId =
       orderId === "undefined" ? new mongoose.Types.ObjectId() : null;
 
-    const data = await PreOrder.findOneAndReplace(
+    const updatedPreOrder = await PreOrder.findOneAndReplace(
       { _id: orderId !== "undefined" ? orderId : newObjectId },
       preOrder,
       {
@@ -28,7 +31,7 @@ export async function PUT(
     );
 
     return NextResponse.json(
-      formatResponse(true, data, "Order progress updated")
+      formatResponse(true, updatedPreOrder, "Order progress updated")
     );
   } catch (error: any) {
     console.log(error);

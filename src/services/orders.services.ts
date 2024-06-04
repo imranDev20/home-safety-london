@@ -1,6 +1,6 @@
 import { buildUrl } from "@/shared/functions";
 import http from "./http.services";
-import { GetOrdersResponse } from "@/types/response";
+import { CreateOrderResponse, GetOrdersResponse } from "@/types/response";
 
 const ORDERS_PATH = "/orders";
 
@@ -23,14 +23,11 @@ export const getOrders = async (
   return response;
 };
 
-export const createOrder = async (preOrderId: string) => {
-  try {
-    const response = await http.post(`${ORDERS_PATH}`, {
-      pre_order_id: preOrderId,
-    });
-
-    return response.data;
-  } catch (error: any) {
-    throw error.message || error.response?.data;
-  }
+export const createOrder = async (
+  preOrderId: string
+): Promise<CreateOrderResponse> => {
+  const response: CreateOrderResponse = await http.post(`${ORDERS_PATH}`, {
+    pre_order_id: preOrderId,
+  });
+  return response;
 };
