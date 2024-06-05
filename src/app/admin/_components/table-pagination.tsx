@@ -1,6 +1,8 @@
-import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import { Box, Button, IconButton, iconButtonClasses } from "@mui/joy";
-import React, { useState } from "react";
+import {
+  KeyboardArrowLeft as KeyboardArrowLeftIcon,
+  KeyboardArrowRight as KeyboardArrowRightIcon,
+} from "@mui/icons-material";
 
 interface TablePaginationProps {
   totalPages: number;
@@ -8,47 +10,97 @@ interface TablePaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const TablePagination: React.FC<TablePaginationProps> = ({
+const TablePagination = ({
   totalPages,
   currentPage,
   onPageChange,
-}) => {
-  const [activePage, setActivePage] = useState(currentPage);
-
+}: TablePaginationProps) => {
   const handlePageChange = (newPage: number) => {
-    setActivePage(newPage);
     onPageChange(newPage);
   };
 
   const renderPageNumbers = () => {
-    const pageNumbers: (number | string)[] = [];
-    const pageRange = 3; // Number of pages to display on each side of the current page
+    const pageNumbers = [];
+    const maxPagesInMiddle = 5; // Maximum number of page numbers to show in the middle
 
-    // Calculate the start and end of the page range
-    const startPage = Math.max(activePage - pageRange, 1);
-    const endPage = Math.min(activePage + pageRange, totalPages);
+    // Render the first page number
+    pageNumbers.push(
+      <IconButton
+        key={1}
+        size="sm"
+        variant={1 === currentPage ? "soft" : "outlined"}
+        color={1 === currentPage ? "primary" : "neutral"}
+        onClick={() => handlePageChange(1)}
+      >
+        1
+      </IconButton>
+    );
 
-    // Add the first page
-    pageNumbers.push(1);
-
-    // Add the ellipsis if the start page is greater than 2
-    if (startPage > 2) {
-      pageNumbers.push("...");
+    // Render the ellipsis if the current page is not in the middle range
+    if (currentPage > maxPagesInMiddle + 1) {
+      pageNumbers.push(
+        <IconButton
+          key="ellipsis-start"
+          size="sm"
+          variant="plain"
+          color="neutral"
+        >
+          ...
+        </IconButton>
+      );
     }
 
-    // Add the pages within the range
-    for (let i = startPage; i <= endPage; i++) {
-      pageNumbers.push(i);
+    // Render the middle page numbers
+    const middleStart = Math.max(
+      2,
+      currentPage - Math.floor(maxPagesInMiddle / 2)
+    );
+    const middleEnd = Math.min(
+      totalPages - 1,
+      middleStart + maxPagesInMiddle - 1
+    );
+
+    for (let i = middleStart; i <= middleEnd; i++) {
+      pageNumbers.push(
+        <IconButton
+          key={i}
+          size="sm"
+          variant={i === currentPage ? "soft" : "outlined"}
+          color={i === currentPage ? "primary" : "neutral"}
+          onClick={() => handlePageChange(i)}
+        >
+          {i}
+        </IconButton>
+      );
     }
 
-    // Add the ellipsis if the end page is less than the total pages minus 1
-    if (endPage < totalPages - 1) {
-      pageNumbers.push("...");
+    // Render the ellipsis if the current page is not in the middle range
+    if (currentPage < totalPages - maxPagesInMiddle) {
+      pageNumbers.push(
+        <IconButton
+          key="ellipsis-end"
+          size="sm"
+          variant="plain"
+          color="neutral"
+        >
+          ...
+        </IconButton>
+      );
     }
 
-    // Add the last page
+    // Render the last page number
     if (totalPages > 1) {
-      pageNumbers.push(totalPages);
+      pageNumbers.push(
+        <IconButton
+          key={totalPages}
+          size="sm"
+          variant={totalPages === currentPage ? "soft" : "outlined"}
+          color={totalPages === currentPage ? "primary" : "neutral"}
+          onClick={() => handlePageChange(totalPages)}
+        >
+          {totalPages}
+        </IconButton>
+      );
     }
 
     return pageNumbers;
@@ -70,47 +122,24 @@ const TablePagination: React.FC<TablePaginationProps> = ({
         size="sm"
         variant="outlined"
         color="neutral"
-        startDecorator={<KeyboardArrowLeft />}
-        disabled={activePage === 1}
-        onClick={() => handlePageChange(activePage - 1)}
+        startDecorator={<KeyboardArrowLeftIcon />}
+        disabled={currentPage === 1}
+        onClick={() => handlePageChange(currentPage - 1)}
       >
         Previous
       </Button>
 
       <Box sx={{ flex: 1 }} />
-      {renderPageNumbers().map((page) =>
-        typeof page === "number" ? (
-          <IconButton
-            key={page}
-            size="sm"
-            variant="outlined"
-            color="neutral"
-            onClick={() => handlePageChange(page)}
-            disabled={page === activePage}
-          >
-            {page}
-          </IconButton>
-        ) : (
-          <IconButton
-            key={page}
-            size="sm"
-            variant="plain"
-            color="neutral"
-            disabled
-          >
-            {page}
-          </IconButton>
-        )
-      )}
+      {renderPageNumbers()}
       <Box sx={{ flex: 1 }} />
 
       <Button
         size="sm"
         variant="outlined"
         color="neutral"
-        endDecorator={<KeyboardArrowRight />}
-        disabled={activePage === totalPages}
-        onClick={() => handlePageChange(activePage + 1)}
+        endDecorator={<KeyboardArrowRightIcon />}
+        disabled={currentPage === totalPages}
+        onClick={() => handlePageChange(currentPage + 1)}
       >
         Next
       </Button>

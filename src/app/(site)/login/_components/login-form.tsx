@@ -24,6 +24,8 @@ import { loginAccount } from "@/services/account.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { useRouter } from "next/navigation";
 import { LoginPayload } from "@/types/account";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/types/response";
 
 export default function LoginForm() {
   const [visibilityToggle, setVisibilityToggle] = useState<boolean>(false);
@@ -45,10 +47,11 @@ export default function LoginForm() {
 
   const { mutateAsync: loginUserMutate, isPending: isLoginUserMutateLoading } =
     useMutation({
-      mutationFn: async (userData: LoginPayload) => loginAccount(userData),
+      mutationFn: (userData: LoginPayload) => loginAccount(userData),
       onSuccess: (response) => {
         queryClient.invalidateQueries({ queryKey: ["users", "current_user"] });
         queryClient.resetQueries();
+
         if (response.data.role === "admin") {
           router.replace("/admin");
         } else {
@@ -57,8 +60,11 @@ export default function LoginForm() {
         reset();
         enqueueSnackbar(response?.message, "success");
       },
-      onError: (error) => {
-        enqueueSnackbar(error?.message, "error");
+      onError: (error: AxiosError<ErrorResponse>) => {
+        enqueueSnackbar(
+          error.response?.data.message || error?.message,
+          "error"
+        );
       },
     });
 

@@ -1,12 +1,9 @@
 import React, { useEffect } from "react";
 import Box from "@mui/joy/Box";
-import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
 import Sheet from "@mui/joy/Sheet";
 import { Avatar, CircularProgress, Link as JoyLink } from "@mui/joy";
-import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { useOrdersData } from "@/app/_components/hooks/use-orders";
 import { hexToRgba, snakeCaseToNormalText } from "@/shared/functions";
 import dayjs from "dayjs";
@@ -21,11 +18,11 @@ import {
   DoneAllOutlined,
   HourglassBottomOutlined,
   HourglassEmptyOutlined,
-  KeyboardArrowLeft,
 } from "@mui/icons-material";
 import DataTable from "../../customers/_components/data-table";
 import { FIXED_HEIGHT } from "@/shared/constants";
 import { IOrder } from "@/types/orders";
+import TablePagination from "../../_components/table-pagination";
 
 interface IOrderStatus {
   status: string;
@@ -171,6 +168,7 @@ export default function OrderTable() {
   const assignedTo = searchParams.get("assigned_to") || "";
   const sortBy = searchParams.get("sort_by") || "";
   const sortOrder = searchParams.get("sort_order") || "";
+  const page = searchParams.get("page") || "";
 
   const {
     ordersData,
@@ -183,6 +181,7 @@ export default function OrderTable() {
     assigned_to: assignedTo,
     sort_by: sortBy,
     sort_order: sortOrder,
+    page,
   });
 
   useEffect(() => {
@@ -197,6 +196,7 @@ export default function OrderTable() {
     sortBy,
     sortOrder,
     assignedTo,
+    page,
   ]);
 
   const handleRowClick = (order: IOrder) => {
@@ -253,49 +253,15 @@ export default function OrderTable() {
         />
       </Sheet>
 
-      <Box
-        className="Pagination-laptopUp"
-        sx={{
-          pt: 2,
-          gap: 1,
-          [`& .${iconButtonClasses.root}`]: { borderRadius: "50%" },
-          display: {
-            xs: "none",
-            md: "flex",
-          },
-        }}
-      >
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          startDecorator={<KeyboardArrowLeft />}
-        >
-          Previous
-        </Button>
-
-        <Box sx={{ flex: 1 }} />
-        {["1", "2", "3", "…", "8", "9", "10"].map((page) => (
-          <IconButton
-            key={page}
-            size="sm"
-            variant={Number(page) ? "outlined" : "plain"}
-            color="neutral"
-          >
-            {page}
-          </IconButton>
-        ))}
-        <Box sx={{ flex: 1 }} />
-
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          endDecorator={<KeyboardArrowRightIcon />}
-        >
-          Next
-        </Button>
-      </Box>
+      {ordersData.pagination && (
+        <TablePagination
+          currentPage={ordersData.pagination?.currentPage}
+          totalPages={ordersData.pagination.totalPages}
+          onPageChange={(newPage) =>
+            router.push("/admin/orders?page=" + newPage)
+          }
+        />
+      )}
     </React.Fragment>
   );
 }

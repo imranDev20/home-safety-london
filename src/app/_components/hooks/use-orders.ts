@@ -8,10 +8,11 @@ interface OrderQueries {
   assigned_to?: string;
   sort_by?: string;
   sort_order?: string;
+  page?: string;
 }
 
 export const useOrdersData = (enabled?: boolean, queries?: OrderQueries) => {
-  const { q, order_status, assigned_to, sort_by, sort_order } =
+  const { q, order_status, assigned_to, sort_by, sort_order, page } =
     queries as OrderQueries;
   const {
     data,
@@ -20,7 +21,8 @@ export const useOrdersData = (enabled?: boolean, queries?: OrderQueries) => {
     refetch: refetchGetOrders,
   } = useQuery<GetOrdersResponse>({
     queryKey: ["orders"],
-    queryFn: () => getOrders(q, order_status, assigned_to, sort_by, sort_order),
+    queryFn: () =>
+      getOrders(q, order_status, assigned_to, sort_by, sort_order, page),
     enabled: enabled ?? true,
     refetchOnMount: true,
   });

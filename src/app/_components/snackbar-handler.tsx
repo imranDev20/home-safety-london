@@ -1,15 +1,16 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import { useSnackbar } from "./snackbar-provider";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function SnackbarHandler() {
   const searchParams = useSearchParams();
   const { enqueueSnackbar } = useSnackbar();
   const error = searchParams.get("error") || "";
+  const lastShownError = useRef<string | null>(null);
 
   useEffect(() => {
-    if (error) {
+    if (error && error !== lastShownError.current) {
       switch (error) {
         case "expired":
           enqueueSnackbar(
@@ -23,7 +24,6 @@ export default function SnackbarHandler() {
         case "invalid_token":
           enqueueSnackbar("Invalid token. Please log in.", "error");
           break;
-
         case "unauthorized":
           enqueueSnackbar(
             "Sorry, you don't have permission to access the admin panel",
@@ -36,9 +36,9 @@ export default function SnackbarHandler() {
             "error"
           );
       }
+      lastShownError.current = error;
     }
-  }, [error]);
-  // including missing dep causes infinite loop
+  }, [error, enqueueSnackbar]);
 
   return null;
 }

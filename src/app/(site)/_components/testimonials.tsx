@@ -47,6 +47,8 @@ export default function Testimonials() {
       queryFn: () => getTestimonials(),
     });
 
+  console.log(testimonialData);
+
   if (isGetTestimonialsLoading) {
     return <CircularProgress />;
   }
@@ -104,7 +106,7 @@ export default function Testimonials() {
               </Typography>
             </Box>
           </Grid>
-          <Grid xs={12} md={8}>
+          {/* <Grid xs={12} md={8}>
             <CarouselProvider
               naturalSlideWidth={400}
               naturalSlideHeight={200}
@@ -123,7 +125,7 @@ export default function Testimonials() {
                 ))}
               </Slider>
             </CarouselProvider>
-          </Grid>
+          </Grid> */}
         </Grid>
 
         <Box

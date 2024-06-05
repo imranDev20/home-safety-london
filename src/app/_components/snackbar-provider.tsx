@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import Snackbar from "@mui/joy/Snackbar";
 import Button from "@mui/joy/Button";
 import PlaylistAddCheckCircleRoundedIcon from "@mui/icons-material/PlaylistAddCheckCircleRounded";
@@ -30,32 +30,41 @@ export const SnackbarProvider = ({
   const [snackbarQueue, setSnackbarQueue] = useState<
     Array<{ message: string; variant?: Variant }>
   >([]);
-  const [open, setOpen] = useState(false);
+  const [currentSnackbar, setCurrentSnackbar] = useState<{
+    message: string;
+    variant?: Variant;
+  } | null>(null);
 
   const enqueueSnackbar = (message: string, variant?: Variant) => {
     setSnackbarQueue((prevQueue) => [...prevQueue, { message, variant }]);
-    setOpen(true); // Open Snackbar when a message is added to the queue
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setCurrentSnackbar(null);
+    setSnackbarQueue((prevQueue) => prevQueue.slice(1));
   };
+
+  useEffect(() => {
+    if (snackbarQueue.length > 0) {
+      setCurrentSnackbar(snackbarQueue[0]);
+    }
+  }, [snackbarQueue]);
 
   return (
     <SnackbarContext.Provider value={{ enqueueSnackbar }}>
       {children}
-      {snackbarQueue.map((item, index) => (
+      {currentSnackbar && (
         <Snackbar
-          key={index}
           variant="soft"
+          autoHideDuration={3000}
           color={
-            item.variant === "error"
+            currentSnackbar.variant === "error"
               ? "danger"
-              : item.variant === "info"
+              : currentSnackbar.variant === "info"
               ? "neutral"
-              : item.variant || "success"
+              : currentSnackbar.variant || "success"
           }
-          open={open}
+          open={true}
           onClose={handleClose}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
           startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
@@ -65,20 +74,20 @@ export const SnackbarProvider = ({
               size="sm"
               variant="soft"
               color={
-                item.variant === "error"
+                currentSnackbar.variant === "error"
                   ? "danger"
-                  : item.variant === "info"
+                  : currentSnackbar.variant === "info"
                   ? "neutral"
-                  : item.variant || "success"
+                  : currentSnackbar.variant || "success"
               }
             >
               Dismiss
             </Button>
           }
         >
-          {item.message}
+          {currentSnackbar.message}
         </Snackbar>
-      ))}
+      )}
     </SnackbarContext.Provider>
   );
 };

@@ -14,7 +14,8 @@ export const getOrders = async (
   order_status?: string,
   assigned_to?: string,
   sort_by?: string,
-  sort_order?: string
+  sort_order?: string,
+  page?: string
 ): Promise<GetOrdersResponse> => {
   const url = buildUrl(ORDERS_PATH, {
     q,
@@ -22,6 +23,7 @@ export const getOrders = async (
     assigned_to,
     sort_by,
     sort_order,
+    page,
   });
 
   const response: GetOrdersResponse = await http.get(url);
