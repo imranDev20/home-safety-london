@@ -56,15 +56,16 @@ export async function POST(req: NextRequest) {
         ]),
         resident_type: faker.helpers.arrayElement(["house", "hmo", "flat"]),
         bedrooms: faker.datatype.number({ min: 1, max: 10 }).toString(),
-        order_items: [
-          {
+        order_items: Array.from(
+          { length: faker.datatype.number({ min: 1, max: 7 }) },
+          () => ({
             name: faker.commerce.productName(),
             title: faker.lorem.sentence(),
             price: faker.datatype.number({ min: 10, max: 1000 }),
             quantity: faker.datatype.number({ min: 1, max: 10 }),
             unit: faker.helpers.arrayElement(["pieces", "kg", "liters"]),
-          },
-        ],
+          })
+        ),
         is_service_details_complete: faker.datatype.boolean(),
         customer_name: faker.name.fullName(),
         email: faker.internet.email(),
@@ -97,19 +98,10 @@ export async function POST(req: NextRequest) {
         remaining_amount: faker.datatype.number({ min: 100, max: 1000 }),
         paid_amount: faker.datatype.number({ min: 10, max: 500 }),
         invoice_id: await generateInvoiceId(), // Generate the invoice ID
-        order_items: [
-          {
-            name: faker.commerce.productName(),
-            title: faker.lorem.sentence(),
-            price: faker.datatype.number({ min: 10, max: 1000 }),
-            quantity: faker.datatype.number({ min: 1, max: 10 }),
-            unit: faker.helpers.arrayElement(["pieces", "kg", "liters"]),
-            assigned_engineers: faker.helpers.arrayElements(
-              engineerIds,
-              faker.datatype.number({ min: 0, max: 2 })
-            ), // Assign engineers
-          },
-        ],
+        order_items: preOrder.order_items.map((item) => ({
+          ...item,
+          assigned_engineers: [],
+        })),
       };
 
       // Create a new Order document

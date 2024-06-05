@@ -275,9 +275,6 @@ export async function GET(req: NextRequest) {
     const sortOrder = req.nextUrl.searchParams.get("sort_order") || "desc";
     // const customerId = req.nextUrl.searchParams.get("customer_id") || "";
 
-    // Prepare the query object
-    const query: any = {};
-
     // Create an aggregation pipeline
     const pipeline: any[] = [
       {
@@ -294,8 +291,18 @@ export async function GET(req: NextRequest) {
       },
       {
         $addFields: {
+          order_status: {
+            $sortArray: {
+              input: "$order_status",
+              sortBy: { timestamp: -1 },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
           mostRecentStatus: {
-            $arrayElemAt: [{ $reverseArray: "$order_status" }, 0],
+            $arrayElemAt: ["$order_status", 0],
           },
         },
       },
@@ -319,7 +326,17 @@ export async function GET(req: NextRequest) {
     // Fetch orders from the database using the aggregation pipeline
     const orders = await Order.aggregate(pipeline).exec();
 
-    const totalCount = await Order.countDocuments(query);
+    // Create a pipeline for counting the documents
+    const countPipeline = [
+      ...pipeline.slice(0, -2), // Exclude $skip and $limit stages
+      {
+        $count: "totalCount",
+      },
+    ];
+    // Fetch the total count from the database using the count pipeline
+    const countResult = await Order.aggregate(countPipeline).exec();
+
+    const totalCount = countResult[0]?.totalCount || 0;
     const totalPages = Math.ceil(totalCount / limit);
 
     return NextResponse.json(

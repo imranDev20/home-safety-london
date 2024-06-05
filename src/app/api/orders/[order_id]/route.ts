@@ -11,7 +11,6 @@ export async function GET(
     await dbConnect();
     const orderId = params.order_id;
 
-    // Fetch a single order from the database based on the provided orderId
     const order = await Order.findById(orderId);
 
     if (!order) {
@@ -19,6 +18,22 @@ export async function GET(
         status: 404,
       });
     }
+
+    // Ensure timestamp is converted to Date objects if they are strings
+    order.order_status.forEach((status) => {
+      status.timestamp = new Date(status.timestamp);
+    });
+
+    // Log the order_status before sorting for debugging purposes
+    console.log("Before sorting:", order.order_status);
+
+    // Sort the order_status array by timestamp in descending order
+    order.order_status.sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+    );
+
+    // Log the order_status after sorting for debugging purposes
+    console.log("After sorting:", order.order_status);
 
     return NextResponse.json(
       formatResponse(true, order, "Order fetched successfully")
@@ -29,7 +44,6 @@ export async function GET(
     });
   }
 }
-
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { order_id: string } }

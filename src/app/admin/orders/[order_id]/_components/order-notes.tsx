@@ -87,9 +87,14 @@ export default function OrderNotes() {
 
       {isEdit ? (
         <Textarea
-          minRows={6}
-          maxRows={6}
+          minRows={8}
+          maxRows={8}
           autoFocus={isEdit}
+          slotProps={{
+            textarea: {
+              maxLength: 250,
+            },
+          }}
           sx={{
             fontSize: "sm",
             lineHeight: 1.8,
@@ -99,10 +104,16 @@ export default function OrderNotes() {
           onChange={(e) => setOrderNotes(e.target.value)}
         />
       ) : (
-        <Card>
+        <Card
+          sx={{
+            minHeight: 235,
+          }}
+        >
           <CardContent>
             <Typography level="body-sm" lineHeight={1.8}>
-              {orderDetails?.order_notes}
+              {orderDetails?.order_notes?.length !== 0
+                ? orderDetails.order_notes
+                : "No notes from customer"}
             </Typography>
           </CardContent>
         </Card>

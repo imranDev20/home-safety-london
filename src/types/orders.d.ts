@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export type ParkingType = "free" | "paid" | "unavailable";
 export type ZoneType = "";
@@ -8,6 +8,7 @@ export type PaymentMethod =
   | "cash_to_engineer";
 
 export type OrderStatus = {
+  _id?: string;
   status:
     | "pending_payment"
     | "payment_completed"
@@ -32,6 +33,7 @@ export interface IOrderItem {
   quantity: string | number;
   unit: string;
   title: string;
+  _id: string;
 }
 
 export interface IOrderItemWithEngineers extends IOrderItem {

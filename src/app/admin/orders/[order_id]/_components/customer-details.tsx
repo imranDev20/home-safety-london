@@ -1,15 +1,23 @@
 "use client";
 import useOrderDetails from "@/app/_components/hooks/use-order-details";
+import useUpdateOrderDetails from "@/app/_components/hooks/use-update-order-details";
+import {
+  Close,
+  Done,
+  Edit,
+  MapOutlined,
+  PhoneOutlined,
+} from "@mui/icons-material";
 import {
   Avatar,
   Box,
   Card,
   CardContent,
-  Grid,
+  IconButton,
   Stack,
   Typography,
 } from "@mui/joy";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 interface InfoCellsProps {
   title: string;
@@ -39,20 +47,114 @@ function InfoCells({ title, info }: InfoCellsProps) {
 }
 
 export default function CustomerDetails() {
-  const { orderDetails, isLoading } = useOrderDetails();
+  const { orderDetails } = useOrderDetails();
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [orderNotes, setOrderNotes] = useState<string>("");
+
+  const { updateOrderMutate, isPending: isUpdateOrderPending } =
+    useUpdateOrderDetails();
+
+  useEffect(() => {
+    if (orderDetails) {
+      setOrderNotes(orderDetails?.order_notes);
+    }
+  }, [orderDetails]);
+
+  if (!orderDetails) {
+    return "Failed to load data...";
+  }
 
   return (
     <Box mt={3}>
-      <Typography
-        level="title-lg"
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
         sx={{
           mb: 1,
         }}
       >
-        Customer Information
-      </Typography>
+        <Typography level="title-lg">Customer Details</Typography>
+
+        <Stack spacing={1} direction="row">
+          {isEdit && (
+            <>
+              <IconButton
+                size="sm"
+                disabled={isUpdateOrderPending}
+                onClick={() => setIsEdit((prev) => !prev)}
+                color="danger"
+              >
+                <Close />
+              </IconButton>
+              <IconButton
+                size="sm"
+                loading={isUpdateOrderPending}
+                onClick={async () => {
+                  const response = await updateOrderMutate({
+                    ...orderDetails,
+                    order_notes: orderNotes,
+                  });
+
+                  if (response.success) {
+                    setIsEdit((prev) => !prev);
+                  }
+                }}
+                color="success"
+              >
+                <Done />
+              </IconButton>
+            </>
+          )}
+
+          {!isEdit && (
+            <IconButton size="sm" onClick={() => setIsEdit((prev) => !prev)}>
+              <Edit
+                sx={{
+                  fontSize: 16,
+                }}
+              />
+            </IconButton>
+          )}
+        </Stack>
+      </Stack>
+
       <Card>
-        <CardContent orientation="vertical"></CardContent>
+        <CardContent orientation="vertical">
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Avatar>{orderDetails.customer_name.charAt(0)}</Avatar>
+
+            <Stack>
+              <Typography level="title-md">
+                {orderDetails.customer_name}
+              </Typography>
+              <Typography level="body-sm">{orderDetails.email}</Typography>
+            </Stack>
+          </Stack>
+
+          <Stack spacing={2} mt={3}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <PhoneOutlined
+                sx={{
+                  fontSize: 20,
+                }}
+              />
+              <Typography level="body-sm">{orderDetails.phone_no}</Typography>
+            </Stack>
+
+            <Stack direction="row" spacing={1}>
+              <MapOutlined
+                sx={{
+                  fontSize: 20,
+                }}
+              />
+              <Typography level="body-sm">
+                {orderDetails.address.house_street}, {orderDetails.address.city}{" "}
+                {orderDetails.address.postcode}
+              </Typography>
+            </Stack>
+          </Stack>
+        </CardContent>
       </Card>
     </Box>
   );

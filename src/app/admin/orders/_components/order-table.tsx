@@ -5,9 +5,13 @@ import Sheet from "@mui/joy/Sheet";
 import { Avatar, CircularProgress, Link as JoyLink } from "@mui/joy";
 import Typography from "@mui/joy/Typography";
 import { useOrdersData } from "@/app/_components/hooks/use-orders";
-import { hexToRgba, snakeCaseToNormalText } from "@/shared/functions";
+import {
+  getMostRecentStatus,
+  hexToRgba,
+  snakeCaseToNormalText,
+} from "@/shared/functions";
 import dayjs from "dayjs";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   AttachMoneyOutlined,
   BuildOutlined,
@@ -20,26 +24,19 @@ import {
   HourglassEmptyOutlined,
 } from "@mui/icons-material";
 import DataTable from "../../customers/_components/data-table";
-import { FIXED_HEIGHT } from "@/shared/constants";
+import {
+  FIXED_HEIGHT,
+  ORDER_STATUS_COLORS,
+  ORDER_STATUS_ICONS,
+} from "@/shared/constants";
 import { IOrder } from "@/types/orders";
 import TablePagination from "../../_components/table-pagination";
+import { useQueryString } from "@/app/_components/hooks/use-query-string";
 
 interface IOrderStatus {
   status: string;
   timestamp: string;
   _id: string;
-}
-
-function getMostRecentStatus(statuses: IOrderStatus[]): string | null {
-  if (statuses.length === 0) {
-    return null;
-  }
-
-  const sortedStatuses = statuses.sort(
-    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-  );
-
-  return sortedStatuses[0].status;
 }
 
 const columns = [
@@ -79,31 +76,9 @@ const columns = [
         <Chip
           variant="soft"
           size="sm"
-          startDecorator={
-            {
-              pending_payment: <HourglassEmptyOutlined />,
-              payment_completed: <AttachMoneyOutlined />,
-              awaiting_confirmation: <HourglassBottomOutlined />,
-              order_confirmed: <CheckCircleOutlined />,
-              engineer_en_route: <DirectionsCarOutlined />,
-              work_in_progress: <BuildOutlined />,
-              work_completed: <CheckOutlined />,
-              completed: <DoneAllOutlined />,
-              cancelled: <CancelOutlined />,
-            }[status as string]
-          }
+          startDecorator={ORDER_STATUS_ICONS[status]}
           sx={{
-            backgroundColor: {
-              pending_payment: hexToRgba("#FFC107", 0.2),
-              payment_completed: hexToRgba("#4CAF50", 0.2),
-              awaiting_confirmation: hexToRgba("#FF9800", 0.2),
-              order_confirmed: hexToRgba("#2196F3", 0.2),
-              engineer_en_route: hexToRgba("#9C27B0", 0.2),
-              work_in_progress: hexToRgba("#673AB7", 0.2),
-              work_completed: hexToRgba("#009688", 0.2),
-              completed: hexToRgba("#4CAF50", 0.2),
-              cancelled: hexToRgba("#F44336", 0.2),
-            }[status as string],
+            backgroundColor: hexToRgba(ORDER_STATUS_COLORS[status], 0.2),
             textTransform: "capitalize",
           }}
         >
@@ -163,6 +138,8 @@ const columns = [
 export default function OrderTable() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { createQueryString } = useQueryString();
   const searchTerm = searchParams.get("q") || "";
   const orderStatus = searchParams.get("order_status") || "";
   const assignedTo = searchParams.get("assigned_to") || "";
@@ -258,7 +235,9 @@ export default function OrderTable() {
           currentPage={ordersData.pagination?.currentPage}
           totalPages={ordersData.pagination.totalPages}
           onPageChange={(newPage) =>
-            router.push("/admin/orders?page=" + newPage)
+            router.push(
+              `${pathname}?${createQueryString("page", newPage.toString())}`
+            )
           }
         />
       )}

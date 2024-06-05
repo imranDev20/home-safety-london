@@ -2,10 +2,14 @@
 import CustomBreadcrumb from "@/app/_components/common/custom-breadcrumb";
 import useOrderDetails from "@/app/_components/hooks/use-order-details";
 import useUpdateOrderDetails from "@/app/_components/hooks/use-update-order-details";
-import { ORDER_STATUS } from "@/shared/constants";
+import {
+  ORDER_STATUS,
+  ORDER_STATUS_COLORS,
+  ORDER_STATUS_ICONS,
+} from "@/shared/constants";
 import { getMostRecentStatus, snakeCaseToNormalText } from "@/shared/functions";
 import { OrderStatusValues } from "@/types/orders";
-import { Download, MoreHoriz } from "@mui/icons-material";
+import { Download, MoreHoriz, West } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -20,6 +24,7 @@ import {
   useTheme,
 } from "@mui/joy";
 import dayjs from "dayjs";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function OrderDetailsHeader() {
@@ -148,9 +153,25 @@ export default function OrderDetailsHeader() {
         spacing={2}
         mt={2}
       >
-        <Typography component="h1" level="h2">
-          {orderDetails?.invoice_id}
-        </Typography>
+        <Stack>
+          <Stack direction="row" spacing={2}>
+            <IconButton
+              variant="plain"
+              size="sm"
+              component={Link}
+              href={`/admin/orders`}
+            >
+              <West />
+            </IconButton>
+            <Typography component="h1" level="h2">
+              {orderDetails?.invoice_id || "Loading..."}
+            </Typography>
+          </Stack>
+
+          <Typography level="body-sm" ml={6} mt={0.5}>
+            {dayjs(orderDetails.createdAt).format("DD MMMM YYYY, hh:MM")}
+          </Typography>
+        </Stack>
 
         <Stack spacing={1} direction="row" alignItems="center">
           <FormControl
@@ -171,7 +192,15 @@ export default function OrderDetailsHeader() {
                   },
                 },
               }}
+              startDecorator={ORDER_STATUS_ICONS[orderStatus]}
               value={orderStatus}
+              sx={{
+                ".MuiSelect-startDecorator": {
+                  ".MuiSvgIcon-root": {
+                    color: ORDER_STATUS_COLORS[orderStatus],
+                  },
+                },
+              }}
               color="neutral"
               onChange={(_, value) => value && handleStatusChange(value)}
             >
