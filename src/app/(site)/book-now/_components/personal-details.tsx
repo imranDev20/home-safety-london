@@ -608,6 +608,9 @@ export default function PersonalDetails() {
           <Grid xs={12}>
             <Controller
               control={control}
+              rules={{
+                maxLength: 250,
+              }}
               name="orderNotes"
               render={({ field }) => (
                 <FormControl
@@ -623,7 +626,25 @@ export default function PersonalDetails() {
                     size="lg"
                     variant="outlined"
                     minRows={3}
+                    slotProps={{
+                      textarea: {
+                        maxLength: 250,
+                      },
+                    }}
                   />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      mt: 1,
+                    }}
+                  >
+                    <Typography
+                      color={field.value.length > 250 ? "danger" : "neutral"}
+                    >
+                      {field.value.length}/{250}
+                    </Typography>
+                  </Box>
                   <HookFormError name="orderNotes" errors={errors} />
                 </FormControl>
               )}
