@@ -65,7 +65,7 @@ export default function CustomerDetails() {
   }
 
   return (
-    <Box mt={3}>
+    <Box>
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -139,7 +139,7 @@ export default function CustomerDetails() {
                   fontSize: 20,
                 }}
               />
-              <Typography level="body-sm">{orderDetails.phone_no}</Typography>
+              <Typography level="title-sm">{orderDetails.phone_no}</Typography>
             </Stack>
 
             <Stack direction="row" spacing={1}>
@@ -148,7 +148,7 @@ export default function CustomerDetails() {
                   fontSize: 20,
                 }}
               />
-              <Typography level="body-sm">
+              <Typography level="title-sm">
                 {orderDetails.address.house_street}, {orderDetails.address.city}{" "}
                 {orderDetails.address.postcode}
               </Typography>

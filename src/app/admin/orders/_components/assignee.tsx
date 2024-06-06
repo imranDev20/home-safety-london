@@ -11,7 +11,12 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
-export default function Assignee() {
+type AssigneeProps = {
+  isLabel?: boolean;
+  isOrderItems?: boolean;
+};
+
+export default function Assignee({ isLabel }: AssigneeProps) {
   const [listBoxOpen, setListBoxOpen] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const assignedTo = searchParams.get("assigned_to") || "";
@@ -25,12 +30,15 @@ export default function Assignee() {
   return (
     <>
       <FormControl size="sm">
-        <FormLabel
-          id="select-field-demo-label"
-          htmlFor="select-field-demo-button"
-        >
-          Assignee
-        </FormLabel>
+        {isLabel && (
+          <FormLabel
+            id="select-field-demo-label"
+            htmlFor="select-field-demo-button"
+          >
+            Assignee
+          </FormLabel>
+        )}
+
         <Select
           listboxOpen={listBoxOpen}
           onClose={() => setListBoxOpen(false)}
@@ -62,11 +70,11 @@ export default function Assignee() {
             },
           }}
           value={assignedTo}
-          onChange={(_, value) =>
+          onChange={(_, value) => {
             router.push(
               `${pathname}?${createQueryString("assigned_to", value as string)}`
-            )
-          }
+            );
+          }}
         >
           <Option value="">All Engineers</Option>
           {engineersData?.data.map((engineer) => (

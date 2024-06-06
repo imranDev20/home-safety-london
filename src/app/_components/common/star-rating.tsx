@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 
-const StarRating = ({
-  onChange,
-  value,
-}: {
+type StarRatingProps = {
   value: number;
   onChange: (param: number) => void;
-}) => {
-  const [hoverValue, setHoverValue] = useState(0);
+};
+
+const StarRating = ({ onChange, value }: StarRatingProps) => {
+  const [hoverValue, setHoverValue] = useState<number>(0);
 
   const handleClick = (newValue: number) => {
     onChange(newValue);

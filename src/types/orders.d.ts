@@ -1,7 +1,7 @@
 import { Document, Types } from "mongoose";
 
 export type ParkingType = "free" | "paid" | "unavailable";
-export type ZoneType = "";
+export type ZoneType = "congestion" | "non_congestion";
 export type PaymentMethod =
   | "bank_transfer"
   | "credit_card"
@@ -33,7 +33,7 @@ export interface IOrderItem {
   quantity: string | number;
   unit: string;
   title: string;
-  _id: string;
+  _id?: string;
 }
 
 export interface IOrderItemWithEngineers extends IOrderItem {
@@ -41,7 +41,7 @@ export interface IOrderItemWithEngineers extends IOrderItem {
 }
 
 export interface IPreOrder {
-  _id: string;
+  _id?: string;
   property_type: "residential" | "commercial";
   resident_type: "house" | "hmo" | "flat";
   bedrooms: string;
@@ -63,13 +63,13 @@ export interface IPreOrder {
     zone_type: ZoneType;
     zone_cost: number;
   };
-  inspection_date: string;
+  inspection_date: Date;
   inspection_time: string;
   order_notes: string;
   is_personal_details_complete: boolean;
   payment_method: PaymentMethod;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface IOrder extends IPreOrder {

@@ -4,6 +4,8 @@ import CustomerDetails from "./_components/customer-details";
 import OrderItems from "./_components/order-items";
 import OrderNotes from "./_components/order-notes";
 import OrderActivity from "./_components/order-activity";
+import PropertyDetails from "./_components/property-details";
+import AssignedAndTimeInfo from "./_components/assigned-and-time-info";
 
 export default function SingleOrderPage() {
   return (
@@ -13,36 +15,43 @@ export default function SingleOrderPage() {
         borderRadius: "sm",
         flexShrink: 1,
         overflowY: "auto",
-        overflowX: "hidden",
         minHeight: `calc(100vh - 35px)`,
         height: `calc(100vh - 35px)`,
+        pr: 2,
       }}
     >
-      <OrderDetailsHeader />
+      <Box>
+        <OrderDetailsHeader />
 
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          mt: 3,
-        }}
-      >
-        <Grid md={9}>
-          <OrderItems />
-        </Grid>
-        <Grid md={3}>
-          <OrderNotes />
-        </Grid>
-      </Grid>
+        <AssignedAndTimeInfo />
 
-      <Grid container spacing={2} mt={3}>
-        <Grid md={3}>
-          <CustomerDetails />
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            mt: 3,
+          }}
+        >
+          <Grid md={9}>
+            <OrderItems />
+            {/* <OrderItems /> */}
+          </Grid>
+          <Grid md={3}>
+            <OrderNotes />
+            <PropertyDetails />
+          </Grid>
         </Grid>
-        <Grid md={3}>
-          <OrderActivity />
+
+        <Grid container spacing={3} mt={3}>
+          <Grid md={4}>
+            <CustomerDetails />
+          </Grid>
+
+          <Grid md={8}>
+            <OrderActivity />
+          </Grid>
         </Grid>
-      </Grid>
+      </Box>
     </Box>
   );
 }

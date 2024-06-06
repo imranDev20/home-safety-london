@@ -6,6 +6,7 @@ import dbConnect from "../_lib/dbConnect";
 import PreOrder from "../_models/PreOrder";
 import Order from "../_models/Order";
 import { ORDER_STATUS } from "@/shared/constants";
+import { IPreOrder } from "@/types/orders";
 
 async function generateInvoiceId() {
   const mostRecentOrder = await Order.findOne().sort({ createdAt: -1 }).exec();
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
 
     for (let i = 0; i < 100; i++) {
       // Generate fake data for PreOrder
-      const fakePreOrder = {
+      const fakePreOrder: IPreOrder = {
         property_type: faker.helpers.arrayElement([
           "residential",
           "commercial",
@@ -80,6 +81,31 @@ export async function POST(req: NextRequest) {
           postcode: faker.address.zipCode(),
           city: faker.address.city(),
         },
+        parking_options: {
+          parking_cost: faker.datatype.number({ min: 5, max: 5 }),
+          parking_type: faker.helpers.arrayElement([
+            "paid",
+            "unavailable",
+            "free",
+          ]),
+        },
+        congestion_zone: {
+          zone_cost: faker.datatype.number({ min: 5, max: 20 }),
+          zone_type: faker.helpers.arrayElement([
+            "congestion",
+            "non_congestion",
+          ]),
+        },
+        order_notes: faker.lorem.sentences(2).substring(0, 250),
+        inspection_date: faker.date.anytime(),
+        inspection_time: faker.helpers.arrayElement([
+          "8 AM - 12 PM",
+          "12 PM - 4 PM",
+          "4 PM - 8 AM",
+        ]),
+
+        is_personal_details_complete: true,
+
         // Add more fake data for other fields as needed
       };
 

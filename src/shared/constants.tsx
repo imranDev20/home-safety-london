@@ -27,7 +27,6 @@ import {
   PatOutlinedIcon,
 } from "@/app/_components/common/icons";
 import ElectricImage from "@/images/electric.jpg";
-import { hexToRgba } from "./functions";
 
 export const ADMIN_OPTIONS = [
   {
@@ -455,11 +454,13 @@ export const CONGESTION_ZONE_OPTIONS = [
   {
     value: "congestion",
     name: "Yes",
+    nameAlt: "In Congestion Zone",
     cost: 18,
   },
   {
     value: "non_congestion",
     name: "No",
+    nameAlt: "Outside Congestion Zone",
     cost: 0,
   },
 ];

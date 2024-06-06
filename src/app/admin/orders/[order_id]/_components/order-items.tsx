@@ -7,15 +7,34 @@ import { Close, Done, Edit } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
+  Button,
   Card,
   CardContent,
   Divider,
   Grid,
   IconButton,
+  Sheet,
   Stack,
   Typography,
 } from "@mui/joy";
 import React, { useState } from "react";
+import Assignee from "../../_components/assignee";
+import OrderItem from "./order-item";
+
+const columns = [
+  {
+    label: "CUSTOMER",
+    key: "name",
+    width: 180,
+    render: (value: string, row: any) => (
+      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <Typography level="body-xs">{value}</Typography>
+      </Box>
+    ),
+  },
+  { label: "EMAIL", key: "email", width: 150 },
+  { label: "PHONE", key: "phone", width: 120 },
+];
 
 export default function OrderItems() {
   const { orderDetails } = useOrderDetails();
@@ -24,7 +43,6 @@ export default function OrderItems() {
   const { updateOrderMutate, isPending: isUpdateOrderPending } =
     useUpdateOrderDetails();
 
-  console.log(orderDetails);
   return (
     <>
       <Stack
@@ -69,37 +87,17 @@ export default function OrderItems() {
           )}
         </Stack>
       </Stack>
-      <Card>
-        <CardContent orientation="vertical">
-          {orderDetails?.order_items.map((item, index) => (
-            <Box key={item._id}>
-              <Box>
-                <Grid container>
-                  <Grid xs={12}>
-                    <Typography level="title-md">{item.name}</Typography>
-                  </Grid>
-                </Grid>
 
-                {/* <Autocomplete
-                  size="sm"
-                  placeholder="Combo box"
-                  options={top100Films}
-                /> */}
-                <Typography>{item.quantity}</Typography>
-                <Typography>{item.unit}</Typography>
-              </Box>
-
-              {orderDetails.order_items.length - 1 !== index && (
-                <Divider
-                  sx={{
-                    my: 2,
-                  }}
-                />
-              )}
-            </Box>
-          ))}
-        </CardContent>
-      </Card>
+      <Sheet
+        variant="outlined"
+        sx={{
+          borderRadius: "sm",
+        }}
+      >
+        {orderDetails?.order_status && (
+          <DataTable data={orderDetails?.order_items} columns={columns} />
+        )}
+      </Sheet>
     </>
   );
 }

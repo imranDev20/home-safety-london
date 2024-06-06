@@ -51,7 +51,6 @@ function NavigationList() {
                 pathname.startsWith(`${option.route}/`))
             }
             sx={{
-              fontWeight: 500,
               borderRadius: theme.radius.sm,
             }}
           >
@@ -63,13 +62,7 @@ function NavigationList() {
               <option.Icon />
             </ListItemDecorator>
 
-            <Typography
-              sx={{
-                fontSize: 14,
-              }}
-            >
-              {option.label}
-            </Typography>
+            <Typography level="title-sm">{option.label}</Typography>
           </ListItemButton>
         </ListItem>
       ))}
