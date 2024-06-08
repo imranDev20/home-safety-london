@@ -3,56 +3,94 @@ import { NextRequest, NextResponse } from "next/server";
 import PreOrder from "../_models/PreOrder";
 import mongoose from "mongoose";
 import { formatResponse } from "@/shared/functions";
+import User from "../_models/User";
+import bcrypt from "bcrypt";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
     await dbConnect();
     const { status, ...data } = await req.json();
+    const preOrderId = req.cookies.get("bookingSession")?.value;
 
     let preOrder;
     switch (status) {
       case "service":
         // Validate and handle the customer information step
-        preOrder = new PreOrder({
-          service_info: data.service_info,
-          status: "service",
-        });
-        await preOrder.save();
+        preOrder = await PreOrder.findById(preOrderId);
+
+        if (!preOrder) {
+          preOrder = new PreOrder({
+            service_info: data.service_info,
+            status: "service",
+          });
+          await preOrder.save();
+        } else {
+          preOrder.service_info = data.service_info;
+          preOrder.status = "service";
+          await preOrder.save();
+        }
         break;
+
       case "personal":
         // Validate and handle the product information step
-        if (!data._id) {
-          throw new Error("Missing _id for personal step");
+
+        preOrder = await PreOrder.findById(preOrderId);
+        if (!preOrder) {
+          throw new Error("PreOrder not found for this ID");
         }
 
-        console.log(data);
+        const { name, email, address } = data.personal_info.customer;
+        const password = Math.random().toString(36).slice(-6);
 
-      // Create a user or find him,
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-      // preOrder = await PreOrder.findById(data._id);
-      // preOrder = new PreOrder({
-      //   service_info: data.service_info,
-      //   personal_info: data.personal_info,
-      //   status: "personal",
-      // });
+        let customer;
+        customer = await User.findOne({ email }); //checking if user exists
 
-      // await preOrder.save();
-      // break;
-      case "payment":
-        // Find the existing pre-order by id and update with shipping information
-        if (!data._id) {
-          throw new Error("Missing _id for payment step");
+        if (!customer) {
+          customer = new User({
+            name,
+            email,
+            address,
+            password: hashedPassword,
+            role: "customer",
+            creation_method: "through_order",
+          });
+          await customer.save();
         }
 
-        preOrder = await PreOrder.findById(data._id);
-        preOrder = new PreOrder({
-          service_info: data.service_info,
-          personal_info: data.personal_info,
-          payment_info: data.payment_info,
-          status: "payment",
-        });
+        if (!customer) {
+          throw new Error("Customer creation failed. Please try again.");
+        }
+
+        preOrder.service_info = data.service_info;
+        preOrder.personal_info = {
+          ...data.personal_info,
+          customer: customer._id,
+        };
+        preOrder.status = "personal";
+
         await preOrder.save();
         break;
+
+      case "payment":
+        // Find the existing pre-order by id and update with shipping information
+
+        preOrder = await PreOrder.findById(preOrderId).populate(
+          "personal_info.customer"
+        );
+
+        if (!preOrder) {
+          throw new Error("PreOrder not found for this ID");
+        }
+        preOrder.service_info = data.service_info;
+        preOrder.personal_info = data.personal_info;
+        preOrder.payment_info = data.payment_info;
+        preOrder.status = "payment";
+        await preOrder.save();
+        break;
+
       default:
         return NextResponse.json(
           {
@@ -63,9 +101,17 @@ export async function POST(req: NextRequest, res: NextResponse) {
         );
     }
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       formatResponse(true, preOrder, "Order status updated")
     );
+
+    response.cookies.set("bookingSession", preOrder._id.toString(), {
+      httpOnly: true, // Set the httpOnly flag to true
+      maxAge: 60 * 60 * 24, // 1 day in seconds
+      sameSite: "strict",
+      path: "/", // Set the path for the cookie
+    });
+    return response;
   } catch (error: any) {
     console.log(error);
 
@@ -84,6 +130,27 @@ export async function POST(req: NextRequest, res: NextResponse) {
       );
     }
 
+    return NextResponse.json(formatResponse(false, null, error.message), {
+      status: 500,
+    });
+  }
+}
+
+export async function GET(req: NextRequest, res: NextResponse) {
+  try {
+    await dbConnect();
+    const preOrderId = req.cookies.get("bookingSession")?.value;
+    const preOrder = await PreOrder.findById(preOrderId);
+
+    console.log(preOrderId);
+
+    return NextResponse.json({
+      success: true,
+      message: "Data fetched successfully!",
+      data: preOrder,
+    });
+  } catch (error: any) {
+    console.log(error);
     return NextResponse.json(formatResponse(false, null, error.message), {
       status: 500,
     });

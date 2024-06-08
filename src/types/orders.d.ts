@@ -35,42 +35,50 @@ export type OrderStatusValues = Pick<OrderStatus, "status">[keyof Pick<
   "status"
 >];
 
-export interface IOrderItem {
+export interface IOrderItem extends Pick<Document, "_id"> {
   name: string;
   price: number;
   quantity: string | number;
   unit: string;
   title: string;
-  _id?: string;
 }
+
 export interface IOrderItemWithEngineers extends IOrderItem {
   assigned_engineers: Types.ObjectId[];
 }
 
-interface IPreOrder<T extends IUser | undefined = undefined> {
+interface IPreOrder<
+  T extends IUser | undefined = undefined,
+  S extends PreOrderStepStatus = "service"
+> {
   service_info: {
     property_type: PropertyType;
     resident_type?: ResidentType<PropertyType>;
     bedrooms?: PropertyType extends "residential" ? number : null;
     order_items: IOrderItem[];
   };
-  personal_info: {
-    customer: T extends IUser ? Types.ObjectId : Types.ObjectId | undefined;
-    parking_options: {
-      parking_type: ParkingType;
-      parking_cost: number;
-    };
-    congestion_zone: {
-      zone_type: ZoneType;
-      zone_cost: number;
-    };
-    inspection_date: Date;
-    inspection_time: string;
-    order_notes?: string;
-  };
-  payment_info: {
-    payment_method: PaymentMethod;
-  };
+  personal_info?: S extends "personal"
+    ? {
+        customer: T extends IUser ? IUser : Types.ObjectId;
+        parking_options: {
+          parking_type: ParkingType;
+          parking_cost: number;
+        };
+        congestion_zone: {
+          zone_type: ZoneType;
+          zone_cost: number;
+        };
+        inspection_date: Date;
+        inspection_time: string;
+        order_notes?: string;
+      }
+    : undefined;
+
+  payment_info: S extends "payment"
+    ? {
+        payment_method: PaymentMethod;
+      }
+    : undefined;
   status: PreOrderStepStatus;
   createdAt: Date;
   updatedAt: Date;

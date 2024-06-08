@@ -1,4 +1,4 @@
-import { getPreOrderById, updatePreOrder } from "@/services/pre-order.services";
+import { getPreOrder, updatePreOrder } from "@/services/pre-order.services";
 import {
   getPreOrderIdFromLocalStorage,
   snakeCaseToNormalText,
@@ -34,7 +34,7 @@ export default function Confirmation() {
     queryKey: ["pre-order"],
     queryFn: async () => {
       const preOrderId = getPreOrderIdFromLocalStorage();
-      const response = await getPreOrderById(preOrderId as string);
+      const response = await getPreOrder(preOrderId as string);
       return response.data;
     },
     enabled: false,
@@ -196,7 +196,7 @@ export default function Confirmation() {
                     textTransform: "capitalize",
                   }}
                 >
-                  {preOrderData?.address?.house_street}
+                  {preOrderData?.address?.street}
                 </Typography>
               </Typography>
 

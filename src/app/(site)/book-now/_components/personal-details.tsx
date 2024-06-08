@@ -33,7 +33,7 @@ import {
   isObjectEmpty,
 } from "@/shared/functions";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getPreOrderById, updatePreOrder } from "@/services/pre-order.services";
+import { getPreOrder, updatePreOrder } from "@/services/pre-order.services";
 import { PreOrderPersonalPayload } from "@/types/pre-order";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { CONGESTION_ZONE_OPTIONS, PARKING_OPTIONS } from "@/shared/constants";
@@ -89,7 +89,7 @@ export default function PersonalDetails() {
     queryKey: ["pre-order"],
     queryFn: async () => {
       const preOrderId = getPreOrderIdFromLocalStorage();
-      const response = await getPreOrderById(preOrderId as string);
+      const response = await getPreOrder(preOrderId as string);
       return response.data;
     },
     enabled: false,
@@ -120,7 +120,7 @@ export default function PersonalDetails() {
         name: preOrderData?.customer_name || "",
         email: preOrderData?.email || "",
         phone: preOrderData?.phone_no || "",
-        house: preOrderData?.address?.house_street || "",
+        house: preOrderData?.address?.street || "",
         postCode: preOrderData?.address?.postcode || "",
         city: preOrderData?.address?.city || "London",
         parkingOptions: preOrderData?.parking_options?.parking_type || "",
@@ -150,7 +150,7 @@ export default function PersonalDetails() {
         email: data.email,
         phone_no: data.phone,
         address: {
-          house_street: data.house,
+          street: data.house,
           postcode: data.postCode,
           city: data.city,
         },

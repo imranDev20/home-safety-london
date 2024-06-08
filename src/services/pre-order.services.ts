@@ -1,19 +1,13 @@
-import { UpdatePreOrderResponse } from "@/types/response";
+import { PreOrderResponse } from "@/types/response";
 import http from "./http.services";
 
-export const getPreOrderById = async (preOrderId: string) => {
-  const response = await http.get(`/pre-order/${preOrderId}`);
+export const getPreOrder = async (): Promise<PreOrderResponse> => {
+  const response: PreOrderResponse = await http.get(`/pre-order`);
   return response;
 };
 
-export const updatePreOrder = async (
-  preOrderId: string | undefined,
-  updatedData: any
-): Promise<UpdatePreOrderResponse> => {
-  const response: UpdatePreOrderResponse = await http.patch(
-    `/pre-order/${preOrderId}`,
-    updatedData
-  );
+export const createPreOrder = async (): Promise<PreOrderResponse> => {
+  const response: PreOrderResponse = await http.post(`/pre-order`);
   return response;
 };
 

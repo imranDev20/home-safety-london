@@ -51,36 +51,54 @@ const preOrderSchema = new mongoose.Schema<IPreOrder>(
       },
     },
     personal_info: {
-      customer: { type: Schema.Types.ObjectId, ref: "User", required: true },
+      customer: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: function () {
+          return this.status === "personal" || this.status === "payment";
+        },
+      },
       parking_options: {
         parking_type: {
           type: String,
           enum: ["paid", "free", "unavailable"],
-          required: true,
+          required: function () {
+            return this.status === "personal" || this.status === "payment";
+          },
         },
         parking_cost: {
           type: Number,
-          required: true,
+          required: function () {
+            return this.status === "personal" || this.status === "payment";
+          },
         },
       },
       congestion_zone: {
         zone_type: {
           type: String,
           enum: ["congestion", "non_congestion"],
-          required: true,
+          required: function () {
+            return this.status === "personal" || this.status === "payment";
+          },
         },
         zone_cost: {
           type: Number,
-          required: true,
+          required: function () {
+            return this.status === "personal" || this.status === "payment";
+          },
         },
       },
       inspection_date: {
         type: Date,
-        required: true,
+        required: function () {
+          return this.status === "personal" || this.status === "payment";
+        },
       },
       inspection_time: {
         type: String,
-        required: true,
+        required: function () {
+          return this.status === "personal" || this.status === "payment";
+        },
       },
       order_notes: {
         type: String,

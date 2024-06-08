@@ -11,7 +11,7 @@ import {
   createQueryString,
   getPreOrderIdFromLocalStorage,
 } from "@/shared/functions";
-import { getPreOrderById } from "@/services/pre-order.services";
+import { getPreOrder } from "@/services/pre-order.services";
 import { useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { PreOrderPersonalPayload } from "@/types/pre-order";
@@ -32,7 +32,7 @@ export default function PaymentDetails() {
     queryKey: ["pre-order"],
     queryFn: async () => {
       const preOrderId = getPreOrderIdFromLocalStorage();
-      const response = await getPreOrderById(preOrderId as string);
+      const response = await getPreOrder(preOrderId as string);
       return response.data;
     },
     enabled: false,
@@ -138,7 +138,7 @@ export default function PaymentDetails() {
                 country: "GB",
                 city: "London",
                 postal_code: preOrderData?.address?.postcode,
-                line1: preOrderData?.address?.house_street,
+                line1: preOrderData?.address?.street,
               },
             },
           },

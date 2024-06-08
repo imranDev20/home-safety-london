@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema<IUser>(
   {
     name: {
       type: String,
+      required: [true, "Please enter your name!"],
     },
     email: {
       type: String,
@@ -26,19 +27,26 @@ const userSchema = new mongoose.Schema<IUser>(
       minlength: [6, "Password must be at least 6 characters long"],
     },
     address: {
-      type: {
-        street: {
-          type: String,
-          required: true,
+      street: {
+        type: String,
+        required: function () {
+          return this.creation_method === "through_order";
         },
-        postcode: {
-          type: String,
-          required: true,
+        message: "Street address is required when placing an order.",
+      },
+      postcode: {
+        type: String,
+        required: function () {
+          return this.creation_method === "through_order";
         },
-        city: {
-          type: String,
-          required: true,
+        message: "Postcode is required when placing an order.",
+      },
+      city: {
+        type: String,
+        required: function () {
+          return this.creation_method === "through_order";
         },
+        message: "City is required when placing an order.",
       },
     },
     preferences: {
@@ -50,32 +58,28 @@ const userSchema = new mongoose.Schema<IUser>(
     },
     skills: {
       type: [String],
-      validate: {
-        validator: function (this: IUser) {
-          return (
-            this.role !== "engineer" || (this.skills && this.skills.length > 0)
-          );
-        },
-        message: "Skills are required for engineers.",
+      required: function () {
+        return this.role === "engineer";
       },
+      message: "Skills are required for engineers.",
     },
     specialty: {
       type: String,
-      validate: {
-        validator: function (this: IUser) {
-          return this.role !== "engineer" || !!this.specialty;
-        },
-        message: "Specialty is required for engineers.",
+      required: function () {
+        return this.role === "engineer";
       },
+      message: "Specialty is required for engineers.",
     },
     experience: {
       type: Number,
-      validate: {
-        validator: function (this: IUser) {
-          return this.role !== "engineer" || this.experience !== undefined;
-        },
-        message: "Experience is required for engineers.",
+      required: function () {
+        return this.role === "engineer";
       },
+      message: "Experience is required for engineers.",
+    },
+    creation_method: {
+      type: String,
+      required: true,
     },
   },
   {

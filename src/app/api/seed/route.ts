@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
           "bank_transfer",
         ]),
         address: {
-          house_street: faker.address.streetAddress(),
+          street: faker.address.streetAddress(),
           postcode: faker.address.zipCode(),
           city: faker.address.city(),
         },

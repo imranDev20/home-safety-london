@@ -27,5 +27,5 @@ export type GetCustomersResponse = SuccessResponseWithArray<ICustomer>;
 export type GetOrdersResponse = SuccessResponseWithArray<IOrder>;
 export type GetOrderDetailsResponse = SuccessResponse<IOrder>;
 export type AuthUserResponse = SuccessResponse<IUserBasicInfo>;
-export type UpdatePreOrderResponse = SuccessResponse<IPreOrder>;
+export type PreOrderResponse = SuccessResponse<IPreOrder>;
 export type CreateOrderResponse = SuccessResponse<IOrder>;

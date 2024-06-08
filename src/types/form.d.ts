@@ -1,9 +1,9 @@
-import { Dayjs } from "dayjs";
+import { PropertyType, ResidentType } from "./orders";
 
 export type ServiceFormInput = {
-  propertyType: "residential" | "commercial";
-  residentType: "flat" | "house" | "hmo" | "";
-  bedrooms: string;
+  propertyType: PropertyType;
+  residentType: ResidentType<PropertyType>;
+  bedrooms: PropertyType extends "residential" ? number : null;
   orderItems: string[];
 };
 

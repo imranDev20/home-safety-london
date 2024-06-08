@@ -149,7 +149,7 @@ export default function CustomerDetails() {
                 }}
               />
               <Typography level="title-sm">
-                {orderDetails.address.house_street}, {orderDetails.address.city}{" "}
+                {orderDetails.address.street}, {orderDetails.address.city}{" "}
                 {orderDetails.address.postcode}
               </Typography>
             </Stack>

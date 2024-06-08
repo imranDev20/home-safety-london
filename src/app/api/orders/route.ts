@@ -5,142 +5,16 @@ import Order from "../_models/Order";
 import { jsPDF } from "jspdf";
 import { sendEmail } from "../_lib/sendEmail";
 import { placedOrderEmailHtml } from "../_templates/order-placed-email";
-import {
-  ADDRESS,
-  CONGESTION_ZONE_OPTIONS,
-  EMAIL_ADDRESS,
-  PARKING_OPTIONS,
-  PHONE_NO,
-} from "@/shared/constants";
+
 import PreOrder from "../_models/PreOrder";
 import { IPreOrder } from "@/types/orders";
 import mongoose from "mongoose";
-import { generateInvoiceId } from "../_lib/generateInvoice";
+import { generateInvoiceId, generateInvoicePdf } from "../_lib/generateInvoice";
+import { IUser } from "@/types/user";
+import { receivedOrderEmailHtml } from "../_templates/order-received-email";
 
 interface OrderQuery {
   order_status?: string;
-}
-
-async function generateInvoicePdf(invoiceId: string, preOrder: IPreOrder) {
-  const doc = new jsPDF();
-
-  // Add header
-  doc.setFontSize(18).setFont("helvetica", "bold");
-  doc
-    .text("London Home Safety", 190, 20, { align: "right" })
-    .setFont("helvetica", "normal");
-  doc.setFontSize(11);
-  doc.text(ADDRESS, 190, 30, {
-    align: "right",
-  });
-  doc.text(`Email: ${EMAIL_ADDRESS}`, 190, 35, { align: "right" });
-  doc.text(`Phone: ${PHONE_NO}`, 190, 40, { align: "right" });
-
-  // Add invoice title and details
-  doc.setFontSize(32);
-  doc.text("INVOICE", 20, 60);
-  doc.setFontSize(11);
-  doc
-    .setFont("helvetica", "bold")
-    .text(`Invoice Number:`, 168, 80, { align: "right" })
-    .setFont("helvetica", "normal");
-  doc.text(`${invoiceId}`, 190, 80, { align: "right" });
-  doc
-    .setFont("helvetica", "bold")
-    .text(`Date:`, 170, 85, { align: "right" })
-    .setFont("helvetica", "normal");
-  doc.text(`${new Date().toLocaleDateString()}`, 190, 85, { align: "right" });
-
-  // Add billing and shipping address
-  doc
-    .setFont("helvetica", "bold")
-    .text("Billing Address:", 20, 80)
-    .setFont("helvetica", "normal");
-  doc.text(preOrder.personal_info.customer_name, 20, 90);
-  doc.text(preOrder.personal_info.address.house_street, 20, 95);
-  doc.text(
-    `${preOrder.personal_info.address.postcode}, ${preOrder.personal_info.address.city}`,
-    20,
-    100
-  );
-
-  // Add table header
-  doc.setFontSize(12);
-  doc.text("Service", 20, 120);
-  doc.text("Quantity", 120, 120);
-  doc.text("Total", 180, 120);
-  doc.line(15, 125, 200, 125);
-
-  let currentY = 132;
-  preOrder.service_info.order_items.forEach((item) => {
-    doc.text(item.title, 20, currentY);
-    doc.text(`${item.quantity} ${item.unit}`, 120, currentY);
-    doc.text(
-      `£${(parseInt(item.quantity as string) * item.price).toString()}`,
-      180,
-      currentY
-    );
-    currentY += 10;
-  });
-
-  // Add total section
-  const subtotal = preOrder.service_info.order_items.reduce(
-    (sum, item) => sum + parseInt(item.quantity as string) * item.price,
-    0
-  );
-  console.log(subtotal);
-  // use when tax is available
-  // const tax = 0;
-  // const total = subtotal + tax;
-
-  const parkingOption = PARKING_OPTIONS.find(
-    (opt) => opt.value === preOrder.personal_info.parking_options.parking_type
-  )?.name;
-
-  const congestionOption = CONGESTION_ZONE_OPTIONS.find(
-    (opt) => opt.value === preOrder.personal_info.congestion_zone.zone_type
-  )?.name;
-
-  const totalCost = calculateTotalCost(preOrder);
-
-  doc.text("Subtotal:", 150, currentY + 10);
-  doc.text(`£${subtotal.toString()}`, 180, currentY + 10);
-  doc.text(`Parking Charge (${parkingOption}):`, 166, currentY + 20, {
-    align: "right",
-  });
-  doc.text(
-    `£${preOrder.personal_info.parking_options.parking_cost.toString()}`,
-    180,
-    currentY + 20
-  );
-  doc.text(
-    `Congestion Zone Charge (${congestionOption}):`,
-    166,
-    currentY + 30,
-    {
-      align: "right",
-    }
-  );
-  doc.text(
-    `£${preOrder.personal_info.congestion_zone.zone_cost.toString()}`,
-    180,
-    currentY + 30
-  );
-  doc
-    .setFont("Helvetica", "bold")
-    .text("Total (Incl. Tax):", 166, currentY + 40, { align: "right" });
-  doc
-    .setFont("Helvetica", "bold")
-    .text(`£${totalCost.toString()}`, 180, currentY + 40)
-    .setFont("Helvetica", "normal");
-
-  // Add footer
-  doc.setFontSize(10);
-  doc.text("Terms and conditions apply.", 20, 280);
-  doc.text("Thank you for your business!", 20, 290);
-
-  // Return the PDF document as a Uint8Array
-  return doc.output("arraybuffer");
 }
 
 export async function POST(req: NextRequest) {
@@ -155,7 +29,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const preOrder = await PreOrder.findById(pre_order_id);
+    const preOrder = (await PreOrder.findById(pre_order_id).populate(
+      "personal_info.customer"
+    )) as IPreOrder<IUser>;
+
     if (!preOrder) {
       return NextResponse.json(
         formatResponse(false, null, "PreOrder not found"),
@@ -163,14 +40,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const invoiceId = await generateInvoiceId();
+    if (
+      !preOrder.service_info ||
+      !preOrder.personal_info ||
+      !preOrder.payment_info
+    ) {
+      return NextResponse.json(
+        formatResponse(
+          false,
+          null,
+          "PreOrder step missing: please ensure all service, personal, and payment information is provided."
+        ),
+        { status: 400 }
+      );
+    }
 
-    const doc = new jsPDF();
-    doc.setFontSize(30);
-    doc.text("Invoice", 20, 20);
-    doc.setFontSize(20);
-    doc.text(`Invoice ID: ${invoiceId}`, 20, 50);
-    doc.text("Thank you for your purchase!", 20, 80);
+    const invoiceId = await generateInvoiceId();
 
     // Serialize the PDF document to a Uint8Array
     const pdfBytes = await generateInvoicePdf(invoiceId, preOrder);
@@ -190,18 +75,17 @@ export async function POST(req: NextRequest) {
     const totalCost = calculateTotalCost(preOrder);
 
     const newOrder = new Order({
-      service_info: { ...preOrder.toObject().service_info },
-      personal_info: { ...preOrder.toObject().personal_info },
-      payment_info: {
-        ...preOrder.toObject().payment_info,
-        remaining_amount: totalCost,
-        paid_amount: 0,
-      },
+      ...preOrder.service_info,
+      ...preOrder.personal_info,
+      customer: preOrder.personal_info.customer._id,
+      ...preOrder.payment_info,
+      remaining_amount: totalCost,
+      paid_amount: 0,
       invoice_id: invoiceId,
     });
 
     await newOrder.save();
-    // await PreOrder.findByIdAndDelete(pre_order_id);
+    await PreOrder.findByIdAndDelete(pre_order_id);
 
     const attachments = [
       {
@@ -211,22 +95,36 @@ export async function POST(req: NextRequest) {
       },
     ];
 
-    const { customer_name, email } = preOrder.personal_info;
+    const { email, name } = preOrder.personal_info.customer;
 
-    const orderPlacedEmailSubject = `Order Confirmation: #${invoiceId}`;
-    // await sendEmail({
-    //   fromEmail: "info@londonhomesafety.co.uk",
-    //   fromName: "London Home Safety",
-    //   to: email,
-    //   subject: orderPlacedEmailSubject,
-    //   html: placedOrderEmailHtml(customer_name, invoiceId),
-    //   attachments: attachments,
-    // });
+    const orderPlacedEmailSubject = `Your Order Has Been Placed: Confirmation #${invoiceId}`;
+    // send email to customer
+    await sendEmail({
+      fromEmail: "info@londonhomesafety.co.uk",
+      fromName: "London Home Safety",
+      to: email,
+      subject: orderPlacedEmailSubject,
+      html: placedOrderEmailHtml(name, invoiceId),
+      attachments: attachments,
+    });
+
+    const orderReceivedEmailSubject = `New Order Received: Order #${invoiceId} - Action Required`;
+    // send email to admin
+    await sendEmail({
+      fromEmail: "info@londonhomesafety.co.uk",
+      fromName: "London Home Safety",
+      to: process.env.ADMIN_EMAIL as string,
+      subject: orderReceivedEmailSubject,
+      html: receivedOrderEmailHtml(newOrder.invoice_id, newOrder._id),
+      attachments: attachments,
+    });
+
+    // add admin email
 
     return NextResponse.json(
       formatResponse(
         true,
-        // newOrder,
+        newOrder,
         "Order created successfully, PreOrder deleted, and invoice generated"
       )
     );

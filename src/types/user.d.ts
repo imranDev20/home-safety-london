@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import { IOrder } from "./orders";
 
 export type Role = "customer" | "engineer" | "admin";
+export type CreationMethod = "registration" | "by_admin" | "through_order";
 
 export interface IUser {
   _id: Types.ObjectId;
@@ -21,6 +22,7 @@ export interface IUser {
   skills?: string[];
   specialty?: string;
   experience?: number;
+  creation_method: CreationMethod;
   createdAt: string;
 }
 

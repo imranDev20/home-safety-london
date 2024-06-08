@@ -8,7 +8,7 @@ import { getPreOrderIdFromLocalStorage } from "@/shared/functions";
 import { Box, CircularProgress } from "@mui/joy";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { getPreOrderById } from "@/services/pre-order.services";
+import { getPreOrder } from "@/services/pre-order.services";
 import { PreOrderPersonalPayload } from "@/types/pre-order";
 
 export default function Payments() {
@@ -26,7 +26,7 @@ export default function Payments() {
     queryKey: ["pre-order"],
     queryFn: async () => {
       const preOrderId = getPreOrderIdFromLocalStorage();
-      const response = await getPreOrderById(preOrderId as string);
+      const response = await getPreOrder(preOrderId as string);
       return response.data;
     },
     enabled: false,

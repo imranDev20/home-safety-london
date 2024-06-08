@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { Pagination } from "@/types/misc";
 import Cookies from "js-cookie";
 import { IPreOrder, OrderStatus, OrderStatusValues } from "@/types/orders";
+import { IUser } from "@/types/user";
 
 export function snakeCaseToNormalText(snakeCaseString: string) {
   return snakeCaseString?.replace(/_/g, " ")?.toLowerCase();
@@ -165,7 +166,11 @@ export const debounce = (func: (...args: any[]) => void, delay: number) => {
   };
 };
 
-export function calculateTotalCost(order: IPreOrder) {
+export function calculateTotalCost(order: IPreOrder<IUser, "personal">) {
+  if (!order.personal_info) {
+    console.log("Personal info is needed to calculate total cost");
+    return;
+  }
   // Calculate the total cost of order items
   const orderItemsTotal = order.service_info.order_items.reduce(
     (total: any, item: any) => {
