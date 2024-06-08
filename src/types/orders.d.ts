@@ -51,7 +51,8 @@ export interface IOrderItemWithEngineers extends IOrderItem {
   assigned_engineers: Types.ObjectId[];
 }
 
-interface IPreOrder<T extends IUser | undefined = undefined> {
+interface IPreOrder<T extends IUser | undefined = undefined>
+  extends Pick<Document, "_id"> {
   service_info: {
     property_type: PropertyType;
     resident_type?: ResidentType<PropertyType>;
