@@ -50,7 +50,6 @@ export async function POST(req: any) {
         }
 
         const invoiceId = await generateInvoiceId();
-
         const pdfBytes = await generateInvoicePdf(invoiceId, preOrder);
         const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
 
@@ -59,8 +58,8 @@ export async function POST(req: any) {
           ...preOrder.personal_info,
           customer: paymentIntent.metadata.pre_order_id,
           ...preOrder.payment_info,
-          remaining_amount: paymentIntent.amount_received,
-          paid_amount: 0,
+          remaining_amount: 0,
+          paid_amount: paymentIntent.amount_received,
           invoice_id: invoiceId,
         });
         await newOrder.save();

@@ -107,6 +107,10 @@ const orderSchema = new Schema<IOrder>(
     order_notes: {
       type: String,
     },
+    payment_method: {
+      type: String,
+      required: true,
+    },
     order_status: {
       type: [orderStatusSchema],
       required: true,

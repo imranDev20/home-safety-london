@@ -101,6 +101,7 @@ export interface IOrder extends Pick<Document, "_id"> {
   inspection_date: Date;
   inspection_time: string;
   order_notes?: string;
+  payment_method: PaymentMethod;
   order_status: OrderStatus[];
   remaining_amount: number;
   paid_amount: number;
