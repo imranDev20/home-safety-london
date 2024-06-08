@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import dbConnect from "@/app/api/_lib/dbConnect";
 import BlacklistedToken from "../../_models/BlacklistedToken";
+import { formatResponse } from "@/shared/functions";
 
 export async function POST(req: NextRequest) {
   try {
@@ -69,7 +70,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error(error);
     return NextResponse.json(
-      { success: false, message: "An error occurred while logging out" },
+      formatResponse(false, null, "An error occurred while logging out"),
       { status: 500 }
     );
   }

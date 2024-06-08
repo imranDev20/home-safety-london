@@ -21,6 +21,8 @@ import { logoutAccount } from "@/services/account.services";
 import { useSnackbar } from "../../snackbar-provider";
 import { useRouter } from "next/navigation";
 import { useCurrentUser } from "../../hooks/use-current-user";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/types/response";
 
 export default function NavbarDropdown() {
   const { enqueueSnackbar } = useSnackbar();
@@ -33,19 +35,17 @@ export default function NavbarDropdown() {
     mutateAsync: logoutAccountMutate,
     isPending: isLogoutAccountLoading,
   } = useMutation({
-    mutationFn: async () => {
-      const response = await logoutAccount();
-      return response;
-    },
+    mutationFn: () => logoutAccount(),
+
     onSuccess: (response) => {
-      enqueueSnackbar(response?.message, "success");
-      queryClient.invalidateQueries({ queryKey: ["current_user"] });
+      enqueueSnackbar(response.message, "success");
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
       queryClient.resetQueries();
       router.replace("/login");
     },
 
-    onError: (error) => {
-      enqueueSnackbar(error?.message, "error");
+    onError: (error: AxiosError<ErrorResponse>) => {
+      enqueueSnackbar(error.response?.data.message || error?.message, "error");
     },
   });
 

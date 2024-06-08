@@ -7,7 +7,7 @@ import { getCurrentAccount } from "@/services/account.services";
 
 export const useCurrentUser = () => {
   const { data: userData, ...rest } = useQuery({
-    queryKey: ["current_user", "users"],
+    queryKey: ["current-user", "users"],
     queryFn: () => getCurrentAccount(),
     retry: 1,
   });

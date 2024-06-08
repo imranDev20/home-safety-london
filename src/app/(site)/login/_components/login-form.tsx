@@ -49,7 +49,7 @@ export default function LoginForm() {
     useMutation({
       mutationFn: (userData: LoginPayload) => loginAccount(userData),
       onSuccess: (response) => {
-        queryClient.invalidateQueries({ queryKey: ["users", "current_user"] });
+        queryClient.invalidateQueries({ queryKey: ["users", "current-user"] });
         queryClient.resetQueries();
 
         if (response.data.role === "admin") {

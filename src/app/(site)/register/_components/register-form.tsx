@@ -52,7 +52,7 @@ export default function RegisterForm() {
     mutationFn: (userData: RegisterPayload) => registerAccount(userData),
     onSuccess: async (response) => {
       await queryClient.invalidateQueries({
-        queryKey: ["users", "current_user"],
+        queryKey: ["users", "current-user"],
       });
       await queryClient.resetQueries();
 

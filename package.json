@@ -46,6 +46,7 @@
     "react-scroll-trigger": "^0.6.14",
     "react-slugify": "^3.0.3",
     "react-transition-group": "^4.4.5",
+    "sharp": "^0.33.4",
     "stripe": "^14.20.0"
   },
   "peerDependencies": {
