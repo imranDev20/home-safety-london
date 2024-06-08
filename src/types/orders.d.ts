@@ -42,7 +42,7 @@ export type OrderStatusValues = Pick<OrderStatus, "status">[keyof Pick<
 export interface IOrderItem extends Pick<Document, "_id"> {
   name: string;
   price: number;
-  quantity: string | number;
+  quantity: number;
   unit: string;
   title: string;
 }

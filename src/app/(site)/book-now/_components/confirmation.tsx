@@ -37,10 +37,8 @@ export default function Confirmation() {
   // pre order mutate for changing payment method
   const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
     useMutation({
-      mutationFn: async (preOrder: Partial<IPreOrder>) => {
-        const response = await createPreOrder(preOrder);
-        return response;
-      },
+      mutationFn: async (preOrder: Partial<IPreOrder>) =>
+        createPreOrder(preOrder),
       onSuccess: (response) => {
         console.log(response);
         queryClient.invalidateQueries({ queryKey: ["pre-order"] });
@@ -76,14 +74,11 @@ export default function Confirmation() {
     });
 
   // setting payment method after refresh
-
   useEffect(() => {
     if (preOrderData?.payment_info) {
       setPaymentMethod(preOrderData.payment_info.payment_method);
     }
   }, [preOrderData]);
-
-  console.log(preOrderData);
 
   const handlePreOrderPaymentMethod = (
     event: React.ChangeEvent<HTMLInputElement>

@@ -27,11 +27,7 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 import { isValid } from "postcode";
 import React, { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  createQueryString,
-  getPreOrderIdFromLocalStorage,
-  isObjectEmpty,
-} from "@/shared/functions";
+import { createQueryString, isObjectEmpty } from "@/shared/functions";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createPreOrder, getPreOrder } from "@/services/pre-order.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
@@ -85,11 +81,7 @@ export default function PersonalDetails() {
     },
   });
 
-  const {
-    data,
-    isLoading: isPreOrderDataLoading,
-    refetch: refetchPreOrder,
-  } = useQuery({
+  const { data, isLoading: isPreOrderDataLoading } = useQuery({
     queryKey: ["pre-order"],
     queryFn: () => getPreOrder(),
     retry: 1,
@@ -110,15 +102,6 @@ export default function PersonalDetails() {
         enqueueSnackbar(error.response?.data.message || error.message, "error");
       },
     });
-
-  useEffect(() => {
-    const preOrderId = getPreOrderIdFromLocalStorage();
-    if (preOrderId) {
-      refetchPreOrder();
-    }
-  }, [refetchPreOrder]);
-
-  console.log(preOrderData);
 
   useEffect(() => {
     if (preOrderData?.personal_info) {

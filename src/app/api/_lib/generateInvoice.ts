@@ -82,10 +82,12 @@ export async function generateInvoicePdf(
     .setFont("helvetica", "bold")
     .text("Billing Address:", 20, 80)
     .setFont("helvetica", "normal");
-  doc.text(preOrder.personal_info.customer.name, 20, 90);
-  doc.text(preOrder.personal_info.customer.address.street, 20, 95);
+  doc.text(preOrder?.personal_info?.customer?.name ?? "", 20, 90);
+  doc.text(preOrder?.personal_info?.customer?.address?.street ?? "", 20, 95);
   doc.text(
-    `${preOrder.personal_info.customer.address.postcode}, ${preOrder.personal_info.customer.address.city}`,
+    `${preOrder?.personal_info?.customer?.address?.postcode ?? ""}, ${
+      preOrder?.personal_info?.customer?.address?.city ?? ""
+    }`,
     20,
     100
   );
@@ -102,7 +104,7 @@ export async function generateInvoicePdf(
     doc.text(item.title, 20, currentY);
     doc.text(`${item.quantity} ${item.unit}`, 120, currentY);
     doc.text(
-      `£${(parseInt(item.quantity as string) * item.price).toString()}`,
+      `£${(parseInt(item.quantity.toString()) * item.price).toString()}`,
       180,
       currentY
     );
@@ -111,7 +113,7 @@ export async function generateInvoicePdf(
 
   // Add total section
   const subtotal = preOrder.service_info.order_items.reduce(
-    (sum, item) => sum + parseInt(item.quantity as string) * item.price,
+    (sum, item) => sum + parseInt(item.quantity.toString()) * item.price,
     0
   );
   console.log(subtotal);
@@ -120,14 +122,14 @@ export async function generateInvoicePdf(
   // const total = subtotal + tax;
 
   const parkingOption = PARKING_OPTIONS.find(
-    (opt) => opt.value === preOrder.personal_info.parking_options.parking_type
+    (opt) => opt.value === preOrder?.personal_info?.parking_options.parking_type
   )?.name;
 
   const congestionOption = CONGESTION_ZONE_OPTIONS.find(
-    (opt) => opt.value === preOrder.personal_info.congestion_zone.zone_type
+    (opt) => opt.value === preOrder?.personal_info?.congestion_zone.zone_type
   )?.name;
 
-  const totalCost = calculateTotalCost(preOrder);
+  const totalCost = calculateTotalCost(preOrder) || 0;
 
   doc.text("Subtotal:", 150, currentY + 10);
   doc.text(`£${subtotal.toString()}`, 180, currentY + 10);
@@ -135,7 +137,7 @@ export async function generateInvoicePdf(
     align: "right",
   });
   doc.text(
-    `£${preOrder.personal_info.parking_options.parking_cost.toString()}`,
+    `£${preOrder?.personal_info?.parking_options.parking_cost.toString()}`,
     180,
     currentY + 20
   );
@@ -148,7 +150,7 @@ export async function generateInvoicePdf(
     }
   );
   doc.text(
-    `£${preOrder.personal_info.congestion_zone.zone_cost.toString()}`,
+    `£${preOrder?.personal_info?.congestion_zone.zone_cost.toString()}`,
     180,
     currentY + 30
   );

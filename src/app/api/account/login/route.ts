@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
     response.cookies.set("accessToken", token, {
       httpOnly: true, // Set the httpOnly flag to true
-      maxAge: 60 * 60 * 24, // 1 day in seconds
+      maxAge: 60 * 60 * 24 * 7, // 1 week in seconds
       sameSite: "strict",
       path: "/", // Set the path for the cookie
     });

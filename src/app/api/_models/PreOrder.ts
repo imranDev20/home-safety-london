@@ -133,7 +133,7 @@ preOrderSchema.pre("save", function (next) {
   next();
 });
 
-const PreOrder: mongoose.Model<IPreOrder> =
+const PreOrder: mongoose.Model<IPreOrder<IUser>> =
   mongoose.models.PreOrder || mongoose.model("PreOrder", preOrderSchema);
 
 export default PreOrder;

@@ -1,7 +1,6 @@
 import slugify from "react-slugify";
 import dayjs from "dayjs";
 import { Pagination } from "@/types/misc";
-import Cookies from "js-cookie";
 import { IPreOrder, OrderStatus, OrderStatusValues } from "@/types/orders";
 import { IUser } from "@/types/user";
 
@@ -67,32 +66,6 @@ export const getFutureTime = () => {
     const deliveryTime = sameDay9am.add(48, "hour");
     return deliveryTime;
   }
-};
-
-export const setToken = (token: string) => {
-  Cookies.set("accessToken", token, { expires: 7 }); // Set the cookie to expire in 7 days
-};
-
-export const getToken = () => {
-  return Cookies.get("accessToken");
-};
-
-export const removeToken = () => {
-  Cookies.remove("accessToken");
-};
-
-export const setPreOrderIdToLocalStorage = (preOrderId: string) => {
-  localStorage.setItem("preOrderId", preOrderId);
-};
-
-// Function to get pre-order ID from local storage
-export const getPreOrderIdFromLocalStorage = () => {
-  return localStorage.getItem("preOrderId");
-};
-
-// Function to remove pre-order ID from local storage
-export const removePreOrderIdFromLocalStorage = () => {
-  localStorage.removeItem("preOrderId");
 };
 
 export function toSnakeCase(str: string) {
@@ -166,14 +139,15 @@ export const debounce = (func: (...args: any[]) => void, delay: number) => {
   };
 };
 
-export function calculateTotalCost(order: IPreOrder<IUser, "payment">) {
+export function calculateTotalCost(order: IPreOrder<IUser>) {
   if (!order.personal_info) {
     console.log("Personal info is needed to calculate total cost");
     return;
   }
+
   // Calculate the total cost of order items
   const orderItemsTotal = order.service_info.order_items.reduce(
-    (total: any, item: any) => {
+    (total, item) => {
       return total + item.price * item.quantity;
     },
     0

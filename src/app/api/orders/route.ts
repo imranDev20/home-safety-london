@@ -118,13 +118,23 @@ export async function POST(req: NextRequest) {
     // Delete the pre order after order is complete
     await PreOrder.findByIdAndDelete(pre_order_id);
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       formatResponse(
         true,
         newOrder,
         "Order created successfully, PreOrder deleted, and invoice generated"
       )
     );
+
+    response.cookies.set("bookingSession", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/",
+      expires: new Date(0),
+    });
+
+    return response;
   } catch (error: any) {
     return NextResponse.json(formatResponse(false, null, error.message), {
       status: 500,
