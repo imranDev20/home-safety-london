@@ -13,7 +13,6 @@ import { IPreOrder } from "@/types/orders";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/types/response";
 import dayjs from "dayjs";
-import { ObjectId } from "mongoose";
 import { IUser } from "@/types/user";
 
 type PaymentMethods = "credit_card" | "bank_transfer" | "cash_to_engineer";
@@ -265,7 +264,9 @@ export default function Confirmation() {
                     textTransform: "capitalize",
                   }}
                 >
-                  {dayjs(preOrderData?.personal_info?.inspection_date).format()}
+                  {dayjs(preOrderData?.personal_info?.inspection_date).format(
+                    "DD MMMM YYYY"
+                  )}
                 </Typography>
               </Typography>
 

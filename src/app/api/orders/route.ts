@@ -2,10 +2,8 @@ import dbConnect from "@/app/api/_lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 import { calculateTotalCost, formatResponse } from "@/shared/functions";
 import Order from "../_models/Order";
-import { jsPDF } from "jspdf";
 import { sendEmail } from "../_lib/sendEmail";
 import { placedOrderEmailHtml } from "../_templates/order-placed-email";
-
 import PreOrder from "../_models/PreOrder";
 import { IPreOrder } from "@/types/orders";
 import mongoose from "mongoose";
@@ -83,9 +81,7 @@ export async function POST(req: NextRequest) {
       paid_amount: 0,
       invoice_id: invoiceId,
     });
-
     await newOrder.save();
-    await PreOrder.findByIdAndDelete(pre_order_id);
 
     const attachments = [
       {
@@ -95,7 +91,7 @@ export async function POST(req: NextRequest) {
       },
     ];
 
-    const { email, name } = preOrder.personal_info.customer;
+    const { email = "", name = "" } = preOrder.personal_info.customer;
 
     const orderPlacedEmailSubject = `Your Order Has Been Placed: Confirmation #${invoiceId}`;
     // send email to customer
@@ -119,7 +115,8 @@ export async function POST(req: NextRequest) {
       attachments: attachments,
     });
 
-    // add admin email
+    // Delete the pre order after order is complete
+    await PreOrder.findByIdAndDelete(pre_order_id);
 
     return NextResponse.json(
       formatResponse(
