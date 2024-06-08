@@ -25,29 +25,21 @@ const userSchema = new mongoose.Schema<IUser>(
       required: [true, "Password is required"],
       minlength: [6, "Password must be at least 6 characters long"],
     },
-    addresses: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Address",
+    address: {
+      type: {
+        street: {
+          type: String,
+          required: true,
+        },
+        postcode: {
+          type: String,
+          required: true,
+        },
+        city: {
+          type: String,
+          required: true,
+        },
       },
-    ],
-    orders_placed: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Order",
-        },
-      ],
-      default: [],
-    },
-    orders_received: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Order",
-        },
-      ],
-      default: [],
     },
     preferences: {
       mode: {
@@ -96,18 +88,11 @@ userSchema.pre("validate", function (next) {
     if (
       (this.skills && this.skills?.length > 0) ||
       this.specialty ||
-      this.experience !== undefined ||
-      (this.orders_received && this.orders_received?.length > 0)
+      this.experience !== undefined
     ) {
       return next(
-        new Error(
-          "Customers should not have skills, specialty, experience, or orders received"
-        )
+        new Error("Customers should not have skills, specialty, experience")
       );
-    }
-  } else if (this.role === "engineer") {
-    if (this.orders_placed && this.orders_placed.length > 0) {
-      return next(new Error("Engineers should not have orders placed"));
     }
   }
   next();

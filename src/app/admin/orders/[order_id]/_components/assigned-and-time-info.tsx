@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
 import Assignee from "../../_components/assignee";
-import { Autocomplete, Button, Grid } from "@mui/joy";
+import { Autocomplete, Box, Button, Grid } from "@mui/joy";
 import { AddRounded, Mail } from "@mui/icons-material";
 import useOrderDetails from "@/app/_components/hooks/use-order-details";
+import ScheduleInfo from "./schedule-info";
 
 export default function AssignedAndTimeInfo() {
   const { orderDetails } = useOrderDetails();
@@ -14,43 +15,61 @@ export default function AssignedAndTimeInfo() {
 
   return (
     <>
-      <Grid container spacing={3} mt={3}>
-        <Grid md={2}>
-          <Assignee />
-        </Grid>
-
-        <Grid md={5}>
-          <Autocomplete
-            multiple
-            id="tags-default"
-            placeholder="Favorites"
-            options={orderDetails?.order_items}
-            getOptionLabel={(option) => option.name as string}
-          />
-        </Grid>
-
-        <Grid md={2}>
-          <Button
-            variant="outlined"
-            size="sm"
-            color="neutral"
-            startDecorator={<Mail />}
-          >
-            Send Email
-          </Button>
-        </Grid>
-      </Grid>
-
       <Grid container spacing={3} mt={1}>
-        <Grid md={2}>
-          <Button
-            variant="outlined"
-            size="sm"
-            color="neutral"
-            startDecorator={<AddRounded />}
+        <Grid md={9}>
+          <Box
+            sx={{
+              width: "100%",
+            }}
           >
-            Add Another
-          </Button>
+            <Grid container spacing={3} mt={3}>
+              <Grid md={4}>
+                <Assignee
+                  isOrderItems
+                  onChange={(newVal) => console.log(newVal)}
+                />
+              </Grid>
+
+              <Grid md={5}>
+                <Autocomplete
+                  size="sm"
+                  multiple
+                  id="tags-default"
+                  placeholder="Leave empty to select all services"
+                  options={orderDetails?.order_items}
+                  getOptionLabel={(option) => option.name as string}
+                />
+              </Grid>
+
+              <Grid md={3}>
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  color="neutral"
+                  startDecorator={<Mail />}
+                  fullWidth
+                >
+                  Send Email
+                </Button>
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={3} mt={1}>
+              <Grid md={4}>
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  color="neutral"
+                  startDecorator={<AddRounded />}
+                >
+                  Add Another
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Grid>
+        <Grid md={3}>
+          <ScheduleInfo />
         </Grid>
       </Grid>
     </>

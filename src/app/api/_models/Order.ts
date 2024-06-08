@@ -17,7 +17,7 @@ const orderStatusSchema = new Schema<OrderStatus>({
   },
 });
 
-const orderItemSchema = new Schema<IOrderItemWithEngineers>({
+const orderItemWithEngineersSchema = new Schema<IOrderItemWithEngineers>({
   name: {
     type: String,
     required: true,
@@ -31,7 +31,7 @@ const orderItemSchema = new Schema<IOrderItemWithEngineers>({
     required: true,
   },
   quantity: {
-    type: Schema.Types.Mixed,
+    type: Number, // Change from Schema.Types.Mixed to Number
     required: true,
   },
   unit: {
@@ -49,7 +49,64 @@ const orderItemSchema = new Schema<IOrderItemWithEngineers>({
 
 const orderSchema = new Schema<IOrder>(
   {
-    ...PreOrder.schema.paths, // spread the paths object instead of obj
+    property_type: {
+      type: String,
+      enum: ["residential", "commercial"],
+      required: true,
+    },
+    resident_type: {
+      type: String,
+      enum: ["house", "flat", "hmo"], // Fix the typo "enun" to "enum"
+      required: function () {
+        return this.property_type === "residential";
+      },
+    },
+    bedrooms: {
+      type: Number, // Change from String to Number
+      required: function () {
+        return this.property_type === "residential";
+      },
+    },
+    order_items: {
+      type: [orderItemWithEngineersSchema],
+      required: true,
+    },
+
+    customer: { type: Schema.Types.ObjectId, ref: "User", required: true },
+
+    parking_options: {
+      parking_type: {
+        type: String,
+        enum: ["paid", "free", "unavailable"],
+        required: true,
+      },
+      parking_cost: {
+        type: Number,
+        required: true,
+      },
+    },
+    congestion_zone: {
+      zone_type: {
+        type: String,
+        enum: ["congestion", "non_congestion"],
+        required: true,
+      },
+      zone_cost: {
+        type: Number,
+        required: true,
+      },
+    },
+    inspection_date: {
+      type: Date,
+      required: true,
+    },
+    inspection_time: {
+      type: String,
+      required: true,
+    },
+    order_notes: {
+      type: String,
+    },
     order_status: {
       type: [orderStatusSchema],
       required: true,
@@ -66,10 +123,6 @@ const orderSchema = new Schema<IOrder>(
       type: String,
       required: true,
       unique: true,
-    },
-    order_items: {
-      type: [orderItemSchema],
-      required: true,
     },
   },
   { timestamps: true }

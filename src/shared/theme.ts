@@ -97,8 +97,8 @@ export const theme = extendTheme({
         },
 
         background: {
-          level1: "#E2F3F6",
-          level2: "#EAF3FB",
+          // level1: "#E2F3F6",
+          // level2: "#EAF3FB",
           // level3: "#F8F8F8",
         },
       },

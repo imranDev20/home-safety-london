@@ -9,13 +9,26 @@ import {
 } from "@/shared/constants";
 import { getMostRecentStatus, snakeCaseToNormalText } from "@/shared/functions";
 import { OrderStatusValues } from "@/types/orders";
-import { Download, MoreHoriz, West } from "@mui/icons-material";
+import {
+  Block,
+  DeleteForever,
+  Download,
+  Edit,
+  MoreHoriz,
+  MoreVertRounded,
+  West,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
+  Dropdown,
   FormControl,
   IconButton,
   Link as JoyLink,
+  ListItemDecorator,
+  Menu,
+  MenuButton,
+  MenuItem,
   Option,
   Select,
   Skeleton,
@@ -226,9 +239,30 @@ export default function OrderDetailsHeader() {
             Download Invoice
           </Button>
 
-          <IconButton variant="plain">
-            <MoreHoriz />
-          </IconButton>
+          <Dropdown>
+            <MenuButton
+              slots={{ root: IconButton }}
+              slotProps={{
+                root: { variant: "plain", color: "neutral", size: "sm" },
+              }}
+            >
+              <MoreVertRounded />
+            </MenuButton>
+            <Menu size="sm" sx={{ minWidth: 140 }} placement="bottom-end">
+              <MenuItem color="danger">
+                <ListItemDecorator>
+                  <Block />
+                </ListItemDecorator>{" "}
+                Deactivate
+              </MenuItem>
+              <MenuItem color="danger">
+                <ListItemDecorator>
+                  <DeleteForever />
+                </ListItemDecorator>{" "}
+                Delete
+              </MenuItem>
+            </Menu>
+          </Dropdown>
         </Stack>
       </Stack>
     </>

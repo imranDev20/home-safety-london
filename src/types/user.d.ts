@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IOrder, IOrderItem } from "./orders";
+import { IOrder } from "./orders";
 
 export type Role = "customer" | "engineer" | "admin";
 
@@ -10,9 +10,11 @@ export interface IUser {
   phone: string;
   role: Role;
   password: string;
-  addresses: Types.ObjectId[];
-  orders_placed: IOrder[];
-  orders_received: IOrder[];
+  address: {
+    city: string;
+    street: string;
+    postcode: string;
+  };
   preferences: {
     mode: "light" | "dark";
   };

@@ -14,18 +14,29 @@ import React, { useState } from "react";
 type AssigneeProps = {
   isLabel?: boolean;
   isOrderItems?: boolean;
+  onChange: (param: string) => void;
 };
 
-export default function Assignee({ isLabel }: AssigneeProps) {
+export default function Assignee({
+  isLabel,
+  isOrderItems,
+  onChange,
+}: AssigneeProps) {
   const [listBoxOpen, setListBoxOpen] = useState<boolean>(false);
   const searchParams = useSearchParams();
-  const assignedTo = searchParams.get("assigned_to") || "";
+  const assignedToQuery = searchParams.get("assigned_to") || "";
   const { createQueryString } = useQueryString();
   const router = useRouter();
   const pathname = usePathname();
+  const [assigneeState, setAssigneeState] = useState<string>("");
 
   const { engineersData, isGetEngineersDataLoading, refetchGetEngineers } =
     useEngineersData(false);
+
+  const handleValueChange = (newValue: string) => {
+    setAssigneeState(newValue);
+    onChange(newValue);
+  };
 
   return (
     <>
@@ -63,17 +74,24 @@ export default function Assignee({ isLabel }: AssigneeProps) {
               <UnfoldMore />
             )
           }
-          placeholder="Filter by assignee"
+          placeholder={isOrderItems ? "Select Engineer" : "Filter by assignee"}
           slotProps={{
             button: {
               id: "select-field-demo-button",
             },
           }}
-          value={assignedTo}
+          value={isOrderItems ? assigneeState : assignedToQuery}
           onChange={(_, value) => {
-            router.push(
-              `${pathname}?${createQueryString("assigned_to", value as string)}`
-            );
+            if (isOrderItems) {
+              handleValueChange(value as string);
+            } else {
+              router.push(
+                `${pathname}?${createQueryString(
+                  "assigned_to",
+                  value as string
+                )}`
+              );
+            }
           }}
         >
           <Option value="">All Engineers</Option>

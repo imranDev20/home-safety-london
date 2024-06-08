@@ -6,6 +6,7 @@ import OrderNotes from "./_components/order-notes";
 import OrderActivity from "./_components/order-activity";
 import PropertyDetails from "./_components/property-details";
 import AssignedAndTimeInfo from "./_components/assigned-and-time-info";
+import PriceDetails from "./_components/price-details";
 
 export default function SingleOrderPage() {
   return (
@@ -22,7 +23,6 @@ export default function SingleOrderPage() {
     >
       <Box>
         <OrderDetailsHeader />
-
         <AssignedAndTimeInfo />
 
         <Grid
@@ -34,7 +34,7 @@ export default function SingleOrderPage() {
         >
           <Grid md={9}>
             <OrderItems />
-            {/* <OrderItems /> */}
+            <PriceDetails />
           </Grid>
           <Grid md={3}>
             <OrderNotes />

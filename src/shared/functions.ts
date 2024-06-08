@@ -2,7 +2,7 @@ import slugify from "react-slugify";
 import dayjs from "dayjs";
 import { Pagination } from "@/types/misc";
 import Cookies from "js-cookie";
-import { OrderStatus, OrderStatusValues } from "@/types/orders";
+import { IPreOrder, OrderStatus, OrderStatusValues } from "@/types/orders";
 
 export function snakeCaseToNormalText(snakeCaseString: string) {
   return snakeCaseString?.replace(/_/g, " ")?.toLowerCase();
@@ -165,21 +165,23 @@ export const debounce = (func: (...args: any[]) => void, delay: number) => {
   };
 };
 
-export function calculateTotalCost(order: any) {
+export function calculateTotalCost(order: IPreOrder) {
   // Calculate the total cost of order items
-  const orderItemsTotal = order.order_items.reduce((total: any, item: any) => {
-    return total + item.price * item.quantity;
-  }, 0);
+  const orderItemsTotal = order.service_info.order_items.reduce(
+    (total: any, item: any) => {
+      return total + item.price * item.quantity;
+    },
+    0
+  );
 
   // Add parking cost
-  const parkingCost = order.parking_options.parking_cost || 0;
+  const parkingCost = order.personal_info.parking_options.parking_cost || 0;
 
   // Add congestion zone cost
-  const congestionCost = order.congestion_zone.zone_cost || 0;
+  const congestionCost = order.personal_info.congestion_zone.zone_cost || 0;
 
   // Calculate the final total cost
   const totalCost = orderItemsTotal + parkingCost + congestionCost;
-
   return totalCost;
 }
 

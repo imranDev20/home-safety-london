@@ -20,20 +20,32 @@ import {
 import React, { useState } from "react";
 import Assignee from "../../_components/assignee";
 import OrderItem from "./order-item";
+import { IOrderItem } from "@/types/orders";
 
 const columns = [
   {
     label: "CUSTOMER",
     key: "name",
-    width: 180,
-    render: (value: string, row: any) => (
-      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-        <Typography level="body-xs">{value}</Typography>
-      </Box>
+    width: 240,
+  },
+  {
+    label: "QUANTITY",
+    key: "quantity",
+    width: 150,
+    render: (value: string, row: IOrderItem) => (
+      <Typography>
+        {row.quantity} {row.unit}
+      </Typography>
     ),
   },
-  { label: "EMAIL", key: "email", width: 150 },
-  { label: "PHONE", key: "phone", width: 120 },
+  {
+    label: "PRICE",
+    key: "price",
+    width: 50,
+    render: (value: string, row: IOrderItem) => (
+      <Typography level="title-sm">£{row.price}</Typography>
+    ),
+  },
 ];
 
 export default function OrderItems() {

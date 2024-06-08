@@ -15,42 +15,10 @@ import {
 import PreOrder from "../_models/PreOrder";
 import { IPreOrder } from "@/types/orders";
 import mongoose from "mongoose";
+import { generateInvoiceId } from "../_lib/generateInvoice";
 
 interface OrderQuery {
   order_status?: string;
-}
-
-async function generateInvoiceId() {
-  const mostRecentOrder = await Order.findOne().sort({ createdAt: -1 }).exec();
-
-  let nextInvoiceId;
-  if (mostRecentOrder) {
-    const numericPart = parseInt(mostRecentOrder.invoice_id.slice(3, -1), 10);
-    const alphabetPart = mostRecentOrder.invoice_id.slice(-1);
-
-    let nextNumericPart = numericPart + 1;
-
-    if (nextNumericPart > 99999) {
-      nextNumericPart = 1;
-      const nextAlphabetPart = String.fromCharCode(
-        alphabetPart.charCodeAt(0) + 1
-      );
-      if (nextAlphabetPart > "Z") {
-        throw new Error("Reached the maximum invoice ID");
-      }
-      nextInvoiceId = `INV${
-        "00001".slice(0, -nextNumericPart.toString().length) + nextNumericPart
-      }${nextAlphabetPart}`;
-    } else {
-      nextInvoiceId = `INV${
-        "00000".slice(0, -nextNumericPart.toString().length) + nextNumericPart
-      }${alphabetPart}`;
-    }
-  } else {
-    nextInvoiceId = "INV00001A";
-  }
-
-  return nextInvoiceId;
 }
 
 async function generateInvoicePdf(invoiceId: string, preOrder: IPreOrder) {
@@ -88,9 +56,13 @@ async function generateInvoicePdf(invoiceId: string, preOrder: IPreOrder) {
     .setFont("helvetica", "bold")
     .text("Billing Address:", 20, 80)
     .setFont("helvetica", "normal");
-  doc.text(preOrder.customer_name, 20, 90);
-  doc.text(preOrder.address.house_street, 20, 95);
-  doc.text(`${preOrder.address.postcode}, ${preOrder.address.city}`, 20, 100);
+  doc.text(preOrder.personal_info.customer_name, 20, 90);
+  doc.text(preOrder.personal_info.address.house_street, 20, 95);
+  doc.text(
+    `${preOrder.personal_info.address.postcode}, ${preOrder.personal_info.address.city}`,
+    20,
+    100
+  );
 
   // Add table header
   doc.setFontSize(12);
@@ -100,7 +72,7 @@ async function generateInvoicePdf(invoiceId: string, preOrder: IPreOrder) {
   doc.line(15, 125, 200, 125);
 
   let currentY = 132;
-  preOrder.order_items.forEach((item) => {
+  preOrder.service_info.order_items.forEach((item) => {
     doc.text(item.title, 20, currentY);
     doc.text(`${item.quantity} ${item.unit}`, 120, currentY);
     doc.text(
@@ -112,20 +84,21 @@ async function generateInvoicePdf(invoiceId: string, preOrder: IPreOrder) {
   });
 
   // Add total section
-  const subtotal = preOrder.order_items.reduce(
+  const subtotal = preOrder.service_info.order_items.reduce(
     (sum, item) => sum + parseInt(item.quantity as string) * item.price,
     0
   );
+  console.log(subtotal);
   // use when tax is available
   // const tax = 0;
   // const total = subtotal + tax;
 
   const parkingOption = PARKING_OPTIONS.find(
-    (opt) => opt.value === preOrder.parking_options.parking_type
+    (opt) => opt.value === preOrder.personal_info.parking_options.parking_type
   )?.name;
 
   const congestionOption = CONGESTION_ZONE_OPTIONS.find(
-    (opt) => opt.value === preOrder.congestion_zone.zone_type
+    (opt) => opt.value === preOrder.personal_info.congestion_zone.zone_type
   )?.name;
 
   const totalCost = calculateTotalCost(preOrder);
@@ -136,7 +109,7 @@ async function generateInvoicePdf(invoiceId: string, preOrder: IPreOrder) {
     align: "right",
   });
   doc.text(
-    `£${preOrder.parking_options.parking_cost.toString()}`,
+    `£${preOrder.personal_info.parking_options.parking_cost.toString()}`,
     180,
     currentY + 20
   );
@@ -149,7 +122,7 @@ async function generateInvoicePdf(invoiceId: string, preOrder: IPreOrder) {
     }
   );
   doc.text(
-    `£${preOrder.congestion_zone.zone_cost.toString()}`,
+    `£${preOrder.personal_info.congestion_zone.zone_cost.toString()}`,
     180,
     currentY + 30
   );
@@ -217,14 +190,18 @@ export async function POST(req: NextRequest) {
     const totalCost = calculateTotalCost(preOrder);
 
     const newOrder = new Order({
-      ...({ ...preOrder.toObject() } as IPreOrder),
-      remaining_amount: totalCost,
-      paid_amount: 0,
+      service_info: { ...preOrder.toObject().service_info },
+      personal_info: { ...preOrder.toObject().personal_info },
+      payment_info: {
+        ...preOrder.toObject().payment_info,
+        remaining_amount: totalCost,
+        paid_amount: 0,
+      },
       invoice_id: invoiceId,
     });
 
     await newOrder.save();
-    await PreOrder.findByIdAndDelete(pre_order_id);
+    // await PreOrder.findByIdAndDelete(pre_order_id);
 
     const attachments = [
       {
@@ -234,22 +211,22 @@ export async function POST(req: NextRequest) {
       },
     ];
 
-    const { customer_name, email } = preOrder;
+    const { customer_name, email } = preOrder.personal_info;
 
     const orderPlacedEmailSubject = `Order Confirmation: #${invoiceId}`;
-    await sendEmail({
-      fromEmail: "info@londonhomesafety.co.uk",
-      fromName: "London Home Safety",
-      to: email,
-      subject: orderPlacedEmailSubject,
-      html: placedOrderEmailHtml(customer_name, invoiceId),
-      attachments: attachments,
-    });
+    // await sendEmail({
+    //   fromEmail: "info@londonhomesafety.co.uk",
+    //   fromName: "London Home Safety",
+    //   to: email,
+    //   subject: orderPlacedEmailSubject,
+    //   html: placedOrderEmailHtml(customer_name, invoiceId),
+    //   attachments: attachments,
+    // });
 
     return NextResponse.json(
       formatResponse(
         true,
-        newOrder,
+        // newOrder,
         "Order created successfully, PreOrder deleted, and invoice generated"
       )
     );
