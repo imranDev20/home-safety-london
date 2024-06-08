@@ -10,6 +10,10 @@ export type ParkingType = "free" | "paid" | "unavailable";
 export type ZoneType = "congestion" | "non_congestion";
 export type PreOrderStepStatus = "service" | "personal" | "payment";
 
+export type BedroomsType<T extends PropertyType> = T extends "residential"
+  ? number
+  : null;
+
 export type PaymentMethod =
   | "bank_transfer"
   | "credit_card"
@@ -47,41 +51,35 @@ export interface IOrderItemWithEngineers extends IOrderItem {
   assigned_engineers: Types.ObjectId[];
 }
 
-interface IPreOrder<
-  T extends IUser | undefined = undefined,
-  S extends PreOrderStepStatus = "service"
-> {
+interface IPreOrder<T extends IUser | undefined = undefined> {
   service_info: {
     property_type: PropertyType;
     resident_type?: ResidentType<PropertyType>;
-    bedrooms?: PropertyType extends "residential" ? number : null;
+    bedrooms?: BedroomsType<PropertyType>;
     order_items: IOrderItem[];
   };
-  personal_info?: S extends "personal"
-    ? {
-        customer: T extends IUser ? IUser : Types.ObjectId;
-        parking_options: {
-          parking_type: ParkingType;
-          parking_cost: number;
-        };
-        congestion_zone: {
-          zone_type: ZoneType;
-          zone_cost: number;
-        };
-        inspection_date: Date;
-        inspection_time: string;
-        order_notes?: string;
-      }
-    : undefined;
+  personal_info?: {
+    customer: T extends IUser ? Partial<IUser> : Types.ObjectId;
+    parking_options: {
+      parking_type: ParkingType;
+      parking_cost: number;
+    };
+    congestion_zone: {
+      zone_type: ZoneType;
+      zone_cost: number;
+    };
+    inspection_date: Date;
+    inspection_time: string;
+    order_notes?: string;
+  };
 
-  payment_info: S extends "payment"
-    ? {
-        payment_method: PaymentMethod;
-      }
-    : undefined;
+  payment_info?: {
+    payment_method: PaymentMethod;
+  };
+
   status: PreOrderStepStatus;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface IOrder extends Pick<Document, "_id"> {
@@ -106,6 +104,6 @@ export interface IOrder extends Pick<Document, "_id"> {
   remaining_amount: number;
   paid_amount: number;
   invoice_id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

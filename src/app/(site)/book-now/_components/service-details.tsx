@@ -29,13 +29,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { createPreOrder, getPreOrder } from "@/services/pre-order.services";
 import { useEffect } from "react";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
-import {
-  IOrderItem,
-  IPreOrder,
-  PropertyType,
-  ResidentType,
-} from "@/types/orders";
+import { IPreOrder, PropertyType } from "@/types/orders";
 import { COMMERCIAL_SERVICES, RESIDENTIAL_SERVICES } from "@/shared/data";
+import { IUser } from "@/types/user";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/types/response";
 
 export default function ServiceDetails() {
   const router = useRouter();
@@ -43,26 +41,6 @@ export default function ServiceDetails() {
   const pathname = usePathname();
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
-
-  // Get PreOrder Data
-  const {
-    data,
-    isLoading: isPreOrderDataLoading,
-    refetch: refetchPreOrder,
-  } = useQuery({
-    queryKey: ["pre-order"],
-    queryFn: () => getPreOrder(),
-    enabled: false,
-  });
-
-  const preOrderData = data?.data;
-
-  // Create a new pre order
-  const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
-    useMutation({
-      mutationFn: async (preOrder: IPreOrder<undefined, "service">) =>
-        createPreOrder(),
-    });
 
   // Service step form
   const {
@@ -81,11 +59,35 @@ export default function ServiceDetails() {
       orderItems: [],
     },
   });
-
   const propertyType = watch("propertyType");
 
+  // Get PreOrder Data
+  const { data, isLoading: isPreOrderDataLoading } = useQuery({
+    queryKey: ["pre-order"],
+    queryFn: () => getPreOrder(),
+    retry: 1,
+  });
+
+  const preOrderData = data?.data;
+
+  // Create a new pre order
+  const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
+    useMutation({
+      mutationFn: async (preOrder: Partial<IPreOrder>) =>
+        createPreOrder(preOrder),
+      onSuccess: (response) => {
+        router.push(pathname + "?" + createQueryString("active_step", "2"));
+        window.scrollTo(0, 300);
+        enqueueSnackbar(response.message, "success");
+      },
+      onError: (error: AxiosError<ErrorResponse>) => {
+        console.log(error);
+        enqueueSnackbar(error.response?.data.message || error.message, "error");
+      },
+    });
+
   useEffect(() => {
-    if (preOrderData) {
+    if (preOrderData?.service_info) {
       reset({
         propertyType: preOrderData.service_info.property_type,
         residentType: preOrderData.service_info.resident_type,
@@ -100,55 +102,37 @@ export default function ServiceDetails() {
   const servicesBySelectedType =
     propertyType === "residential" ? RESIDENTIAL_SERVICES : COMMERCIAL_SERVICES;
 
-  const handleServiceDetailsSubmit: SubmitHandler<ServiceFormInput> = async (
+  const handleServiceDetailsSubmit: SubmitHandler<ServiceFormInput> = (
     data
   ) => {
-    try {
-      if (data.orderItems.length === 0) {
-        setError("orderItems", {
-          type: "required",
-          message: "Please select at least one service",
-        });
-        return;
-      }
-
-      const payload = {
-        ...preOrderData,
-        service_info: {
-          property_type: data.propertyType,
-          ...(propertyType === "residential" && {
-            resident_type: data.residentType,
-            bedrooms: data.bedrooms,
-          }),
-          order_items: servicesBySelectedType
-            .filter((el) => data.orderItems.includes(el.name))
-            .map((item) => ({
-              title: item.title,
-              name: item.name,
-              price: item.priceData.find(
-                (val) => val.bedrooms === data.bedrooms
-              )?.price as number,
-              quantity: item.quantity,
-              unit: item.unit,
-            })),
-        },
-        status: "service",
-      };
-
-      const response = await preOrderMutate(payload);
-
-      if (response?.success) {
-        router.push(pathname + "?" + createQueryString("active_step", "2"));
-        window.scrollTo(0, 300);
-
-        enqueueSnackbar(response.message, "success");
-      } else {
-        throw new Error(response.message);
-      }
-    } catch (error: any) {
-      console.log(error);
-      enqueueSnackbar(error.message, "error");
+    if (data.orderItems.length === 0) {
+      setError("orderItems", {
+        type: "required",
+        message: "Please select at least one service",
+      });
+      return;
     }
+
+    const payload: IPreOrder = {
+      service_info: {
+        property_type: data.propertyType,
+        resident_type: data.residentType,
+        bedrooms: data.bedrooms,
+        order_items: servicesBySelectedType
+          .filter((el) => data.orderItems.includes(el.name))
+          .map((item) => ({
+            title: item.title,
+            name: item.name,
+            price: item.priceData.find((val) => val.bedrooms === data.bedrooms)
+              ?.price as number,
+            quantity: item.quantity,
+            unit: item.unit,
+          })),
+      },
+      status: "service",
+    };
+
+    preOrderMutate(payload);
   };
 
   if (isPreOrderDataLoading) {
@@ -390,66 +374,69 @@ export default function ServiceDetails() {
                 message: "You must select number of bedrooms",
               },
             }}
-            render={({ field }) => (
+            render={({ field: { value, onChange } }) => (
               <FormControl error={!!errors.bedrooms}>
                 <RadioGroup
                   size="lg"
                   sx={{
                     gap: 1.5,
                   }}
-                  {...field}
+                  value={value}
+                  onChange={(e) => onChange(parseInt(e.target.value))}
                 >
                   <Grid container spacing={2}>
-                    {["Studio Flat", "1", "2", "3", "4", "5"].map(
-                      (option, index) => (
-                        <Grid xs={6} key={option}>
-                          <Sheet
-                            key={option}
-                            sx={{
-                              p: 2,
-                              borderRadius: "md",
-                              boxShadow: "sm",
-                            }}
-                          >
-                            <Radio
-                              label={
-                                <Box>
-                                  <Typography>{`${option} ${
-                                    index !== 0 ? "Bedrooms" : ""
-                                  }`}</Typography>
-                                </Box>
-                              }
-                              overlay
-                              disableIcon
-                              value={toSnakeCase(option)}
-                              slotProps={{
-                                label: ({ checked }) => ({
-                                  sx: {
-                                    fontWeight: "lg",
-                                    fontSize: "md",
-                                    color: checked
-                                      ? "text.primary"
-                                      : "text.secondary",
-                                  },
-                                }),
-                                action: ({ checked }) => ({
-                                  sx: (theme) => ({
-                                    ...(checked && {
-                                      "--variant-borderWidth": "2px",
-                                      "&&": {
-                                        // && to increase the specificity to win the base :hover styles
-                                        borderColor:
-                                          theme.vars.palette.primary[500],
-                                      },
-                                    }),
+                    {[0, 1, 2, 3, 4, 5].map((option, index) => (
+                      <Grid xs={6} key={option}>
+                        <Sheet
+                          key={option}
+                          sx={{
+                            p: 2,
+                            borderRadius: "md",
+                            boxShadow: "sm",
+                          }}
+                        >
+                          <Radio
+                            label={
+                              <Box>
+                                <Typography>
+                                  {option === 0
+                                    ? "Studio Flat"
+                                    : option === 1
+                                    ? `${option} Bedroom`
+                                    : `${option} Bedrooms`}
+                                </Typography>
+                              </Box>
+                            }
+                            overlay
+                            disableIcon
+                            value={option}
+                            slotProps={{
+                              label: ({ checked }) => ({
+                                sx: {
+                                  fontWeight: "lg",
+                                  fontSize: "md",
+                                  color: checked
+                                    ? "text.primary"
+                                    : "text.secondary",
+                                },
+                              }),
+                              action: ({ checked }) => ({
+                                sx: (theme) => ({
+                                  ...(checked && {
+                                    "--variant-borderWidth": "2px",
+                                    "&&": {
+                                      // && to increase the specificity to win the base :hover styles
+                                      borderColor:
+                                        theme.vars.palette.primary[500],
+                                    },
                                   }),
                                 }),
-                              }}
-                            />
-                          </Sheet>
-                        </Grid>
-                      )
-                    )}
+                              }),
+                            }}
+                          />
+                        </Sheet>
+                      </Grid>
+                    ))}
                   </Grid>
                 </RadioGroup>
                 <HookFormError name="bedrooms" errors={errors} />

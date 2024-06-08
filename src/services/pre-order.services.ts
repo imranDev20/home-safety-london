@@ -1,13 +1,18 @@
 import { PreOrderResponse } from "@/types/response";
 import http from "./http.services";
+import { IPreOrder } from "@/types/orders";
+import { IUser } from "@/types/user";
 
 export const getPreOrder = async (): Promise<PreOrderResponse> => {
   const response: PreOrderResponse = await http.get(`/pre-order`);
   return response;
 };
 
-export const createPreOrder = async (): Promise<PreOrderResponse> => {
-  const response: PreOrderResponse = await http.post(`/pre-order`);
+export const createPreOrder = async (
+  preOrder: Partial<IPreOrder<IUser>>
+): Promise<PreOrderResponse> => {
+  console.log(preOrder);
+  const response: PreOrderResponse = await http.post(`/pre-order`, preOrder);
   return response;
 };
 

@@ -13,6 +13,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const preOrderId = req.cookies.get("bookingSession")?.value;
 
     let preOrder;
+
     switch (status) {
       case "service":
         // Validate and handle the customer information step
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           throw new Error("PreOrder not found for this ID");
         }
 
-        const { name, email, address } = data.personal_info.customer;
+        const { name, email, address, phone } = data.personal_info.customer;
         const password = Math.random().toString(36).slice(-6);
 
         const saltRounds = 10;
@@ -52,11 +53,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
           customer = new User({
             name,
             email,
+            phone,
             address,
             password: hashedPassword,
             role: "customer",
             creation_method: "through_order",
           });
+          await customer.save();
+        } else {
+          customer.phone = phone;
+          customer.address = address;
           await customer.save();
         }
 
@@ -140,9 +146,9 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     await dbConnect();
     const preOrderId = req.cookies.get("bookingSession")?.value;
-    const preOrder = await PreOrder.findById(preOrderId);
-
-    console.log(preOrderId);
+    const preOrder = await PreOrder.findById(preOrderId).populate(
+      "personal_info.customer"
+    );
 
     return NextResponse.json({
       success: true,

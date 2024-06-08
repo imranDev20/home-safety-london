@@ -1,4 +1,5 @@
 import { IOrderItem, IPreOrder } from "@/types/orders";
+import { IUser } from "@/types/user";
 import mongoose, { Schema } from "mongoose";
 
 const orderItemSchema = new Schema<IOrderItem>({

@@ -33,10 +33,14 @@ import {
   isObjectEmpty,
 } from "@/shared/functions";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getPreOrder, updatePreOrder } from "@/services/pre-order.services";
-import { PreOrderPersonalPayload } from "@/types/pre-order";
+import { createPreOrder, getPreOrder } from "@/services/pre-order.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { CONGESTION_ZONE_OPTIONS, PARKING_OPTIONS } from "@/shared/constants";
+import { IPreOrder, ParkingType, ZoneType } from "@/types/orders";
+import { IUser } from "@/types/user";
+import dayjs from "dayjs";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/types/response";
 
 const PhoneInputAdapter = React.forwardRef<InputProps, any>(
   function PhoneInputAdapter(props, ref) {
@@ -70,40 +74,40 @@ export default function PersonalDetails() {
       name: "",
       email: "",
       phone: "",
-      house: "",
-      postCode: "",
+      street: "",
+      postcode: "",
       city: "London",
       parkingOptions: "",
       congestionZone: "",
-      inspectionDate: "",
+      inspectionDate: new Date(dayjs().format()),
       inspectionTime: "",
       orderNotes: "",
     },
   });
 
   const {
-    data: preOrderData,
+    data,
     isLoading: isPreOrderDataLoading,
     refetch: refetchPreOrder,
   } = useQuery({
     queryKey: ["pre-order"],
-    queryFn: async () => {
-      const preOrderId = getPreOrderIdFromLocalStorage();
-      const response = await getPreOrder(preOrderId as string);
-      return response.data;
-    },
-    enabled: false,
+    queryFn: () => getPreOrder(),
+    retry: 1,
   });
+
+  const preOrderData = data?.data;
 
   const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
     useMutation({
-      mutationFn: async (preOrder: PreOrderPersonalPayload) => {
-        const preOrderId = getPreOrderIdFromLocalStorage();
-        const response = await updatePreOrder(
-          preOrderId || undefined,
-          preOrder
-        );
-        return response;
+      mutationFn: (preOrder: Partial<IPreOrder<IUser>>) =>
+        createPreOrder(preOrder),
+      onSuccess: (response) => {
+        router.push(pathname + "?" + createQueryString("active_step", "3"));
+        window.scrollTo(0, 300);
+        enqueueSnackbar(response.message, "success");
+      },
+      onError: (error: AxiosError<ErrorResponse>) => {
+        enqueueSnackbar(error.response?.data.message || error.message, "error");
       },
     });
 
@@ -114,72 +118,80 @@ export default function PersonalDetails() {
     }
   }, [refetchPreOrder]);
 
+  console.log(preOrderData);
+
   useEffect(() => {
-    if (preOrderData) {
+    if (preOrderData?.personal_info) {
+      const { personal_info } = preOrderData;
+
+      const {
+        customer,
+        parking_options,
+        congestion_zone,
+        inspection_date,
+        inspection_time,
+        order_notes,
+      } = personal_info || {};
+
       reset({
-        name: preOrderData?.customer_name || "",
-        email: preOrderData?.email || "",
-        phone: preOrderData?.phone_no || "",
-        house: preOrderData?.address?.street || "",
-        postCode: preOrderData?.address?.postcode || "",
-        city: preOrderData?.address?.city || "London",
-        parkingOptions: preOrderData?.parking_options?.parking_type || "",
-        congestionZone: preOrderData?.congestion_zone?.zone_type || "",
-        inspectionDate: preOrderData?.inspection_date || "",
-        inspectionTime: preOrderData?.inspection_time || "",
-        orderNotes: preOrderData?.order_notes || "",
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone,
+        street: customer.address?.street,
+        postcode: customer.address?.postcode,
+        city: customer.address?.city,
+        parkingOptions: parking_options?.parking_type || "",
+        congestionZone: congestion_zone?.zone_type || "",
+        inspectionDate: inspection_date,
+        inspectionTime: inspection_time || "",
+        orderNotes: order_notes || "",
       });
     }
   }, [preOrderData, reset]);
 
-  const onPersonalDetailsSubmit: SubmitHandler<PersonalFormInput> = async (
-    data
-  ) => {
-    try {
-      const selectedCongestionZone = CONGESTION_ZONE_OPTIONS.find(
-        (option) => option.value === data.congestionZone
-      );
+  const onPersonalDetailsSubmit: SubmitHandler<PersonalFormInput> = (data) => {
+    if (!preOrderData?.service_info) {
+      console.log("Service step data not found");
+      return;
+    }
 
-      const selectedParkingOption = PARKING_OPTIONS.find(
-        (option) => option.value === data.parkingOptions
-      );
+    const selectedCongestionZone = CONGESTION_ZONE_OPTIONS.find(
+      (option) => option.value === data.congestionZone
+    );
 
-      const payload = {
-        ...preOrderData,
-        customer_name: data.name,
-        email: data.email,
-        phone_no: data.phone,
-        address: {
-          street: data.house,
-          postcode: data.postCode,
-          city: data.city,
+    const selectedParkingOption = PARKING_OPTIONS.find(
+      (option) => option.value === data.parkingOptions
+    );
+
+    const payload: Partial<IPreOrder<IUser>> = {
+      service_info: preOrderData.service_info,
+      personal_info: {
+        customer: {
+          email: data.email,
+          phone: data.phone,
+          address: {
+            street: data.street,
+            postcode: data.postcode,
+            city: data.city,
+          },
         },
+
         parking_options: {
-          parking_type: selectedParkingOption?.value as string,
+          parking_type: selectedParkingOption?.value as ParkingType,
           parking_cost: selectedParkingOption?.cost as number,
         },
         congestion_zone: {
-          zone_type: selectedCongestionZone?.value as string,
+          zone_type: selectedCongestionZone?.value as ZoneType,
           zone_cost: selectedCongestionZone?.cost as number,
         },
-        inspection_date: data.inspectionDate,
+        inspection_date: new Date(dayjs(data.inspectionDate).format()),
         inspection_time: data.inspectionTime,
         order_notes: data.orderNotes,
-        is_personal_details_complete: true,
-      };
+      },
+      status: "personal",
+    };
 
-      const response = await preOrderMutate(payload);
-
-      if (response?.success) {
-        router.push(pathname + "?" + createQueryString("active_step", "3"));
-        window.scrollTo(0, 300);
-        enqueueSnackbar(response.message, "success");
-      } else {
-        throw new Error(response.message);
-      }
-    } catch (error: any) {
-      enqueueSnackbar(error.message, "error");
-    }
+    preOrderMutate(payload);
   };
 
   if (isPreOrderDataLoading) {
@@ -299,15 +311,15 @@ export default function PersonalDetails() {
           <Grid xs={12}>
             <Controller
               control={control}
-              name="house"
+              name="street"
               rules={{
                 required: "House & Street can't be empty",
               }}
               render={({ field }) => (
-                <FormControl error={!!errors.house} size="lg">
+                <FormControl error={!!errors.street} size="lg">
                   <FormLabel>House / Street</FormLabel>
                   <Input size="lg" {...field} fullWidth variant="outlined" />
-                  <HookFormError name="house" errors={errors} />
+                  <HookFormError name="street" errors={errors} />
                 </FormControl>
               )}
             />
@@ -316,7 +328,7 @@ export default function PersonalDetails() {
           <Grid xs={6}>
             <Controller
               control={control}
-              name="postCode"
+              name="postcode"
               rules={{
                 required: "Post code can't be empty",
                 validate: (value) => {
@@ -324,7 +336,7 @@ export default function PersonalDetails() {
                 },
               }}
               render={({ field: { value, onChange } }) => (
-                <FormControl error={!!errors.postCode} size="lg">
+                <FormControl error={!!errors.postcode} size="lg">
                   <FormLabel>Post Code</FormLabel>
                   <Input
                     size="lg"
@@ -333,7 +345,7 @@ export default function PersonalDetails() {
                     fullWidth
                     variant="outlined"
                   />
-                  <HookFormError name="postCode" errors={errors} />
+                  <HookFormError name="postcode" errors={errors} />
                 </FormControl>
               )}
             />
@@ -562,12 +574,13 @@ export default function PersonalDetails() {
               rules={{
                 required: "Inspection date can't be empty",
               }}
-              render={({ field }) => (
+              render={({ field: { value, onChange } }) => (
                 <FormControl error={!!errors.inspectionDate} size="lg">
                   <FormLabel>Select Inspection Date</FormLabel>
 
                   <Input
-                    {...field}
+                    value={dayjs(value).format("YYYY-MM-DD")}
+                    onChange={(e) => onChange(dayjs(e.target.value).format())}
                     type="date"
                     size="lg"
                     fullWidth

@@ -166,7 +166,7 @@ export const debounce = (func: (...args: any[]) => void, delay: number) => {
   };
 };
 
-export function calculateTotalCost(order: IPreOrder<IUser, "personal">) {
+export function calculateTotalCost(order: IPreOrder<IUser, "payment">) {
   if (!order.personal_info) {
     console.log("Personal info is needed to calculate total cost");
     return;
