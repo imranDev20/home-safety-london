@@ -15,7 +15,7 @@ const SingleCustomer = () => {
 
   const {
     data: userDetails,
-    isLoading: isUserDetailsLoading,
+    isFetching: isUserDetailsFetching,
     isPending: isUserDetailsPending,
   } = useQuery({
     queryKey: ["user-details"],
@@ -25,7 +25,7 @@ const SingleCustomer = () => {
     },
   });
 
-  if (isUserDetailsLoading || isUserDetailsPending) {
+  if (isUserDetailsFetching || isUserDetailsPending) {
     return "Loading...";
   }
 

@@ -13,9 +13,9 @@ interface UserProfileSectionProps {
 export default function UserProfileSection({
   setOpenConfirmModal,
 }: UserProfileSectionProps) {
-  const { userData, isLoading: isCurrentUserLoading } = useCurrentUser();
+  const { userData, isPending: isCurrentUserPending } = useCurrentUser();
 
-  if (isCurrentUserLoading) {
+  if (isCurrentUserPending) {
     return (
       <Box>
         <Divider

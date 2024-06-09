@@ -12,12 +12,12 @@ export default function EngineerCards() {
   const {
     engineersData,
     isGetEngineersDataFetching,
-    isGetEngineersDataLoading,
+    isGetEngineersDataPending,
   } = useEngineersData();
 
   console.log(engineersData);
 
-  if (isGetEngineersDataFetching || isGetEngineersDataLoading) {
+  if (isGetEngineersDataFetching || isGetEngineersDataPending) {
     return "Loading...";
   }
 

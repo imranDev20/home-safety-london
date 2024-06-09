@@ -55,7 +55,7 @@ export default function CustomerDetails() {
     useUpdateOrderDetails();
 
   useEffect(() => {
-    if (orderDetails) {
+    if (orderDetails?.order_notes) {
       setOrderNotes(orderDetails?.order_notes);
     }
   }, [orderDetails]);

@@ -14,7 +14,7 @@ import React, { useState } from "react";
 type AssigneeProps = {
   isLabel?: boolean;
   isOrderItems?: boolean;
-  onChange: (param: string) => void;
+  onChange?: (param: string) => void;
 };
 
 export default function Assignee({
@@ -30,12 +30,15 @@ export default function Assignee({
   const pathname = usePathname();
   const [assigneeState, setAssigneeState] = useState<string>("");
 
-  const { engineersData, isGetEngineersDataLoading, refetchGetEngineers } =
+  const { engineersData, isGetEngineersDataPending, refetchGetEngineers } =
     useEngineersData(false);
 
   const handleValueChange = (newValue: string) => {
     setAssigneeState(newValue);
-    onChange(newValue);
+
+    if (onChange) {
+      onChange(newValue);
+    }
   };
 
   return (
@@ -64,7 +67,7 @@ export default function Assignee({
             setListBoxOpen(e);
           }}
           indicator={
-            isGetEngineersDataLoading ? (
+            isGetEngineersDataPending ? (
               <CircularProgress
                 size="sm"
                 thickness={2}

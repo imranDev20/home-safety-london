@@ -41,7 +41,7 @@ export default function Customers() {
   const { createQueryString, removeQueryString } = useQueryString();
 
   // Mutate function to export users
-  const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
+  const { isPending: isExportUsersPending, refetch: refetchExportUsers } =
     useQuery({
       queryKey: ["export-users"],
       queryFn: async () => {
@@ -173,7 +173,7 @@ export default function Customers() {
             variant="outlined"
             startDecorator={<Download />}
             onClick={handleExportUsers}
-            loading={isExportUsersLoading}
+            loading={isExportUsersPending}
             loadingPosition="start"
           >
             Download Excel

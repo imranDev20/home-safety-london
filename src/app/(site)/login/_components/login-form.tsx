@@ -45,7 +45,7 @@ export default function LoginForm() {
     },
   });
 
-  const { mutateAsync: loginUserMutate, isPending: isLoginUserMutateLoading } =
+  const { mutateAsync: loginUserMutate, isPending: isLoginUserMutatePending } =
     useMutation({
       mutationFn: (userData: LoginPayload) => loginAccount(userData),
       onSuccess: (response) => {
@@ -183,7 +183,7 @@ export default function LoginForm() {
               <Button
                 type="submit"
                 fullWidth
-                loading={isLoginUserMutateLoading}
+                loading={isLoginUserMutatePending}
               >
                 Login
               </Button>

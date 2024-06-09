@@ -18,7 +18,7 @@ export default function Payments() {
 
   const {
     data: preOrderData,
-    isLoading: isPreOrderDataLoading,
+    isPending: isPreOrderDataPending,
     refetch: refetchPreOrder,
   } = useQuery({
     queryKey: ["pre-order"],

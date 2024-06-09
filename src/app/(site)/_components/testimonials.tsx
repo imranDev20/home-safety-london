@@ -41,7 +41,7 @@ export default function Testimonials() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const { data: testimonialData, isLoading: isGetTestimonialsLoading } =
+  const { data: testimonialData, isPending: isGetTestimonialsPending } =
     useQuery<GetTestimonialsResponse>({
       queryKey: ["testimonials"],
       queryFn: () => getTestimonials(),
@@ -49,7 +49,7 @@ export default function Testimonials() {
 
   console.log(testimonialData);
 
-  if (isGetTestimonialsLoading) {
+  if (isGetTestimonialsPending) {
     return <CircularProgress />;
   }
 

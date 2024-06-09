@@ -75,7 +75,7 @@ export default function CustomerOrders() {
 
   const {
     data: ordersData,
-    isLoading: isGetUsersDataLoading,
+    isPending: isGetUsersDataPending,
     isFetching: isGetUserDataFetching,
     refetch: refetchGetUsers,
   } = useQuery<any>({
@@ -109,7 +109,7 @@ export default function CustomerOrders() {
     console.log("Selection changed:", selected);
   };
 
-  if (isGetUserDataFetching || isGetUsersDataLoading) {
+  if (isGetUserDataFetching || isGetUsersDataPending) {
     return "Loading...";
   }
 

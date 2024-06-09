@@ -16,8 +16,9 @@ import {
   useTheme,
   Grid,
   CircularProgress,
+  Stack,
 } from "@mui/joy";
-import { CorporateFare, Home } from "@mui/icons-material";
+import { CorporateFare, East, Home, West } from "@mui/icons-material";
 import HookFormError from "@/app/_components/common/hook-form-error";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createPreOrder, getPreOrder } from "@/services/pre-order.services";
@@ -56,7 +57,7 @@ export default function ServiceDetails() {
   const propertyType = watch("propertyType");
 
   // Get PreOrder Data
-  const { data, isLoading: isPreOrderDataLoading } = useQuery({
+  const { data, isPending: isPreOrderDataPending } = useQuery({
     queryKey: ["pre-order"],
     queryFn: () => getPreOrder(),
     retry: 1,
@@ -129,7 +130,7 @@ export default function ServiceDetails() {
     preOrderMutate(payload);
   };
 
-  if (isPreOrderDataLoading) {
+  if (isPreOrderDataPending) {
     return (
       <Box
         sx={{
@@ -556,17 +557,34 @@ export default function ServiceDetails() {
           </FormHelperText>
         </FormControl>
 
-        <Button
-          type="submit"
-          variant="solid"
+        <Stack
           sx={{
             mt: 5,
+            width: "100%",
           }}
-          loading={isPreOrderMutatePending}
-          loadingPosition="end"
+          direction="row"
+          justifyContent="space-between"
         >
-          Next: Personal Details
-        </Button>
+          <Button
+            disabled
+            variant="solid"
+            loadingPosition="end"
+            size="lg"
+            startDecorator={<West />}
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            variant="solid"
+            loading={isPreOrderMutatePending}
+            loadingPosition="end"
+            size="lg"
+            endDecorator={<East />}
+          >
+            Next
+          </Button>
+        </Stack>
       </Box>
     </Box>
   );

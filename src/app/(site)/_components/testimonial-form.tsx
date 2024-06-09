@@ -54,7 +54,7 @@ export default function TestimonialForm({
 
   const {
     mutateAsync: createTestimonialMutate,
-    isPending: isCreateTestimonialLoading,
+    isPending: isCreateTestimonialPending,
   } = useMutation({
     mutationFn: (testimonialData: ITestimonial) =>
       createTestimonial(testimonialData),
@@ -181,7 +181,7 @@ export default function TestimonialForm({
                 )}
               />
 
-              <Button loading={isCreateTestimonialLoading} type="submit">
+              <Button loading={isCreateTestimonialPending} type="submit">
                 Submit
               </Button>
             </Stack>

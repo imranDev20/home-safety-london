@@ -33,7 +33,7 @@ export default function NavbarDropdown() {
 
   const {
     mutateAsync: logoutAccountMutate,
-    isPending: isLogoutAccountLoading,
+    isPending: isLogoutAccountPending,
   } = useMutation({
     mutationFn: () => logoutAccount(),
 
@@ -56,7 +56,7 @@ export default function NavbarDropdown() {
   return (
     <>
       <Dropdown>
-        {isLogoutAccountLoading ? (
+        {isLogoutAccountPending ? (
           <CircularProgress thickness={4} size="md" />
         ) : (
           <MenuButton

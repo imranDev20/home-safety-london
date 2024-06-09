@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 import { formatResponse } from "@/shared/functions";
 import User from "../_models/User";
 import bcrypt from "bcrypt";
+import { sendEmail } from "../_lib/sendEmail";
+import { createAccountInOrderNotifyHtml } from "../_templates/create-account-order-notify";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
@@ -43,6 +45,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
         const { name, email, address, phone } = data.personal_info.customer;
         const password = Math.random().toString(36).slice(-6);
 
+        console.log(name, email, phone, "INFO USER");
+
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -60,6 +64,17 @@ export async function POST(req: NextRequest, res: NextResponse) {
             creation_method: "through_order",
           });
           await customer.save();
+
+          // send email to customer after account creation
+          const accountCreateNotifyEmailSubject = `Your Account is Ready - Start Tracking Your Orders Now`;
+
+          await sendEmail({
+            fromEmail: "info@londonhomesafety.co.uk",
+            fromName: "London Home Safety",
+            to: email,
+            subject: accountCreateNotifyEmailSubject,
+            html: createAccountInOrderNotifyHtml(name, email, password),
+          });
         } else {
           customer.role = "customer";
           customer.phone = phone;
@@ -72,6 +87,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           throw new Error("Customer creation failed. Please try again.");
         }
 
+        // update the pre-order
         preOrder.service_info = data.service_info;
         preOrder.personal_info = {
           ...data.personal_info,
@@ -83,8 +99,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         break;
 
       case "payment":
-        // Find the existing pre-order by id and update with shipping information
-
+        // Find the existing pre-order by id
         preOrder = await PreOrder.findById(preOrderId).populate(
           "personal_info.customer"
         );

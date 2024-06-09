@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import { verifyRecaptcha } from "../_lib/verifyRecaptcha";
 import { formatResponse } from "@/shared/functions";
 import { sendEmail } from "../_lib/sendEmail";
-import { adminNotificationEmailHtml } from "../_templates/admin-email";
+import { contactAdminNotificationEmailHtml } from "../_templates/contact-admin-email";
 import {
   customerEmailSubject,
-  customerNotificationEmailHtml,
-} from "../_templates/customer-email";
+  contactCustomerNotificationEmailHtml,
+} from "../_templates/contact-customer-email";
 
 // Type guard to check if an error has a message property
 function isErrorWithMessage(error: unknown): error is { message: string } {
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       fromName: "London Home Safety",
       to: process.env.ADMIN_EMAIL as string,
       subject: adminEmailSubject,
-      html: adminNotificationEmailHtml(name, email, subject, message),
+      html: contactAdminNotificationEmailHtml(name, email, subject, message),
     });
 
     // Send email to customer
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
       fromEmail: "info@londonhomesafety.co.uk",
       to: email,
       subject: customerEmailSubject,
-      html: customerNotificationEmailHtml(name, subject, message),
+      html: contactCustomerNotificationEmailHtml(name, subject, message),
     });
 
     // Return a success response

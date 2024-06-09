@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 export const useEngineersData = (enabled?: boolean) => {
   const {
     data,
-    isLoading: isGetEngineersDataLoading,
+    isPending: isGetEngineersDataPending,
     isFetching: isGetEngineersDataFetching,
     refetch: refetchGetEngineers,
   } = useQuery<GetEngineersResponse>({
@@ -19,7 +19,7 @@ export const useEngineersData = (enabled?: boolean) => {
 
   return {
     engineersData: data,
-    isGetEngineersDataLoading,
+    isGetEngineersDataPending,
     isGetEngineersDataFetching,
     refetchGetEngineers,
   };

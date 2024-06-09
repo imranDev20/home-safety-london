@@ -371,58 +371,6 @@ export const SERVICES = [
   },
 ];
 
-export const FAQS = [
-  {
-    id: 1,
-    ques: "What is the validity of an EICR",
-    ans: "EICR is valid for 3-5 years",
-    service: "Electrical Services",
-    sub_service: "EICR",
-  },
-  {
-    id: 2,
-    ques: "What is validity of PAT Testing?",
-    ans: "Pat testing is valid for 1 year.",
-    service: "Electrical Services",
-    sub_service: "PAT",
-  },
-  {
-    id: 3,
-    ques: "What is the validity of GAS SAFETY Certificate",
-    ans: "Gas safety certificate is valid for 1 year.",
-    service: "Gas Services",
-    sub_service: "Gas Certificate",
-  },
-  {
-    id: 4,
-    ques: "What is turnaround time for fire alarm certificate?",
-    ans: "London Property Inspections can carry out an fire alarm inspection within 24 hours if customer need an report on urgent basis. Sometimes we carry out an inspection on the same day.",
-    service: "Fire Services",
-    sub_service: "Fire Alarm Certificate",
-  },
-  {
-    id: 5,
-    ques: "What is the validity of EPC?",
-    ans: "EPC is valid for 10 years.",
-    service: "Health & Safety",
-    sub_service: "EPC",
-  },
-  {
-    id: 6,
-    ques: "How can I know the electrician is qualified?",
-    ans: "All of our electricians (contractors) are qualified with NICEIC, NAPIT and STROMA. Registration number of electricians is provided to customer for verification purposes prior to the inspection",
-    service: "Electrical Services",
-    sub_service: "EICR",
-  },
-  {
-    id: 7,
-    ques: "How do I receive fire alarm certificate?",
-    ans: "Fire alarm certificate is provided in digital format (pdf) via email. You can also download it from our website.",
-    service: "Fire Services",
-    sub_service: "Fire Alarm Certificate",
-  },
-];
-
 const MODIFIED_SERVICES = SERVICES.map((service) =>
   service.sub_services.map((s_service) => ({
     ...s_service,

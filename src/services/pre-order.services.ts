@@ -11,7 +11,6 @@ export const getPreOrder = async (): Promise<PreOrderResponse> => {
 export const createPreOrder = async (
   preOrder: Partial<IPreOrder<IUser>>
 ): Promise<PreOrderResponse> => {
-  console.log(preOrder);
   const response: PreOrderResponse = await http.post(`/pre-order`, preOrder);
   return response;
 };

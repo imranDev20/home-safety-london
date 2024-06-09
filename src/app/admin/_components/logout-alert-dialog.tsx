@@ -23,7 +23,7 @@ const LogoutAlertDialog: React.FC<ComponentUseStateProps> = ({
 
   const {
     mutateAsync: logoutAccountMutate,
-    isPending: isLogoutAccountLoading,
+    isPending: isLogoutAccountPending,
   } = useMutation({
     mutationFn: async () => {
       const response = await logoutAccount();
@@ -69,7 +69,7 @@ const LogoutAlertDialog: React.FC<ComponentUseStateProps> = ({
             <Button
               variant="solid"
               color="danger"
-              loading={isLogoutAccountLoading}
+              loading={isLogoutAccountPending}
               onClick={handleLogoutAccount}
             >
               Confirm Logout

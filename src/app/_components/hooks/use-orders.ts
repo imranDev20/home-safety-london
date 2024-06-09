@@ -16,7 +16,7 @@ export const useOrdersData = (enabled?: boolean, queries?: OrderQueries) => {
     queries as OrderQueries;
   const {
     data,
-    isLoading: isGetOrdersDataLoading,
+    isPending: isGetOrdersDataPending,
     isFetching: isGetOrdersDataFetching,
     refetch: refetchGetOrders,
   } = useQuery<GetOrdersResponse>({
@@ -29,7 +29,7 @@ export const useOrdersData = (enabled?: boolean, queries?: OrderQueries) => {
 
   return {
     ordersData: data,
-    isGetOrdersDataLoading,
+    isGetOrdersDataPending,
     isGetOrdersDataFetching,
     refetchGetOrders,
   };

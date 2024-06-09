@@ -47,7 +47,7 @@ export default function RegisterForm() {
 
   const {
     mutateAsync: registerUserMutate,
-    isPending: isRegisterUserMutateLoading,
+    isPending: isRegisterUserMutatePending,
   } = useMutation({
     mutationFn: (userData: RegisterPayload) => registerAccount(userData),
     onSuccess: async (response) => {
@@ -222,7 +222,7 @@ export default function RegisterForm() {
               <Button
                 type="submit"
                 fullWidth
-                loading={isRegisterUserMutateLoading}
+                loading={isRegisterUserMutatePending}
               >
                 Register
               </Button>

@@ -150,7 +150,7 @@ export default function OrderTable() {
   const {
     ordersData,
     isGetOrdersDataFetching,
-    isGetOrdersDataLoading,
+    isGetOrdersDataPending,
     refetchGetOrders,
   } = useOrdersData(true, {
     q: searchTerm,
@@ -180,7 +180,7 @@ export default function OrderTable() {
     router.push(`/admin/orders/${order._id.toString()}`);
   };
 
-  if (isGetOrdersDataFetching || isGetOrdersDataLoading) {
+  if (isGetOrdersDataFetching || isGetOrdersDataPending) {
     return (
       <Sheet
         variant="outlined"

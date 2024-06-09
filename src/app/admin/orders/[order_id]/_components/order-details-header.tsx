@@ -41,9 +41,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function OrderDetailsHeader() {
-  const { orderDetails, isLoading: isOrderDetailsLoading } = useOrderDetails();
-  const { updateOrderMutate, isPending: isUpdateOrderDetailsLoading } =
-    useUpdateOrderDetails();
+  const { orderDetails, isPending: isOrderDetailsPending } = useOrderDetails();
+  const { updateOrderMutate } = useUpdateOrderDetails();
   const theme = useTheme();
   const [orderStatus, setOrderStatus] = useState<OrderStatusValues>(
     "awaiting_confirmation"
@@ -90,7 +89,7 @@ export default function OrderDetailsHeader() {
     }
   };
 
-  if (isOrderDetailsLoading) {
+  if (isOrderDetailsPending) {
     return (
       <>
         <Box

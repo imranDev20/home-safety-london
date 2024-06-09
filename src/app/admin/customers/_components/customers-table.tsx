@@ -47,7 +47,7 @@ export default function CustomersTable() {
 
   const {
     data: usersData,
-    isLoading: isGetUsersDataLoading,
+    isPending: isGetUsersDataPending,
     isFetching: isGetUserDataFetching,
     refetch: refetchGetUsers,
   } = useQuery<GetCustomersResponse>({
@@ -73,7 +73,7 @@ export default function CustomersTable() {
     console.log("Selection changed:", selected);
   };
 
-  if (isGetUsersDataLoading || isGetUserDataFetching) {
+  if (isGetUsersDataPending || isGetUserDataFetching) {
     return (
       <Sheet
         variant="outlined"

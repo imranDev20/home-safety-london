@@ -17,6 +17,7 @@ import {
   RadioGroup,
   Select,
   Sheet,
+  Stack,
   Textarea,
   Typography,
   colors,
@@ -27,7 +28,7 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 import { isValid } from "postcode";
 import React, { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { createQueryString, isObjectEmpty } from "@/shared/functions";
+import { isObjectEmpty } from "@/shared/functions";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createPreOrder, getPreOrder } from "@/services/pre-order.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
@@ -37,6 +38,8 @@ import { IUser } from "@/types/user";
 import dayjs from "dayjs";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/types/response";
+import { useQueryString } from "@/app/_components/hooks/use-query-string";
+import { East, West } from "@mui/icons-material";
 
 const PhoneInputAdapter = React.forwardRef<InputProps, any>(
   function PhoneInputAdapter(props, ref) {
@@ -58,6 +61,7 @@ export default function PersonalDetails() {
   const router = useRouter();
   const pathname = usePathname();
   const { enqueueSnackbar } = useSnackbar();
+  const { createQueryString } = useQueryString();
 
   const {
     control,
@@ -81,7 +85,7 @@ export default function PersonalDetails() {
     },
   });
 
-  const { data, isLoading: isPreOrderDataLoading } = useQuery({
+  const { data, isPending: isPreOrderDataPending } = useQuery({
     queryKey: ["pre-order"],
     queryFn: () => getPreOrder(),
     retry: 1,
@@ -150,6 +154,7 @@ export default function PersonalDetails() {
       service_info: preOrderData.service_info,
       personal_info: {
         customer: {
+          name: data.name,
           email: data.email,
           phone: data.phone,
           address: {
@@ -177,7 +182,7 @@ export default function PersonalDetails() {
     preOrderMutate(payload);
   };
 
-  if (isPreOrderDataLoading) {
+  if (isPreOrderDataPending) {
     return (
       <Box
         sx={{
@@ -666,17 +671,38 @@ export default function PersonalDetails() {
             </FormHelperText>
           </FormControl>
 
-          <Button
-            type="submit"
-            variant="solid"
+          <Stack
             sx={{
               mt: 5,
+              width: "100%",
             }}
-            loading={isPreOrderMutatePending}
-            loadingPosition="end"
+            direction="row"
+            justifyContent="space-between"
           >
-            Next: Personal Details
-          </Button>
+            <Button
+              variant="solid"
+              loadingPosition="end"
+              size="lg"
+              onClick={() =>
+                router.push(
+                  pathname + "?" + createQueryString("active_step", "1")
+                )
+              }
+              startDecorator={<West />}
+            >
+              Back
+            </Button>
+            <Button
+              type="submit"
+              variant="solid"
+              size="lg"
+              loading={isPreOrderMutatePending}
+              loadingPosition="end"
+              endDecorator={<East />}
+            >
+              Next
+            </Button>
+          </Stack>
         </Box>
       </Box>
     </>
