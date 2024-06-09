@@ -13,3 +13,7 @@ export type ComponentUseStateProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
+
+export type ChildrenProp = {
+  children: React.ReactNode;
+};

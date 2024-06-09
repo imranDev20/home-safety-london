@@ -83,13 +83,14 @@ interface IPreOrder<T extends IUser | undefined = undefined>
   updatedAt?: Date;
 }
 
-export interface IOrder extends Pick<Document, "_id"> {
+export interface IOrder<T extends IUser | undefined = undefined>
+  extends Pick<Document, "_id"> {
   property_type: PropertyType;
   resident_type?: ResidentType<PropertyType>;
   bedrooms?: PropertyType extends "residential" ? number : null; //
 
   order_items: IOrderItemWithEngineers[];
-  customer: Types.ObjectId;
+  customer: T extends IUser ? Partial<IUser> : Types.ObjectId;
   parking_options: {
     parking_type: ParkingType;
     parking_cost: number;

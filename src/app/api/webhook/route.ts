@@ -56,7 +56,7 @@ export async function POST(req: any) {
         const newOrder = new Order({
           ...preOrder.service_info,
           ...preOrder.personal_info,
-          customer: paymentIntent.metadata.pre_order_id,
+          customer: preOrder.personal_info?.customer._id,
           ...preOrder.payment_info,
           remaining_amount: 0,
           paid_amount: paymentIntent.amount_received,

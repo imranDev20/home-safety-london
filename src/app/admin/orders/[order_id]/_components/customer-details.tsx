@@ -17,6 +17,7 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
+import { Types } from "mongoose";
 import React, { useEffect, useState } from "react";
 
 interface InfoCellsProps {
@@ -50,6 +51,8 @@ export default function CustomerDetails() {
   const { orderDetails } = useOrderDetails();
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [orderNotes, setOrderNotes] = useState<string>("");
+
+  console.log(orderDetails);
 
   const { updateOrderMutate, isPending: isUpdateOrderPending } =
     useUpdateOrderDetails();
@@ -93,6 +96,7 @@ export default function CustomerDetails() {
                 onClick={async () => {
                   const response = await updateOrderMutate({
                     ...orderDetails,
+                    customer: new Types.ObjectId(orderDetails.customer._id),
                     order_notes: orderNotes,
                   });
 
@@ -122,13 +126,15 @@ export default function CustomerDetails() {
       <Card>
         <CardContent orientation="vertical">
           <Stack direction="row" spacing={2} alignItems="center">
-            <Avatar>{orderDetails.customer_name.charAt(0)}</Avatar>
+            <Avatar>{orderDetails?.customer?.name?.charAt(0)}</Avatar>
 
             <Stack>
               <Typography level="title-md">
-                {orderDetails.customer_name}
+                {orderDetails.customer?.name}
               </Typography>
-              <Typography level="body-sm">{orderDetails.email}</Typography>
+              <Typography level="body-sm">
+                {orderDetails.customer?.email}
+              </Typography>
             </Stack>
           </Stack>
 
@@ -139,7 +145,9 @@ export default function CustomerDetails() {
                   fontSize: 20,
                 }}
               />
-              <Typography level="title-sm">{orderDetails.phone_no}</Typography>
+              <Typography level="title-sm">
+                {orderDetails.customer?.phone}
+              </Typography>
             </Stack>
 
             <Stack direction="row" spacing={1}>
@@ -149,8 +157,9 @@ export default function CustomerDetails() {
                 }}
               />
               <Typography level="title-sm">
-                {orderDetails.address.street}, {orderDetails.address.city}{" "}
-                {orderDetails.address.postcode}
+                {orderDetails?.customer?.address?.street},{" "}
+                {orderDetails?.customer?.address?.city}{" "}
+                {orderDetails?.customer?.address?.postcode}
               </Typography>
             </Stack>
           </Stack>

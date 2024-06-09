@@ -11,7 +11,9 @@ export async function GET(
     await dbConnect();
     const orderId = params.order_id;
 
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate("customer");
+
+    console.log(order);
 
     if (!order) {
       return NextResponse.json(formatResponse(false, null, "Order not found"), {
@@ -24,16 +26,10 @@ export async function GET(
       status.timestamp = new Date(status.timestamp);
     });
 
-    // Log the order_status before sorting for debugging purposes
-    console.log("Before sorting:", order.order_status);
-
     // Sort the order_status array by timestamp in descending order
     order.order_status.sort(
       (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
     );
-
-    // Log the order_status after sorting for debugging purposes
-    console.log("After sorting:", order.order_status);
 
     return NextResponse.json(
       formatResponse(true, order, "Order fetched successfully")

@@ -87,6 +87,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
           throw new Error("Customer creation failed. Please try again.");
         }
 
+        console.log(customer._id);
+
         // update the pre-order
         preOrder.service_info = data.service_info;
         preOrder.personal_info = {
@@ -107,6 +109,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         if (!preOrder) {
           throw new Error("PreOrder not found for this ID");
         }
+
         preOrder.service_info = data.service_info;
         preOrder.personal_info = data.personal_info;
         preOrder.payment_info = data.payment_info;

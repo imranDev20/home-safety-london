@@ -1,12 +1,12 @@
 import { faker } from "@faker-js/faker";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { formatResponse } from "@/shared/functions";
 import dbConnect from "../_lib/dbConnect";
 import PreOrder from "../_models/PreOrder";
 import Order from "../_models/Order";
 import { ORDER_STATUS } from "@/shared/constants";
-import { IPreOrder } from "@/types/orders";
+import { IOrder, IPreOrder, OrderStatusValues } from "@/types/orders";
 
 async function generateInvoiceId() {
   const mostRecentOrder = await Order.findOne().sort({ createdAt: -1 }).exec();
@@ -51,60 +51,61 @@ export async function POST(req: NextRequest) {
     for (let i = 0; i < 100; i++) {
       // Generate fake data for PreOrder
       const fakePreOrder: IPreOrder = {
-        property_type: faker.helpers.arrayElement([
-          "residential",
-          "commercial",
-        ]),
-        resident_type: faker.helpers.arrayElement(["house", "hmo", "flat"]),
-        bedrooms: faker.datatype.number({ min: 1, max: 10 }).toString(),
-        order_items: Array.from(
-          { length: faker.datatype.number({ min: 1, max: 7 }) },
-          () => ({
-            name: faker.commerce.productName(),
-            title: faker.lorem.sentence(),
-            price: faker.datatype.number({ min: 10, max: 1000 }),
-            quantity: faker.datatype.number({ min: 1, max: 10 }),
-            unit: faker.helpers.arrayElement(["pieces", "kg", "liters"]),
-          })
-        ),
-        is_service_details_complete: faker.datatype.boolean(),
-        customer_name: faker.name.fullName(),
-        email: faker.internet.email(),
-        phone_no: faker.phone.number(),
-        payment_method: faker.helpers.arrayElement([
-          "credit_card",
-          "cash_to_engineer",
-          "bank_transfer",
-        ]),
-        address: {
-          street: faker.address.streetAddress(),
-          postcode: faker.address.zipCode(),
-          city: faker.address.city(),
-        },
-        parking_options: {
-          parking_cost: faker.datatype.number({ min: 5, max: 5 }),
-          parking_type: faker.helpers.arrayElement([
-            "paid",
-            "unavailable",
-            "free",
+        service_info: {
+          property_type: faker.helpers.arrayElement([
+            "residential",
+            "commercial",
           ]),
+          resident_type: faker.helpers.arrayElement(["house", "hmo", "flat"]),
+          bedrooms: faker.datatype.number({ min: 1, max: 10 }),
+          order_items: Array.from(
+            { length: faker.datatype.number({ min: 1, max: 7 }) },
+            () => ({
+              name: faker.commerce.productName(),
+              title: faker.lorem.sentence(),
+              price: faker.datatype.number({ min: 10, max: 1000 }),
+              quantity: faker.datatype.number({ min: 1, max: 10 }),
+              unit: faker.helpers.arrayElement(["pieces", "kg", "liters"]),
+            })
+          ),
         },
-        congestion_zone: {
-          zone_cost: faker.datatype.number({ min: 5, max: 20 }),
-          zone_type: faker.helpers.arrayElement([
-            "congestion",
-            "non_congestion",
-          ]),
-        },
-        order_notes: faker.lorem.sentences(2).substring(0, 250),
-        inspection_date: faker.date.anytime(),
-        inspection_time: faker.helpers.arrayElement([
-          "8 AM - 12 PM",
-          "12 PM - 4 PM",
-          "4 PM - 8 AM",
-        ]),
 
-        is_personal_details_complete: true,
+        personal_info: {
+          //change to faker options here
+          customer: new Types.ObjectId("665faebaf5bd0c37f6fa2ef5"),
+          parking_options: {
+            parking_cost: faker.datatype.number({ min: 5, max: 5 }),
+            parking_type: faker.helpers.arrayElement([
+              "paid",
+              "unavailable",
+              "free",
+            ]),
+          },
+          congestion_zone: {
+            zone_cost: faker.datatype.number({ min: 5, max: 20 }),
+            zone_type: faker.helpers.arrayElement([
+              "congestion",
+              "non_congestion",
+            ]),
+          },
+          order_notes: faker.lorem.sentences(2).substring(0, 250),
+          inspection_date: faker.date.anytime(),
+          inspection_time: faker.helpers.arrayElement([
+            "8 AM - 12 PM",
+            "12 PM - 4 PM",
+            "4 PM - 8 AM",
+          ]),
+        },
+
+        payment_info: {
+          payment_method: faker.helpers.arrayElement([
+            "credit_card",
+            "cash_to_engineer",
+            "bank_transfer",
+          ]),
+        },
+
+        status: "payment",
 
         // Add more fake data for other fields as needed
       };
@@ -113,18 +114,20 @@ export async function POST(req: NextRequest) {
       const preOrder = await PreOrder.create(fakePreOrder);
 
       // Generate fake data for Order
-      const fakeOrder = {
+      const fakeOrder: IOrder = {
         ...preOrder.toObject(), // Spread the preOrder document
         order_status: [
           {
-            status: faker.helpers.arrayElement(ORDER_STATUS),
+            status: faker.helpers.arrayElement(
+              ORDER_STATUS
+            ) as OrderStatusValues,
             timestamp: new Date(),
           },
         ],
         remaining_amount: faker.datatype.number({ min: 100, max: 1000 }),
         paid_amount: faker.datatype.number({ min: 10, max: 500 }),
         invoice_id: await generateInvoiceId(), // Generate the invoice ID
-        order_items: preOrder.order_items.map((item) => ({
+        order_items: preOrder.service_info.order_items.map((item) => ({
           ...item,
           assigned_engineers: [],
         })),
