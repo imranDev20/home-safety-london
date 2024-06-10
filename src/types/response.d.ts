@@ -29,6 +29,6 @@ export type GetOrderDetailsResponse = SuccessResponse<IOrder<IUser>>;
 export type AuthUserResponse = SuccessResponse<IUserBasicInfo>;
 export type PreOrderResponse = SuccessResponse<Partial<IPreOrder<IUser>>>;
 export type CreateOrderResponse = SuccessResponse<IOrder<IUser>>;
-
+export type UpdateOrderResponse = SuccessResponse<IOrder>;
 export type LogoutResponse = SuccessResponse<undefined>;
 export type CommonDeleteResponse = SuccessResponse<undefined>;

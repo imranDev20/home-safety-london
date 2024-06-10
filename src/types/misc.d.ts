@@ -9,9 +9,9 @@ export type Pagination = {
   totalCount: number;
 };
 
-export type ComponentUseStateProps = {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+export type ComponentUseStateProps<T> = {
+  state?: T;
+  setState?: Dispatch<SetStateAction<T>>;
 };
 
 export type ChildrenProp = {

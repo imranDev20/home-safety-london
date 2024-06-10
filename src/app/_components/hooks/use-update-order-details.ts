@@ -9,7 +9,7 @@ export default function useUpdateOrderDetails() {
   const { enqueueSnackbar } = useSnackbar();
 
   const { mutateAsync: updateOrderMutate, ...rest } = useMutation({
-    mutationFn: (orderData: IOrder<IUser>) => updateOrder(orderData),
+    mutationFn: (orderData: IOrder) => updateOrder(orderData),
 
     onSuccess: (response) => {
       queryClient.invalidateQueries({

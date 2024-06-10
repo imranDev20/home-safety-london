@@ -14,7 +14,7 @@ import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { useRouter } from "next/navigation";
 
 const LogoutAlertDialog: React.FC<ComponentUseStateProps> = ({
-  open,
+  state: open,
   setOpen,
 }) => {
   const { enqueueSnackbar } = useSnackbar();

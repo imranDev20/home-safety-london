@@ -25,43 +25,8 @@ interface InfoCellsProps {
   info: string | undefined;
 }
 
-function InfoCells({ title, info }: InfoCellsProps) {
-  return (
-    <Stack direction="row">
-      <Box
-        sx={{
-          flex: 1,
-        }}
-        color="neutral"
-      >
-        <Typography>{title}</Typography>
-      </Box>
-      <Box
-        sx={{
-          flex: 2,
-        }}
-      >
-        <Typography level="title-md">{info}</Typography>
-      </Box>
-    </Stack>
-  );
-}
-
 export default function CustomerDetails() {
   const { orderDetails } = useOrderDetails();
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [orderNotes, setOrderNotes] = useState<string>("");
-
-  console.log(orderDetails);
-
-  const { updateOrderMutate, isPending: isUpdateOrderPending } =
-    useUpdateOrderDetails();
-
-  useEffect(() => {
-    if (orderDetails?.order_notes) {
-      setOrderNotes(orderDetails?.order_notes);
-    }
-  }, [orderDetails]);
 
   if (!orderDetails) {
     return "Failed to load data...";

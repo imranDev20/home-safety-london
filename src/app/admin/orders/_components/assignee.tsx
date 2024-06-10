@@ -11,24 +11,13 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
-type AssigneeProps = {
-  isLabel?: boolean;
-  isOrderItems?: boolean;
-  onChange?: (param: string) => void;
-};
-
-export default function Assignee({
-  isLabel,
-  isOrderItems,
-  onChange,
-}: AssigneeProps) {
+export default function Assignee() {
   const [listBoxOpen, setListBoxOpen] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const assignedToQuery = searchParams.get("assigned_to") || "";
   const { createQueryString } = useQueryString();
   const router = useRouter();
   const pathname = usePathname();
-  const [assigneeState, setAssigneeState] = useState<string>("");
 
   const {
     data,
@@ -37,25 +26,15 @@ export default function Assignee({
   } = useEngineersData(false);
   const engineersData = data?.data;
 
-  const handleValueChange = (newValue: string) => {
-    setAssigneeState(newValue);
-
-    if (onChange) {
-      onChange(newValue);
-    }
-  };
-
   return (
     <>
       <FormControl size="sm">
-        {isLabel && (
-          <FormLabel
-            id="select-field-demo-label"
-            htmlFor="select-field-demo-button"
-          >
-            Assignee
-          </FormLabel>
-        )}
+        <FormLabel
+          id="select-field-demo-label"
+          htmlFor="select-field-demo-button"
+        >
+          Assignee
+        </FormLabel>
 
         <Select
           listboxOpen={listBoxOpen}
@@ -81,27 +60,20 @@ export default function Assignee({
               <UnfoldMore />
             )
           }
-          placeholder={isOrderItems ? "Select Engineer" : "Filter by assignee"}
+          placeholder="Filter by assignee"
           slotProps={{
             button: {
               id: "select-field-demo-button",
             },
           }}
-          value={isOrderItems ? assigneeState : assignedToQuery}
+          value={assignedToQuery}
           onChange={(_, value) => {
-            if (isOrderItems) {
-              handleValueChange(value as string);
-            } else {
-              router.push(
-                `${pathname}?${createQueryString(
-                  "assigned_to",
-                  value as string
-                )}`
-              );
-            }
+            router.push(
+              `${pathname}?${createQueryString("assigned_to", value as string)}`
+            );
           }}
         >
-          {!isOrderItems && <Option value="">All Engineers</Option>}
+          <Option value="">All Engineers</Option>
           {engineersData?.map((engineer) => (
             <Option value={engineer._id} key={engineer._id.toString()}>
               {engineer.name}

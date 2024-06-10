@@ -5,6 +5,7 @@ import {
   CreateOrderResponse,
   GetOrderDetailsResponse,
   GetOrdersResponse,
+  UpdateOrderResponse,
 } from "@/types/response";
 import { IOrder } from "@/types/orders";
 import { IUser } from "@/types/user";
@@ -51,9 +52,9 @@ export const createOrder = async (
 };
 
 export const updateOrder = async (
-  orderData: IOrder<IUser>
-): Promise<CreateOrderResponse> => {
-  const response: CreateOrderResponse = await http.patch(
+  orderData: IOrder
+): Promise<UpdateOrderResponse> => {
+  const response: UpdateOrderResponse = await http.patch(
     `${ORDERS_PATH}/${orderData._id}`,
     orderData
   );

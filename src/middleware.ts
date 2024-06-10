@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifyJWT } from "./app/api/_lib/verifyJWT";
-import { JWTExpiredError } from "./shared/errors";
+import { JWTExpiredError, JWTVerificationFailedError } from "./shared/errors";
 import { generateAccessToken } from "./app/api/_lib/generateToken";
 
 export async function middleware(req: NextRequest) {
@@ -25,7 +25,11 @@ export async function middleware(req: NextRequest) {
         );
       }
     } catch (error) {
-      if (error instanceof JWTExpiredError && refreshToken) {
+      if (
+        (error instanceof JWTVerificationFailedError ||
+          error instanceof JWTExpiredError) &&
+        refreshToken
+      ) {
         try {
           const user = await verifyJWT(refreshToken);
           token = await generateAccessToken(user);

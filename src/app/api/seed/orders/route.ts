@@ -2,9 +2,9 @@ import { faker } from "@faker-js/faker";
 import mongoose, { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { formatResponse } from "@/shared/functions";
-import dbConnect from "../_lib/dbConnect";
-import PreOrder from "../_models/PreOrder";
-import Order from "../_models/Order";
+import dbConnect from "../../_lib/dbConnect";
+import PreOrder from "../../_models/PreOrder";
+import Order from "../../_models/Order";
 import { ORDER_STATUS } from "@/shared/constants";
 import { IOrder, IPreOrder, OrderStatusValues } from "@/types/orders";
 

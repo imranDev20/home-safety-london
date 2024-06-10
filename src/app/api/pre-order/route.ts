@@ -45,8 +45,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
         const { name, email, address, phone } = data.personal_info.customer;
         const password = Math.random().toString(36).slice(-6);
 
-        console.log(name, email, phone, "INFO USER");
-
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -86,8 +84,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
         if (!customer) {
           throw new Error("Customer creation failed. Please try again.");
         }
-
-        console.log(customer._id);
 
         // update the pre-order
         preOrder.service_info = data.service_info;

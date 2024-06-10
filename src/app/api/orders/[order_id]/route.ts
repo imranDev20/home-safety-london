@@ -13,8 +13,6 @@ export async function GET(
 
     const order = await Order.findById(orderId).populate("customer");
 
-    console.log(order);
-
     if (!order) {
       return NextResponse.json(formatResponse(false, null, "Order not found"), {
         status: 404,

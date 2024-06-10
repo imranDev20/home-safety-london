@@ -12,6 +12,9 @@ export async function GET(req: NextRequest) {
     let token = req.cookies.get("accessToken")?.value;
     const refreshToken = req.cookies.get("refreshToken")?.value;
 
+    console.log(token, "ACCESSTOKEN");
+    console.log(refreshToken, "REFRESHTOKEN");
+
     if (!token) {
       return NextResponse.json(
         { success: false, message: "Token missing" },
@@ -23,6 +26,7 @@ export async function GET(req: NextRequest) {
 
     try {
       decodedToken = await verifyJWT(token);
+      console.log(decodedToken, "DECODED");
     } catch (error) {
       if (error instanceof JWTExpiredError && refreshToken) {
         try {

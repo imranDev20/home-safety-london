@@ -14,7 +14,7 @@ type FormDrawerProps = ComponentUseStateProps & {
 };
 
 export default function FormDrawer({
-  open,
+  state: open,
   setOpen,
   children,
 }: FormDrawerProps) {
