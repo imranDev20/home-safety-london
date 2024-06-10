@@ -11,9 +11,8 @@ export async function POST(req: NextRequest) {
   try {
     await dbConnect();
 
-    const { email, password } = await req.json();
+    const { email, password, rememberMe } = await req.json();
 
-    // Validate input
     if (!email || !password) {
       return NextResponse.json(
         { success: false, message: "Please provide email and password" },
@@ -21,26 +20,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if user exists
     const user = await User.findOne({ email });
 
-    if (!user) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return NextResponse.json(
         { success: false, message: "Invalid email or password" },
         { status: 401 }
       );
     }
 
-    // Check if password is correct
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return NextResponse.json(
-        { success: false, message: "Invalid email or password" },
-        { status: 401 }
-      );
-    }
-
-    // Generate JWT token
     const accessToken = await generateAccessToken(user);
     const refreshToken = await generateRefreshToken(user);
 
@@ -55,20 +43,25 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    const accessTokenExpiry = 60 * 15; // 15 minutes in seconds
+    const refreshTokenExpiry = rememberMe
+      ? 60 * 60 * 24 * 30
+      : 60 * 60 * 24 * 7; // 30 days or 7 days in seconds
+
     response.cookies.set("accessToken", accessToken, {
       httpOnly: true,
-      maxAge: 60 * 15, // 15 minutes in seconds
+      maxAge: accessTokenExpiry,
       sameSite: "strict",
       path: "/",
-      secure: process.env.NODE_ENV === "production", // Set secure flag in production
+      secure: process.env.NODE_ENV === "production",
     });
 
     response.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
+      maxAge: refreshTokenExpiry,
       sameSite: "strict",
       path: "/",
-      secure: process.env.NODE_ENV === "production", // Set secure flag in production
+      secure: process.env.NODE_ENV === "production",
     });
 
     return response;

@@ -8,57 +8,109 @@ export async function POST(req: NextRequest) {
   try {
     await dbConnect(); // Connect to the database
 
-    // Get the token from the request cookies
-    const token = req.cookies.get("accessToken")?.value;
+    // Get the tokens from the request cookies
+    const accessToken = req.cookies.get("accessToken")?.value;
+    const refreshToken = req.cookies.get("refreshToken")?.value;
 
-    if (!token) {
+    if (!accessToken) {
       return NextResponse.json(
-        { success: false, message: "Token missing" },
+        { success: false, message: "Access token missing" },
         { status: 401 }
       );
     }
 
-    // Verify and decode the token
+    if (!refreshToken) {
+      return NextResponse.json(
+        { success: false, message: "Refresh token missing" },
+        { status: 401 }
+      );
+    }
+
+    // Verify and decode the access token
     try {
-      jwt.verify(token!, process.env.JWT_SECRET!);
+      jwt.verify(accessToken, process.env.JWT_SECRET!);
     } catch (err: any) {
       if (err.name === "JsonWebTokenError") {
         return NextResponse.json(
-          { success: false, message: "Invalid token" },
+          { success: false, message: "Invalid access token" },
           { status: 401 }
         );
       } else if (err.name === "TokenExpiredError") {
         return NextResponse.json(
-          { success: false, message: "Token expired" },
+          { success: false, message: "Access token expired" },
           { status: 401 }
         );
       } else {
         return NextResponse.json(
-          { success: false, message: "Token verification failed" },
+          { success: false, message: "Access token verification failed" },
           { status: 500 }
         );
       }
     }
 
-    // Check if the token is already blacklisted
-    const isBlacklisted = await BlacklistedToken.findOne({ token });
-    if (isBlacklisted) {
+    // Verify and decode the refresh token
+    try {
+      jwt.verify(refreshToken, process.env.JWT_SECRET!);
+    } catch (err: any) {
+      if (err.name === "JsonWebTokenError") {
+        return NextResponse.json(
+          { success: false, message: "Invalid refresh token" },
+          { status: 401 }
+        );
+      } else if (err.name === "TokenExpiredError") {
+        return NextResponse.json(
+          { success: false, message: "Refresh token expired" },
+          { status: 401 }
+        );
+      } else {
+        return NextResponse.json(
+          { success: false, message: "Refresh token verification failed" },
+          { status: 500 }
+        );
+      }
+    }
+
+    // Check if the access token is already blacklisted
+    const isAccessTokenBlacklisted = await BlacklistedToken.findOne({
+      token: accessToken,
+    });
+    if (isAccessTokenBlacklisted) {
       return NextResponse.json(
-        { success: false, message: "Token already blacklisted" },
+        { success: false, message: "Access token already blacklisted" },
         { status: 400 }
       );
     }
 
-    // Token is valid and not blacklisted, store it in the blacklist
-    await BlacklistedToken.create({ token });
+    // Check if the refresh token is already blacklisted
+    const isRefreshTokenBlacklisted = await BlacklistedToken.findOne({
+      token: refreshToken,
+    });
+    if (isRefreshTokenBlacklisted) {
+      return NextResponse.json(
+        { success: false, message: "Refresh token already blacklisted" },
+        { status: 400 }
+      );
+    }
 
-    // Remove the HTTP-only cookie by setting it with a past expiry date
+    // Tokens are valid and not blacklisted, store them in the blacklist
+    await BlacklistedToken.create({ token: accessToken });
+    await BlacklistedToken.create({ token: refreshToken });
+
+    // Remove the HTTP-only cookies by setting them with a past expiry date
     const response = NextResponse.json({
       success: true,
       message: "Logout successful",
     });
 
     response.cookies.set("accessToken", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/",
+      expires: new Date(0),
+    });
+
+    response.cookies.set("refreshToken", "", {
       httpOnly: true,
       secure: true,
       sameSite: "strict",

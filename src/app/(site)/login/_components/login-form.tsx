@@ -42,6 +42,7 @@ export default function LoginForm() {
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
 
@@ -50,6 +51,7 @@ export default function LoginForm() {
       mutationFn: (userData: LoginPayload) => loginAccount(userData),
       onSuccess: (response) => {
         queryClient.invalidateQueries({ queryKey: ["users", "current-user"] });
+        ``;
         queryClient.resetQueries();
 
         if (response.data.role === "admin") {
@@ -69,10 +71,12 @@ export default function LoginForm() {
     });
 
   const onLoginFormSubmit: SubmitHandler<LoginPayload> = async (data) => {
-    const payload = {
+    const payload: LoginPayload = {
       password: data.password,
       email: data.email,
+      rememberMe: data.rememberMe,
     };
+
     await loginUserMutate(payload);
   };
 
@@ -175,7 +179,19 @@ export default function LoginForm() {
                 my: 2,
               }}
             >
-              <Checkbox size="sm" label="Remember me" name="persistent" />
+              <Controller
+                control={control}
+                name="rememberMe"
+                render={({ field: { value, onChange } }) => (
+                  <Checkbox
+                    checked={value}
+                    onChange={(e) => onChange(e.target.checked)}
+                    size="sm"
+                    label="Remember me"
+                    name="persistent"
+                  />
+                )}
+              />
               <JoyLink level="title-sm">Forgot your password?</JoyLink>
             </Box>
 
