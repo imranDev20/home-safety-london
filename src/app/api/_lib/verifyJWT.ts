@@ -4,12 +4,14 @@ import {
   JWTMalformedError,
   JWTVerificationFailedError,
 } from "@/shared/errors";
+import { IUser, Role } from "@/types/user";
 import { jwtVerify, JWTPayload } from "jose";
+import { Types } from "mongoose";
 
-interface DecodedToken extends JWTPayload {
-  _id: string;
+interface DecodedToken extends JWTPayload, Partial<IUser> {
+  _id: Types.ObjectId;
   email: string;
-  role: string;
+  role: Role;
 }
 
 export async function verifyJWT(token: string): Promise<DecodedToken> {

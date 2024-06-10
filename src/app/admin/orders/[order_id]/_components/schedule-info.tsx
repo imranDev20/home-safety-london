@@ -1,30 +1,12 @@
 "use client";
 import useOrderDetails from "@/app/_components/hooks/use-order-details";
-import useUpdateOrderDetails from "@/app/_components/hooks/use-update-order-details";
-import { Close, Done, Edit } from "@mui/icons-material";
-import {
-  Card,
-  CardContent,
-  IconButton,
-  Stack,
-  Textarea,
-  Typography,
-} from "@mui/joy";
-import React, { useEffect, useState } from "react";
+import { Event, Schedule } from "@mui/icons-material";
+import { Card, CardContent, Stack, Typography } from "@mui/joy";
+import dayjs from "dayjs";
+import React from "react";
 
 export default function ScheduleInfo() {
   const { orderDetails } = useOrderDetails();
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [orderNotes, setOrderNotes] = useState<string>("");
-
-  const { updateOrderMutate, isPending: isUpdateOrderPending } =
-    useUpdateOrderDetails();
-
-  useEffect(() => {
-    if (orderDetails) {
-      setOrderNotes(orderDetails?.order_notes);
-    }
-  }, [orderDetails]);
 
   if (!orderDetails) {
     return "Failed to load data...";
@@ -32,88 +14,52 @@ export default function ScheduleInfo() {
 
   return (
     <>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
+      <Typography
+        level="title-lg"
         sx={{
-          mb: 1,
+          mb: 2,
         }}
       >
-        <Typography level="title-lg">Schedule Info</Typography>
+        Schedule Info
+      </Typography>
 
-        <Stack spacing={1} direction="row">
-          {isEdit && (
-            <>
-              <IconButton
-                size="sm"
-                disabled={isUpdateOrderPending}
-                onClick={() => setIsEdit((prev) => !prev)}
-                color="danger"
-              >
-                <Close />
-              </IconButton>
-              <IconButton
-                size="sm"
-                loading={isUpdateOrderPending}
-                onClick={async () => {
-                  const response = await updateOrderMutate({
-                    ...orderDetails,
-                    order_notes: orderNotes,
-                  });
-
-                  if (response.success) {
-                    setIsEdit((prev) => !prev);
-                  }
-                }}
-                color="success"
-              >
-                <Done />
-              </IconButton>
-            </>
-          )}
-
-          {!isEdit && (
-            <IconButton size="sm" onClick={() => setIsEdit((prev) => !prev)}>
-              <Edit
+      <Card>
+        <CardContent>
+          <Stack spacing={2}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Event
                 sx={{
-                  fontSize: 16,
+                  fontSize: 20,
                 }}
               />
-            </IconButton>
-          )}
-        </Stack>
-      </Stack>
+              <Typography
+                level="title-sm"
+                sx={{
+                  textTransform: "capitalize",
+                }}
+              >
+                {dayjs(orderDetails.inspection_date).format("DD MMMM YYYY")}
+              </Typography>
+            </Stack>
 
-      {isEdit ? (
-        <Textarea
-          minRows={8}
-          maxRows={8}
-          autoFocus={isEdit}
-          slotProps={{
-            textarea: {
-              maxLength: 250,
-            },
-          }}
-          sx={{
-            fontSize: "sm",
-            lineHeight: 1.8,
-            padding: "1rem",
-          }}
-          value={orderNotes}
-          onChange={(e) => setOrderNotes(e.target.value)}
-        />
-      ) : (
-        <Card>
-          <CardContent>
-            <Typography level="body-sm" lineHeight={1.8}>
-              {orderDetails?.order_notes?.length !== 0
-                ? orderDetails.order_notes
-                : "No notes from customer"}
-            </Typography>
-          </CardContent>
-        </Card>
-      )}
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Schedule
+                sx={{
+                  fontSize: 20,
+                }}
+              />
+              <Typography
+                level="title-sm"
+                sx={{
+                  textTransform: "capitalize",
+                }}
+              >
+                {orderDetails.inspection_time}
+              </Typography>
+            </Stack>
+          </Stack>
+        </CardContent>
+      </Card>
     </>
   );
 }

@@ -69,59 +69,14 @@ export default function CustomerDetails() {
 
   return (
     <Box>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
+      <Typography
+        level="title-lg"
         sx={{
-          mb: 1,
+          mb: 2,
         }}
       >
-        <Typography level="title-lg">Customer Details</Typography>
-
-        <Stack spacing={1} direction="row">
-          {isEdit && (
-            <>
-              <IconButton
-                size="sm"
-                disabled={isUpdateOrderPending}
-                onClick={() => setIsEdit((prev) => !prev)}
-                color="danger"
-              >
-                <Close />
-              </IconButton>
-              <IconButton
-                size="sm"
-                loading={isUpdateOrderPending}
-                onClick={async () => {
-                  const response = await updateOrderMutate({
-                    ...orderDetails,
-                    customer: new Types.ObjectId(orderDetails.customer._id),
-                    order_notes: orderNotes,
-                  });
-
-                  if (response.success) {
-                    setIsEdit((prev) => !prev);
-                  }
-                }}
-                color="success"
-              >
-                <Done />
-              </IconButton>
-            </>
-          )}
-
-          {!isEdit && (
-            <IconButton size="sm" onClick={() => setIsEdit((prev) => !prev)}>
-              <Edit
-                sx={{
-                  fontSize: 16,
-                }}
-              />
-            </IconButton>
-          )}
-        </Stack>
-      </Stack>
+        Customer Details
+      </Typography>
 
       <Card>
         <CardContent orientation="vertical">

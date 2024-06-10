@@ -1,28 +1,23 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifyJWT } from "./app/api/_lib/verifyJWT";
-import {
-  JWTClaimValidationFailedError,
-  JWTExpiredError,
-  JWTMalformedError,
-  JWTVerificationFailedError,
-} from "./shared/errors";
+import { JWTExpiredError } from "./shared/errors";
+import { generateAccessToken } from "./app/api/_lib/generateToken";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Check if the route is an admin route
   const adminRoutes = ["/admin"];
   if (adminRoutes.some((route) => pathname.startsWith(route))) {
-    const token = req.cookies.get("accessToken")?.value;
+    let token = req.cookies.get("accessToken")?.value;
+    const refreshToken = req.cookies.get("refreshToken")?.value;
 
-    if (!token) {
+    if (!token && !refreshToken) {
       return NextResponse.redirect(new URL("/login?error=no_token", req.url));
     }
 
     try {
-      const decodedToken = await verifyJWT(token);
+      const decodedToken = await verifyJWT(token as string);
 
       if (decodedToken.role !== "admin") {
         return NextResponse.redirect(
@@ -30,30 +25,37 @@ export async function middleware(req: NextRequest) {
         );
       }
     } catch (error) {
-      if (error instanceof JWTExpiredError) {
-        return NextResponse.redirect(new URL("/login?error=expired", req.url));
-      }
-      if (
-        error instanceof JWTMalformedError ||
-        error instanceof JWTClaimValidationFailedError
-      ) {
+      if (error instanceof JWTExpiredError && refreshToken) {
+        try {
+          const user = await verifyJWT(refreshToken);
+          token = await generateAccessToken(user);
+
+          const response = NextResponse.next();
+          response.cookies.set("accessToken", token, {
+            httpOnly: true,
+            maxAge: 60 * 15, // 15 minutes in seconds
+            sameSite: "strict",
+            path: "/",
+            secure: process.env.NODE_ENV === "production", // Set secure flag in production
+          });
+
+          return response;
+        } catch (refreshError) {
+          return NextResponse.redirect(
+            new URL("/login?error=invalid_refresh_token", req.url)
+          );
+        }
+      } else {
         return NextResponse.redirect(
           new URL("/login?error=invalid_token", req.url)
         );
       }
-      if (error instanceof JWTVerificationFailedError) {
-        return NextResponse.redirect(
-          new URL("/login?error=verification_failed", req.url)
-        );
-      }
-      return NextResponse.redirect(new URL("/login?error=unknown", req.url));
     }
   }
 
   return NextResponse.next();
 }
 
-// Specify the paths where the middleware should run
 export const config = {
   matcher: ["/admin/:path*"],
 };

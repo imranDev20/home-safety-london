@@ -2,7 +2,10 @@ import dbConnect from "@/app/api/_lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 import User from "../../_models/User";
 import bcrypt from "bcrypt";
-import { generateToken } from "../../_lib/generateToken";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../_lib/generateToken";
 
 export async function POST(req: NextRequest) {
   try {
@@ -38,7 +41,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate JWT token
-    const token = generateToken(user);
+    const accessToken = await generateAccessToken(user);
+    const refreshToken = await generateRefreshToken(user);
 
     const response = NextResponse.json({
       success: true,
@@ -51,11 +55,20 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    response.cookies.set("accessToken", token, {
-      httpOnly: true, // Set the httpOnly flag to true
-      maxAge: 60 * 60 * 24 * 7, // 1 week in seconds
+    response.cookies.set("accessToken", accessToken, {
+      httpOnly: true,
+      maxAge: 60 * 15, // 15 minutes in seconds
       sameSite: "strict",
-      path: "/", // Set the path for the cookie
+      path: "/",
+      secure: process.env.NODE_ENV === "production", // Set secure flag in production
+    });
+
+    response.cookies.set("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
+      sameSite: "strict",
+      path: "/",
+      secure: process.env.NODE_ENV === "production", // Set secure flag in production
     });
 
     return response;

@@ -36,7 +36,7 @@ export default function Orders() {
   const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
     useState<boolean>(false);
 
-  const { isPending: isExportUsersPending, refetch: refetchExportUsers } =
+  const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
     useQuery({
       queryKey: ["export-users"],
       queryFn: async () => {
@@ -157,7 +157,7 @@ export default function Orders() {
             variant="outlined"
             startDecorator={<Download />}
             onClick={handleExportUsers}
-            loading={isExportUsersPending}
+            loading={isExportUsersLoading}
             loadingPosition="start"
           >
             Download Excel

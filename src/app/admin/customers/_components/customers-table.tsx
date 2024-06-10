@@ -17,25 +17,48 @@ import { customSlugify } from "@/shared/functions";
 import { CircularProgress } from "@mui/joy";
 import { GetCustomersResponse } from "@/types/response";
 import { ICustomer } from "@/types/user";
+import dayjs from "dayjs";
 
 const columns = [
   {
     label: "CUSTOMER",
     key: "name",
     width: 180,
-    render: (value: string, row: ICustomer) => (
-      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-        <Avatar size="sm" variant="outlined">
-          {row.name?.charAt(0)}
-        </Avatar>
-        <Typography level="body-xs">{value}</Typography>
-      </Box>
-    ),
+    render: (value: string, row: ICustomer) => {
+      const initial = row?.name?.charAt(0);
+
+      return (
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+          <Avatar size="sm">{initial}</Avatar>
+          <div>
+            <Typography>{row?.name}</Typography>
+          </div>
+        </Box>
+      );
+    },
   },
   { label: "EMAIL", key: "email", width: 150 },
   { label: "PHONE", key: "phone", width: 120 },
-  { label: "ADDRESS", key: "address", width: 110 },
-  { label: "JOINED", key: "createdAt", width: 90 },
+  {
+    label: "ADDRESS",
+    key: "address",
+    width: 110,
+    render: (value: any, row: ICustomer) => (
+      <Typography>
+        {row?.address?.street}, {row?.address?.postcode}
+      </Typography>
+    ),
+  },
+  {
+    label: "JOINED",
+    key: "createdAt",
+    width: 90,
+    render: (value: string, row: ICustomer) => {
+      return (
+        <Typography>{dayjs(row.createdAt).format("DD MMMM YYYY")}</Typography>
+      );
+    },
+  },
 ];
 
 export default function CustomersTable() {

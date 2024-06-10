@@ -200,6 +200,20 @@ export async function GET(req: NextRequest) {
             : {}),
         },
       },
+      {
+        $lookup: {
+          from: "users",
+          localField: "customer",
+          foreignField: "_id",
+          as: "customer",
+        },
+      },
+      {
+        $unwind: {
+          path: "$customer",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
       { $sort: { [sortBy]: sortOrder === "asc" ? 1 : -1 } },
       { $skip: skip },
       { $limit: limit },

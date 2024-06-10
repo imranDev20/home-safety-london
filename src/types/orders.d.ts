@@ -87,7 +87,7 @@ export interface IOrder<T extends IUser | undefined = undefined>
   extends Pick<Document, "_id"> {
   property_type: PropertyType;
   resident_type?: ResidentType<PropertyType>;
-  bedrooms?: PropertyType extends "residential" ? number : null; //
+  bedrooms?: BedroomsType;
 
   order_items: IOrderItemWithEngineers[];
   customer: T extends IUser ? Partial<IUser> : Types.ObjectId;

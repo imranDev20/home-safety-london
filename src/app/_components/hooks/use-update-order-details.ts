@@ -2,13 +2,14 @@ import { updateOrder } from "@/services/orders.services";
 import { IOrder } from "@/types/orders";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "../snackbar-provider";
+import { IUser } from "@/types/user";
 
 export default function useUpdateOrderDetails() {
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
 
   const { mutateAsync: updateOrderMutate, ...rest } = useMutation({
-    mutationFn: (orderData: IOrder) => updateOrder(orderData),
+    mutationFn: (orderData: IOrder<IUser>) => updateOrder(orderData),
 
     onSuccess: (response) => {
       queryClient.invalidateQueries({

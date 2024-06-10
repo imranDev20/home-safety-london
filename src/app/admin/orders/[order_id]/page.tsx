@@ -38,7 +38,6 @@ export default function SingleOrderPage() {
           </Grid>
           <Grid md={3}>
             <OrderNotes />
-            <PropertyDetails />
           </Grid>
         </Grid>
 
@@ -47,7 +46,11 @@ export default function SingleOrderPage() {
             <CustomerDetails />
           </Grid>
 
-          <Grid md={8}>
+          <Grid md={4}>
+            <PropertyDetails />
+          </Grid>
+
+          <Grid md={4}>
             <OrderActivity />
           </Grid>
         </Grid>

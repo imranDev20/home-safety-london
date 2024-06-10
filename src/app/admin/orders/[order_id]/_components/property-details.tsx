@@ -12,9 +12,6 @@ import {
   Done,
   Edit,
   HomeOutlined,
-  HouseOutlined,
-  MapOutlined,
-  PhoneOutlined,
 } from "@mui/icons-material";
 import {
   Avatar,
@@ -28,7 +25,6 @@ import {
 import React, { useState } from "react";
 
 export default function PropertyDetails() {
-  const [isEdit, setIsEdit] = useState<boolean>(false);
   const { orderDetails } = useOrderDetails();
 
   const { updateOrderMutate, isPending: isUpdateOrderPending } =
@@ -39,49 +35,15 @@ export default function PropertyDetails() {
   }
 
   return (
-    <Box mt={3}>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
+    <Box>
+      <Typography
+        level="title-lg"
         sx={{
-          mb: 1,
+          mb: 2,
         }}
       >
-        <Typography level="title-lg">Property Details</Typography>
-
-        <Stack spacing={1} direction="row">
-          {isEdit && (
-            <>
-              <IconButton
-                size="sm"
-                disabled={isUpdateOrderPending}
-                onClick={() => setIsEdit((prev) => !prev)}
-                color="danger"
-              >
-                <Close />
-              </IconButton>
-              <IconButton
-                size="sm"
-                loading={isUpdateOrderPending}
-                color="success"
-              >
-                <Done />
-              </IconButton>
-            </>
-          )}
-
-          {!isEdit && (
-            <IconButton size="sm" onClick={() => setIsEdit((prev) => !prev)}>
-              <Edit
-                sx={{
-                  fontSize: 16,
-                }}
-              />
-            </IconButton>
-          )}
-        </Stack>
-      </Stack>
+        Property Details
+      </Typography>
 
       <Card>
         <CardContent orientation="vertical">
@@ -130,11 +92,11 @@ export default function PropertyDetails() {
                   textTransform: "capitalize",
                 }}
               >
-                {orderDetails.bedrooms
-                  ? orderDetails.bedrooms !== "studio_flat"
-                    ? orderDetails.bedrooms + " bedrooms"
-                    : orderDetails.bedrooms
-                  : "N/A"}
+                {orderDetails.bedrooms === 0
+                  ? "Studio Flat"
+                  : orderDetails.bedrooms === 1
+                  ? "bedroom"
+                  : "bedrooms"}
               </Typography>
             </Stack>
 

@@ -18,14 +18,12 @@ import {
   Typography,
 } from "@mui/joy";
 import React, { useState } from "react";
-import Assignee from "../../_components/assignee";
-import OrderItem from "./order-item";
 import { IOrderItem } from "@/types/orders";
 
 const columns = [
   {
-    label: "CUSTOMER",
-    key: "name",
+    label: "ITEM",
+    key: "title",
     width: 240,
   },
   {
@@ -57,48 +55,14 @@ export default function OrderItems() {
 
   return (
     <>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
+      <Typography
+        level="title-lg"
         sx={{
-          mb: 1,
+          mb: 2,
         }}
       >
-        <Typography level="title-lg">Order Notes</Typography>
-
-        <Stack spacing={1} direction="row">
-          {isEdit && (
-            <>
-              <IconButton
-                size="sm"
-                disabled={isUpdateOrderPending}
-                onClick={() => setIsEdit((prev) => !prev)}
-                color="danger"
-              >
-                <Close />
-              </IconButton>
-              <IconButton
-                size="sm"
-                loading={isUpdateOrderPending}
-                color="success"
-              >
-                <Done />
-              </IconButton>
-            </>
-          )}
-
-          {!isEdit && (
-            <IconButton size="sm" onClick={() => setIsEdit((prev) => !prev)}>
-              <Edit
-                sx={{
-                  fontSize: 16,
-                }}
-              />
-            </IconButton>
-          )}
-        </Stack>
-      </Stack>
+        Order Items
+      </Typography>
 
       <Sheet
         variant="outlined"
@@ -113,27 +77,3 @@ export default function OrderItems() {
     </>
   );
 }
-
-const top100Films = [
-  { label: "The Shawshank Redemption", year: 1994 },
-  { label: "The Godfather", year: 1972 },
-  { label: "The Godfather: Part II", year: 1974 },
-  { label: "The Dark Knight", year: 2008 },
-  { label: "12 Angry Men", year: 1957 },
-  { label: "Schindler's List", year: 1993 },
-  { label: "Pulp Fiction", year: 1994 },
-  {
-    label: "The Lord of the Rings: The Return of the King",
-    year: 2003,
-  },
-  { label: "The Good, the Bad and the Ugly", year: 1966 },
-  { label: "Fight Club", year: 1999 },
-  {
-    label: "The Lord of the Rings: The Fellowship of the Ring",
-    year: 2001,
-  },
-  {
-    label: "Star Wars: Episode V - The Empire Strikes Back",
-    year: 1980,
-  },
-];

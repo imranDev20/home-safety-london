@@ -12,17 +12,6 @@ import {
 } from "@/shared/functions";
 import dayjs from "dayjs";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-  AttachMoneyOutlined,
-  BuildOutlined,
-  CancelOutlined,
-  CheckCircleOutlined,
-  CheckOutlined,
-  DirectionsCarOutlined,
-  DoneAllOutlined,
-  HourglassBottomOutlined,
-  HourglassEmptyOutlined,
-} from "@mui/icons-material";
 import DataTable from "../../customers/_components/data-table";
 import {
   FIXED_HEIGHT,
@@ -32,35 +21,30 @@ import {
 import { IOrder } from "@/types/orders";
 import TablePagination from "../../_components/table-pagination";
 import { useQueryString } from "@/app/_components/hooks/use-query-string";
-
-interface IOrderStatus {
-  status: string;
-  timestamp: string;
-  _id: string;
-}
+import { IUser } from "@/types/user";
 
 const columns = [
   {
     label: "Invoice ID",
     key: "invoice_id",
     width: 80,
-    render: (value: string, row: any) => (
+    render: (value: string, row: IOrder<IUser>) => (
       <Typography level="body-sm">{value}</Typography>
     ),
   },
   {
     label: "Customer",
-    key: "customer_name",
+    key: "customer",
     width: 160,
-    render: (value: string, row: any) => {
-      const initial = row.customer_name?.charAt(0);
+    render: (value: string, row: IOrder<IUser>) => {
+      const initial = row?.customer?.name?.charAt(0);
 
       return (
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           <Avatar size="sm">{initial}</Avatar>
           <div>
-            <Typography level="body-xs">{row.customer_name}</Typography>
-            <Typography level="body-xs">{row.email}</Typography>
+            <Typography level="body-xs">{row?.customer?.name}</Typography>
+            <Typography level="body-xs">{row?.customer?.email}</Typography>
           </div>
         </Box>
       );
@@ -70,8 +54,8 @@ const columns = [
     label: "Status",
     key: "order_status",
     width: 110,
-    render: (value: string, row: any) => {
-      const status = getMostRecentStatus(row?.order_status);
+    render: (value: string, row: IOrder<IUser>) => {
+      const status = getMostRecentStatus(row.order_status);
       return (
         <Chip
           variant="soft"
@@ -91,7 +75,7 @@ const columns = [
     label: "Payment Method",
     key: "payment_method",
     width: 100,
-    render: (value: string, row: any) => {
+    render: (value: string, row: IOrder<IUser>) => {
       return (
         <Typography
           level="body-sm"
@@ -161,6 +145,8 @@ export default function OrderTable() {
     page,
   });
 
+  console.log(ordersData);
+
   useEffect(() => {
     const loadOrders = async () => {
       await refetchGetOrders();
@@ -176,7 +162,7 @@ export default function OrderTable() {
     page,
   ]);
 
-  const handleRowClick = (order: IOrder) => {
+  const handleRowClick = (order: IOrder<IUser>) => {
     router.push(`/admin/orders/${order._id.toString()}`);
   };
 

@@ -1,11 +1,13 @@
 import { buildUrl } from "@/shared/functions";
 import http from "./http.services";
 import {
+  CommonDeleteResponse,
   CreateOrderResponse,
   GetOrderDetailsResponse,
   GetOrdersResponse,
 } from "@/types/response";
 import { IOrder } from "@/types/orders";
+import { IUser } from "@/types/user";
 
 const ORDERS_PATH = "/orders";
 
@@ -49,11 +51,21 @@ export const createOrder = async (
 };
 
 export const updateOrder = async (
-  orderData: IOrder
+  orderData: IOrder<IUser>
 ): Promise<CreateOrderResponse> => {
   const response: CreateOrderResponse = await http.patch(
     `${ORDERS_PATH}/${orderData._id}`,
     orderData
   );
+  return response;
+};
+
+// Not using params to keep delete bulk functionality
+export const deleteOrders = async (
+  ids: string[]
+): Promise<CommonDeleteResponse> => {
+  const response: CommonDeleteResponse = await http.post(`${ORDERS_PATH}`, {
+    ids,
+  });
   return response;
 };

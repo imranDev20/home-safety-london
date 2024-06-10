@@ -30,8 +30,12 @@ export default function Assignee({
   const pathname = usePathname();
   const [assigneeState, setAssigneeState] = useState<string>("");
 
-  const { engineersData, isGetEngineersDataPending, refetchGetEngineers } =
-    useEngineersData(false);
+  const {
+    data,
+    isLoading: isGetEngineersLoading,
+    refetch: refetchGetEngineers,
+  } = useEngineersData(false);
+  const engineersData = data?.data;
 
   const handleValueChange = (newValue: string) => {
     setAssigneeState(newValue);
@@ -67,7 +71,7 @@ export default function Assignee({
             setListBoxOpen(e);
           }}
           indicator={
-            isGetEngineersDataPending ? (
+            isGetEngineersLoading ? (
               <CircularProgress
                 size="sm"
                 thickness={2}
@@ -97,8 +101,8 @@ export default function Assignee({
             }
           }}
         >
-          <Option value="">All Engineers</Option>
-          {engineersData?.data.map((engineer) => (
+          {!isOrderItems && <Option value="">All Engineers</Option>}
+          {engineersData?.map((engineer) => (
             <Option value={engineer._id} key={engineer._id.toString()}>
               {engineer.name}
             </Option>

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "../../_lib/dbConnect";
 import User from "../../_models/User";
 import bcrypt from "bcrypt";
-import { generateToken } from "../../_lib/generateToken";
+import { generateAccessToken } from "../../_lib/generateToken";
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     await newUser.save();
 
     // Generate JWT
-    const token = generateToken(newUser);
+    const token = await generateAccessToken(newUser);
 
     const response = NextResponse.json({
       success: true,

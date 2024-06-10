@@ -5,22 +5,12 @@ import { GetEngineersResponse } from "@/types/response";
 import { useQuery } from "@tanstack/react-query";
 
 export const useEngineersData = (enabled?: boolean) => {
-  const {
-    data,
-    isPending: isGetEngineersDataPending,
-    isFetching: isGetEngineersDataFetching,
-    refetch: refetchGetEngineers,
-  } = useQuery<GetEngineersResponse>({
+  const data = useQuery<GetEngineersResponse>({
     queryKey: ["users"],
     queryFn: () => getUsers<"engineer">(undefined, "engineer"),
     enabled: enabled ?? true,
     refetchOnMount: false,
   });
 
-  return {
-    engineersData: data,
-    isGetEngineersDataPending,
-    isGetEngineersDataFetching,
-    refetchGetEngineers,
-  };
+  return data;
 };

@@ -1,69 +1,34 @@
 "use client";
 import useOrderDetails from "@/app/_components/hooks/use-order-details";
 import { snakeCaseToNormalText } from "@/shared/functions";
-import {
-  Circle,
-  Close,
-  Done,
-  Edit,
-  KeyboardArrowRightRounded,
-} from "@mui/icons-material";
+import { Circle, KeyboardArrowRightRounded } from "@mui/icons-material";
 import {
   Avatar,
   Box,
   Button,
   Card,
   CardContent,
-  IconButton,
   List,
   ListItem,
   ListItemContent,
   ListItemDecorator,
-  Stack,
   Typography,
 } from "@mui/joy";
 import dayjs from "dayjs";
-import { useState } from "react";
 
 export default function OrderActivity() {
   const { orderDetails } = useOrderDetails();
-  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   return (
     <Box>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
+      <Typography
+        level="title-lg"
         sx={{
-          mb: 1,
+          mb: 2,
         }}
       >
-        <Typography level="title-lg">Customer Details</Typography>
-
-        <Stack spacing={1} direction="row">
-          {isEdit && (
-            <>
-              <IconButton size="sm" color="danger">
-                <Close />
-              </IconButton>
-              <IconButton size="sm" color="success">
-                <Done />
-              </IconButton>
-            </>
-          )}
-
-          {!isEdit && (
-            <IconButton size="sm" onClick={() => setIsEdit((prev) => !prev)}>
-              <Edit
-                sx={{
-                  fontSize: 16,
-                }}
-              />
-            </IconButton>
-          )}
-        </Stack>
-      </Stack>
+        Order Activity
+      </Typography>
 
       <Card>
         <CardContent
