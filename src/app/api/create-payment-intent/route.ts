@@ -1,4 +1,4 @@
-import { calculateTotalCost } from "@/shared/functions";
+import { calculatePreOrderTotalCost } from "@/shared/functions";
 import { IPreOrder } from "@/types/orders";
 import { IUser } from "@/types/user";
 import { NextRequest, NextResponse } from "next/server";
@@ -12,7 +12,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 export async function POST(req: NextRequest) {
   try {
     const { data } = await req.json();
-    const total = calculateTotalCost(data as IPreOrder<IUser>);
+    const total = calculatePreOrderTotalCost(data as IPreOrder<IUser>);
 
     if (!total) {
       throw new Error("There was a problem calculating the total amount");

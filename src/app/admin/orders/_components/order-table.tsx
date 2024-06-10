@@ -145,8 +145,6 @@ export default function OrderTable() {
     page,
   });
 
-  console.log(ordersData);
-
   useEffect(() => {
     const loadOrders = async () => {
       await refetchGetOrders();

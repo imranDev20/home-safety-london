@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { JWTExpiredError } from "@/shared/errors";
 import { verifyJWT } from "./app/api/_lib/verifyJWT";
-import { JWTExpiredError, JWTVerificationFailedError } from "./shared/errors";
 import { generateAccessToken } from "./app/api/_lib/generateToken";
 
 export async function middleware(req: NextRequest) {
@@ -29,11 +29,13 @@ export async function middleware(req: NextRequest) {
         try {
           const user = await verifyJWT(refreshToken);
           token = await generateAccessToken(user);
+          console.log(token);
 
           const response = NextResponse.next();
+
           response.cookies.set("accessToken", token, {
             httpOnly: true,
-            maxAge: 60 * 15, // 15 minutes in seconds
+            maxAge: 60 * 20, // 20 minutes in seconds
             sameSite: "strict",
             path: "/",
             secure: process.env.NODE_ENV === "production", // Set secure flag in production

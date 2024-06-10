@@ -8,7 +8,7 @@ import {
   PARKING_OPTIONS,
   PHONE_NO,
 } from "@/shared/constants";
-import { calculateTotalCost } from "@/shared/functions";
+import { calculatePreOrderTotalCost } from "@/shared/functions";
 import { IUser } from "@/types/user";
 
 export async function generateInvoiceId() {
@@ -129,7 +129,7 @@ export async function generateInvoicePdf(
     (opt) => opt.value === preOrder?.personal_info?.congestion_zone.zone_type
   )?.name;
 
-  const totalCost = calculateTotalCost(preOrder) || 0;
+  const totalCost = calculatePreOrderTotalCost(preOrder) || 0;
 
   doc.text("Subtotal:", 150, currentY + 10);
   doc.text(`£${subtotal.toString()}`, 180, currentY + 10);

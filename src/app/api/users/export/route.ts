@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import exceljs from "exceljs";
 import dbConnect from "../../_lib/dbConnect";
 import User from "../../_models/User";
+import { formatResponse } from "@/shared/functions";
 
 export async function GET(req: NextRequest) {
   try {
@@ -41,12 +42,15 @@ export async function GET(req: NextRequest) {
       excelData,
     };
 
-    return NextResponse.json(response, {
-      headers: {
-        "Content-Type": "application/json",
-        "Content-Disposition": 'attachment; filename="users.xlsx"',
-      },
-    });
+    return NextResponse.json(
+      formatResponse(true, response, "Export users successfull!"),
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Disposition": 'attachment; filename="users.xlsx"',
+        },
+      }
+    );
   } catch (err) {
     console.error(err);
     return NextResponse.json(

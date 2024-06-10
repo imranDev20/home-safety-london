@@ -2,13 +2,9 @@
 import React, { useEffect } from "react";
 import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
-import Button from "@mui/joy/Button";
 import Sheet from "@mui/joy/Sheet";
-import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FIXED_HEIGHT } from "@/shared/constants";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "@/services/user.services";
@@ -18,6 +14,8 @@ import { CircularProgress } from "@mui/joy";
 import { GetCustomersResponse } from "@/types/response";
 import { ICustomer } from "@/types/user";
 import dayjs from "dayjs";
+import TablePagination from "../../_components/table-pagination";
+import { useQueryString } from "@/app/_components/hooks/use-query-string";
 
 const columns = [
   {
@@ -66,7 +64,11 @@ export default function CustomersTable() {
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("q") || "";
   const sortBy = searchParams.get("sort_by") || "";
+  const page = searchParams.get("page") || "";
+
   const sortOrder = searchParams.get("sort_order") || "";
+  const pathname = usePathname();
+  const { createQueryString } = useQueryString();
 
   const {
     data: usersData,
@@ -76,7 +78,7 @@ export default function CustomersTable() {
   } = useQuery<GetCustomersResponse>({
     queryKey: ["users", "customers"],
     queryFn: () =>
-      getUsers<"customer">(searchTerm, "customer", sortBy, sortOrder),
+      getUsers<"customer">(searchTerm, "customer", sortBy, sortOrder, page),
     refetchOnMount: false,
   });
 
@@ -85,7 +87,7 @@ export default function CustomersTable() {
       await refetchGetUsers();
     };
     loadUsers();
-  }, [searchTerm, refetchGetUsers, sortBy, sortOrder]);
+  }, [searchTerm, refetchGetUsers, sortBy, sortOrder, page]);
 
   // Table functions
   const handleRowClick = (row: ICustomer) => {
@@ -122,6 +124,10 @@ export default function CustomersTable() {
     );
   }
 
+  if (!usersData) {
+    return "No Users Found";
+  }
+
   return (
     <React.Fragment>
       <Sheet
@@ -147,48 +153,17 @@ export default function CustomersTable() {
         )}
       </Sheet>
 
-      <Box
-        sx={{
-          pt: 2,
-          gap: 1,
-          [`& .${iconButtonClasses.root}`]: { borderRadius: "50%" },
-          display: {
-            xs: "none",
-            md: "flex",
-          },
-        }}
-      >
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          startDecorator={<KeyboardArrowLeftIcon />}
-        >
-          Previous
-        </Button>
-
-        <Box sx={{ flex: 1 }} />
-        {["1", "2", "3", "…", "8", "9", "10"].map((page) => (
-          <IconButton
-            key={page}
-            size="sm"
-            variant={Number(page) ? "outlined" : "plain"}
-            color="neutral"
-          >
-            {page}
-          </IconButton>
-        ))}
-        <Box sx={{ flex: 1 }} />
-
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          endDecorator={<KeyboardArrowRightIcon />}
-        >
-          Next
-        </Button>
-      </Box>
+      {usersData.pagination && (
+        <TablePagination
+          currentPage={usersData.pagination?.currentPage}
+          totalPages={usersData.pagination.totalPages}
+          onPageChange={(newPage) =>
+            router.push(
+              `${pathname}?${createQueryString("page", newPage.toString())}`
+            )
+          }
+        />
+      )}
     </React.Fragment>
   );
 }

@@ -1,7 +1,13 @@
 import slugify from "react-slugify";
 import dayjs from "dayjs";
 import { Pagination } from "@/types/misc";
-import { IPreOrder, OrderStatus, OrderStatusValues } from "@/types/orders";
+import {
+  IOrder,
+  IOrderItemWithEngineers,
+  IPreOrder,
+  OrderStatus,
+  OrderStatusValues,
+} from "@/types/orders";
 import { IUser } from "@/types/user";
 
 export function snakeCaseToNormalText(snakeCaseString: string) {
@@ -139,7 +145,7 @@ export const debounce = (func: (...args: any[]) => void, delay: number) => {
   };
 };
 
-export function calculateTotalCost(order: IPreOrder<IUser>) {
+export function calculatePreOrderTotalCost(order: IPreOrder<IUser>) {
   if (!order.personal_info) {
     console.log("Personal info is needed to calculate total cost");
     return;
@@ -161,6 +167,26 @@ export function calculateTotalCost(order: IPreOrder<IUser>) {
 
   // Calculate the final total cost
   const totalCost = orderItemsTotal + parkingCost + congestionCost;
+  return totalCost;
+}
+
+export function calculateOrderTotalCost(order: IOrder<IUser>): number {
+  // Calculate the total cost of order items
+  const orderItemsCost = order.order_items.reduce(
+    (total, item: IOrderItemWithEngineers) => {
+      return total + item.price * item.quantity;
+    },
+    0
+  );
+
+  // Add parking cost
+  const parkingCost = order.parking_options.parking_cost;
+
+  // Add congestion zone cost
+  const congestionCost = order.congestion_zone.zone_cost;
+
+  // Calculate the total cost
+  const totalCost = orderItemsCost + parkingCost + congestionCost;
   return totalCost;
 }
 

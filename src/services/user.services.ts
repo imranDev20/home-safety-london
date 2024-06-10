@@ -10,7 +10,8 @@ export const getUsers = async <T extends "engineer" | "customer">(
   q?: string,
   role?: T,
   sort_by?: string,
-  sort_order?: string
+  sort_order?: string,
+  page?: string
 ): Promise<
   T extends "engineer" ? GetEngineersResponse : GetCustomersResponse
 > => {
@@ -19,6 +20,7 @@ export const getUsers = async <T extends "engineer" | "customer">(
     role,
     sort_by,
     sort_order,
+    page,
   });
 
   const response: T extends "engineer"
@@ -52,5 +54,5 @@ export const deleteUser = async (preOrderId: string) => {
 
 export const exportUsers = async () => {
   const response = await http.get(`/users/export`);
-  return response;
+  return response.data;
 };

@@ -2,7 +2,6 @@ import mongoose, { Schema } from "mongoose";
 import { IOrderItemWithEngineers, IOrder } from "@/types/orders";
 import { ORDER_STATUS } from "@/shared/constants";
 import { OrderStatus } from "@/types/orders";
-import PreOrder from "./PreOrder";
 
 const orderStatusSchema = new Schema<OrderStatus>({
   status: {

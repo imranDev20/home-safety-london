@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "../../_lib/dbConnect";
 import Order from "../../_models/Order";
 import { formatResponse } from "@/shared/functions";
+import { IOrder } from "@/types/orders";
+import { IUser } from "@/types/user";
 
 export async function GET(
   req: NextRequest,
@@ -11,7 +13,10 @@ export async function GET(
     await dbConnect();
     const orderId = params.order_id;
 
-    const order = await Order.findById(orderId).populate("customer");
+    const order = (await Order.findById(orderId).populate({
+      path: "customer",
+      select: "-password", // Exclude the password field
+    })) as IOrder<IUser>;
 
     if (!order) {
       return NextResponse.json(formatResponse(false, null, "Order not found"), {
@@ -38,6 +43,7 @@ export async function GET(
     });
   }
 }
+
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { order_id: string } }

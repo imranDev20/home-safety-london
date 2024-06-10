@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    const accessTokenExpiry = 60 * 15; // 15 minutes in seconds
+    const accessTokenExpiry = 60 * 20; // 20 minutes in seconds
     const refreshTokenExpiry = rememberMe
       ? 60 * 60 * 24 * 30
       : 60 * 60 * 24 * 7; // 30 days or 7 days in seconds

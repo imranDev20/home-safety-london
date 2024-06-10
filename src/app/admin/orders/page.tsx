@@ -19,11 +19,12 @@ import { snakeCaseToNormalText, toSnakeCase } from "@/shared/functions";
 import OrderTable from "./_components/order-table";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { exportUsers } from "@/services/user.services";
 import Assignee from "./_components/assignee";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQueryString } from "@/app/_components/hooks/use-query-string";
 import DebounceInput from "@/app/_components/common/debounce-input";
+import { exportOrders } from "@/services/orders.services";
+import dayjs from "dayjs";
 
 export default function Orders() {
   const theme = useTheme();
@@ -36,19 +37,17 @@ export default function Orders() {
   const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
     useState<boolean>(false);
 
-  const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
+  const { isLoading: isExportOrdersLoading, refetch: refetchExportOrders } =
     useQuery({
-      queryKey: ["export-users"],
-      queryFn: async () => {
-        const response = await exportUsers();
-        return response.data;
-      },
+      queryKey: ["export-orders"],
+      queryFn: async () => await exportOrders(),
       enabled: false,
     });
 
-  const handleExportUsers = async () => {
+  const handleExportOrders = async () => {
     try {
-      const response = await refetchExportUsers();
+      const response = await refetchExportOrders();
+      console.log(response);
       const data = response.data;
 
       if (response.status === "success") {
@@ -68,12 +67,16 @@ export default function Orders() {
 
         const link = document.createElement("a");
         link.href = downloadUrl;
-        link.setAttribute("download", "orders.xlsx");
+        link.setAttribute(
+          "download",
+          `Orders - ${dayjs().format("YYYY-MM-DD@hh:mm:ss")}.xlsx`
+        );
         document.body.appendChild(link);
         link.click();
         link.remove();
       } else {
-        console.error("Error exporting users:", data.error);
+        console.log(data);
+        console.error("Error exporting orders:", data);
       }
     } catch (err) {
       console.error(err);
@@ -156,8 +159,8 @@ export default function Orders() {
             size="sm"
             variant="outlined"
             startDecorator={<Download />}
-            onClick={handleExportUsers}
-            loading={isExportUsersLoading}
+            onClick={handleExportOrders}
+            loading={isExportOrdersLoading}
             loadingPosition="start"
           >
             Download Excel
@@ -242,7 +245,7 @@ export default function Orders() {
         </Grid>
 
         <Grid xs={12} md={2}>
-          <Assignee isLabel />
+          <Assignee />
         </Grid>
 
         <Grid xs={12} md={2}>

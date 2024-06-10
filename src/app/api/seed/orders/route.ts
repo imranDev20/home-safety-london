@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import mongoose, { Types } from "mongoose";
+import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { formatResponse } from "@/shared/functions";
 import dbConnect from "../../_lib/dbConnect";
@@ -158,7 +158,14 @@ export async function POST(req: NextRequest) {
         order_items: preOrder.service_info.order_items.map((item) => ({
           ...item,
           assigned_engineers: faker.helpers.arrayElements(
-            engineers.map((engineer) => engineer._id),
+            engineers
+              .map((engineer) => engineer._id)
+              .reduce((acc, curr) => {
+                if (!acc.includes(curr)) {
+                  acc.push(curr);
+                }
+                return acc;
+              }, [] as Types.ObjectId[]),
             { min: 1, max: 3 }
           ),
         })),

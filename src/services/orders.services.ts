@@ -70,3 +70,8 @@ export const deleteOrders = async (
   });
   return response;
 };
+
+export const exportOrders = async () => {
+  const response = await http.get(`/orders/export`);
+  return response.data;
+};

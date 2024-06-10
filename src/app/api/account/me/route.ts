@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/app/api/_lib/dbConnect";
 import { verifyJWT } from "../../_lib/verifyJWT";
-import { generateAccessToken } from "../../_lib/generateToken";
 import User from "../../_models/User";
-import { JWTExpiredError } from "@/shared/errors";
 
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
 
-    let token = req.cookies.get("accessToken")?.value;
-    const refreshToken = req.cookies.get("refreshToken")?.value;
+    const token = req.cookies.get("accessToken")?.value;
 
     if (!token) {
       return NextResponse.json(
@@ -23,38 +20,11 @@ export async function GET(req: NextRequest) {
 
     try {
       decodedToken = await verifyJWT(token);
-
-      console.log(decodedToken);
     } catch (error) {
-      if (error instanceof JWTExpiredError && refreshToken) {
-        try {
-          const decodedRefreshToken = await verifyJWT(refreshToken);
-          token = await generateAccessToken(decodedRefreshToken);
-          decodedToken = await verifyJWT(token);
-
-          // Set the new access token in the response cookies
-          const response = NextResponse.next();
-          response.cookies.set("accessToken", token, {
-            httpOnly: true,
-            maxAge: 60 * 15, // 15 minutes in seconds
-            sameSite: "strict",
-            path: "/",
-            secure: process.env.NODE_ENV === "production", // Set secure flag in production
-          });
-
-          return response;
-        } catch (refreshError) {
-          return NextResponse.json(
-            { success: false, message: "Invalid refresh token" },
-            { status: 401 }
-          );
-        }
-      } else {
-        return NextResponse.json(
-          { success: false, message: "Invalid or expired token" },
-          { status: 401 }
-        );
-      }
+      return NextResponse.json(
+        { success: false, message: "Invalid or expired token" },
+        { status: 401 }
+      );
     }
 
     const userId = decodedToken._id;
@@ -65,22 +35,6 @@ export async function GET(req: NextRequest) {
         { success: false, message: "User not found" },
         { status: 404 }
       );
-
-      response.cookies.set("accessToken", "", {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-        path: "/",
-        expires: new Date(0),
-      });
-
-      response.cookies.set("refreshToken", "", {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-        path: "/",
-        expires: new Date(0),
-      });
 
       return response;
     }

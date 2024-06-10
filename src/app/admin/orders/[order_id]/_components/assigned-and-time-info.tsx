@@ -66,6 +66,8 @@ export default function AssignedAndTimeInfo() {
     }
   }, [orderDetails]);
 
+  console.log(orderDetails);
+
   const addAssignment = () => {
     const tempAssignments = [...assignments];
     tempAssignments.push({

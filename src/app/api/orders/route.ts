@@ -1,15 +1,16 @@
 import dbConnect from "@/app/api/_lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
-import { calculateTotalCost, formatResponse } from "@/shared/functions";
+import { calculatePreOrderTotalCost, formatResponse } from "@/shared/functions";
 import Order from "../_models/Order";
 import { sendEmail } from "../_lib/sendEmail";
 import { placedOrderEmailHtml } from "../_templates/order-placed-email";
 import PreOrder from "../_models/PreOrder";
 import { IPreOrder } from "@/types/orders";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { generateInvoiceId, generateInvoicePdf } from "../_lib/generateInvoice";
 import { IUser } from "@/types/user";
 import { receivedOrderEmailHtml } from "../_templates/order-received-email";
+import { validateToken } from "../_lib/validateToken";
 
 interface OrderQuery {
   order_status?: string;
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest) {
     // // Save the PDF file to the public/invoices folder
     // fs.writeFileSync(pdfPath, Buffer.from(pdfBytes));
 
-    const totalCost = calculateTotalCost(preOrder);
+    const totalCost = calculatePreOrderTotalCost(preOrder);
 
     const newOrder = new Order({
       ...preOrder.service_info,
@@ -146,6 +147,11 @@ export async function GET(req: NextRequest) {
   try {
     await dbConnect();
 
+    const { isValid, userId, userRole, response } = await validateToken(req);
+    if (!isValid) {
+      return response;
+    }
+
     const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
     const limit = 10;
     const skip = (page - 1) * limit;
@@ -155,12 +161,25 @@ export async function GET(req: NextRequest) {
     const orderStatus = req.nextUrl.searchParams.get("order_status") || "";
     const sortBy = req.nextUrl.searchParams.get("sort_by") || "createdAt";
     const sortOrder = req.nextUrl.searchParams.get("sort_order") || "desc";
-    // const customerId = req.nextUrl.searchParams.get("customer_id") || "";
+    const customerId = req.nextUrl.searchParams.get("customer_id") || "";
+
+    if (
+      userRole !== "admin" &&
+      (!customerId || new Types.ObjectId(customerId) !== userId)
+    ) {
+      return NextResponse.json(
+        formatResponse(false, null, "Unauthorized access"),
+        { status: 403 }
+      );
+    }
 
     // Create an aggregation pipeline
     const pipeline: any[] = [
       {
         $match: {
+          ...(customerId
+            ? { customer: new mongoose.Types.ObjectId(customerId) }
+            : {}),
           ...(searchTerm && {
             $or: [
               { invoice_id: { $regex: searchTerm, $options: "i" } },
