@@ -11,15 +11,18 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     phone: {
       type: String,
+      trim: true,
     },
     role: {
       type: String,
       required: true,
       enum: ["customer", "admin", "engineer"],
       default: "customer",
+      trim: true,
     },
     password: {
       type: String,
