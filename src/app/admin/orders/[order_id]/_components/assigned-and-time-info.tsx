@@ -1,37 +1,22 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Assignee from "../../_components/assignee";
 import {
   Autocomplete,
   Box,
   Button,
-  CircularProgress,
-  FormControl,
   Grid,
   IconButton,
-  Option,
-  Select,
   Typography,
 } from "@mui/joy";
-import {
-  AddRounded,
-  Check,
-  Delete,
-  Mail,
-  UnfoldMore,
-} from "@mui/icons-material";
+import { AddRounded, Check, Delete, Mail } from "@mui/icons-material";
 import useOrderDetails from "@/app/_components/hooks/use-order-details";
 import ScheduleInfo from "./schedule-info";
 import useUpdateOrderDetails from "@/app/_components/hooks/use-update-order-details";
 import { IOrder } from "@/types/orders";
-import { IUser } from "@/types/user";
 import { Types } from "mongoose";
-import { useQuery } from "@tanstack/react-query";
-import { getOrderDetails } from "@/services/orders.services";
-import { useParams } from "next/navigation";
-import { useEngineersData } from "@/app/_components/hooks/use-engineers";
+import ItemsAssigneeSelect from "./items-assignee-select";
 
-type Assignment = {
+export type Assignment = {
   id: number;
   engineer: Types.ObjectId | "";
   tasks: Types.ObjectId[];
@@ -51,18 +36,10 @@ const assignment: Assignment = {
 };
 
 export default function AssignedAndTimeInfo() {
-  const [listBoxOpen, setListBoxOpen] = useState<boolean>(false);
   const { orderDetails } = useOrderDetails();
   const [assignments, setAssignments] = useState([assignment]);
   const { updateOrderMutate, isPending: isUpdateOrderDetailsPending } =
     useUpdateOrderDetails();
-
-  const {
-    data,
-    isLoading: isGetEngineersLoading,
-    refetch: refetchGetEngineers,
-  } = useEngineersData();
-  const engineersData = data?.data;
 
   useEffect(() => {
     if (orderDetails) {
@@ -174,62 +151,14 @@ export default function AssignedAndTimeInfo() {
               Assignment Info
             </Typography>
             {assignments.map((assignment, index) => {
-              console.log(assignments[index].engineer, engineersData);
               return (
                 <Grid container spacing={2} key={assignment.id}>
                   <Grid md={4}>
-                    <FormControl size="sm">
-                      <Select
-                        listboxOpen={listBoxOpen}
-                        onClose={() => setListBoxOpen(false)}
-                        onListboxOpenChange={async (e) => {
-                          if (e) {
-                            if (!engineersData) {
-                              await refetchGetEngineers();
-                            } else {
-                              refetchGetEngineers();
-                            }
-                          }
-                          setListBoxOpen(e);
-                        }}
-                        indicator={
-                          isGetEngineersLoading ? (
-                            <CircularProgress
-                              size="sm"
-                              thickness={2}
-                              sx={{ "--CircularProgress-size": "20px" }}
-                            />
-                          ) : (
-                            <UnfoldMore />
-                          )
-                        }
-                        placeholder="Filter by assignee"
-                        slotProps={{
-                          button: {
-                            id: "select-field-demo-button",
-                          },
-                        }}
-                        value={assignment.engineer as Types.ObjectId}
-                        onChange={(_, value) => {
-                          setToStateEngineer(
-                            {
-                              ...assignment,
-                              engineer: value as Types.ObjectId,
-                            },
-                            index
-                          );
-                        }}
-                      >
-                        {engineersData?.map((engineer) => (
-                          <Option
-                            value={engineer._id}
-                            key={engineer._id.toString()}
-                          >
-                            {engineer.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <ItemsAssigneeSelect
+                      assignments={assignments}
+                      index={index}
+                      setToStateEngineer={setToStateEngineer}
+                    />
                   </Grid>
 
                   <Grid md={5}>

@@ -44,17 +44,13 @@ export async function GET(req: NextRequest) {
 
     // Process the users to omit fields based on the role
     const processedUsers = users.map((user) => {
-      const userObj = user.toObject();
-      if (userObj.role === "customer") {
-        delete userObj.orders_received;
-        delete userObj.skills;
-        delete userObj.experience;
-        delete userObj.specialty;
-      } else if (userObj.role === "engineer") {
-        delete userObj.orders_placed;
+      const { password, ...userWithoutPassword } = user.toObject();
+      if (userWithoutPassword.role === "customer") {
+        const { skills, experience, specialty, ...customerObj } =
+          userWithoutPassword;
+        return customerObj;
       }
-      delete userObj.password; // Ensure password is never sent
-      return userObj;
+      return userWithoutPassword;
     });
 
     // Get the total number of users matching the query
@@ -90,23 +86,22 @@ export async function POST(req: NextRequest) {
     const newUser = await User.create(userData);
 
     // Remove restricted fields based on the user's role
-    const newUserObj = newUser.toObject();
+    const { password, ...newUserObj } = newUser.toObject();
 
-    delete newUserObj.password;
     if (newUser.role === "customer") {
-      delete newUserObj.orders_received;
-      delete newUserObj.skills;
-      delete newUserObj.specialty;
-      delete newUserObj.experience;
-    } else if (newUser.role === "engineer") {
-      delete newUserObj.orders_placed;
+      const { skills, specialty, experience, ...customerObj } = newUserObj;
+      return NextResponse.json({
+        success: true,
+        message: "User created successfully",
+        data: customerObj,
+      });
+    } else {
+      return NextResponse.json({
+        success: true,
+        message: "User created successfully",
+        data: newUserObj,
+      });
     }
-
-    return NextResponse.json({
-      success: true,
-      message: "User created successfully",
-      data: newUserObj,
-    });
   } catch (error: any) {
     console.log(error);
     return NextResponse.json(

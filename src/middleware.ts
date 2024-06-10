@@ -25,11 +25,7 @@ export async function middleware(req: NextRequest) {
         );
       }
     } catch (error) {
-      if (
-        (error instanceof JWTVerificationFailedError ||
-          error instanceof JWTExpiredError) &&
-        refreshToken
-      ) {
+      if (error instanceof JWTExpiredError && refreshToken) {
         try {
           const user = await verifyJWT(refreshToken);
           token = await generateAccessToken(user);

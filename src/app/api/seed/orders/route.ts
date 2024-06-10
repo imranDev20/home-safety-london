@@ -7,6 +7,8 @@ import PreOrder from "../../_models/PreOrder";
 import Order from "../../_models/Order";
 import { ORDER_STATUS } from "@/shared/constants";
 import { IOrder, IPreOrder, OrderStatusValues } from "@/types/orders";
+import User from "../../_models/User";
+import dayjs from "dayjs";
 
 async function generateInvoiceId() {
   const mostRecentOrder = await Order.findOne().sort({ createdAt: -1 }).exec();
@@ -41,12 +43,20 @@ async function generateInvoiceId() {
   return nextInvoiceId;
 }
 
-const engineerIds = ["66599ff0c12bf13c9113c422", "6659a3ebc12bf13c9113c442"];
-
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
     const orders = [];
+
+    const engineers = await User.find({ role: "engineer" })
+      .select("_id")
+      .exec();
+
+    const customers = await User.find({ role: "customer" })
+      .select("_id")
+      .exec();
+
+    console.log(engineers.map((engineer) => engineer._id.toString()));
 
     for (let i = 0; i < 100; i++) {
       // Generate fake data for PreOrder
@@ -72,7 +82,10 @@ export async function POST(req: NextRequest) {
 
         personal_info: {
           //change to faker options here
-          customer: new Types.ObjectId("665faebaf5bd0c37f6fa2ef5"),
+          customer:
+            customers[
+              faker.datatype.number({ min: 0, max: customers.length - 1 })
+            ]._id,
           parking_options: {
             parking_cost: faker.datatype.number({ min: 5, max: 5 }),
             parking_type: faker.helpers.arrayElement([
@@ -106,8 +119,6 @@ export async function POST(req: NextRequest) {
         },
 
         status: "payment",
-
-        // Add more fake data for other fields as needed
       };
 
       // Create a new PreOrder document
@@ -115,7 +126,24 @@ export async function POST(req: NextRequest) {
 
       // Generate fake data for Order
       const fakeOrder: IOrder = {
-        ...preOrder.toObject(), // Spread the preOrder document
+        property_type: preOrder.service_info.property_type,
+        resident_type: preOrder.service_info.resident_type,
+        bedrooms: preOrder.service_info.bedrooms,
+        congestion_zone: preOrder?.personal_info?.congestion_zone as any,
+        parking_options: preOrder?.personal_info?.parking_options as any,
+        inspection_date: new Date(
+          dayjs(preOrder.personal_info?.inspection_date).format()
+        ),
+        inspection_time: preOrder.personal_info?.inspection_time as string,
+        customer: new Types.ObjectId(
+          preOrder.toObject().personal_info?.customer._id
+        ),
+        payment_method: faker.helpers.arrayElement([
+          "credit_card",
+          "cash_to_engineer",
+          "bank_transfer",
+        ]),
+        order_notes: preOrder.personal_info?.order_notes,
         order_status: [
           {
             status: faker.helpers.arrayElement(
@@ -129,7 +157,10 @@ export async function POST(req: NextRequest) {
         invoice_id: await generateInvoiceId(), // Generate the invoice ID
         order_items: preOrder.service_info.order_items.map((item) => ({
           ...item,
-          assigned_engineers: [],
+          assigned_engineers: faker.helpers.arrayElements(
+            engineers.map((engineer) => engineer._id),
+            { min: 1, max: 3 }
+          ),
         })),
       };
 
@@ -150,7 +181,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(formatResponse(false, null, error.message), {
       status: 500,
     });
-  } finally {
-    await mongoose.disconnect();
   }
 }

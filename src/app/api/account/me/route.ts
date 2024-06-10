@@ -12,9 +12,6 @@ export async function GET(req: NextRequest) {
     let token = req.cookies.get("accessToken")?.value;
     const refreshToken = req.cookies.get("refreshToken")?.value;
 
-    console.log(token, "ACCESSTOKEN");
-    console.log(refreshToken, "REFRESHTOKEN");
-
     if (!token) {
       return NextResponse.json(
         { success: false, message: "Token missing" },
@@ -26,7 +23,8 @@ export async function GET(req: NextRequest) {
 
     try {
       decodedToken = await verifyJWT(token);
-      console.log(decodedToken, "DECODED");
+
+      console.log(decodedToken);
     } catch (error) {
       if (error instanceof JWTExpiredError && refreshToken) {
         try {
@@ -63,10 +61,28 @@ export async function GET(req: NextRequest) {
     const user = await User.findById(userId);
 
     if (!user) {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { success: false, message: "User not found" },
         { status: 404 }
       );
+
+      response.cookies.set("accessToken", "", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        path: "/",
+        expires: new Date(0),
+      });
+
+      response.cookies.set("refreshToken", "", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        path: "/",
+        expires: new Date(0),
+      });
+
+      return response;
     }
 
     return NextResponse.json({
