@@ -1,20 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Grid,
-  IconButton,
-  Typography,
-} from "@mui/joy";
-import { AddRounded, Check, Delete, Mail } from "@mui/icons-material";
+import { Box, Button, Grid, Typography } from "@mui/joy";
+import { AddRounded, Check } from "@mui/icons-material";
 import useOrderDetails from "@/app/_components/hooks/use-order-details";
 import ScheduleInfo from "./schedule-info";
 import useUpdateOrderDetails from "@/app/_components/hooks/use-update-order-details";
 import { IOrder } from "@/types/orders";
 import { Types } from "mongoose";
-import ItemsAssigneeSelect from "./items-assignee-select";
+import TaskAssignment from "./task-assignment";
+import { useSnackbar } from "@/app/_components/snackbar-provider";
 
 export type Assignment = {
   id: number;
@@ -41,24 +35,40 @@ export default function AssignedAndTimeInfo() {
   const { updateOrderMutate, isPending: isUpdateOrderDetailsPending } =
     useUpdateOrderDetails();
 
+  const { enqueueSnackbar } = useSnackbar();
+
   useEffect(() => {
     if (orderDetails) {
       const orderItems = orderDetails.order_items;
+
       const newAssignments: Assignment[] = orderItems.reduce((acc, curr) => {
         const { _id, assigned_engineers } = curr;
-        assigned_engineers.forEach((engineer) => {
-          const engineerObj = acc.find((item) => item.engineer === engineer);
-          if (engineerObj) {
-            engineerObj.tasks.push(_id);
-          } else {
-            acc.push({
-              engineer,
-              tasks: [_id],
-              isEmailSent: true,
-              id: Math.random(),
-            });
-          }
-        });
+
+        // If assigned_engineers is an empty array, add a default assignment
+        if (assigned_engineers.length === 0) {
+          acc.push({
+            engineer: "", // Set an empty string or a default value
+            tasks: [_id],
+            isEmailSent: false,
+            id: Math.random(),
+          });
+        } else {
+          assigned_engineers.forEach((engineer) => {
+            const engineerObj = acc.find((item) => item.engineer === engineer);
+
+            if (engineerObj) {
+              engineerObj.tasks.push(_id);
+            } else {
+              acc.push({
+                engineer,
+                tasks: [_id],
+                isEmailSent: true,
+                id: Math.random(),
+              });
+            }
+          });
+        }
+
         return acc;
       }, [] as Assignment[]);
 
@@ -66,35 +76,32 @@ export default function AssignedAndTimeInfo() {
     }
   }, [orderDetails]);
 
-  console.log(orderDetails);
-
   const addAssignment = () => {
     const tempAssignments = [...assignments];
     tempAssignments.push({
       ...assignment,
-      id: assignments[assignments.length - 1].id + 1,
+      id: Math.random(),
     });
-    setAssignments(tempAssignments);
-  };
-
-  const deleteAssignment = (index: number) => {
-    const tempAssignments = [...assignments];
-    tempAssignments.splice(index, 1);
-    setAssignments(tempAssignments);
-  };
-
-  const setToStateEngineer = (
-    modifiedAssignment: Assignment,
-    index: number
-  ) => {
-    const tempAssignments = [...assignments];
-    tempAssignments[index] = modifiedAssignment;
     setAssignments(tempAssignments);
   };
 
   const handleAssignmentSave = () => {
     if (!orderDetails?.order_items || !orderDetails?.customer._id) {
       throw new Error("Order details is required to assign tasks to engineers");
+    }
+
+    // Check if any assignment object has empty engineer or tasks
+    const hasEmptyAssignment = assignments.some(
+      (assignment) => !assignment.engineer || assignment.tasks.length === 0
+    );
+
+    if (hasEmptyAssignment) {
+      enqueueSnackbar(
+        "One or more assignments have empty engineer or tasks.",
+        "error"
+      );
+
+      return;
     }
 
     const tasksToEngineer: TaskWithEngineers[] = assignments.reduce(
@@ -129,8 +136,6 @@ export default function AssignedAndTimeInfo() {
     updateOrderMutate(payload);
   };
 
-  console.log(assignments);
-
   if (!orderDetails) {
     return "Loading...";
   }
@@ -152,65 +157,13 @@ export default function AssignedAndTimeInfo() {
             >
               Assignment Info
             </Typography>
-            {assignments.map((assignment, index) => {
+            {assignments.map((_, index) => {
               return (
-                <Grid container spacing={2} key={assignment.id}>
-                  <Grid md={4}>
-                    <ItemsAssigneeSelect
-                      assignments={assignments}
-                      index={index}
-                      setToStateEngineer={setToStateEngineer}
-                    />
-                  </Grid>
-
-                  <Grid md={5}>
-                    <Autocomplete
-                      size="sm"
-                      multiple
-                      id="tags-default"
-                      value={assignments[index].tasks.map((taskId) =>
-                        orderDetails?.order_items.find(
-                          (item) => item._id === taskId
-                        )
-                      )}
-                      onChange={(e, val) => {
-                        setToStateEngineer(
-                          { ...assignment, tasks: val.map((v) => v?._id) },
-                          index
-                        );
-                      }}
-                      placeholder="Leave empty to select all services"
-                      options={orderDetails?.order_items}
-                      getOptionLabel={(option) => option?.title as string}
-                      isOptionEqualToValue={(option, value) =>
-                        option?._id === value?._id
-                      }
-                    />
-                  </Grid>
-
-                  <Grid md={2}>
-                    <Button
-                      variant="outlined"
-                      size="sm"
-                      color="neutral"
-                      startDecorator={<Mail />}
-                      fullWidth
-                    >
-                      Send Email
-                    </Button>
-                  </Grid>
-
-                  <Grid md={1}>
-                    <IconButton
-                      disabled={assignments.length === 1}
-                      size="sm"
-                      color="danger"
-                      onClick={() => deleteAssignment(index)}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </Grid>
-                </Grid>
+                <TaskAssignment
+                  setAssignments={setAssignments}
+                  assignments={assignments}
+                  index={index}
+                />
               );
             })}
 

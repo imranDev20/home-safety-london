@@ -1,7 +1,12 @@
 import { Role } from "@/types/user";
 import http from "./http.services";
 import { buildUrl } from "@/shared/functions";
-import { GetCustomersResponse, GetEngineersResponse } from "@/types/response";
+import {
+  GetCustomersResponse,
+  GetEngineerDetailsResponse,
+  GetEngineersResponse,
+} from "@/types/response";
+import { Types } from "mongoose";
 
 const USERS_PATH: string = "/users";
 
@@ -29,8 +34,12 @@ export const getUsers = async <T extends "engineer" | "customer">(
   return response;
 };
 
-export const getUserDetails = async (userId: string) => {
-  const response = await http.get(`${USERS_PATH}/${userId}`);
+export const getUserDetails = async (
+  userId: Types.ObjectId
+): Promise<GetEngineerDetailsResponse> => {
+  const response: GetEngineerDetailsResponse = await http.get(
+    `${USERS_PATH}/${userId}`
+  );
   return response;
 };
 

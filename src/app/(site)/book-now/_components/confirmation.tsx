@@ -39,7 +39,11 @@ export default function Confirmation() {
   const { isXs, isSm } = useBreakpoints();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data, isPending: isPreOrderDataPending } = useQuery({
+  const {
+    data,
+    isPending: isPreOrderDataPending,
+    isFetching: isPreOrderDataFetching,
+  } = useQuery({
     queryKey: ["pre-order"],
     queryFn: () => getPreOrder(),
   });

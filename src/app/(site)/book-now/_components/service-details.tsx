@@ -26,7 +26,6 @@ import { useEffect } from "react";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { IPreOrder, PropertyType } from "@/types/orders";
 import { COMMERCIAL_SERVICES, RESIDENTIAL_SERVICES } from "@/shared/data";
-import { IUser } from "@/types/user";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/types/response";
 

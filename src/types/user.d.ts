@@ -1,11 +1,11 @@
 import { Types } from "mongoose";
 import { IOrder } from "./orders";
+import { Document } from "mongoose";
 
 export type Role = "customer" | "engineer" | "admin";
 export type CreationMethod = "registration" | "by_admin" | "through_order";
 
-export interface IUser {
-  _id: Types.ObjectId;
+export interface IUser extends Pick<Document, "_id"> {
   name: string;
   email: string;
   phone: string;

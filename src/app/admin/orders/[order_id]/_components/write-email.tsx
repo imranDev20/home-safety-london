@@ -1,4 +1,3 @@
-import * as React from "react";
 import Box from "@mui/joy/Box";
 import ModalClose from "@mui/joy/ModalClose";
 import Button from "@mui/joy/Button";
@@ -12,14 +11,47 @@ import FormatColorTextRoundedIcon from "@mui/icons-material/FormatColorTextRound
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
 import FormatListBulletedRoundedIcon from "@mui/icons-material/FormatListBulletedRounded";
+import { EMAIL_ADDRESS } from "@/shared/constants";
+import { IEngineer } from "@/types/user";
+import { forwardRef, useEffect, useState } from "react";
+import { Assignment } from "./assigned-and-time-info";
+import useOrderDetails from "@/app/_components/hooks/use-order-details";
+
+interface ServiceEmailContent {
+  subject: string | "";
+  body: string | "";
+}
 
 interface WriteEmailProps {
   open?: boolean;
   onClose?: () => void;
+  engineerDetails: IEngineer;
+  assignment: Assignment;
 }
 
-const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
-  function WriteEmail({ open, onClose }, ref) {
+const WriteEmail = forwardRef<HTMLDivElement, WriteEmailProps>(
+  function WriteEmail({ open, onClose, engineerDetails, assignment }, ref) {
+    const [receiver, setReceiver] = useState<string>("");
+    const [emailContent, setEmailContent] = useState<string>("");
+    const [emailSubject, setEmailSubject] = useState<string>("");
+
+    const { orderDetails } = useOrderDetails();
+
+    const orderItemsForEngineer = orderDetails?.order_items.filter((item) =>
+      assignment.tasks.includes(item._id)
+    );
+    // Example usage
+    const servicesAssigned = orderItemsForEngineer?.map((item) => item.name);
+    const emailBody = generateEmailForServices(servicesAssigned as string[]);
+
+    useEffect(() => {
+      if (engineerDetails) {
+        setReceiver(engineerDetails.email);
+        setEmailContent(emailBody.body);
+        setEmailSubject(emailBody.subject);
+      }
+    }, [engineerDetails]);
+
     return (
       <Sheet
         ref={ref}
@@ -57,19 +89,36 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
         >
           <FormControl>
             <FormLabel>To</FormLabel>
-            <Input placeholder="email@email.com" aria-label="Message" />
+            <Input
+              placeholder="engieer@email.com"
+              aria-label="Message"
+              value={receiver}
+              onChange={(e) => setReceiver(e.target.value)}
+            />
           </FormControl>
           <FormControl>
             <FormLabel>CC</FormLabel>
-            <Input placeholder="email@email.com" aria-label="Message" />
+            <Input
+              disabled
+              placeholder="email@email.com"
+              value={EMAIL_ADDRESS}
+              aria-label="Message"
+            />
           </FormControl>
-          <Input placeholder="Subject" aria-label="Message" />
+          <Input
+            placeholder="Subject"
+            aria-label="Message"
+            value={emailSubject}
+            onChange={(e) => setEmailSubject(e.target.value)}
+          />
           <FormControl
             sx={{ display: "flex", flexDirection: "column", gap: 2 }}
           >
             <Textarea
               placeholder="Type your message here…"
               aria-label="Message"
+              value={emailContent}
+              onChange={(e) => setEmailContent(e.target.value)}
               minRows={8}
               endDecorator={
                 <Stack
@@ -121,3 +170,79 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
 );
 
 export default WriteEmail;
+
+interface ServiceEmailContent {
+  subject: string;
+  body: string;
+}
+
+const getEmailContent = (serviceName: string): ServiceEmailContent => {
+  let subject: string;
+  let body: string;
+
+  switch (serviceName) {
+    case "eicr":
+      subject = "EICR - Electrical Certificate Service";
+      body =
+        "Please conduct the EICR - Electrical Certificate service as per the scheduled time. Ensure all necessary equipment is available.";
+      break;
+    case "gas_cert":
+      subject = "Gas Safety Certificate Service";
+      body =
+        "Please conduct the Gas Safety Certificate service as per the scheduled time. Ensure all safety protocols are followed.";
+      break;
+    case "epc":
+      subject = "Energy Performance Certificate Service";
+      body =
+        "Please conduct the Energy Performance Certificate service as per the scheduled time. Ensure all required inspections are completed.";
+      break;
+    case "pat":
+      subject = "PAT Testing Service";
+      body =
+        "Please conduct the PAT Testing service as per the scheduled time. Ensure all electrical appliances are tested thoroughly.";
+      break;
+    case "gas_boiler":
+      subject = "Gas Safety Certificate + Boiler Service";
+      body =
+        "Please conduct the Gas Safety Certificate and Boiler service as per the scheduled time. Ensure both safety checks and maintenance are performed.";
+      break;
+    case "fire_safety":
+      subject = "Fire Safety Certificate Service";
+      body =
+        "Please conduct the Fire Safety Certificate service as per the scheduled time. Ensure all fire safety equipment is inspected.";
+      break;
+    case "fire_risk":
+      subject = "Fire Risk Assessment Service";
+      body =
+        "Please conduct the Fire Risk Assessment service as per the scheduled time. Ensure all potential fire hazards are evaluated.";
+      break;
+    case "emergency_light":
+      subject = "Emergency Lighting Certificate Service";
+      body =
+        "Please conduct the Emergency Lighting Certificate service as per the scheduled time. Ensure all emergency lighting systems are operational.";
+      break;
+    default:
+      subject = "Service Request";
+      body =
+        "Please conduct the requested service as per the scheduled time. Ensure all necessary protocols are followed.";
+      break;
+  }
+
+  return { subject, body };
+};
+
+const generateEmailForServices = (
+  services: string[]
+): { subject: string; body: string } => {
+  const emailParts = services.map((serviceName) => {
+    const { subject, body } = getEmailContent(serviceName);
+    return { subject, body };
+  });
+
+  const combinedSubject = emailParts.map((part) => part.subject).join(", ");
+  const combinedBody = emailParts
+    .map((part) => `Service: ${part.subject}\n\n${part.body}\n\n`)
+    .join("\n---------------------------------\n");
+
+  return { subject: combinedSubject, body: combinedBody };
+};

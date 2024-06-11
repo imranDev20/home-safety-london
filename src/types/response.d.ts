@@ -24,6 +24,7 @@ export type ErrorResponse = {
 export type GetTestimonialsResponse = SuccessResponseWithArray<ITestimonial>;
 
 export type GetEngineersResponse = SuccessResponseWithArray<IEngineer>;
+export type GetEngineerDetailsResponse = SuccessResponse<IEngineer>;
 export type GetCustomersResponse = SuccessResponseWithArray<ICustomer>;
 export type AuthUserResponse = SuccessResponse<IUserBasicInfo>;
 
