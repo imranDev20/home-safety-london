@@ -84,7 +84,13 @@ export default function OrderActivity() {
           <Button
             size="sm"
             variant="plain"
-            endDecorator={<KeyboardArrowRightRounded fontSize="sm" />}
+            endDecorator={
+              <KeyboardArrowRightRounded
+                sx={{
+                  fontSize: 16,
+                }}
+              />
+            }
             sx={{ px: 1, mt: 1 }}
           >
             Expand
