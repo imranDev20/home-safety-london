@@ -1,138 +1,131 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
-import Button from "@mui/joy/Button";
 import Sheet from "@mui/joy/Sheet";
-import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FIXED_HEIGHT } from "@/shared/constants";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "@/services/user.services";
-import dayjs from "dayjs";
-import { Pagination } from "@/types/misc";
-import { User } from "@/types/user";
 import DataTable from "./data-table";
 import { customSlugify } from "@/shared/functions";
-
-export type CustomersResponse = {
-  users: Partial<User>[];
-  message: string;
-  pagination: Pagination;
-};
-
-// function descendingComparator<T>(a: T, b: T, orderBy: keyof T): number {
-//   if (b[orderBy] < a[orderBy]) {
-//     return -1;
-//   }
-//   if (b[orderBy] > a[orderBy]) {
-//     return 1;
-//   }
-//   return 0;
-// }
-
-// type Order = "asc" | "desc";
-
-// function getComparator<Key extends keyof any>(
-//   order: Order,
-//   orderBy: Key
-// ): (
-//   a: { [key in Key]: number | string },
-//   b: { [key in Key]: number | string }
-// ) => number {
-//   return order === "desc"
-//     ? (a, b) => descendingComparator(a, b, orderBy)
-//     : (a, b) => -descendingComparator(a, b, orderBy);
-// }
-
-// function stableSort<T>(
-//   array: readonly T[],
-//   comparator: (a: T, b: T) => number
-// ): T[] {
-//   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-//   stabilizedThis.sort((a, b) => {
-//     const order = comparator(a[0], b[0]);
-//     if (order !== 0) {
-//       return order;
-//     }
-//     return a[1] - b[1];
-//   });
-//   return stabilizedThis.map((el) => el[0]);
-// }
+import { CircularProgress } from "@mui/joy";
+import { GetCustomersResponse } from "@/types/response";
+import { ICustomer } from "@/types/user";
+import dayjs from "dayjs";
+import TablePagination from "../../_components/table-pagination";
+import { useQueryString } from "@/app/_components/hooks/use-query-string";
 
 const columns = [
   {
     label: "CUSTOMER",
     key: "name",
     width: 180,
-    render: (value: string, row: User) => (
-      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-        <Avatar size="sm" variant="outlined">
-          {row.name?.charAt(0)}
-        </Avatar>
-        <Typography level="body-xs">{value}</Typography>
-      </Box>
-    ),
+    render: (value: string, row: ICustomer) => {
+      const initial = row?.name?.charAt(0);
+
+      return (
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+          <Avatar size="sm">{initial}</Avatar>
+          <div>
+            <Typography>{row?.name}</Typography>
+          </div>
+        </Box>
+      );
+    },
   },
   { label: "EMAIL", key: "email", width: 150 },
   { label: "PHONE", key: "phone", width: 120 },
-  { label: "ADDRESS", key: "address", width: 110 },
-  { label: "JOINED", key: "createdAt", width: 90 },
+  {
+    label: "ADDRESS",
+    key: "address",
+    width: 110,
+    render: (value: any, row: ICustomer) => (
+      <Typography>
+        {row?.address?.street}, {row?.address?.postcode}
+      </Typography>
+    ),
+  },
+  {
+    label: "JOINED",
+    key: "createdAt",
+    width: 90,
+    render: (value: string, row: ICustomer) => {
+      return (
+        <Typography>{dayjs(row.createdAt).format("DD MMMM YYYY")}</Typography>
+      );
+    },
+  },
 ];
 
 export default function CustomersTable() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const searchTerm = searchParams.get("search") || "";
+  const searchTerm = searchParams.get("q") || "";
+  const sortBy = searchParams.get("sort_by") || "";
+  const page = searchParams.get("page") || "";
+
+  const sortOrder = searchParams.get("sort_order") || "";
+  const pathname = usePathname();
+  const { createQueryString } = useQueryString();
 
   const {
     data: usersData,
-    isLoading: isGetUsersDataLoading,
+    isPending: isGetUsersDataPending,
     isFetching: isGetUserDataFetching,
     refetch: refetchGetUsers,
-  } = useQuery<CustomersResponse>({
+  } = useQuery<GetCustomersResponse>({
     queryKey: ["users", "customers"],
-    queryFn: async () => {
-      const { data, message, pagination } = await getUsers(
-        searchTerm,
-        "customer"
-      );
-
-      const users = data?.map((user: any) => ({
-        _id: user._id,
-        createdAt: dayjs(user.createdAt).format("MMM DD, YYYY"),
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        // address: user.
-      }));
-
-      return {
-        users,
-        message,
-        pagination,
-      };
-    },
+    queryFn: () =>
+      getUsers<"customer">(searchTerm, "customer", sortBy, sortOrder, page),
     refetchOnMount: false,
   });
 
-  const handleRowClick = (row: User) => {
-    router.push(`/admin/customers/${customSlugify(row._id)}`);
+  useEffect(() => {
+    const loadUsers = async () => {
+      await refetchGetUsers();
+    };
+    loadUsers();
+  }, [searchTerm, refetchGetUsers, sortBy, sortOrder, page]);
+
+  // Table functions
+  const handleRowClick = (row: ICustomer) => {
+    router.push(`/admin/customers/${customSlugify(row._id.toString())}`);
   };
 
-  const handleSelectionChange = (selected: User[]) => {
+  const handleSelectionChange = (selected: ICustomer[]) => {
     console.log("Selection changed:", selected);
   };
 
-  // useEffect(() => {
-  //   refetchGetUsers();
-  // }, [searchTerm, refetchGetUsers]);
+  if (isGetUsersDataPending || isGetUserDataFetching) {
+    return (
+      <Sheet
+        variant="outlined"
+        sx={{
+          width: "100%",
+          borderRadius: "sm",
+          flexShrink: 1,
+          overflow: "auto",
+          minHeight: `calc(100vh - ${FIXED_HEIGHT}px)`,
+          height: `calc(100vh - ${FIXED_HEIGHT}px)`,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress
+          thickness={3}
+          sx={{
+            "--CircularProgress-size": "60px",
+          }}
+        />
+      </Sheet>
+    );
+  }
 
-  if (isGetUsersDataLoading || isGetUserDataFetching) {
-    return "loading...";
+  if (!usersData) {
+    return "No Users Found";
   }
 
   return (
@@ -148,56 +141,29 @@ export default function CustomersTable() {
           height: `calc(100vh - ${FIXED_HEIGHT}px)`,
         }}
       >
-        <DataTable<User>
-          columns={columns}
-          data={usersData?.users as User[]}
-          onRowClick={handleRowClick}
-          onSelectionChange={handleSelectionChange}
-        />
+        {usersData?.data ? (
+          <DataTable
+            columns={columns}
+            data={usersData?.data}
+            onRowClick={handleRowClick}
+            onSelectionChange={handleSelectionChange}
+          />
+        ) : (
+          "No results found"
+        )}
       </Sheet>
 
-      <Box
-        sx={{
-          pt: 2,
-          gap: 1,
-          [`& .${iconButtonClasses.root}`]: { borderRadius: "50%" },
-          display: {
-            xs: "none",
-            md: "flex",
-          },
-        }}
-      >
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          startDecorator={<KeyboardArrowLeftIcon />}
-        >
-          Previous
-        </Button>
-
-        <Box sx={{ flex: 1 }} />
-        {["1", "2", "3", "…", "8", "9", "10"].map((page) => (
-          <IconButton
-            key={page}
-            size="sm"
-            variant={Number(page) ? "outlined" : "plain"}
-            color="neutral"
-          >
-            {page}
-          </IconButton>
-        ))}
-        <Box sx={{ flex: 1 }} />
-
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          endDecorator={<KeyboardArrowRightIcon />}
-        >
-          Next
-        </Button>
-      </Box>
+      {usersData.pagination && (
+        <TablePagination
+          currentPage={usersData.pagination?.currentPage}
+          totalPages={usersData.pagination.totalPages}
+          onPageChange={(newPage) =>
+            router.push(
+              `${pathname}?${createQueryString("page", newPage.toString())}`
+            )
+          }
+        />
+      )}
     </React.Fragment>
   );
 }

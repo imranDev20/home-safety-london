@@ -8,6 +8,7 @@ import ThemeRegistry from "../_components/theme-registry";
 import QueryProvider from "../_components/query-provider";
 import { SnackbarProvider } from "../_components/snackbar-provider";
 import ReCaptchaProvider from "../_components/recaptcha-provider";
+import SnackbarHandler from "../_components/snackbar-handler";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -34,7 +35,10 @@ export default function RootLayout({
               <SnackbarProvider>
                 <TopLoader />
                 <Header />
-                <Suspense>{children}</Suspense>
+                <Suspense>
+                  <SnackbarHandler />
+                  {children}
+                </Suspense>
                 <Footer />
               </SnackbarProvider>
             </ThemeRegistry>

@@ -6,7 +6,6 @@ import {
   FormControl,
   FormLabel,
   Grid,
-  Input,
   Link as JoyLink,
   Option,
   Select,
@@ -15,42 +14,44 @@ import {
   useTheme,
 } from "@mui/joy";
 import Link from "next/link";
-import SearchIcon from "@mui/icons-material/Search";
-import { CATEGORIES, ORDER_STATUS } from "@/shared/constants";
-import { snakeCaseToNormalText } from "@/shared/functions";
+import { ORDER_STATUS } from "@/shared/constants";
+import { snakeCaseToNormalText, toSnakeCase } from "@/shared/functions";
 import OrderTable from "./_components/order-table";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { exportUsers } from "@/services/user.services";
+import Assignee from "./_components/assignee";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryString } from "@/app/_components/hooks/use-query-string";
+import DebounceInput from "@/app/_components/common/debounce-input";
+import { exportOrders } from "@/services/orders.services";
+import dayjs from "dayjs";
 
-const Orders = () => {
+export default function Orders() {
   const theme = useTheme();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const orderStatus = searchParams.get("order_status") || "";
+  const { createQueryString, removeQueryString } = useQueryString();
+
   const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
     useState<boolean>(false);
 
-  const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
+  const { isLoading: isExportOrdersLoading, refetch: refetchExportOrders } =
     useQuery({
-      queryKey: ["export-users"],
-      queryFn: async () => {
-        const response = await exportUsers();
-        return response.data;
-      },
+      queryKey: ["export-orders"],
+      queryFn: async () => await exportOrders(),
       enabled: false,
     });
 
-  const handleExportUsers = async () => {
+  const handleExportOrders = async () => {
     try {
-      const response = await refetchExportUsers();
+      const response = await refetchExportOrders();
       const data = response.data;
 
       if (response.status === "success") {
         // const progressUpdates = data.progressUpdates;
         const excelData = data.excelData;
-
-        // Update progress
-        // for (const { progress } of progressUpdates) {
-        //   setProgress(progress);
-        // }
 
         // Download Excel file
         const byteArray = new Uint8Array(
@@ -65,12 +66,16 @@ const Orders = () => {
 
         const link = document.createElement("a");
         link.href = downloadUrl;
-        link.setAttribute("download", "users.xlsx");
+        link.setAttribute(
+          "download",
+          `Orders - ${dayjs().format("YYYY-MM-DD@hh:mm:ss")}.xlsx`
+        );
         document.body.appendChild(link);
         link.click();
         link.remove();
       } else {
-        console.error("Error exporting users:", data.error);
+        console.log(data);
+        console.error("Error exporting orders:", data);
       }
     } catch (err) {
       console.error(err);
@@ -79,6 +84,14 @@ const Orders = () => {
     //   setIsDownloading(false);
     //   setProgress(null);
     // }
+  };
+
+  const handleDebounce = (value: string): void => {
+    if (value !== "") {
+      router.push(`${pathname}?${createQueryString("q", value)}`);
+    } else {
+      router.push(`${pathname}?${removeQueryString("q")}`);
+    }
   };
 
   return (
@@ -108,16 +121,14 @@ const Orders = () => {
         >
           <Home />
         </JoyLink>
-        <JoyLink
-          component={Link}
-          color="neutral"
-          href="/admin/customers"
+        <Typography
+          color="primary"
           sx={{
-            textDecoration: "none",
+            fontWeight: 500,
           }}
         >
-          Customers
-        </JoyLink>
+          Orders
+        </Typography>
       </Breadcrumbs>
       <Stack
         spacing={2}
@@ -147,8 +158,8 @@ const Orders = () => {
             size="sm"
             variant="outlined"
             startDecorator={<Download />}
-            onClick={handleExportUsers}
-            loading={isExportUsersLoading}
+            onClick={handleExportOrders}
+            loading={isExportOrdersLoading}
             loadingPosition="start"
           >
             Download Excel
@@ -164,7 +175,7 @@ const Orders = () => {
       </Stack>
 
       <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>
-        <Grid xs={12} sm={6} md={6}>
+        <Grid xs={12} md={4}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
@@ -172,14 +183,15 @@ const Orders = () => {
             >
               Search for orders
             </FormLabel>
-            <Input
-              placeholder="Type in here…"
-              startDecorator={<SearchIcon />}
+            <DebounceInput
+              placeholder="Type in invoice ID, Email, Name or Phone No..."
+              debounceTimeout={1000}
+              handleDebounce={handleDebounce}
             />
           </FormControl>
         </Grid>
 
-        <Grid xs={12} sm={6} md={2}>
+        <Grid xs={12} md={2}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
@@ -197,7 +209,25 @@ const Orders = () => {
                   },
                 },
               }}
+              value={orderStatus || ""}
+              onChange={(_, value) =>
+                router.push(
+                  `${pathname}?${createQueryString(
+                    "order_status",
+                    value as string
+                  )}`,
+                  { scroll: false }
+                )
+              }
             >
+              <Option
+                value=""
+                sx={{
+                  textTransform: "capitalize",
+                }}
+              >
+                All Statuses
+              </Option>
               {ORDER_STATUS.map((order) => (
                 <Option
                   key={order}
@@ -213,51 +243,75 @@ const Orders = () => {
           </FormControl>
         </Grid>
 
-        <Grid xs={12} sm={6} md={2}>
+        <Grid xs={12} md={2}>
+          <Assignee />
+        </Grid>
+
+        <Grid xs={12} md={2}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
               htmlFor="select-field-demo-button"
             >
-              Categories
+              Sort
             </FormLabel>
             <Select
+              placeholder="Sort orders by..."
               slotProps={{
                 button: {
                   id: "select-field-demo-button",
                 },
               }}
-              placeholder="Filter by category"
+              defaultValue="createdAt"
+              onChange={(e, value) =>
+                router.push(
+                  `${pathname}?${createQueryString(
+                    "sort_by",
+                    value as string
+                  )}`,
+                  { scroll: false }
+                )
+              }
             >
-              {CATEGORIES.map((category) => (
-                <Option key={category.name} value={category.name}>
-                  {category.name}
+              <Option value="createdAt">Date Created</Option>
+
+              {["Customer Name", "Email", "Phone"].map((sortVal) => (
+                <Option value={toSnakeCase(sortVal)} key={sortVal}>
+                  {sortVal}
                 </Option>
               ))}
             </Select>
           </FormControl>
         </Grid>
 
-        <Grid xs={12} sm={6} md={2}>
+        <Grid xs={12} md={2}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
               htmlFor="select-field-demo-button"
             >
-              Assignee
+              Order
             </FormLabel>
             <Select
-              placeholder="Filter by assignee"
+              placeholder="Order customers by..."
               slotProps={{
                 button: {
                   id: "select-field-demo-button",
                 },
               }}
+              defaultValue="desc"
+              onChange={(e, value) =>
+                router.push(
+                  `${pathname}?${createQueryString(
+                    "sort_order",
+                    value as string
+                  )}`,
+                  { scroll: false }
+                )
+              }
             >
-              <Option value="dog">Dog</Option>
-              <Option value="cat">Cat</Option>
-              <Option value="fish">Fish</Option>
-              <Option value="bird">Bird</Option>
+              <Option value="asc">Ascending</Option>
+              <Option value="desc">Descending</Option>
             </Select>
           </FormControl>
         </Grid>
@@ -265,6 +319,4 @@ const Orders = () => {
       <OrderTable />
     </>
   );
-};
-
-export default Orders;
+}

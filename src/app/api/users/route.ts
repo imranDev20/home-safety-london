@@ -2,10 +2,26 @@ import dbConnect from "@/app/api/_lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 import User from "../_models/User";
 import { formatResponse } from "@/shared/functions";
+import bcrypt from "bcrypt";
+import { validateToken } from "../_lib/validateToken";
 
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
+
+    // Validate the token and check the user's role
+    const { isValid, userId, userRole, response } = await validateToken(req);
+    if (!isValid) {
+      return response;
+    }
+
+    // Only allow admin users to fetch the users list
+    if (userRole !== "admin") {
+      return NextResponse.json(
+        formatResponse(false, null, "Unauthorized access"),
+        { status: 403 }
+      );
+    }
 
     const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
     const limit = 10;
@@ -13,6 +29,8 @@ export async function GET(req: NextRequest) {
 
     const searchTerm = req.nextUrl.searchParams.get("q") || "";
     const role = req.nextUrl.searchParams.get("role") || "";
+    const sortBy = req.nextUrl.searchParams.get("sort_by") || "createdAt";
+    const sortOrder = req.nextUrl.searchParams.get("sort_order") || "desc";
 
     // Prepare the query object
     const query: any = {};
@@ -31,26 +49,25 @@ export async function GET(req: NextRequest) {
       query.role = role;
     }
 
+    const sortObject: any = {};
+    sortObject[sortBy] = sortOrder === "asc" ? 1 : -1;
+
     // Fetch users from the database with pagination, sorting, and optional search and role filtering
     const users = await User.find(query)
-      .sort({ createdAt: -1 })
+      .sort(sortObject)
       .skip(skip)
       .limit(limit)
       .exec();
 
     // Process the users to omit fields based on the role
     const processedUsers = users.map((user) => {
-      const userObj = user.toObject();
-      if (userObj.role === "customer") {
-        delete userObj.orders_received;
-        delete userObj.skills;
-        delete userObj.experience;
-        delete userObj.specialty;
-      } else if (userObj.role === "engineer") {
-        delete userObj.orders_placed;
+      const { password, ...userWithoutPassword } = user.toObject();
+      if (userWithoutPassword.role === "customer") {
+        const { skills, experience, specialty, ...customerObj } =
+          userWithoutPassword;
+        return customerObj;
       }
-      delete userObj.password; // Ensure password is never sent
-      return userObj;
+      return userWithoutPassword;
     });
 
     // Get the total number of users matching the query
@@ -83,26 +100,33 @@ export async function POST(req: NextRequest) {
     await dbConnect();
 
     const userData = await req.json();
-    const newUser = await User.create(userData);
+    const generatedPass = Math.random().toString(36).slice(-6);
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(generatedPass, saltRounds);
+
+    const newUser = await User.create({
+      ...userData,
+      password: hashedPassword,
+    });
 
     // Remove restricted fields based on the user's role
-    const newUserObj = newUser.toObject();
+    const { password, ...newUserObj } = newUser.toObject();
 
-    delete newUserObj.password;
     if (newUser.role === "customer") {
-      delete newUserObj.orders_received;
-      delete newUserObj.skills;
-      delete newUserObj.specialty;
-      delete newUserObj.experience;
-    } else if (newUser.role === "engineer") {
-      delete newUserObj.orders_placed;
+      const { skills, specialty, experience, ...customerObj } = newUserObj;
+      return NextResponse.json({
+        success: true,
+        message: "User created successfully",
+        data: customerObj,
+      });
+    } else {
+      return NextResponse.json({
+        success: true,
+        message: "User created successfully",
+        data: newUserObj,
+      });
     }
-
-    return NextResponse.json({
-      success: true,
-      message: "User created successfully",
-      data: newUserObj,
-    });
   } catch (error: any) {
     console.log(error);
     return NextResponse.json(

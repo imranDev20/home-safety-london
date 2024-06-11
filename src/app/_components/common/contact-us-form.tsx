@@ -7,7 +7,6 @@ import {
   Grid,
   Input,
   InputProps,
-  Stack,
   Textarea,
   useTheme,
 } from "@mui/joy";
@@ -55,8 +54,6 @@ export default function ContactUsForm() {
   const theme = useTheme();
 
   const { isXs, isSm } = useBreakpoints();
-
-  console.log(reCaptchaToken);
 
   const {
     handleSubmit,

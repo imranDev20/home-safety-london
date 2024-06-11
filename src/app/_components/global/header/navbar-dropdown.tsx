@@ -9,40 +9,47 @@ import {
   MenuButton,
   MenuItem,
   Typography,
+  useTheme,
 } from "@mui/joy";
 
 import {
-  HelpRounded,
+  ListAltRounded,
   LogoutRounded,
-  SettingsRounded,
+  PersonRounded,
 } from "@mui/icons-material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logoutAccount } from "@/services/account.services";
 import { useSnackbar } from "../../snackbar-provider";
 import { useRouter } from "next/navigation";
+import { useCurrentUser } from "../../hooks/use-current-user";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/types/response";
+import Link from "next/link";
+import { hexToRgba } from "@/shared/functions";
 
 export default function NavbarDropdown() {
+  const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const { userData } = useCurrentUser();
+
   const {
     mutateAsync: logoutAccountMutate,
-    isPending: isLogoutAccountLoading,
+    isPending: isLogoutAccountPending,
   } = useMutation({
-    mutationFn: async () => {
-      const response = await logoutAccount();
-      return response;
-    },
+    mutationFn: () => logoutAccount(),
+
     onSuccess: (response) => {
-      enqueueSnackbar(response?.message, "success");
-      queryClient.invalidateQueries({ queryKey: ["current_user"] });
+      enqueueSnackbar(response.message, "success");
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
       queryClient.resetQueries();
       router.replace("/login");
     },
 
-    onError: (error) => {
-      enqueueSnackbar(error?.message, "error");
+    onError: (error: AxiosError<ErrorResponse>) => {
+      enqueueSnackbar(error.response?.data.message || error?.message, "error");
     },
   });
 
@@ -53,7 +60,7 @@ export default function NavbarDropdown() {
   return (
     <>
       <Dropdown>
-        {isLogoutAccountLoading ? (
+        {isLogoutAccountPending ? (
           <CircularProgress thickness={4} size="md" />
         ) : (
           <MenuButton
@@ -65,9 +72,9 @@ export default function NavbarDropdown() {
             }}
           >
             <Avatar
-              src="https://i.pravatar.cc/40?img=2"
-              srcSet="https://i.pravatar.cc/80?img=2"
-              sx={{ maxWidth: "40px", maxHeight: "40px" }}
+              sx={{
+                borderRadius: "50%",
+              }}
             />
           </MenuButton>
         )}
@@ -87,31 +94,35 @@ export default function NavbarDropdown() {
               sx={{
                 display: "flex",
                 alignItems: "center",
+                textDecoration: "none",
               }}
+              component={Link}
+              href="/profile"
             >
               <Avatar
-                src="https://i.pravatar.cc/40?img=2"
-                srcSet="https://i.pravatar.cc/80?img=2"
-                sx={{ borderRadius: "50%" }}
+                sx={{
+                  borderRadius: "50%",
+                  backgroundColor: hexToRgba(theme.palette.primary[500], 0.3),
+                }}
               />
               <Box sx={{ ml: 1.5 }}>
                 <Typography level="title-sm" textColor="text.primary">
-                  Rick Sanchez
+                  {userData?.name}
                 </Typography>
                 <Typography level="body-xs" textColor="text.tertiary">
-                  rick@email.com
+                  {userData?.email}
                 </Typography>
               </Box>
             </Box>
           </MenuItem>
           <ListDivider />
-          <MenuItem>
-            <HelpRounded />
-            Help
+          <MenuItem component={Link} href="/profile">
+            <PersonRounded />
+            Profile
           </MenuItem>
-          <MenuItem>
-            <SettingsRounded />
-            Settings
+          <MenuItem component={Link} href="/profile/orders">
+            <ListAltRounded />
+            Orders
           </MenuItem>
           <ListDivider />
 

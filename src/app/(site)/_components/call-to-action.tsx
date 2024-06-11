@@ -10,7 +10,7 @@ export default function CallToAction() {
   const theme = useTheme();
 
   return (
-    <Box component="section" sx={{ position: "relative", my: 10 }}>
+    <Box component="section" sx={{ position: "relative" }}>
       <Image
         src={backgroundImage}
         alt="Background"
@@ -52,9 +52,7 @@ export default function CallToAction() {
             fontWeight={700}
             sx={{ fontSize: 58, color: "white", mb: 3 }}
           >
-            {toTitleCase(
-              "Simply Click To Get A To Z Repair & Maintenance Work"
-            )}
+            {toTitleCase("Take the First Step Towards Safety")}
           </Typography>
           <Typography
             level="body-lg"
@@ -62,10 +60,9 @@ export default function CallToAction() {
               color: "white",
             }}
           >
-            London Home Safety collaborates with vetted professionals who are
-            registered with official UK bodies. Our tradespeople are highly
-            skilled and experienced in their respective fields. We value
-            customer feedback to ensure the best hassle-free experience for you.
+            Book your desired service today and experience the peace of mind
+            that comes with a safe and secure home. Visit our services page to
+            find out more and schedule an appointment.
           </Typography>
 
           <Stack

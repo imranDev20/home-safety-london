@@ -1,43 +1,6 @@
-import mongoose from "mongoose";
-import { Schema } from "mongoose";
-
-export interface IOrderItem {
-  name: string;
-  price: number;
-  quantity: string | number;
-  unit: string;
-  title: string;
-}
-
-export interface IPreOrder {
-  current_step: string;
-  property_type: string;
-  resident_type: string;
-  bedrooms: string;
-  order_items: IOrderItem[];
-  is_service_details_complete: boolean;
-  customer_name: string;
-  email: string;
-  phone_no: string;
-  address: {
-    house_street: string;
-    postcode: string;
-    city: string;
-  };
-  parking_options: {
-    parking_type: string;
-    parking_cost: number;
-  };
-  congestion_zone: {
-    zone_type: string;
-    zone_cost: number;
-  };
-  inspection_date: string;
-  inspection_time: string;
-  order_notes: string;
-  is_personal_details_complete: boolean;
-  payment_method: "bank_transfer" | "credit_card" | "cash_to_engineer";
-}
+import { IOrderItem, IPreOrder } from "@/types/orders";
+import { IUser } from "@/types/user";
+import mongoose, { Schema } from "mongoose";
 
 const orderItemSchema = new Schema<IOrderItem>({
   name: {
@@ -53,7 +16,7 @@ const orderItemSchema = new Schema<IOrderItem>({
     required: true,
   },
   quantity: {
-    type: Schema.Types.Mixed,
+    type: Number,
     required: true,
   },
   unit: {
@@ -62,117 +25,115 @@ const orderItemSchema = new Schema<IOrderItem>({
   },
 });
 
-const preOrderSchema = new Schema<IPreOrder>(
+const preOrderSchema = new mongoose.Schema<IPreOrder>(
   {
-    property_type: {
-      type: String,
-      required: true,
-      enum: ["residential", "commercial"],
-    },
-    resident_type: {
-      type: String,
-      required: function () {
-        return this.property_type === "residential";
+    service_info: {
+      property_type: {
+        type: String,
+        enum: ["residential", "commercial"],
+        required: true,
       },
-      validate: {
-        validator: function (value: string): boolean {
-          if (this && "property_type" in this) {
-            return this.property_type !== "commercial" || !value;
-          }
-          return false;
-        },
-        message: (props) =>
-          `resident_type cannot be provided when property_type is commercial`,
-      },
-    },
-    bedrooms: {
-      type: String,
-      required: function () {
-        return this.property_type === "residential";
-      },
-      validate: {
-        validator: function (value: string): boolean {
-          if (this && "property_type" in this) {
-            return this.property_type !== "commercial" || !value;
-          }
-          return false;
-        },
-        message: (props) =>
-          `bedrooms cannot be provided when property_type is commercial`,
-      },
-    },
-    order_items: {
-      type: [orderItemSchema],
-      required: true,
-    },
-    is_service_details_complete: {
-      type: Boolean,
-    },
-    customer_name: {
-      type: String,
-    },
-    email: {
-      type: String,
-    },
-    phone_no: {
-      type: String,
-    },
-    address: {
-      type: {
-        house_street: {
-          type: String,
-        },
-        postcode: {
-          type: String,
-        },
-        city: {
-          type: String,
+      resident_type: {
+        type: String,
+        enum: ["house", "flat", "hmo"],
+        required: function () {
+          return this.service_info.property_type === "residential";
         },
       },
+      bedrooms: {
+        type: Number, // 0 for studio
+        required: function () {
+          return this.service_info.property_type === "residential";
+        },
+      },
+      order_items: {
+        type: [orderItemSchema],
+        required: true,
+      },
     },
-    parking_options: {
-      type: {
+    personal_info: {
+      customer: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: function () {
+          return this.status === "personal" || this.status === "payment";
+        },
+      },
+      parking_options: {
         parking_type: {
           type: String,
           enum: ["paid", "free", "unavailable"],
+          required: function () {
+            return this.status === "personal" || this.status === "payment";
+          },
         },
         parking_cost: {
           type: Number,
+          required: function () {
+            return this.status === "personal" || this.status === "payment";
+          },
         },
       },
-    },
-    congestion_zone: {
-      type: {
+      congestion_zone: {
         zone_type: {
           type: String,
           enum: ["congestion", "non_congestion"],
+          required: function () {
+            return this.status === "personal" || this.status === "payment";
+          },
         },
         zone_cost: {
           type: Number,
+          required: function () {
+            return this.status === "personal" || this.status === "payment";
+          },
+        },
+      },
+      inspection_date: {
+        type: Date,
+        required: function () {
+          return this.status === "personal" || this.status === "payment";
+        },
+      },
+      inspection_time: {
+        type: String,
+        required: function () {
+          return this.status === "personal" || this.status === "payment";
+        },
+      },
+      order_notes: {
+        type: String,
+      },
+    },
+    payment_info: {
+      payment_method: {
+        type: String,
+        enum: ["bank_transfer", "credit_card", "cash_to_engineer"],
+        required: function () {
+          return this.status === "payment";
         },
       },
     },
-    inspection_date: {
+    status: {
       type: String,
-    },
-    inspection_time: {
-      type: String,
-    },
-    order_notes: {
-      type: String,
-    },
-    is_personal_details_complete: {
-      type: Boolean,
-    },
-    payment_method: {
-      type: String,
-      enum: ["bank_transfer", "credit_card", "cash_to_engineer"],
+      enum: ["service", "personal", "payment"],
+      default: "service",
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-const PreOrder =
+preOrderSchema.pre("save", function (next) {
+  if (this.service_info.property_type === "commercial") {
+    this.service_info.resident_type = null;
+    this.service_info.bedrooms = null;
+  }
+  next();
+});
+
+const PreOrder: mongoose.Model<IPreOrder<IUser>> =
   mongoose.models.PreOrder || mongoose.model("PreOrder", preOrderSchema);
 
 export default PreOrder;

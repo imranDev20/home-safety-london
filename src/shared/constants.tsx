@@ -1,8 +1,16 @@
 import {
+  AttachMoneyOutlined,
+  BuildOutlined,
+  CancelOutlined,
+  CheckCircleOutlined,
+  CheckOutlined,
   Dashboard,
-  Diversity2,
+  DirectionsCarOutlined,
+  DoneAllOutlined,
   Engineering,
   Group,
+  HourglassBottomOutlined,
+  HourglassEmptyOutlined,
   Notifications,
   Settings,
   ShoppingCart,
@@ -90,15 +98,15 @@ export const SITE_OPTIONS = [
 ];
 
 export const ORDER_STATUS = [
-  "pending",
-  "processing",
-  "scheduled",
-  "in_progress",
+  "pending_payment",
+  "payment_completed",
+  "awaiting_confirmation",
+  "order_confirmed",
+  "engineer_en_route",
+  "work_in_progress",
+  "work_completed",
   "completed",
   "cancelled",
-  "on_hold",
-  "payment_pending",
-  "payment_received",
 ];
 
 export const CATEGORIES = [
@@ -363,58 +371,6 @@ export const SERVICES = [
   },
 ];
 
-export const FAQS = [
-  {
-    id: 1,
-    ques: "What is the validity of an EICR",
-    ans: "EICR is valid for 3-5 years",
-    service: "Electrical Services",
-    sub_service: "EICR",
-  },
-  {
-    id: 2,
-    ques: "What is validity of PAT Testing?",
-    ans: "Pat testing is valid for 1 year.",
-    service: "Electrical Services",
-    sub_service: "PAT",
-  },
-  {
-    id: 3,
-    ques: "What is the validity of GAS SAFETY Certificate",
-    ans: "Gas safety certificate is valid for 1 year.",
-    service: "Gas Services",
-    sub_service: "Gas Certificate",
-  },
-  {
-    id: 4,
-    ques: "What is turnaround time for fire alarm certificate?",
-    ans: "London Property Inspections can carry out an fire alarm inspection within 24 hours if customer need an report on urgent basis. Sometimes we carry out an inspection on the same day.",
-    service: "Fire Services",
-    sub_service: "Fire Alarm Certificate",
-  },
-  {
-    id: 5,
-    ques: "What is the validity of EPC?",
-    ans: "EPC is valid for 10 years.",
-    service: "Health & Safety",
-    sub_service: "EPC",
-  },
-  {
-    id: 6,
-    ques: "How can I know the electrician is qualified?",
-    ans: "All of our electricians (contractors) are qualified with NICEIC, NAPIT and STROMA. Registration number of electricians is provided to customer for verification purposes prior to the inspection",
-    service: "Electrical Services",
-    sub_service: "EICR",
-  },
-  {
-    id: 7,
-    ques: "How do I receive fire alarm certificate?",
-    ans: "Fire alarm certificate is provided in digital format (pdf) via email. You can also download it from our website.",
-    service: "Fire Services",
-    sub_service: "Fire Alarm Certificate",
-  },
-];
-
 const MODIFIED_SERVICES = SERVICES.map((service) =>
   service.sub_services.map((s_service) => ({
     ...s_service,
@@ -424,9 +380,67 @@ const MODIFIED_SERVICES = SERVICES.map((service) =>
 
 export const SUB_SERVICES = MODIFIED_SERVICES.flatMap((service) => service);
 
+export const PARKING_OPTIONS = [
+  {
+    value: "free",
+    name: "Free Parking Available",
+    cost: 0,
+  },
+  {
+    value: "paid",
+    name: "Paid Parking Available",
+    cost: 5,
+  },
+  {
+    value: "unavailable",
+    name: "No Parking Available",
+    cost: 5,
+  },
+];
+
+export const CONGESTION_ZONE_OPTIONS = [
+  {
+    value: "congestion",
+    name: "Yes",
+    nameAlt: "In Congestion Zone",
+    cost: 18,
+  },
+  {
+    value: "non_congestion",
+    name: "No",
+    nameAlt: "Outside Congestion Zone",
+    cost: 0,
+  },
+];
+
 // Keep these here. Move the rest to a separate file.
 export const FIXED_HEIGHT: number = 285;
 export const BUSINESS_NAME: string = "London Home Safety Limited";
 export const ADDRESS: string = "43 Felton Road, Barking, London IG11 7YA";
 export const PHONE_NO: string = "020 8146 6698";
 export const WEBSITE_URL: string = "www.londonhomesafety.co.uk";
+export const EMAIL_ADDRESS: string = "info@londonhomesafety.co.uk";
+
+export const ORDER_STATUS_COLORS = {
+  pending_payment: "#FFC107",
+  payment_completed: "#4CAF50",
+  awaiting_confirmation: "#FF9800",
+  order_confirmed: "#2196F3",
+  engineer_en_route: "#9C27B0",
+  work_in_progress: "#673AB7",
+  work_completed: "#009688",
+  completed: "#4CAF50",
+  cancelled: "#F44336",
+};
+
+export const ORDER_STATUS_ICONS = {
+  pending_payment: <HourglassEmptyOutlined />,
+  payment_completed: <AttachMoneyOutlined />,
+  awaiting_confirmation: <HourglassBottomOutlined />,
+  order_confirmed: <CheckCircleOutlined />,
+  engineer_en_route: <DirectionsCarOutlined />,
+  work_in_progress: <BuildOutlined />,
+  work_completed: <CheckOutlined />,
+  completed: <DoneAllOutlined />,
+  cancelled: <CancelOutlined />,
+};

@@ -1,64 +1,99 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Sheet,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/joy";
+import { Button, Sheet, Stack, Typography, useTheme } from "@mui/joy";
 import React from "react";
 import DataTable from "../../_components/data-table";
 import { useQuery } from "@tanstack/react-query";
-import { CustomersResponse } from "../../_components/customers-table";
-import { getUsers } from "@/services/user.services";
 import dayjs from "dayjs";
-import { User } from "@/types/user";
-import { customSlugify } from "@/shared/functions";
+import { IUser } from "@/types/user";
+import {
+  customSlugify,
+  getMostRecentStatus,
+  snakeCaseToNormalText,
+} from "@/shared/functions";
 import { useRouter } from "next/navigation";
+import { getOrders } from "@/services/orders.services";
 
 const columns = [
   {
-    label: "CUSTOMER",
-    key: "name",
+    label: "Invoice ID",
+    key: "invoice_id",
     width: 180,
-    render: (value: string, row: User) => (
-      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-        <Avatar size="sm" variant="outlined">
-          {row.name?.charAt(0)}
-        </Avatar>
-        <Typography level="body-xs">{value}</Typography>
-      </Box>
+    render: (value: string, row: IUser) => (
+      <Typography level="body-sm">{value}</Typography>
     ),
   },
-  { label: "JOINED", key: "createdAt", width: 90 },
+  {
+    label: "Order Status",
+    key: "order_status",
+    width: 90,
+    render: (value: string, row: any) => {
+      const status = getMostRecentStatus(row?.order_status);
+      return (
+        <Typography
+          level="body-sm"
+          sx={{
+            textTransform: "capitalize",
+          }}
+        >
+          {snakeCaseToNormalText(status as string)}
+        </Typography>
+      );
+    },
+  },
+  {
+    label: "Order Placed",
+    key: "createdAt",
+    width: 90,
+    render: (value: string, row: IUser) => (
+      <Typography level="body-sm">
+        {dayjs(value).format("DD/MM/YYYY")}
+      </Typography>
+    ),
+  },
+  {
+    label: "Invoice",
+    width: 90,
+    key: "invoice",
+    render: (value: string, row: IUser) => (
+      <Button
+        component="a"
+        href={value}
+        size="sm"
+        target="_blank"
+        sx={{
+          fontSize: 12,
+        }}
+      >
+        Download
+      </Button>
+    ),
+  },
 ];
 
-const CustomerOrders = () => {
+export default function CustomerOrders() {
   const router = useRouter();
   const theme = useTheme();
 
   const {
-    data: usersData,
-    isLoading: isGetUsersDataLoading,
+    data: ordersData,
+    isPending: isGetUsersDataPending,
     isFetching: isGetUserDataFetching,
     refetch: refetchGetUsers,
-  } = useQuery<CustomersResponse>({
-    queryKey: ["users"],
+  } = useQuery<any>({
+    queryKey: ["orders"],
     queryFn: async () => {
-      const { data, message, pagination } = await getUsers();
+      const { data, message, pagination } = await getOrders();
 
-      const users = data?.map((user: any) => ({
-        _id: user._id,
-        createdAt: dayjs(user.createdAt).format("MMM DD, YYYY"),
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        // address: user.
+      const orders = data?.map((order: any) => ({
+        _id: order._id,
+        createdAt: dayjs(order.createdAt).format("MMM DD, YYYY"),
+        order_status: order.order_status,
+        invoice_id: order.invoice_id,
+        email: order.email,
+        phone: order.phone,
       }));
 
       return {
-        users,
+        orders,
         message,
         pagination,
       };
@@ -66,15 +101,15 @@ const CustomerOrders = () => {
     refetchOnMount: false,
   });
 
-  const handleRowClick = (row: User) => {
-    router.push(`/admin/customers/${customSlugify(row._id)}`);
+  const handleRowClick = (row: IUser) => {
+    router.push(`/admin/customers/${customSlugify(row._id.toString())}`);
   };
 
-  const handleSelectionChange = (selected: User[]) => {
+  const handleSelectionChange = (selected: IUser[]) => {
     console.log("Selection changed:", selected);
   };
 
-  if (isGetUserDataFetching || isGetUsersDataLoading) {
+  if (isGetUserDataFetching || isGetUsersDataPending) {
     return "Loading...";
   }
 
@@ -105,15 +140,15 @@ const CustomerOrders = () => {
           mt: 3,
         }}
       >
-        <DataTable
-          columns={columns}
-          data={usersData?.users as User[]}
-          onRowClick={handleRowClick}
-          onSelectionChange={handleSelectionChange}
-        />
+        {ordersData?.orders && (
+          <DataTable
+            columns={columns}
+            data={ordersData.orders}
+            onRowClick={handleRowClick}
+            onSelectionChange={handleSelectionChange}
+          />
+        )}
       </Sheet>
     </>
   );
-};
-
-export default CustomerOrders;
+}

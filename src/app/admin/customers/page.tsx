@@ -1,5 +1,10 @@
 "use client";
-import { Download, Home, KeyboardArrowRight } from "@mui/icons-material";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+
+import { useState } from "react";
+
+import { Add, Download, Home, KeyboardArrowRight } from "@mui/icons-material";
 import {
   Breadcrumbs,
   Button,
@@ -7,25 +12,35 @@ import {
   FormLabel,
   Grid,
   Link as JoyLink,
+  Option,
+  Select,
   Stack,
   Typography,
   useTheme,
 } from "@mui/joy";
-import Link from "next/link";
-import AddIcon from "@mui/icons-material/Add";
+
 import CustomersTable from "./_components/customers-table";
-import { useState } from "react";
 import FormDrawer from "@/app/_components/common/form-drawer";
 import CreateCustomerForm from "./_components/create-customer-form";
-import { useQuery } from "@tanstack/react-query";
-import { exportUsers } from "@/services/user.services";
-import SearchField from "./_components/search-field";
+import DebounceInput from "../../_components/common/debounce-input";
 
-function Customers() {
+import { exportUsers } from "@/services/user.services";
+
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+
+import { toSnakeCase } from "@/shared/functions";
+import { useQueryString } from "@/app/_components/hooks/use-query-string";
+
+export default function Customers() {
   const theme = useTheme();
   const [openCreateCustomerDrawer, setOpenCreateCustomerDrawer] =
     useState<boolean>(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const { createQueryString, removeQueryString } = useQueryString();
 
+  // Mutate function to export users
   const { isLoading: isExportUsersLoading, refetch: refetchExportUsers } =
     useQuery({
       queryKey: ["export-users"],
@@ -63,7 +78,10 @@ function Customers() {
 
         const link = document.createElement("a");
         link.href = downloadUrl;
-        link.setAttribute("download", "users.xlsx");
+        link.setAttribute(
+          "download",
+          `Customers - ${dayjs().format("YYYY-MM-DD@hh:mm:ss")}.xlsx`
+        );
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -77,6 +95,14 @@ function Customers() {
     //   setIsDownloading(false);
     //   setProgress(null);
     // }
+  };
+
+  const handleDebounce = (value: string) => {
+    if (value !== "") {
+      router.push(`${pathname}?${createQueryString("q", value)}`);
+    } else {
+      router.push(`${pathname}?${removeQueryString("q")}`);
+    }
   };
 
   return (
@@ -117,6 +143,7 @@ function Customers() {
           Customers
         </JoyLink>
       </Breadcrumbs>
+
       <Stack
         spacing={2}
         mt={2}
@@ -153,7 +180,7 @@ function Customers() {
           </Button>
           <Button
             size="sm"
-            startDecorator={<AddIcon />}
+            startDecorator={<Add />}
             onClick={() => setOpenCreateCustomerDrawer(true)}
           >
             Add New Customer
@@ -162,7 +189,7 @@ function Customers() {
       </Stack>
 
       <Grid container spacing={1} sx={{ mt: 3, mb: 2 }}>
-        <Grid xs={12} sm={6} md={6}>
+        <Grid xs={12} md={6}>
           <FormControl size="sm">
             <FormLabel
               id="select-field-demo-label"
@@ -170,7 +197,73 @@ function Customers() {
             >
               Search for customers
             </FormLabel>
-            <SearchField />
+            <DebounceInput
+              placeholder="Type in customer email, name or phone number..."
+              debounceTimeout={1000}
+              handleDebounce={handleDebounce}
+            />
+          </FormControl>
+        </Grid>
+        <Grid xs={12} md={3}>
+          <FormControl size="sm">
+            <FormLabel
+              id="select-field-demo-label"
+              htmlFor="select-field-demo-button"
+            >
+              Sort
+            </FormLabel>
+            <Select
+              placeholder="Sort customers by..."
+              slotProps={{
+                button: {
+                  id: "select-field-demo-button",
+                },
+              }}
+              defaultValue="createdAt"
+              onChange={(e, value) =>
+                router.push(
+                  `${pathname}?${createQueryString("sort_by", value as string)}`
+                )
+              }
+            >
+              <Option value="createdAt">Date Created</Option>
+
+              {["Name", "Email", "Phone"].map((sortVal) => (
+                <Option value={toSnakeCase(sortVal)} key={sortVal}>
+                  {sortVal}
+                </Option>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid xs={12} md={3}>
+          <FormControl size="sm">
+            <FormLabel
+              id="select-field-demo-label"
+              htmlFor="select-field-demo-button"
+            >
+              Order
+            </FormLabel>
+            <Select
+              placeholder="Order customers by..."
+              slotProps={{
+                button: {
+                  id: "select-field-demo-button",
+                },
+              }}
+              defaultValue="desc"
+              onChange={(e, value) =>
+                router.push(
+                  `${pathname}?${createQueryString(
+                    "sort_order",
+                    value as string
+                  )}`
+                )
+              }
+            >
+              <Option value="asc">Ascending</Option>
+              <Option value="desc">Descending</Option>
+            </Select>
           </FormControl>
         </Grid>
       </Grid>
@@ -187,5 +280,3 @@ function Customers() {
     </>
   );
 }
-
-export default Customers;

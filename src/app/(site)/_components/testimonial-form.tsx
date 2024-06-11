@@ -18,9 +18,9 @@ import {
 import HookFormError from "@/app/_components/common/hook-form-error";
 import StarRating from "@/app/_components/common/star-rating";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Testimonial } from "@/types/testimonial";
 import { createTestimonial } from "@/services/testimonial.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
+import { ITestimonial } from "@/types/testimonial";
 
 type TestimonialInput = {
   name: string;
@@ -54,31 +54,23 @@ export default function TestimonialForm({
 
   const {
     mutateAsync: createTestimonialMutate,
-    isPending: isCreateTestimonialLoading,
+    isPending: isCreateTestimonialPending,
   } = useMutation({
-    mutationFn: async (testimonialData: Testimonial) => {
-      const response = await createTestimonial(testimonialData);
-      return response;
-    },
-    onSuccess: () => {
+    mutationFn: (testimonialData: ITestimonial) =>
+      createTestimonial(testimonialData),
+
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["testimonials"] });
+      console.log(response);
+      reset();
+      setOpenModal(false);
+      enqueueSnackbar(response.message, "success");
     },
+    onError: (error) => enqueueSnackbar(error.message, "error"),
   });
 
   const onSubmit: SubmitHandler<TestimonialInput> = async (data) => {
-    try {
-      const response = await createTestimonialMutate(data);
-
-      if (response?.success) {
-        reset();
-        setOpenModal(false);
-        enqueueSnackbar(response.message, "success");
-      } else {
-        throw new Error(response.message);
-      }
-    } catch (error: any) {
-      enqueueSnackbar(error.message, "error");
-    }
+    createTestimonialMutate(data);
   };
 
   return (
@@ -189,7 +181,7 @@ export default function TestimonialForm({
                 )}
               />
 
-              <Button loading={isCreateTestimonialLoading} type="submit">
+              <Button loading={isCreateTestimonialPending} type="submit">
                 Submit
               </Button>
             </Stack>

@@ -1,9 +1,9 @@
-import { Dayjs } from "dayjs";
+import { BedroomsType, PropertyType, ResidentType } from "./orders";
 
 export type ServiceFormInput = {
-  propertyType: "residential" | "commercial";
-  residentType: "flat" | "house" | "hmo" | "";
-  bedrooms: string;
+  propertyType: PropertyType;
+  residentType: ResidentType<PropertyType>;
+  bedrooms: BedroomsType<PropertyType>;
   orderItems: string[];
 };
 
@@ -11,12 +11,12 @@ export type PersonalFormInput = {
   name: string;
   email: string;
   phone: string;
-  house: string;
-  postCode: string;
+  street: string;
+  postcode: string;
   city: string;
   congestionZone: string;
   parkingOptions: string;
-  inspectionDate: string;
+  inspectionDate: Date | null;
   inspectionTime: string;
   orderNotes: string;
 };

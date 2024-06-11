@@ -6,6 +6,8 @@ import StepIndicator from "@mui/joy/StepIndicator";
 import Check from "@mui/icons-material/Check";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createQueryString } from "@/shared/functions";
+import { useQuery } from "@tanstack/react-query";
+import { getPreOrder } from "@/services/pre-order.services";
 
 const steps = [
   {
@@ -28,12 +30,23 @@ export default function BookNowStepper() {
   const router = useRouter();
   const activeStep = parseInt(searchParams.get("active_step") as string) || 1;
 
+  const { data, isPending: isPreOrderDataPending } = useQuery({
+    queryKey: ["pre-order"],
+    queryFn: () => getPreOrder(),
+  });
+
+  const preOrderData = data?.data;
+
   const handleStep = (stepNumber: number) => {
     router.push(
       pathname + "?" + createQueryString("active_step", stepNumber.toString()),
       { scroll: false }
     );
   };
+
+  if (isPreOrderDataPending) {
+    return "loading...";
+  }
 
   return (
     <Stepper
@@ -51,20 +64,24 @@ export default function BookNowStepper() {
           key={step.number}
           indicator={
             <StepIndicator
-              variant={activeStep <= index ? "soft" : "solid"}
-              color={activeStep < index ? "neutral" : "primary"}
+              variant={activeStep === index + 1 ? "solid" : "soft"}
+              color="primary"
             >
-              {activeStep <= index ? index + 1 : <Check />}
+              {activeStep > index + 1 ? <Check /> : index + 1}
             </StepIndicator>
           }
-          sx={{
-            "&::after": {
-              ...(activeStep > index &&
-                index !== 2 && { bgcolor: "primary.solidBg" }),
-            },
-          }}
         >
-          <StepButton onClick={() => handleStep(step.number)}>
+          <StepButton
+            disabled={
+              (index === 1 &&
+                activeStep < index + 1 &&
+                !preOrderData?.service_info) ||
+              (index === 2 &&
+                activeStep < index + 1 &&
+                !preOrderData?.personal_info)
+            }
+            onClick={() => handleStep(step.number)}
+          >
             {step.name}
           </StepButton>
         </Step>

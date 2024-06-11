@@ -13,7 +13,7 @@ const SERVICES_PRICE = [
     id: 1,
     serviceName: "Electrical Services",
     serviceDetail:
-      "Reliable, efficient, 24/7 electric service. Expert technicians, prompt repairs. Reliable, effici",
+      "Ensure your home's electrical systems are safe and efficient with our expert services.",
     column: 6,
     Icon: EicrOutlinedIcon,
   },
@@ -22,7 +22,7 @@ const SERVICES_PRICE = [
     id: 2,
     serviceName: "Gas Services",
     serviceDetail:
-      "Reliable gas services for homes and businesses. Installation, repairs. Reliable gas services for ",
+      "Keep your home warm and secure with our reliable gas safety solutions.",
     column: 6,
     Icon: GasOutlinedIcon,
   },
@@ -30,7 +30,7 @@ const SERVICES_PRICE = [
     id: 3,
     serviceName: "Fire Services",
     serviceDetail:
-      "Fire protection service ensures safety by installing fire alarms, extinguishers. Fire protection service ensures ",
+      "Protect your property and loved ones with our advanced fire safety measures.",
     column: 6,
     Icon: FireAlarmBellOutlinedIcon,
   },
@@ -39,7 +39,7 @@ const SERVICES_PRICE = [
     id: 4,
     serviceName: "Health & Safety",
     serviceDetail:
-      "Fire protection service ensures safety by installing fire alarms, extinguishers. Fire protection service ensures ",
+      "Maintain a safe and healthy living environment with our comprehensive safety solutions.",
     column: 6,
     Icon: HealthHeartOutlinedIcon,
   },
@@ -71,7 +71,7 @@ export default function ServiceCategories() {
             textAlign: "center",
           }}
         >
-          We Offer Plumbing Work Since 1967
+          Discover Our Wide Range of Safety Solutions
         </Typography>
         <Grid
           container

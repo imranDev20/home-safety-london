@@ -165,7 +165,7 @@ export default function Services() {
             textAlign: "center",
           }}
         >
-          Complete Solution Under One Roof
+          Comprehensive Home Safety Services
         </Typography>
         <Grid container spacing={5}>
           {DETAILED_SERVICES.map((item) => (

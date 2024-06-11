@@ -6,24 +6,25 @@ import DialogActions from "@mui/joy/DialogActions";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
-import { Fragment } from "react";
-import { ComponentUseStateProps } from "@/types/misc";
+import { Dispatch, Fragment, SetStateAction } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logoutAccount } from "@/services/account.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { useRouter } from "next/navigation";
 
-const LogoutAlertDialog: React.FC<ComponentUseStateProps> = ({
-  open,
-  setOpen,
-}) => {
+type LogoutAlertDialogProps = {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+const LogoutAlertDialog = ({ open, setOpen }: LogoutAlertDialogProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const {
     mutateAsync: logoutAccountMutate,
-    isPending: isLogoutAccountLoading,
+    isPending: isLogoutAccountPending,
   } = useMutation({
     mutationFn: async () => {
       const response = await logoutAccount();
@@ -69,7 +70,7 @@ const LogoutAlertDialog: React.FC<ComponentUseStateProps> = ({
             <Button
               variant="solid"
               color="danger"
-              loading={isLogoutAccountLoading}
+              loading={isLogoutAccountPending}
               onClick={handleLogoutAccount}
             >
               Confirm Logout

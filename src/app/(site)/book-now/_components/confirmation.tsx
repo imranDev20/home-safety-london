@@ -1,23 +1,37 @@
-import { getPreOrderById, updatePreOrder } from "@/services/pre-order.services";
+import { createPreOrder, getPreOrder } from "@/services/pre-order.services";
+import { snakeCaseToNormalText, toSnakeCase } from "@/shared/functions";
 import {
-  getPreOrderIdFromLocalStorage,
-  snakeCaseToNormalText,
-  toSnakeCase,
-} from "@/shared/functions";
-import { Box, Button, CircularProgress, Grid, Typography } from "@mui/joy";
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Stack,
+  Typography,
+} from "@mui/joy";
 import { List, ListDivider, ListItem, Radio, RadioGroup } from "@mui/joy";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import Payments from "./payments";
 import useBreakpoints from "@/app/_components/hooks/use-breakpoints";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
+import { createOrder } from "@/services/orders.services";
+import { IPreOrder } from "@/types/orders";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/types/response";
+import dayjs from "dayjs";
+import { IUser } from "@/types/user";
+import { useQueryString } from "@/app/_components/hooks/use-query-string";
+import { East, West } from "@mui/icons-material";
 
 type PaymentMethods = "credit_card" | "bank_transfer" | "cash_to_engineer";
 
 export default function Confirmation() {
   const [paymentMethod, setPaymentMethod] =
     useState<PaymentMethods>("credit_card");
+  const router = useRouter();
+  const pathname = usePathname();
+  const { createQueryString } = useQueryString();
 
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
@@ -26,79 +40,88 @@ export default function Confirmation() {
   const { enqueueSnackbar } = useSnackbar();
 
   const {
-    data: preOrderData,
-    isLoading: isPreOrderDataLoading,
-    refetch: refetchPreOrder,
+    data,
+    isPending: isPreOrderDataPending,
+    isFetching: isPreOrderDataFetching,
   } = useQuery({
     queryKey: ["pre-order"],
-    queryFn: async () => {
-      const preOrderId = getPreOrderIdFromLocalStorage();
-      const response = await getPreOrderById(preOrderId as string);
-      return response.data;
-    },
-    enabled: false,
+    queryFn: () => getPreOrder(),
   });
 
-  const {
-    mutateAsync: preOrderMutate,
-    isPending: isPreOrderMutatePending,
-    // variables: preOrderMutateVariables,
-  } = useMutation({
-    mutationFn: async (preOrder: any) => {
-      const preOrderId = getPreOrderIdFromLocalStorage();
-      const response = await updatePreOrder(preOrderId || undefined, preOrder);
-      return response;
-    },
-    onSuccess: (response) => {
-      console.log(response);
-      queryClient.invalidateQueries({ queryKey: ["pre-order"] });
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.data || error?.message, "error");
-      setPaymentMethod(preOrderData?.payment_method);
-    },
-  });
+  const preOrderData = data?.data;
 
+  // pre order mutate for changing payment method
+  const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
+    useMutation({
+      mutationFn: async (preOrder: Partial<IPreOrder>) =>
+        createPreOrder(preOrder),
+      onSuccess: (response) => {
+        console.log(response);
+        queryClient.invalidateQueries({ queryKey: ["pre-order"] });
+      },
+      onError: (error: AxiosError<ErrorResponse>) => {
+        enqueueSnackbar(
+          error.response?.data.message || error?.message,
+          "error"
+        );
+
+        if (preOrderData?.payment_info) {
+          setPaymentMethod(preOrderData?.payment_info?.payment_method);
+        }
+      },
+    });
+
+  // Place order mutate
+  const { mutateAsync: orderMutate, isPending: isOrderMutatePending } =
+    useMutation({
+      mutationFn: (preOrderid: string) => createOrder(preOrderid),
+      onSuccess: (response) => {
+        enqueueSnackbar(response?.message, "success");
+        queryClient.invalidateQueries({
+          queryKey: ["orders", "order-details"],
+        });
+      },
+      onError: (error: AxiosError<ErrorResponse>) => {
+        enqueueSnackbar(
+          error.response?.data.message || error?.message,
+          "error"
+        );
+      },
+    });
+
+  // setting payment method after refresh
   useEffect(() => {
-    const preOrderId = getPreOrderIdFromLocalStorage();
-    if (preOrderId) {
-      refetchPreOrder();
+    if (preOrderData?.payment_info) {
+      setPaymentMethod(preOrderData.payment_info.payment_method);
     }
-  }, [refetchPreOrder]);
+  }, [preOrderData]);
 
-  if (!preOrderData) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          height: "50vh",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <CircularProgress
-          thickness={4}
-          sx={{ "--CircularProgress-size": "100px" }}
-        >
-          Loading
-        </CircularProgress>
-      </Box>
-    );
-  }
-
-  const handlePreOrderPaymentMethod = async (
+  const handlePreOrderPaymentMethod = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setPaymentMethod(event.target.value as PaymentMethods);
-    const payload = {
-      ...preOrderData,
-      payment_method: paymentMethod,
-    };
+    if (!preOrderData?.service_info || !preOrderData.personal_info) {
+      console.log("Missing data from previous steps");
+      return;
+    }
 
-    await preOrderMutate(payload);
+    setPaymentMethod(event.target.value as PaymentMethods);
+    const { customer } = preOrderData.personal_info;
+
+    const payload: IPreOrder = {
+      service_info: preOrderData?.service_info,
+      personal_info: {
+        ...preOrderData.personal_info,
+        customer: (customer as IUser)?._id,
+      },
+      payment_info: {
+        payment_method: event.target.value as PaymentMethods,
+      },
+      status: "payment",
+    };
+    preOrderMutate(payload);
   };
 
-  if (isPreOrderDataLoading) {
+  if (isPreOrderDataPending) {
     return (
       <Box
         sx={{
@@ -138,7 +161,7 @@ export default function Confirmation() {
                   Name:{" "}
                 </Typography>
                 <Typography component="span" level="body-sm">
-                  {preOrderData?.customer_name}
+                  {preOrderData?.personal_info?.customer.name}
                 </Typography>
               </Typography>
 
@@ -147,7 +170,7 @@ export default function Confirmation() {
                   Email:{" "}
                 </Typography>
                 <Typography component="span" level="body-sm">
-                  {preOrderData?.email}
+                  {preOrderData?.personal_info?.customer.email}
                 </Typography>
               </Typography>
 
@@ -156,7 +179,7 @@ export default function Confirmation() {
                   Phone No:{" "}
                 </Typography>
                 <Typography component="span" level="body-sm">
-                  {preOrderData?.phone_no}
+                  {preOrderData?.personal_info?.customer.phone}
                 </Typography>
               </Typography>
             </Grid>
@@ -182,7 +205,7 @@ export default function Confirmation() {
                     textTransform: "capitalize",
                   }}
                 >
-                  {preOrderData?.address?.house_street}
+                  {preOrderData?.personal_info?.customer?.address?.street}
                 </Typography>
               </Typography>
 
@@ -197,7 +220,7 @@ export default function Confirmation() {
                     textTransform: "capitalize",
                   }}
                 >
-                  {preOrderData?.address?.postcode}
+                  {preOrderData?.personal_info?.customer?.address?.postcode}
                 </Typography>
               </Typography>
 
@@ -206,7 +229,7 @@ export default function Confirmation() {
                   City:{" "}
                 </Typography>
                 <Typography component="span" level="body-sm">
-                  {preOrderData?.address?.city}
+                  {preOrderData?.personal_info?.customer?.address?.city}
                 </Typography>
               </Typography>
             </Grid>
@@ -232,7 +255,9 @@ export default function Confirmation() {
                     textTransform: "capitalize",
                   }}
                 >
-                  {preOrderData?.inspection_date}
+                  {dayjs(preOrderData?.personal_info?.inspection_date).format(
+                    "DD MMMM YYYY"
+                  )}
                 </Typography>
               </Typography>
 
@@ -247,7 +272,7 @@ export default function Confirmation() {
                     textTransform: "capitalize",
                   }}
                 >
-                  {preOrderData?.inspection_time}
+                  {preOrderData?.personal_info?.inspection_time ?? "N/A"}
                 </Typography>
               </Typography>
             </Grid>
@@ -275,7 +300,8 @@ export default function Confirmation() {
                 >
                   {preOrderData &&
                     snakeCaseToNormalText(
-                      preOrderData?.congestion_zone?.zone_type as string
+                      preOrderData?.personal_info?.congestion_zone
+                        ?.zone_type as string
                     )}
                 </Typography>
               </Typography>
@@ -291,7 +317,7 @@ export default function Confirmation() {
                     textTransform: "capitalize",
                   }}
                 >
-                  {preOrderData?.parking_options?.parking_type}
+                  {preOrderData?.personal_info?.parking_options?.parking_type}
                 </Typography>
               </Typography>
             </Grid>
@@ -359,18 +385,42 @@ export default function Confirmation() {
       {paymentMethod === "credit_card" && <Payments />}
 
       {activeStep === 3 ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            mt: 5,
-          }}
-        >
+        <Box>
           {(paymentMethod === "bank_transfer" ||
             paymentMethod === "cash_to_engineer") && (
-            <Button disabled={isPreOrderMutatePending} size="lg">
-              Proceed to Order
-            </Button>
+            <>
+              <Stack
+                sx={{
+                  mt: 5,
+                  width: "100%",
+                }}
+                direction="row"
+                justifyContent="space-between"
+              >
+                <Button
+                  variant="solid"
+                  loadingPosition="end"
+                  size="lg"
+                  onClick={() =>
+                    router.push(
+                      pathname + "?" + createQueryString("active_step", "2")
+                    )
+                  }
+                  startDecorator={<West />}
+                >
+                  Back
+                </Button>
+                <Button
+                  disabled={isPreOrderMutatePending}
+                  loading={isOrderMutatePending}
+                  size="lg"
+                  onClick={() => orderMutate(preOrderData?._id)}
+                  endDecorator={<East />}
+                >
+                  Proceed to Order
+                </Button>
+              </Stack>
+            </>
           )}
         </Box>
       ) : null}

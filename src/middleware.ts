@@ -1,42 +1,63 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { JWTExpiredError } from "@/shared/errors";
+import { verifyJWT } from "./app/api/_lib/verifyJWT";
+import { generateAccessToken } from "./app/api/_lib/generateToken";
 
-// This function can be marked `async` if using `await` inside
 export async function middleware(req: NextRequest) {
-  const accessToken = req.cookies.get("accessToken")?.value;
+  const { pathname } = req.nextUrl;
 
-  const isAuthUserShouldNotAccess = ["login", "register"].some((path) =>
-    req.nextUrl.pathname.includes(path)
-  );
+  const adminRoutes = ["/admin"];
+  if (adminRoutes.some((route) => pathname.startsWith(route))) {
+    let token = req.cookies.get("accessToken")?.value;
+    const refreshToken = req.cookies.get("refreshToken")?.value;
 
-  if (isAuthUserShouldNotAccess) {
-    if (accessToken) {
-      return NextResponse.redirect(new URL("/", req.url));
+    if (!token && !refreshToken) {
+      return NextResponse.redirect(new URL("/login?error=no_token", req.url));
     }
-  }
 
-  const restrictedPaths = ["/admin", "/account"];
-  const isRestrictedPaths = restrictedPaths.some((path) =>
-    req.nextUrl.pathname.includes(path)
-  );
+    try {
+      const decodedToken = await verifyJWT(token as string);
 
-  if (isRestrictedPaths && !accessToken) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
+      if (decodedToken.role !== "admin") {
+        return NextResponse.redirect(
+          new URL("/login?error=unauthorized", req.url)
+        );
+      }
+    } catch (error) {
+      if (error instanceof JWTExpiredError && refreshToken) {
+        try {
+          const user = await verifyJWT(refreshToken);
+          token = await generateAccessToken(user);
+          console.log(token);
 
-  if (
-    (req.nextUrl.pathname.includes("/admin") ||
-      req.nextUrl.pathname.includes("/account")) &&
-    !accessToken
-  ) {
-    return NextResponse.redirect(new URL("/login", req.url));
+          const response = NextResponse.next();
+
+          response.cookies.set("accessToken", token, {
+            httpOnly: true,
+            maxAge: 60 * 20, // 20 minutes in seconds
+            sameSite: "strict",
+            path: "/",
+            secure: process.env.NODE_ENV === "production", // Set secure flag in production
+          });
+
+          return response;
+        } catch (refreshError) {
+          return NextResponse.redirect(
+            new URL("/login?error=invalid_refresh_token", req.url)
+          );
+        }
+      } else {
+        return NextResponse.redirect(
+          new URL("/login?error=invalid_token", req.url)
+        );
+      }
+    }
   }
 
   return NextResponse.next();
 }
 
-// Specify the paths where the middleware should run
 export const config = {
-  matcher: ["/admin/:path*", "/login", "/register", "/account/:path*"],
+  matcher: ["/admin/:path*"],
 };

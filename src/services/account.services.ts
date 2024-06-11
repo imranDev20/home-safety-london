@@ -1,40 +1,37 @@
-import { User } from "@/types/user";
+import { LoginPayload } from "@/types/account";
 import http from "./http.services";
+import { AuthUserResponse, DataLessResponse } from "@/types/response";
 
 const ACCOUNT_PATH = "/account";
 
-export const registerAccount = async (user: User) => {
-  try {
-    const response = await http.post(`${ACCOUNT_PATH}/register`, user);
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+type RegisterPayload = {};
+
+export const registerAccount = async (
+  registerData: RegisterPayload
+): Promise<AuthUserResponse> => {
+  const response: AuthUserResponse = await http.post(
+    `${ACCOUNT_PATH}/register`,
+    registerData
+  );
+  return response;
 };
 
-export const loginAccount = async (user: string) => {
-  try {
-    const response = await http.post(`${ACCOUNT_PATH}/login`, user);
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+export const loginAccount = async (
+  loginData: LoginPayload
+): Promise<AuthUserResponse> => {
+  const response: AuthUserResponse = await http.post(
+    `${ACCOUNT_PATH}/login`,
+    loginData
+  );
+  return response;
 };
 
-export const logoutAccount = async (userId?: string) => {
-  try {
-    const response = await http.post(`${ACCOUNT_PATH}/logout`);
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+export const logoutAccount = async (): Promise<DataLessResponse> => {
+  const response: DataLessResponse = await http.post(`${ACCOUNT_PATH}/logout`);
+  return response;
 };
 
-export const getCurrentAccount = async () => {
-  try {
-    const response = await http.get(`${ACCOUNT_PATH}/me`);
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
+export const getCurrentAccount = async (): Promise<AuthUserResponse> => {
+  const response: AuthUserResponse = await http.get(`${ACCOUNT_PATH}/me`);
+  return response;
 };

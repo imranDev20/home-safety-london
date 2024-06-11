@@ -31,6 +31,7 @@ import FuseBoxOutlinedSvg from "@/images/icons/fuse-box.svg";
 import ScrewDriverOutlinedSvg from "@/images/icons/screw-driver-outlined.svg";
 import FireAlarmOutlined2Svg from "@/images/icons/fire-alarm-outlined-2.svg";
 import EvChargerOutlinedSvg from "@/images/icons/ev-charger-outlined.svg";
+import CongestionChargeSvg from "@/images/icons/congestion-charge.svg";
 
 export const GasSafteyIcon = createSvgIcon(<GasSafteySvg />, "Gas");
 export const PatIcon = createSvgIcon(<PatSvg />, "Pat");
@@ -121,4 +122,9 @@ export const FireAlarmOutlined2Icon = createSvgIcon(
 export const EvChargerOutlinedIcon = createSvgIcon(
   <EvChargerOutlinedSvg />,
   "EvChargerOutlined"
+);
+
+export const CongestionChargeIcon = createSvgIcon(
+  <CongestionChargeSvg />,
+  "CongestionCharge"
 );

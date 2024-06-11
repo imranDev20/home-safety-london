@@ -1,13 +1,6 @@
 "use client";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import {
-  createQueryString,
-  getPreOrderIdFromLocalStorage,
-  isObjectEmpty,
-  removePreOrderIdFromLocalStorage,
-  setPreOrderIdToLocalStorage,
-  toSnakeCase,
-} from "@/shared/functions";
+import { createQueryString, isObjectEmpty } from "@/shared/functions";
 import { ServiceFormInput } from "@/types/form";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
@@ -23,387 +16,18 @@ import {
   useTheme,
   Grid,
   CircularProgress,
+  Stack,
 } from "@mui/joy";
-import { CorporateFare, Home } from "@mui/icons-material";
+import { CorporateFare, East, Home, West } from "@mui/icons-material";
 import HookFormError from "@/app/_components/common/hook-form-error";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getPreOrderById, updatePreOrder } from "@/services/pre-order.services";
-import { useEffect, useState } from "react";
-import { PreOrderServicesPayload } from "@/types/pre-order";
+import { createPreOrder, getPreOrder } from "@/services/pre-order.services";
+import { useEffect } from "react";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
-
-type PropertyType = "residential" | "commercial";
-
-const RESIDENTIAL_SERVICES = [
-  {
-    id: 1,
-    title: "EICR - Electrical Certificate",
-    name: "eicr",
-    priceData: [
-      {
-        bedrooms: "studio_flat",
-        price: 79,
-      },
-      {
-        bedrooms: "1",
-        price: 99,
-      },
-      {
-        bedrooms: "2",
-        price: 99,
-      },
-      {
-        bedrooms: "3",
-        price: 119,
-      },
-      {
-        bedrooms: "4",
-        price: 119,
-      },
-      {
-        bedrooms: "5",
-        price: 149,
-      },
-    ],
-    quantity: 1,
-    unit: "fuse box",
-    extraUnitCost: 80,
-  },
-  {
-    id: 2,
-    title: "Gas Safety Certificate",
-    name: "gas_cert",
-    priceData: [
-      {
-        bedrooms: "studio_flat",
-        price: 79,
-      },
-      {
-        bedrooms: "1",
-        price: 99,
-      },
-      {
-        bedrooms: "2",
-        price: 99,
-      },
-      {
-        bedrooms: "3",
-        price: 119,
-      },
-      {
-        bedrooms: "4",
-        price: 119,
-      },
-      {
-        bedrooms: "5",
-        price: 149,
-      },
-    ],
-    quantity: 1,
-    unit: "appliance",
-    extraUnitCost: 10,
-  },
-  {
-    id: 3,
-    title: "Energy Performance Certificate",
-    name: "epc",
-    priceData: [
-      {
-        bedrooms: "studio_flat",
-        price: 79,
-      },
-      {
-        bedrooms: "1",
-        price: 99,
-      },
-      {
-        bedrooms: "2",
-        price: 99,
-      },
-      {
-        bedrooms: "3",
-        price: 119,
-      },
-      {
-        bedrooms: "4",
-        price: 119,
-      },
-      {
-        bedrooms: "5",
-        price: 149,
-      },
-    ],
-    quantity: 1,
-    unit: "something",
-  },
-  {
-    id: 4,
-    title: "PAT Testing",
-    name: "pat",
-    priceData: [
-      {
-        bedrooms: "studio_flat",
-        price: 79,
-      },
-      {
-        bedrooms: "1",
-        price: 99,
-      },
-      {
-        bedrooms: "2",
-        price: 99,
-      },
-      {
-        bedrooms: "3",
-        price: 119,
-      },
-      {
-        bedrooms: "4",
-        price: 119,
-      },
-      {
-        bedrooms: "5",
-        price: 149,
-      },
-    ],
-    quantity: 1,
-    unit: "something",
-  },
-  {
-    id: 5,
-    title: "Gas Safety Certificate + Boiler Service",
-    name: "gas_boiler",
-    priceData: [
-      {
-        bedrooms: "studio_flat",
-        price: 79,
-      },
-      {
-        bedrooms: "1",
-        price: 99,
-      },
-      {
-        bedrooms: "2",
-        price: 99,
-      },
-      {
-        bedrooms: "3",
-        price: 119,
-      },
-      {
-        bedrooms: "4",
-        price: 119,
-      },
-      {
-        bedrooms: "5",
-        price: 149,
-      },
-    ],
-    quantity: 1,
-    unit: "something",
-  },
-  {
-    id: 6,
-    title: "Fire Safety Certificate",
-    name: "fire_safety",
-    priceData: [
-      {
-        bedrooms: "studio_flat",
-        price: 79,
-      },
-      {
-        bedrooms: "1",
-        price: 99,
-      },
-      {
-        bedrooms: "2",
-        price: 99,
-      },
-      {
-        bedrooms: "3",
-        price: 119,
-      },
-      {
-        bedrooms: "4",
-        price: 119,
-      },
-      {
-        bedrooms: "5",
-        price: 149,
-      },
-    ],
-    quantity: 1,
-    unit: "something",
-  },
-  {
-    id: 7,
-    title: "Fire Risk Assessment",
-    name: "fire_risk",
-    priceData: [
-      {
-        bedrooms: "studio_flat",
-        price: 79,
-      },
-      {
-        bedrooms: "1",
-        price: 99,
-      },
-      {
-        bedrooms: "2",
-        price: 99,
-      },
-      {
-        bedrooms: "3",
-        price: 119,
-      },
-      {
-        bedrooms: "4",
-        price: 119,
-      },
-      {
-        bedrooms: "5",
-        price: 149,
-      },
-    ],
-    quantity: 1,
-    unit: "something",
-  },
-  {
-    id: 8,
-    title: "Emergency Lighting Certificate",
-    name: "emergency_light",
-    priceData: [
-      {
-        bedrooms: "studio_flat",
-        price: 79,
-      },
-      {
-        bedrooms: "1",
-        price: 99,
-      },
-      {
-        bedrooms: "2",
-        price: 99,
-      },
-      {
-        bedrooms: "3",
-        price: 119,
-      },
-      {
-        bedrooms: "4",
-        price: 119,
-      },
-      {
-        bedrooms: "5",
-        price: 149,
-      },
-    ],
-    quantity: 1,
-    unit: "something",
-  },
-];
-
-const COMMERCIAL_SERVICES = [
-  {
-    id: 1,
-    title: "EICR - Electrical Certificate",
-    name: "com_eicr",
-    priceData: [
-      {
-        bedrooms: "studio_flat",
-        price: 79,
-      },
-      {
-        bedrooms: "1",
-        price: 99,
-      },
-      {
-        bedrooms: "2",
-        price: 99,
-      },
-      {
-        bedrooms: "3",
-        price: 119,
-      },
-      {
-        bedrooms: "4",
-        price: 119,
-      },
-      {
-        bedrooms: "5",
-        price: 149,
-      },
-    ],
-    quantity: 1,
-    unit: "something",
-  },
-  {
-    id: 2,
-    title: "PAT Testing",
-    name: "com_pat",
-    priceData: [
-      {
-        bedrooms: "studio_flat",
-        price: 79,
-      },
-      {
-        bedrooms: "1",
-        price: 99,
-      },
-      {
-        bedrooms: "2",
-        price: 99,
-      },
-      {
-        bedrooms: "3",
-        price: 119,
-      },
-      {
-        bedrooms: "4",
-        price: 119,
-      },
-      {
-        bedrooms: "5",
-        price: 149,
-      },
-    ],
-    quantity: 1,
-    unit: "something",
-  },
-  {
-    id: 3,
-    title: "Fire Safety Certificate",
-    name: "com_fire_safety",
-    priceData: [
-      {
-        bedrooms: "studio_flat",
-        price: 79,
-      },
-      {
-        bedrooms: "1",
-        price: 99,
-      },
-      {
-        bedrooms: "2",
-        price: 99,
-      },
-      {
-        bedrooms: "3",
-        price: 119,
-      },
-      {
-        bedrooms: "4",
-        price: 119,
-      },
-      {
-        bedrooms: "5",
-        price: 149,
-      },
-    ],
-    quantity: 1,
-    unit: "something",
-  },
-];
+import { IPreOrder, PropertyType } from "@/types/orders";
+import { COMMERCIAL_SERVICES, RESIDENTIAL_SERVICES } from "@/shared/data";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/types/response";
 
 export default function ServiceDetails() {
   const router = useRouter();
@@ -412,54 +36,7 @@ export default function ServiceDetails() {
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
 
-  const {
-    data: preOrderData,
-    isLoading: isPreOrderDataLoading,
-    refetch: refetchPreOrder,
-  } = useQuery({
-    queryKey: ["pre-order"],
-    queryFn: async () => {
-      const preOrderId = getPreOrderIdFromLocalStorage();
-      const response = await getPreOrderById(preOrderId as string);
-      return response.data;
-    },
-
-    enabled: false,
-  });
-
-  useEffect(() => {
-    // checking if the pre order exist for the saved id
-    const preOrderId = getPreOrderIdFromLocalStorage();
-    if (preOrderId) {
-      const getPreOrderDetails = async () => {
-        try {
-          const response = await refetchPreOrder();
-
-          if (!response.data) {
-            throw new Error("Pre order doesn't exist");
-          }
-        } catch (error) {
-          // deleting the saved id if pre order doesn't exist
-          removePreOrderIdFromLocalStorage();
-        }
-      };
-
-      getPreOrderDetails();
-    }
-  }, [refetchPreOrder]);
-
-  const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
-    useMutation({
-      mutationFn: async (preOrder: PreOrderServicesPayload) => {
-        const preOrderId = getPreOrderIdFromLocalStorage();
-        const response = await updatePreOrder(
-          preOrderId || undefined,
-          preOrder
-        );
-        return response;
-      },
-    });
-
+  // Service step form
   const {
     control,
     watch,
@@ -471,78 +48,88 @@ export default function ServiceDetails() {
     defaultValues: {
       propertyType:
         (searchParams.get("property_type") as PropertyType) || "residential",
-      residentType: "",
-      bedrooms: "",
+      residentType: null,
+      bedrooms: null,
       orderItems: [],
     },
   });
-
   const propertyType = watch("propertyType");
 
+  // Get PreOrder Data
+  const { data, isPending: isPreOrderDataPending } = useQuery({
+    queryKey: ["pre-order"],
+    queryFn: () => getPreOrder(),
+    retry: 1,
+  });
+
+  const preOrderData = data?.data;
+
+  // Create a new pre order
+  const { mutateAsync: preOrderMutate, isPending: isPreOrderMutatePending } =
+    useMutation({
+      mutationFn: async (preOrder: Partial<IPreOrder>) =>
+        createPreOrder(preOrder),
+      onSuccess: (response) => {
+        router.push(pathname + "?" + createQueryString("active_step", "2"));
+        window.scrollTo(0, 300);
+        enqueueSnackbar(response.message, "success");
+      },
+      onError: (error: AxiosError<ErrorResponse>) => {
+        console.log(error);
+        enqueueSnackbar(error.response?.data.message || error.message, "error");
+      },
+    });
+
   useEffect(() => {
-    if (preOrderData) {
+    if (preOrderData?.service_info) {
       reset({
-        propertyType: preOrderData.property_type,
-        residentType: preOrderData.resident_type,
-        bedrooms: preOrderData.bedrooms,
-        orderItems: preOrderData.order_items.map((item: any) => item.name),
+        propertyType: preOrderData.service_info.property_type,
+        residentType: preOrderData.service_info.resident_type,
+        bedrooms: preOrderData.service_info.bedrooms,
+        orderItems: preOrderData.service_info.order_items.map(
+          (item) => item.name
+        ),
       });
     }
   }, [preOrderData, reset]);
 
-  const ServicesBySelectedType =
+  const servicesBySelectedType =
     propertyType === "residential" ? RESIDENTIAL_SERVICES : COMMERCIAL_SERVICES;
 
-  const handleServiceDetailsSubmit: SubmitHandler<ServiceFormInput> = async (
+  const handleServiceDetailsSubmit: SubmitHandler<ServiceFormInput> = (
     data
   ) => {
-    try {
-      if (data.orderItems.length === 0) {
-        setError("orderItems", {
-          type: "required",
-          message: "Please select at least one service",
-        });
-        return;
-      }
-
-      const payload = {
-        ...preOrderData,
-        property_type: data.propertyType,
-        ...(propertyType === "residential" && {
-          resident_type: data.residentType,
-          bedrooms: data.bedrooms,
-        }),
-        is_service_details_complete: true,
-        order_items: ServicesBySelectedType.filter((el) =>
-          data.orderItems.includes(el.name)
-        ).map((item) => ({
-          title: item.title,
-          name: item.name,
-          price: item.priceData.find((val) => val.bedrooms === data.bedrooms)
-            ?.price as number,
-          quantity: item.quantity,
-          unit: item.unit,
-        })),
-      };
-
-      const response = await preOrderMutate(payload);
-
-      if (response?.success) {
-        router.push(pathname + "?" + createQueryString("active_step", "2"));
-        window.scrollTo(0, 300);
-
-        setPreOrderIdToLocalStorage(response.data._id);
-        enqueueSnackbar(response.message, "success");
-      } else {
-        throw new Error(response.message);
-      }
-    } catch (error: any) {
-      console.log(error);
-      enqueueSnackbar(error.message, "error");
+    if (data.orderItems.length === 0) {
+      setError("orderItems", {
+        type: "required",
+        message: "Please select at least one service",
+      });
+      return;
     }
+
+    const payload: IPreOrder = {
+      service_info: {
+        property_type: data.propertyType,
+        resident_type: data.residentType,
+        bedrooms: data.bedrooms,
+        order_items: servicesBySelectedType
+          .filter((el) => data.orderItems.includes(el.name))
+          .map((item) => ({
+            title: item.title,
+            name: item.name,
+            price: item.priceData.find((val) => val.bedrooms === data.bedrooms)
+              ?.price as number,
+            quantity: item.quantity,
+            unit: item.unit,
+          })),
+      },
+      status: "service",
+    };
+
+    preOrderMutate(payload);
   };
 
-  if (isPreOrderDataLoading) {
+  if (isPreOrderDataPending) {
     return (
       <Box
         sx={{
@@ -781,66 +368,69 @@ export default function ServiceDetails() {
                 message: "You must select number of bedrooms",
               },
             }}
-            render={({ field }) => (
+            render={({ field: { value, onChange } }) => (
               <FormControl error={!!errors.bedrooms}>
                 <RadioGroup
                   size="lg"
                   sx={{
                     gap: 1.5,
                   }}
-                  {...field}
+                  value={value}
+                  onChange={(e) => onChange(parseInt(e.target.value))}
                 >
                   <Grid container spacing={2}>
-                    {["Studio Flat", "1", "2", "3", "4", "5"].map(
-                      (option, index) => (
-                        <Grid xs={6} key={option}>
-                          <Sheet
-                            key={option}
-                            sx={{
-                              p: 2,
-                              borderRadius: "md",
-                              boxShadow: "sm",
-                            }}
-                          >
-                            <Radio
-                              label={
-                                <Box>
-                                  <Typography>{`${option} ${
-                                    index !== 0 ? "Bedrooms" : ""
-                                  }`}</Typography>
-                                </Box>
-                              }
-                              overlay
-                              disableIcon
-                              value={toSnakeCase(option)}
-                              slotProps={{
-                                label: ({ checked }) => ({
-                                  sx: {
-                                    fontWeight: "lg",
-                                    fontSize: "md",
-                                    color: checked
-                                      ? "text.primary"
-                                      : "text.secondary",
-                                  },
-                                }),
-                                action: ({ checked }) => ({
-                                  sx: (theme) => ({
-                                    ...(checked && {
-                                      "--variant-borderWidth": "2px",
-                                      "&&": {
-                                        // && to increase the specificity to win the base :hover styles
-                                        borderColor:
-                                          theme.vars.palette.primary[500],
-                                      },
-                                    }),
+                    {[0, 1, 2, 3, 4, 5].map((option, index) => (
+                      <Grid xs={6} key={option}>
+                        <Sheet
+                          key={option}
+                          sx={{
+                            p: 2,
+                            borderRadius: "md",
+                            boxShadow: "sm",
+                          }}
+                        >
+                          <Radio
+                            label={
+                              <Box>
+                                <Typography>
+                                  {option === 0
+                                    ? "Studio Flat"
+                                    : option === 1
+                                    ? `${option} Bedroom`
+                                    : `${option} Bedrooms`}
+                                </Typography>
+                              </Box>
+                            }
+                            overlay
+                            disableIcon
+                            value={option}
+                            slotProps={{
+                              label: ({ checked }) => ({
+                                sx: {
+                                  fontWeight: "lg",
+                                  fontSize: "md",
+                                  color: checked
+                                    ? "text.primary"
+                                    : "text.secondary",
+                                },
+                              }),
+                              action: ({ checked }) => ({
+                                sx: (theme) => ({
+                                  ...(checked && {
+                                    "--variant-borderWidth": "2px",
+                                    "&&": {
+                                      // && to increase the specificity to win the base :hover styles
+                                      borderColor:
+                                        theme.vars.palette.primary[500],
+                                    },
                                   }),
                                 }),
-                              }}
-                            />
-                          </Sheet>
-                        </Grid>
-                      )
-                    )}
+                              }),
+                            }}
+                          />
+                        </Sheet>
+                      </Grid>
+                    ))}
                   </Grid>
                 </RadioGroup>
                 <HookFormError name="bedrooms" errors={errors} />
@@ -870,7 +460,7 @@ export default function ServiceDetails() {
         }}
       >
         <Grid container spacing={2}>
-          {ServicesBySelectedType.map((option) => (
+          {servicesBySelectedType.map((option) => (
             <Grid xs={12} md={6} key={option.id}>
               <Sheet
                 sx={{
@@ -966,18 +556,52 @@ export default function ServiceDetails() {
           </FormHelperText>
         </FormControl>
 
-        <Button
-          type="submit"
-          variant="solid"
+        <Stack
           sx={{
             mt: 5,
+            width: "100%",
           }}
-          loading={isPreOrderMutatePending}
-          loadingPosition="end"
+          direction="row"
+          justifyContent="space-between"
         >
-          Next: Personal Details
-        </Button>
+          <Button
+            disabled
+            variant="solid"
+            loadingPosition="end"
+            size="lg"
+            startDecorator={<West />}
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            variant="solid"
+            loading={isPreOrderMutatePending}
+            loadingPosition="end"
+            size="lg"
+            endDecorator={<East />}
+          >
+            Next
+          </Button>
+        </Stack>
       </Box>
     </Box>
   );
 }
+
+/* 
+amra request pathabo-> to get the current preOrder. 
+jodi kono session cookie na thake tahole amader null dibe. 
+sei kkhetre amra notun ekta preorder post korbo. 
+
+ar thakole amra seitar data show krbo.
+ar sei id ta niye shoja personal step e dhukbo. 
+
+pre-order er 1st case e _id ace kina ekta check marte hobe. 
+
+
+post pre order er 1st case e amra ekta session cookie set kore debo. bookingSession
+
+
+7 diner beshi purono pre-order delete kore debo
+*/

@@ -3,13 +3,11 @@ import PaymentDetails from "./payment-details";
 import { Elements } from "@stripe/react-stripe-js";
 import React, { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { getPreOrderIdFromLocalStorage } from "@/shared/functions";
+import { useSearchParams } from "next/navigation";
 import { Box, CircularProgress } from "@mui/joy";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { getPreOrderById } from "@/services/pre-order.services";
-import { PreOrderPersonalPayload } from "@/types/pre-order";
+import { getPreOrder } from "@/services/pre-order.services";
 
 export default function Payments() {
   const [stripePromise, setStripePromise] = useState<any>();
@@ -20,24 +18,12 @@ export default function Payments() {
 
   const {
     data: preOrderData,
-    isLoading: isPreOrderDataLoading,
+    isPending: isPreOrderDataPending,
     refetch: refetchPreOrder,
-  } = useQuery<PreOrderPersonalPayload>({
+  } = useQuery({
     queryKey: ["pre-order"],
-    queryFn: async () => {
-      const preOrderId = getPreOrderIdFromLocalStorage();
-      const response = await getPreOrderById(preOrderId as string);
-      return response.data;
-    },
-    enabled: false,
+    queryFn: () => getPreOrder(),
   });
-
-  useEffect(() => {
-    const preOrderId = getPreOrderIdFromLocalStorage();
-    if (preOrderId) {
-      refetchPreOrder();
-    }
-  }, [refetchPreOrder]);
 
   useEffect(() => {
     const fetchKey = async () => {

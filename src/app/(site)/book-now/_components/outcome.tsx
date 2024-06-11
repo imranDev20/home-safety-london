@@ -34,9 +34,7 @@ export default function Outcome() {
     const fetchIntent = async () => {
       try {
         const response = await stripe.retrievePaymentIntent(clientSecret!);
-
         const { paymentIntent } = response;
-
         setInfo({
           email: response.paymentIntent?.receipt_email!,
           id: response.paymentIntent?.id!,
@@ -139,22 +137,6 @@ export default function Outcome() {
             to monitor your order.
           </Typography>
 
-          <Typography
-            sx={{
-              fontSize: 16,
-              mt: 2,
-            }}
-          >
-            Transaction Number:{" "}
-            <Typography
-              component="span"
-              sx={{
-                fontWeight: 500,
-              }}
-            >
-              {info.id}
-            </Typography>
-          </Typography>
           <Typography
             sx={{
               fontSize: 16,

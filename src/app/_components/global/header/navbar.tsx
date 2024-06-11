@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "@mui/joy";
 
-import { East, HomeRounded, Login } from "@mui/icons-material";
+import { East, ExpandMore, HomeRounded, Login } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
@@ -22,18 +22,79 @@ import { hexToRgba } from "@/shared/functions";
 const NAV_ITEMS = [
   { label: "Home", path: "/", icon: <HomeRounded /> },
   { label: "About", path: "/about" },
-  { label: "Services", path: "/services" },
-  { label: "Contact", path: "/contact" },
-];
-
-const NAV_CATEGORIES = [
   {
-    label: "Electrical Services",
-    path: "/services/electrical-services",
+    label: "Services",
+    path: "/services",
+    children: [
+      {
+        label: "Electrical Services",
+        path: "/electrical-services",
+        children: [
+          {
+            label: "Energy Certificate",
+            path: "/epc",
+          },
+          {
+            label: "EICR",
+            path: "/eicr",
+          },
+          {
+            label: "PAT Testing",
+            path: "/pat",
+          },
+          {
+            label: "Fuse Box Installation",
+            path: "/fuse-box-installation",
+          },
+          {
+            label: "Electrical Repairs",
+            path: "/electrical-repairs",
+          },
+          {
+            label: "EV Charger Installation",
+            path: "/ev-charger-installation",
+          },
+        ],
+      },
+      {
+        label: "Gas Services",
+        path: "/gas-services",
+        children: [
+          {
+            label: "Gas Certificate & Repairs",
+            path: "/gas-certificate-repair",
+          },
+          {
+            label: "Boiler Service & Repair",
+            path: "/boiler-service-repair",
+          },
+        ],
+      },
+      {
+        label: "Fire Services",
+        path: "/fire-services",
+        children: [
+          {
+            label: "Fire Risk Assessment",
+            path: "/fire-risk-assessment",
+          },
+          {
+            label: "Boiler Service & Repair",
+            path: "/fire-alarm-certificate",
+          },
+          {
+            label: "Fire Alarm Installation",
+            path: "/fire-alarm-installation",
+          },
+        ],
+      },
+      {
+        label: "Health Services",
+        path: "/health-services",
+      },
+    ],
   },
-  { label: "Gas Services", path: "/services/gas-services" },
-  { label: "Fire Services", path: "/services/fire-services" },
-  { label: "Health Services", path: "/services/health-services" },
+  { label: "Contact", path: "/contact" },
 ];
 
 export default function Navbar({
@@ -45,8 +106,7 @@ export default function Navbar({
 }) {
   const theme = useTheme();
   const pathname = usePathname();
-
-  const { userData, isLoading: isCurrentUserLoading } = useCurrentUser();
+  const { userData, isPending: isCurrentUserPending } = useCurrentUser();
 
   return (
     <Box component="header" sx={{ zIndex: 10, position: "relative" }}>
@@ -102,6 +162,7 @@ export default function Navbar({
                     component={Link}
                     variant="plain"
                     href={item.path}
+                    endDecorator={item.children && <ExpandMore />}
                     sx={{
                       color:
                         item.path === pathname && isInverted
@@ -133,7 +194,7 @@ export default function Navbar({
                   >
                     {item.label}
                   </Button>
-                  {item.path === "/services" && (
+                  {item.children && (
                     <Stack
                       spacing={0}
                       className="subMenu"
@@ -150,7 +211,7 @@ export default function Navbar({
                         transform: "translateX(-50%)",
                       }}
                     >
-                      {NAV_CATEGORIES.map((dropdownItem) => (
+                      {item.children.map((dropdownItem) => (
                         <Box
                           key={dropdownItem.label}
                           sx={{
@@ -167,7 +228,7 @@ export default function Navbar({
                             variant="plain"
                             component={Link}
                             fullWidth
-                            href={dropdownItem.path}
+                            href={item.path + dropdownItem.path}
                             sx={{
                               fontWeight: 600,
                               p: 1,
@@ -175,6 +236,7 @@ export default function Navbar({
                               fontSize: "md",
                               borderRadius: "sm",
                               cursor: "pointer",
+                              justifyContent: "flex-start",
                               color: theme.palette.text.primary,
                               ":hover": {
                                 backgroundColor:
@@ -186,50 +248,59 @@ export default function Navbar({
                             {dropdownItem.label}
                           </Button>
 
-                          <Stack
-                            spacing={0}
-                            className="secondSubMenu"
-                            sx={{
-                              display: "none",
-                              position: "absolute",
-                              backgroundColor: "white",
-                              boxShadow: "lg",
-                              minWidth: 190,
-                              p: 1,
-                              borderRadius: "lg",
-                              right: 0,
-                              left: "100%",
-                              top: 0,
-                              // transform: "translateX(-50%)",
-                            }}
-                          >
-                            {NAV_CATEGORIES.map((dropdownItem) => (
-                              <Box key={dropdownItem.label}>
-                                <Button
-                                  variant="plain"
-                                  component={Link}
-                                  fullWidth
-                                  href={dropdownItem.path}
-                                  sx={{
-                                    fontWeight: 600,
-                                    p: 1,
-                                    px: 2,
-                                    fontSize: "md",
-                                    borderRadius: "sm",
-                                    cursor: "pointer",
-                                    color: theme.palette.text.primary,
-                                    ":hover": {
-                                      backgroundColor:
-                                        theme.palette.background.level2,
-                                      color: theme.palette.primary[500],
-                                    },
-                                  }}
-                                >
-                                  {dropdownItem.label}
-                                </Button>
-                              </Box>
-                            ))}
-                          </Stack>
+                          {dropdownItem.children && (
+                            <Stack
+                              spacing={0}
+                              className="secondSubMenu"
+                              sx={{
+                                display: "none",
+                                position: "absolute",
+                                backgroundColor: "white",
+                                boxShadow: "lg",
+                                minWidth: 220,
+                                p: 1,
+                                borderRadius: "lg",
+                                right: 0,
+                                left: "100%",
+                                top: 0,
+                                // transform: "translateX(-50%)",
+                              }}
+                            >
+                              {dropdownItem.children.map(
+                                (dropdownChildItem) => (
+                                  <Box key={dropdownChildItem.label}>
+                                    <Button
+                                      variant="plain"
+                                      component={Link}
+                                      fullWidth
+                                      href={
+                                        item.path +
+                                        dropdownItem.path +
+                                        dropdownChildItem.path
+                                      }
+                                      sx={{
+                                        fontWeight: 600,
+                                        p: 1,
+                                        px: 2,
+                                        fontSize: "md",
+                                        borderRadius: "sm",
+                                        cursor: "pointer",
+                                        color: theme.palette.text.primary,
+                                        justifyContent: "flex-start",
+                                        ":hover": {
+                                          backgroundColor:
+                                            theme.palette.background.level2,
+                                          color: theme.palette.primary[500],
+                                        },
+                                      }}
+                                    >
+                                      {dropdownChildItem.label}
+                                    </Button>
+                                  </Box>
+                                )
+                              )}
+                            </Stack>
+                          )}
                         </Box>
                       ))}
                     </Stack>
@@ -247,7 +318,7 @@ export default function Navbar({
                 },
               }}
             >
-              {isCurrentUserLoading ? (
+              {isCurrentUserPending ? (
                 <CircularProgress thickness={4} size="md" />
               ) : userData ? (
                 <NavbarDropdown />

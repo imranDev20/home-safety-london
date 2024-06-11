@@ -1,16 +1,12 @@
-import * as React from "react";
 import Box from "@mui/joy/Box";
 import Drawer from "@mui/joy/Drawer";
-import Button from "@mui/joy/Button";
-import List from "@mui/joy/List";
-import Divider from "@mui/joy/Divider";
-import ListItem from "@mui/joy/ListItem";
-import ListItemButton from "@mui/joy/ListItemButton";
-import { ComponentUseStateProps } from "@/types/misc";
 import { ModalClose } from "@mui/joy";
+import React, { Dispatch, SetStateAction } from "react";
 
-type FormDrawerProps = ComponentUseStateProps & {
+type FormDrawerProps = {
   children: React.ReactNode;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function FormDrawer({

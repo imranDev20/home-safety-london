@@ -49,7 +49,7 @@ const CreateCustomerForm = ({
 
   const {
     mutateAsync: createUserMutate,
-    isPending: isCreateUserMutateLoading,
+    isPending: isCreateUserMutatePending,
   } = useMutation({
     mutationFn: async (userData: any) => {
       const response = await createUser(userData);
@@ -93,7 +93,7 @@ const CreateCustomerForm = ({
           mb: 3,
         }}
       >
-        Create a customer
+        Create a Customer
       </DialogTitle>
       <Stack spacing={2}>
         <FormControl required>
@@ -178,7 +178,7 @@ const CreateCustomerForm = ({
         <Button
           type="submit"
           sx={{ mt: 2 }}
-          loading={isCreateUserMutateLoading}
+          loading={isCreateUserMutatePending}
         >
           Submit
         </Button>

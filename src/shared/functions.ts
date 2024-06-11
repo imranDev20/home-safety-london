@@ -1,7 +1,14 @@
 import slugify from "react-slugify";
 import dayjs from "dayjs";
 import { Pagination } from "@/types/misc";
-import Cookies from "js-cookie";
+import {
+  IOrder,
+  IOrderItemWithEngineers,
+  IPreOrder,
+  OrderStatus,
+  OrderStatusValues,
+} from "@/types/orders";
+import { IUser } from "@/types/user";
 
 export function snakeCaseToNormalText(snakeCaseString: string) {
   return snakeCaseString?.replace(/_/g, " ")?.toLowerCase();
@@ -46,7 +53,6 @@ export function isObjectEmpty<T extends {}>(obj: T): boolean {
 export const createQueryString = (name: string, value: string) => {
   const params = new URLSearchParams();
   params.set(name, value);
-
   return params.toString();
 };
 
@@ -68,36 +74,6 @@ export const getFutureTime = () => {
   }
 };
 
-export function calculateTotal(numbers: number[]): number {
-  return numbers.reduce((total, num) => total + num, 0);
-}
-
-export const setToken = (token: string) => {
-  Cookies.set("accessToken", token, { expires: 7 }); // Set the cookie to expire in 7 days
-};
-
-export const getToken = () => {
-  return Cookies.get("accessToken");
-};
-
-export const removeToken = () => {
-  Cookies.remove("accessToken");
-};
-
-export const setPreOrderIdToLocalStorage = (preOrderId: string) => {
-  localStorage.setItem("preOrderId", preOrderId);
-};
-
-// Function to get pre-order ID from local storage
-export const getPreOrderIdFromLocalStorage = () => {
-  return localStorage.getItem("preOrderId");
-};
-
-// Function to remove pre-order ID from local storage
-export const removePreOrderIdFromLocalStorage = () => {
-  localStorage.removeItem("preOrderId");
-};
-
 export function toSnakeCase(str: string) {
   return str
     .replace(/\s+/g, "_") // Replace spaces with underscores
@@ -105,29 +81,22 @@ export function toSnakeCase(str: string) {
     .toLowerCase(); // Convert to lowercase
 }
 
-export const formatResponse = (
+export const formatResponse = <T>(
   success: boolean,
-  data: any[] | null = null,
+  data: T[] | T | null = null,
   message: string = "",
   pagination?: Pagination
-) => {
+): {
+  success: boolean;
+  data?: T[] | T;
+  message: string;
+  pagination?: Pagination;
+} => {
   return {
     success,
     ...(data ? { data } : {}),
     message,
     ...(pagination && { pagination }),
-  };
-};
-
-export const debounce = (func: (...args: any[]) => void, delay: number) => {
-  let timer: ReturnType<typeof setTimeout>;
-
-  return (...args: any[]) => {
-    clearTimeout(timer);
-
-    timer = setTimeout(() => {
-      func(...args);
-    }, delay);
   };
 };
 
@@ -142,4 +111,91 @@ export function hexToRgba(hex: string, opacity: number): string {
 
   // Return the RGBA color string
   return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+
+export function buildUrl(
+  basePath: string,
+  queries: { [key: string]: string | undefined }
+) {
+  // Initialize an array to hold query parameters
+  const params = [];
+
+  // Iterate over the entries of the queries object
+  for (const [key, value] of Object.entries(queries)) {
+    // Add the parameter if value is provided and not an empty string
+    if (value && value.trim() !== "") {
+      params.push(
+        `${encodeURIComponent(key)}=${encodeURIComponent(value.trim())}`
+      );
+    }
+  }
+
+  // Construct the full URL with query parameters if any exist
+  const url = params.length > 0 ? `${basePath}?${params.join("&")}` : basePath;
+
+  return url;
+}
+
+export const debounce = (func: (...args: any[]) => void, delay: number) => {
+  let timeout: NodeJS.Timeout;
+
+  return (...args: any[]) => {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+};
+
+export function calculatePreOrderTotalCost(order: IPreOrder<IUser>) {
+  if (!order.personal_info) {
+    console.log("Personal info is needed to calculate total cost");
+    return;
+  }
+
+  // Calculate the total cost of order items
+  const orderItemsTotal = order.service_info.order_items.reduce(
+    (total, item) => {
+      return total + item.price * item.quantity;
+    },
+    0
+  );
+
+  // Add parking cost
+  const parkingCost = order.personal_info.parking_options.parking_cost || 0;
+
+  // Add congestion zone cost
+  const congestionCost = order.personal_info.congestion_zone.zone_cost || 0;
+
+  // Calculate the final total cost
+  const totalCost = orderItemsTotal + parkingCost + congestionCost;
+  return totalCost;
+}
+
+export function calculateOrderTotalCost(order: IOrder<IUser>): number {
+  // Calculate the total cost of order items
+  const orderItemsCost = order.order_items.reduce(
+    (total, item: IOrderItemWithEngineers) => {
+      return total + item.price * item.quantity;
+    },
+    0
+  );
+
+  // Add parking cost
+  const parkingCost = order.parking_options.parking_cost;
+
+  // Add congestion zone cost
+  const congestionCost = order.congestion_zone.zone_cost;
+
+  // Calculate the total cost
+  const totalCost = orderItemsCost + parkingCost + congestionCost;
+  return totalCost;
+}
+
+export function getMostRecentStatus(
+  statuses: OrderStatus[]
+): OrderStatusValues {
+  const sortedStatuses = statuses.sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
+
+  return sortedStatuses[0]?.status;
 }

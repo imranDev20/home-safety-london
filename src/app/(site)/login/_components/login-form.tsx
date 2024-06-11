@@ -23,11 +23,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginAccount } from "@/services/account.services";
 import { useSnackbar } from "@/app/_components/snackbar-provider";
 import { useRouter } from "next/navigation";
-
-interface LoginFormInput {
-  email: string;
-  password: string;
-}
+import { LoginPayload } from "@/types/account";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/types/response";
 
 export default function LoginForm() {
   const [visibilityToggle, setVisibilityToggle] = useState<boolean>(false);
@@ -40,23 +38,23 @@ export default function LoginForm() {
     handleSubmit,
     control,
     reset,
-  } = useForm<LoginFormInput>({
+  } = useForm<LoginPayload>({
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
 
-  const { mutateAsync: loginUserMutate, isPending: isLoginUserMutateLoading } =
+  const { mutateAsync: loginUserMutate, isPending: isLoginUserMutatePending } =
     useMutation({
-      mutationFn: async (userData: any) => {
-        const response = await loginAccount(userData);
-        return response;
-      },
+      mutationFn: (userData: LoginPayload) => loginAccount(userData),
       onSuccess: (response) => {
-        queryClient.invalidateQueries({ queryKey: ["users", "current_user"] });
+        queryClient.invalidateQueries({ queryKey: ["users", "current-user"] });
+        ``;
         queryClient.resetQueries();
-        if (response?.data?.role === "admin") {
+
+        if (response.data.role === "admin") {
           router.replace("/admin");
         } else {
           router.replace("/");
@@ -64,19 +62,22 @@ export default function LoginForm() {
         reset();
         enqueueSnackbar(response?.message, "success");
       },
+      onError: (error: AxiosError<ErrorResponse>) => {
+        enqueueSnackbar(
+          error.response?.data.message || error?.message,
+          "error"
+        );
+      },
     });
 
-  const onLoginFormSubmit: SubmitHandler<LoginFormInput> = async (data) => {
-    try {
-      const payload = {
-        password: data.password,
-        email: data.email,
-      };
+  const onLoginFormSubmit: SubmitHandler<LoginPayload> = async (data) => {
+    const payload: LoginPayload = {
+      password: data.password,
+      email: data.email,
+      rememberMe: data.rememberMe,
+    };
 
-      await loginUserMutate(payload);
-    } catch (error: any) {
-      enqueueSnackbar(error?.message, "error");
-    }
+    await loginUserMutate(payload);
   };
 
   return (
@@ -178,7 +179,19 @@ export default function LoginForm() {
                 my: 2,
               }}
             >
-              <Checkbox size="sm" label="Remember me" name="persistent" />
+              <Controller
+                control={control}
+                name="rememberMe"
+                render={({ field: { value, onChange } }) => (
+                  <Checkbox
+                    checked={value}
+                    onChange={(e) => onChange(e.target.checked)}
+                    size="sm"
+                    label="Remember me"
+                    name="persistent"
+                  />
+                )}
+              />
               <JoyLink level="title-sm">Forgot your password?</JoyLink>
             </Box>
 
@@ -186,7 +199,7 @@ export default function LoginForm() {
               <Button
                 type="submit"
                 fullWidth
-                loading={isLoginUserMutateLoading}
+                loading={isLoginUserMutatePending}
               >
                 Login
               </Button>

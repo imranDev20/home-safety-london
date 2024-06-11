@@ -2,13 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "../../_lib/dbConnect";
 import User from "../../_models/User";
 import bcrypt from "bcrypt";
-import { generateToken } from "../../_lib/generateToken";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../_lib/generateToken";
 
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
-
-    const { name, email, password, role } = await req.json();
+    const { name, email, password, role, creation_method } = await req.json(); // Added rememberMe
 
     // Validate input
     if (!name || !email || !password) {
@@ -37,13 +39,15 @@ export async function POST(req: NextRequest) {
       email,
       password: hashedPassword,
       role: role || "customer",
+      creation_method: "registration",
     });
     await newUser.save();
 
-    // Generate JWT
-    const token = generateToken(newUser);
+    // Generate JWT tokens
+    const accessToken = await generateAccessToken(newUser);
+    const refreshToken = await generateRefreshToken(newUser);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       message: "User registered successfully",
       data: {
@@ -51,9 +55,27 @@ export async function POST(req: NextRequest) {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
-        token, // Include the JWT in the response
+        creation_method: newUser.creation_method,
       },
     });
+
+    response.cookies.set("accessToken", accessToken, {
+      httpOnly: true,
+      maxAge: 60 * 20, //20 minutes in seconds
+      sameSite: "strict",
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    response.cookies.set("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: "strict",
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    return response;
   } catch (error: any) {
     console.log(error);
     return NextResponse.json(

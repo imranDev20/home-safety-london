@@ -5,10 +5,8 @@ import User from "../../_models/User";
 
 export async function GET(req: NextRequest) {
   try {
-    // Connect to the database
     await dbConnect();
 
-    // Get the JWT token from the HTTP-only cookie
     const token = req.cookies.get("accessToken")?.value;
 
     if (!token) {
@@ -18,22 +16,29 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const decodedToken = verifyJWT(token);
+    let decodedToken;
 
-    // Extract user ID from the decoded token
-    const userId = (decodedToken as any).userId;
-
-    // Find the user based on the user ID
-    const user = await User.findById(userId);
-
-    if (!user) {
+    try {
+      decodedToken = await verifyJWT(token);
+    } catch (error) {
       return NextResponse.json(
-        { success: false, message: "User not found" },
-        { status: 404 }
+        { success: false, message: "Invalid or expired token" },
+        { status: 401 }
       );
     }
 
-    // Return the user information in the response
+    const userId = decodedToken._id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      const response = NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
+      );
+
+      return response;
+    }
+
     return NextResponse.json({
       success: true,
       message: "User information retrieved successfully",

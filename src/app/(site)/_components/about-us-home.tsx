@@ -19,11 +19,19 @@ import Image from "next/image";
 import BackgroundImage from "@/images/hero-image-new.jpeg";
 
 const categories = [
-  { text: "Ullamcorper dignissim cras tincidunt." },
-  { text: "Ullamcorper dignissim cras tincidunt." },
-  { text: "Ullamcorper dignissim cras tincidunt." },
-  { text: "Ullamcorper dignissim cras tincidunt." },
-  { text: "Ullamcorper dignissim cras tincidunt." },
+  { text: "Our team is made up of highly skilled and certified experts." },
+  {
+    text: "We offer a wide range of services in electrical, gas, fire, and health and safety.",
+  },
+  {
+    text: "We prioritize your safety and satisfaction with top-quality service.",
+  },
+  {
+    text: "Serving the heart of London with a deep understanding of local needs and regulations.",
+  },
+  {
+    text: "Trusted by homeowners across London for our reliability and professionalism.",
+  },
 ];
 
 function DotIcon() {
@@ -151,41 +159,34 @@ export default function AboutUsHome() {
         <Grid xs={12} md={5}>
           <Box>
             <Typography
-              sx={{
-                fontWeight: 400,
-                textTransform: "uppercase",
-                letterSpacing: 2,
-                mb: 1,
-              }}
-            >
-              About us
-            </Typography>
-            <Typography
               component="h2"
               sx={{
                 mb: 2,
               }}
               fontSize={36}
             >
-              Reliable & Professional Maintenance Work
+              About London Home Safety Limited
             </Typography>
             <Typography
               color="neutral"
               sx={{
-                lineHeight: 1.8,
+                lineHeight: 1.9,
                 my: 3,
               }}
             >
-              Mauris ac risus sed quam semper auctor. Nam tempus volutpat ipsum,
-              non viverra odio mollis mollis. Integer lacus ligula, imperdiet
-              vel massa in, maximus suscipit turpis. Mauris ac risus sed quam
-              semper auctor. Nam tempus volutpat ipsum, non viverra
+              At London Home Safety Limited, we are dedicated to safeguarding
+              homes across London with our premier safety solutions. With years
+              of experience and a team of certified professionals, we provide
+              reliable and comprehensive services to ensure the safety and
+              well-being of your home. Our commitment to excellence and customer
+              satisfaction sets us apart as the trusted choice for home safety
+              in London.
             </Typography>
 
             <Stack
               spacing={2}
               sx={{
-                my: 3,
+                my: 4,
               }}
             >
               {categories.map((cat) => (
@@ -203,8 +204,7 @@ export default function AboutUsHome() {
                       ml: 1,
                     }}
                   >
-                    {" "}
-                    Enim eu turpis egestas pretium aenean.
+                    {cat.text}
                   </Typography>
                 </Typography>
               ))}
