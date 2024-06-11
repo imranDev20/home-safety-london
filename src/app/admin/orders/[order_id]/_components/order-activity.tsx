@@ -13,11 +13,13 @@ import {
   ListItemContent,
   ListItemDecorator,
   Typography,
+  useTheme,
 } from "@mui/joy";
 import dayjs from "dayjs";
 
 export default function OrderActivity() {
   const { orderDetails } = useOrderDetails();
+  const theme = useTheme();
 
   return (
     <Box>
@@ -53,7 +55,14 @@ export default function OrderActivity() {
                   }}
                 >
                   <Avatar sx={{ "--Avatar-size": "24px" }}>
-                    <Circle color={index === 0 ? "success" : "neutral"} />
+                    <Circle
+                      sx={{
+                        color:
+                          index === 0
+                            ? theme.palette.success[500]
+                            : theme.palette.neutral[500],
+                      }}
+                    />
                   </Avatar>
                 </ListItemDecorator>
                 <ListItemContent>
