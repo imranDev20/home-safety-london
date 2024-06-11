@@ -7,14 +7,13 @@ import { placedOrderEmailHtml } from "../_templates/order-placed-email";
 import PreOrder from "../_models/PreOrder";
 import { IPreOrder } from "@/types/orders";
 import mongoose, { Types } from "mongoose";
-import { generateInvoiceId, generateInvoicePdf } from "../_lib/generateInvoice";
+import {
+  generateInvoiceId,
+  generateInvoicePdfFromPreOrder,
+} from "../_lib/generateInvoice";
 import { IUser } from "@/types/user";
 import { receivedOrderEmailHtml } from "../_templates/order-received-email";
 import { validateToken } from "../_lib/validateToken";
-
-interface OrderQuery {
-  order_status?: string;
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -57,7 +56,7 @@ export async function POST(req: NextRequest) {
     const invoiceId = await generateInvoiceId();
 
     // Serialize the PDF document to a Uint8Array
-    const pdfBytes = await generateInvoicePdf(invoiceId, preOrder);
+    const pdfBytes = await generateInvoicePdfFromPreOrder(invoiceId, preOrder);
     const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
 
     //needed this code to text and create the invoice

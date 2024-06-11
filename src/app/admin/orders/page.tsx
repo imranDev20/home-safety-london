@@ -47,7 +47,6 @@ export default function Orders() {
   const handleExportOrders = async () => {
     try {
       const response = await refetchExportOrders();
-      console.log(response);
       const data = response.data;
 
       if (response.status === "success") {

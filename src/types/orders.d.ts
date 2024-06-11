@@ -110,3 +110,7 @@ export interface IOrder<T extends IUser | undefined = undefined>
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export type InvoiceData = {
+  data: string;
+};

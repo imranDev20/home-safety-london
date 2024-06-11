@@ -3,7 +3,10 @@ import { buffer } from "node:stream/consumers";
 import Stripe from "stripe";
 import PreOrder from "../_models/PreOrder";
 import Order from "../_models/Order";
-import { generateInvoiceId, generateInvoicePdf } from "../_lib/generateInvoice";
+import {
+  generateInvoiceId,
+  generateInvoicePdfFromPreOrder,
+} from "../_lib/generateInvoice";
 import { sendEmail } from "../_lib/sendEmail";
 import { placedOrderEmailHtml } from "../_templates/order-placed-email";
 import { receivedOrderEmailHtml } from "../_templates/order-received-email";
@@ -50,7 +53,10 @@ export async function POST(req: any) {
         }
 
         const invoiceId = await generateInvoiceId();
-        const pdfBytes = await generateInvoicePdf(invoiceId, preOrder);
+        const pdfBytes = await generateInvoicePdfFromPreOrder(
+          invoiceId,
+          preOrder
+        );
         const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
 
         const newOrder = new Order({

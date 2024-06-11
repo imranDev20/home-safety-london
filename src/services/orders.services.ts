@@ -8,7 +8,7 @@ import {
   UpdateOrderResponse,
 } from "@/types/response";
 import { IOrder } from "@/types/orders";
-import { IUser } from "@/types/user";
+import { Types } from "mongoose";
 
 const ORDERS_PATH = "/orders";
 
@@ -73,5 +73,10 @@ export const deleteOrders = async (
 
 export const exportOrders = async () => {
   const response = await http.get(`/orders/export`);
+  return response.data;
+};
+
+export const getOrderInvoice = async (orderId: Types.ObjectId) => {
+  const response = await http.get(`${ORDERS_PATH}/invoice/${orderId}`);
   return response.data;
 };

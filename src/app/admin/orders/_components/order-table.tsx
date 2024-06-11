@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Box from "@mui/joy/Box";
 import Chip from "@mui/joy/Chip";
 import Sheet from "@mui/joy/Sheet";
-import { Avatar, CircularProgress, Link as JoyLink } from "@mui/joy";
+import { Avatar, CircularProgress } from "@mui/joy";
 import Typography from "@mui/joy/Typography";
 import { useOrdersData } from "@/app/_components/hooks/use-orders";
 import {
@@ -22,6 +22,7 @@ import { IOrder } from "@/types/orders";
 import TablePagination from "../../_components/table-pagination";
 import { useQueryString } from "@/app/_components/hooks/use-query-string";
 import { IUser } from "@/types/user";
+import InvoiceDownloadButton from "./invoice-download-button";
 
 const columns = [
   {
@@ -102,19 +103,8 @@ const columns = [
     label: "Invoice",
     width: 60,
     key: "invoice",
-    render: (value: string, row: any) => (
-      <JoyLink
-        component="a"
-        href={value}
-        target="_blank"
-        underline="hover"
-        sx={{
-          fontSize: 13,
-          fontWeight: 500,
-        }}
-      >
-        Download
-      </JoyLink>
+    render: (value: string, row: IOrder<IUser>) => (
+      <InvoiceDownloadButton order={row} />
     ),
   },
 ];
