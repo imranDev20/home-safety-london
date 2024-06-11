@@ -160,6 +160,7 @@ export default function AssignedAndTimeInfo() {
             {assignments.map((_, index) => {
               return (
                 <TaskAssignment
+                  key={assignments[index].id}
                   setAssignments={setAssignments}
                   assignments={assignments}
                   index={index}

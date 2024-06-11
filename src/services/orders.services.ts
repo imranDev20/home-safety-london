@@ -1,7 +1,7 @@
 import { buildUrl } from "@/shared/functions";
 import http from "./http.services";
 import {
-  CommonDeleteResponse,
+  DataLessResponse,
   CreateOrderResponse,
   GetOrderDetailsResponse,
   GetOrdersResponse,
@@ -64,8 +64,8 @@ export const updateOrder = async (
 // Not using params to keep delete bulk functionality
 export const deleteOrders = async (
   ids: string[]
-): Promise<CommonDeleteResponse> => {
-  const response: CommonDeleteResponse = await http.post(`${ORDERS_PATH}`, {
+): Promise<DataLessResponse> => {
+  const response: DataLessResponse = await http.post(`${ORDERS_PATH}`, {
     ids,
   });
   return response;

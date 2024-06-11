@@ -256,7 +256,7 @@ export default function EngineersPage() {
       <EngineerCards />
 
       <FormDrawer
-        state={openCreateEngineerDrawer}
+        open={openCreateEngineerDrawer}
         setOpen={setOpenCreateEngineerDrawer}
       >
         <CreateEngineerForm

@@ -270,7 +270,7 @@ export default function Customers() {
       <CustomersTable />
 
       <FormDrawer
-        state={openCreateCustomerDrawer}
+        open={openCreateCustomerDrawer}
         setOpen={setOpenCreateCustomerDrawer}
       >
         <CreateCustomerForm

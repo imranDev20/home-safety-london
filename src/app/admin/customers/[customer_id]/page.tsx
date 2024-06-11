@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { FIXED_HEIGHT } from "@/shared/constants";
 import RecentActivities from "./_components/recent-activities";
+import { Types } from "mongoose";
 
 const SingleCustomer = () => {
   const { customer_id } = useParams();
@@ -20,7 +21,9 @@ const SingleCustomer = () => {
   } = useQuery({
     queryKey: ["user-details"],
     queryFn: async () => {
-      const response = await getUserDetails(customer_id as string);
+      const response = await getUserDetails(
+        new Types.ObjectId(customer_id as string)
+      );
       return response.data;
     },
   });

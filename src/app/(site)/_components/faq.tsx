@@ -3,9 +3,7 @@ import React, { useState } from "react";
 import {
   Box,
   Container,
-  Divider,
   Grid,
-  Sheet,
   Typography,
   accordionSummaryClasses,
 } from "@mui/joy";
@@ -23,34 +21,31 @@ export default function Faq() {
   // Array containing the data for each Accordion
   const accordionData = [
     {
-      title: "First accordion show",
+      title: "What is an EPC and why do I need one?",
       content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "An Energy Performance Certificate (EPC) provides information about the energy efficiency of a property. It's required for properties being sold or rented and helps improve energy use and reduce costs.",
     },
     {
-      title: "Second accordion show",
+      title:
+        "How often should I have an Electrical Installation Condition Report (EICR) conducted?",
       content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "It's recommended to have an EICR conducted every 5 years for rented properties and every 10 years for owner-occupied homes. Regular inspections ensure your electrical systems are safe and compliant with regulations.",
     },
     {
-      title: "Third accordion show ",
+      title: "What does a Gas Safety Certificate entail?",
       content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "A Gas Safety Certificate confirms that all gas appliances, fittings, and flues in a property are safe to use. It's a legal requirement for landlords to have an annual gas safety check conducted by a registered engineer.",
     },
     {
-      title: "Forth accordion show",
+      title: "Why is PAT Testing important for my home?",
       content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "Portable Appliance Testing (PAT) is important to ensure that electrical appliances are safe to use. Regular PAT testing helps prevent electrical hazards and ensures compliance with safety standards.",
     },
     {
-      title: "Five accordion show",
+      title:
+        "How can I benefit from installing an EV charging station at home?",
       content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    },
-    {
-      title: "Six accordion show",
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "Installing an EV charging station at home offers convenience and cost savings for electric vehicle owners. It ensures your vehicle is always ready to go and can increase the value of your property.",
     },
   ];
 
@@ -81,23 +76,26 @@ export default function Faq() {
           </Grid>
           <Grid xs={12} md={6}>
             <Typography
-              sx={{
-                fontWeight: 400,
-                textTransform: "uppercase",
-                letterSpacing: 2,
-                mb: 1,
-              }}
-            >
-              FAQ
-            </Typography>
-            <Typography
               component="h2"
               sx={{
                 mb: 2,
               }}
               fontSize={36}
             >
-              Answers to Frequently Asked Questions (FAQs)
+              Frequently Asked Questions
+            </Typography>
+
+            <Typography
+              color="neutral"
+              sx={{
+                mb: 3,
+                lineHeight: 1.8,
+              }}
+            >
+              Got questions? We&apos;ve got answers! Here are some of the most
+              common questions we receive from our customers, along with clear
+              and helpful answers to guide you through our services and
+              processes.
             </Typography>
 
             <AccordionGroup

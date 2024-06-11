@@ -16,6 +16,16 @@ import {
 import Image from "next/image";
 import ContactUsImage from "@/images/home/home-contact-image.jpeg";
 
+const workingHours = [
+  { dayOfWeek: "Monday", start: "09:00", end: "17:00" },
+  { dayOfWeek: "Tuesday", start: "09:00", end: "17:00" },
+  { dayOfWeek: "Wednesday", start: "09:00", end: "17:00" },
+  { dayOfWeek: "Thursday", start: "09:00", end: "17:00" },
+  { dayOfWeek: "Friday", start: "09:00", end: "17:00" },
+  { dayOfWeek: "Saturday", start: "09:00", end: "17:00" },
+  { dayOfWeek: "Sunday", start: "09:00", end: "17:00" },
+];
+
 const Contact = () => {
   const theme = useTheme();
 
@@ -42,7 +52,7 @@ const Contact = () => {
             textAlign: "center",
           }}
         >
-          We Offer Plumbing Work Since 1967
+          Get in Touch with London’s Home Safety Experts
         </Typography>
         <Grid
           container
@@ -81,7 +91,7 @@ const Contact = () => {
                   mt: 3,
                 }}
               >
-                {[0, 1, 2, 3, 4, 5].map((item) => (
+                {workingHours.map((item) => (
                   <>
                     <Stack justifyContent="space-between" direction="row">
                       <Typography
@@ -89,9 +99,9 @@ const Contact = () => {
                           fontWeight: 500,
                         }}
                       >
-                        Monday:
+                        {item.dayOfWeek}:
                       </Typography>
-                      <Typography>8:00 AM - 6:00 PM</Typography>
+                      <Typography>{`${item.start} - ${item.end}`}</Typography>
                     </Stack>
                     <Divider />
                   </>

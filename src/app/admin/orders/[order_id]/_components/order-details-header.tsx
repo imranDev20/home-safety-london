@@ -14,6 +14,7 @@ import {
   DeleteForever,
   Download,
   Edit,
+  Email,
   MoreHoriz,
   MoreVertRounded,
   West,
@@ -73,6 +74,7 @@ export default function OrderDetailsHeader() {
 
     const payload = {
       ...orderDetails,
+      customer: orderDetails.customer._id,
       order_status: [
         ...(orderDetails?.order_status ?? []),
         {
@@ -186,12 +188,7 @@ export default function OrderDetailsHeader() {
         </Stack>
 
         <Stack spacing={1} direction="row" alignItems="center">
-          <FormControl
-            size="sm"
-            sx={{
-              width: 195,
-            }}
-          >
+          <FormControl size="sm">
             <Select
               placeholder="Change order status"
               slotProps={{
@@ -248,12 +245,13 @@ export default function OrderDetailsHeader() {
               <MoreVertRounded />
             </MenuButton>
             <Menu size="sm" sx={{ minWidth: 140 }} placement="bottom-end">
-              <MenuItem color="danger">
+              <MenuItem color="neutral">
                 <ListItemDecorator>
-                  <Block />
+                  <Email />
                 </ListItemDecorator>{" "}
-                Deactivate
+                Send Email
               </MenuItem>
+
               <MenuItem color="danger">
                 <ListItemDecorator>
                   <DeleteForever />

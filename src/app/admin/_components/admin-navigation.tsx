@@ -191,7 +191,7 @@ export default function AdminNavigation(props: AdminNavigationProps) {
         </Box>
       </Stack>
       <LogoutAlertDialog
-        state={openConfirmModal}
+        open={openConfirmModal}
         setOpen={setOpenConfirmModal}
       />
     </>

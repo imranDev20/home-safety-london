@@ -3,7 +3,6 @@ import "pure-react-carousel/dist/react-carousel.es.css";
 
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { CarouselProvider, Slide, Slider } from "pure-react-carousel";
 import { Star } from "@mui/icons-material";
 import {
   Box,
@@ -14,48 +13,15 @@ import {
   Sheet,
   Typography,
 } from "@mui/joy";
-
-import TestimonialCard from "./testimonial-card";
 import TestimonialForm from "./testimonial-form";
 import { getTestimonials } from "@/services/testimonial.services";
 import { GetTestimonialsResponse } from "@/types/response";
+import { CarouselProvider, Slide, Slider } from "pure-react-carousel";
+import TestimonialCard from "./testimonial-card";
+import TestimonialSlider from "./testimonial-slider";
 
 export default function Testimonials() {
-  const [slidesToShow, setSlidesToShow] = useState<number>(3);
   const [openModal, setOpenModal] = React.useState<boolean>(false);
-
-  useEffect(() => {
-    function handleResize() {
-      if (window.innerWidth <= 600) {
-        setSlidesToShow(1);
-      } else if (window.innerWidth <= 960) {
-        setSlidesToShow(2);
-      } else {
-        setSlidesToShow(2);
-      }
-    }
-
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const { data: testimonialData, isPending: isGetTestimonialsPending } =
-    useQuery<GetTestimonialsResponse>({
-      queryKey: ["testimonials"],
-      queryFn: () => getTestimonials(),
-    });
-
-  console.log(testimonialData);
-
-  if (isGetTestimonialsPending) {
-    return <CircularProgress />;
-  }
-
-  if (!testimonialData) {
-    return "Testimonials not found...";
-  }
 
   return (
     <Sheet
@@ -81,7 +47,7 @@ export default function Testimonials() {
                   mb: 4,
                 }}
               >
-                What Our Customers Say About Us
+                Hear from Our Satisfied Customers
               </Typography>
 
               <Box
@@ -101,31 +67,14 @@ export default function Testimonials() {
               </Box>
 
               <Typography level="body-lg" color="neutral">
-                Our customer rating of 4.5 /5 averages from 1.2k Review on the
-                Calculate
+                Our commitment to excellence and customer satisfaction shines
+                through in their words.
               </Typography>
             </Box>
           </Grid>
-          {/* <Grid xs={12} md={8}>
-            <CarouselProvider
-              naturalSlideWidth={400}
-              naturalSlideHeight={200}
-              isIntrinsicHeight={true}
-              totalSlides={testimonialData?.pagination?.totalCount as number}
-              visibleSlides={slidesToShow}
-              infinite
-              isPlaying
-              interval={5000}
-            >
-              <Slider>
-                {testimonialData?.data?.map((slide, index) => (
-                  <Slide index={index} key={index}>
-                    <TestimonialCard slide={slide} />
-                  </Slide>
-                ))}
-              </Slider>
-            </CarouselProvider>
-          </Grid> */}
+          <Grid xs={12} md={8}>
+            <TestimonialSlider />
+          </Grid>
         </Grid>
 
         <Box

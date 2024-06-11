@@ -96,10 +96,11 @@ export default function Hero() {
                         color: "white",
                       }}
                     >
-                      Welcome to Home Safety London, where we&apos;re dedicated
-                      to securing your peace of mind. From EICRs to fire alarms,
-                      we&apos;re your one-stop solution for safeguarding every
-                      corner of your home.
+                      Welcome to London Home Safety Limited, your trusted
+                      partner for comprehensive safety solutions in the heart of
+                      London. With years of experience and a team of certified
+                      professionals, we provide top-notch services to ensure the
+                      safety and well-being of your home.
                     </Typography>
 
                     <Stack

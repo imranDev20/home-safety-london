@@ -16,6 +16,12 @@ import { IEngineer } from "@/types/user";
 import { forwardRef, useEffect, useState } from "react";
 import { Assignment } from "./assigned-and-time-info";
 import useOrderDetails from "@/app/_components/hooks/use-order-details";
+import { useMutation } from "@tanstack/react-query";
+import { sendEmailToEngineer } from "@/services/send-email.services";
+import { useQueryString } from "@/app/_components/hooks/use-query-string";
+import { useSnackbar } from "@/app/_components/snackbar-provider";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/types/response";
 
 interface ServiceEmailContent {
   subject: string | "";
@@ -34,12 +40,14 @@ const WriteEmail = forwardRef<HTMLDivElement, WriteEmailProps>(
     const [receiver, setReceiver] = useState<string>("");
     const [emailContent, setEmailContent] = useState<string>("");
     const [emailSubject, setEmailSubject] = useState<string>("");
+    const { enqueueSnackbar } = useSnackbar();
 
     const { orderDetails } = useOrderDetails();
 
     const orderItemsForEngineer = orderDetails?.order_items.filter((item) =>
       assignment.tasks.includes(item._id)
     );
+
     // Example usage
     const servicesAssigned = orderItemsForEngineer?.map((item) => item.name);
     const emailBody = generateEmailForServices(servicesAssigned as string[]);
@@ -50,7 +58,37 @@ const WriteEmail = forwardRef<HTMLDivElement, WriteEmailProps>(
         setEmailContent(emailBody.body);
         setEmailSubject(emailBody.subject);
       }
-    }, [engineerDetails]);
+    }, [engineerDetails, emailBody]);
+
+    const { isPending: isSendEmailPending, mutateAsync: sendEmailMutate } =
+      useMutation({
+        mutationFn: (data: any) => sendEmailToEngineer(data),
+        onSuccess: (response) => {
+          enqueueSnackbar(response.message, "success");
+          if (onClose) {
+            onClose();
+          }
+        },
+        onError: (error: AxiosError<ErrorResponse>) => {
+          enqueueSnackbar(
+            error.response?.data.message || error.message,
+            "error"
+          );
+        },
+      });
+
+    const handleSendEmailToEngineer = async () => {
+      const payload = {
+        receiver_email: receiver,
+        content: emailContent,
+        subject: emailSubject,
+        assignment,
+        orderDetails,
+        orderItemsForEngineer,
+      };
+
+      await sendEmailMutate(payload);
+    };
 
     return (
       <Sheet
@@ -150,7 +188,8 @@ const WriteEmail = forwardRef<HTMLDivElement, WriteEmailProps>(
                   <Button
                     color="primary"
                     sx={{ borderRadius: "sm" }}
-                    onClick={onClose}
+                    onClick={handleSendEmailToEngineer}
+                    loading={isSendEmailPending}
                   >
                     Send
                   </Button>
@@ -241,7 +280,7 @@ const generateEmailForServices = (
 
   const combinedSubject = emailParts.map((part) => part.subject).join(", ");
   const combinedBody = emailParts
-    .map((part) => `Service: ${part.subject}\n\n${part.body}\n\n`)
+    .map((part) => `${part.body}\n\n`)
     .join("\n---------------------------------\n");
 
   return { subject: combinedSubject, body: combinedBody };
